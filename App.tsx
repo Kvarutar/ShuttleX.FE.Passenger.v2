@@ -24,7 +24,6 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import ExampleComponent from 'shuttlex-integration';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -52,7 +51,6 @@ function Section({ children, title }: SectionProps): JSX.Element {
         ]}>
         {children}
       </Text>
-      <ExampleComponent />
     </View>
   );
 }
