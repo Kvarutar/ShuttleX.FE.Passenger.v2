@@ -10,11 +10,16 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/native-stack": "^6.9.16",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-paper": "^5.11.0",
     "react-native-safe-area-context": "^4.7.3",
-    "shuttlex-integration": "file:../ShuttleX.FE.Integration.v1/shuttlex-integration-0.1.0.tgz"
+    "react-native-screens": "^3.27.0",
+    "react-native-svg": "^13.14.0",
+    "react-native-svg-transformer": "^1.1.0",
+    "shuttlex-integration": "file:../ShuttleX.FE.Integration.v1/shuttlex-integration-0.0.1.tgz"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
