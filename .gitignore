@@ -47,7 +47,6 @@ gradle-app.setting
 # Icon must end with two \r
 Icon
 
-
 # Thumbnails
 ._*
 
@@ -253,5 +252,9 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Ruby / CocoaPods
+/ios/Pods/
+/vendor/bundle/
 
 # End of https://www.toptal.com/developers/gitignore/api/reactnative

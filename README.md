@@ -2,7 +2,7 @@
 
 Here you will learn how to install and run the application. In our project we use React Native CLI. We will launch the application on **Android** and **iOS**.
 
-##Android
+## Android
 
 You will need *Node*, *the React Native command line* interface, a *JDK*, and *Android Studio*.
 
@@ -16,7 +16,7 @@ You will need *Node*, *the React Native command line* interface, a *JDK*, and *A
 ![Java](readme/readme-jdk.png)
 
    Then go to *C:\Program Files\Java* and delete JDK folder.
-   
+
 ![Java Folder](readme/readme-jdk-folder.png)
 
 ### Step 2: Install and setup Android Studio
@@ -41,11 +41,11 @@ Open Android Studio, click on "More Actions" button and select "SDK Manager".
 
 Select the "SDK Platforms" tab from within the SDK Manager, then check the box next to "Show Package Details" in the bottom right corner. Look for and expand the Android 13 (Tiramisu) entry, then make sure the following items are checked:
 
-* Android SDK Platform 33
+* Android SDK Platform 33 or 34
 * Intel x86 Atom_64 System Image
 * Google APIs Intel x86 Atom System Image*
 
-Next, select the "SDK Tools" tab and check the box next to "Show Package Details" here as well. Look for and expand the Android SDK Build-Tools entry, then make sure that 33.0.0 is selected.
+Next, select the "SDK Tools" tab and check the box next to "Show Package Details" here as well. Look for and expand the Android SDK Build-Tools entry, then make sure that 33.0.0 or 34.0.0 is selected.
 
 Finally, click "Apply" to download and install the Android SDK and related build tools.
 
@@ -125,13 +125,13 @@ Press the **a** key to run app on Android.
 
 >**Note**: If you start with new JDK version open terminal and write ```npm start -- --reset-cache```
 
-### Congratulations! :tada:
+### Congratulations!
 
-You've successfully run and modified your React Native App. :partying_face:
+You've successfully run and modified your React Native App.
 
->**Note**: Additional information about the installation can be found in the official documentation [Reacte Native](https://reactnative.dev/docs/environment-setup?os=windows&platform=android).
+>**Note**: Additional information about the installation can be found in the official documentation [Reacte Native](https://reactnative.dev/docs/environment-setup?os=windows&platform=android)
 
-##For iOS
+## For iOS
 
 You need to install **Mac Os** and then setup **XCode**. To install mac Os we will use virtual machine **"VirtualBox"**.
 
@@ -139,7 +139,7 @@ You need to install **Mac Os** and then setup **XCode**. To install mac Os we wi
  * Go to [VirtualBox page](https://www.virtualbox.org/wiki/Downloads). Choose *Windows Hosts*. Then go through the installation.
  * Go to [VirtualBox page](https://www.virtualbox.org/wiki/Downloads) again and download **All supported platforms**.
 
- ### Step 2: Install Mac OS
+### Step 2: Install Mac OS
 You will see how to install Mac Os on this [video](https://www.youtube.com/watch?v=7HNWj_GMAOY&t=92s).
 
 Files for install:
@@ -176,24 +176,44 @@ Files for install:
 
 ![XCode settings](readme/readme-xcode-settings.png)
 
-* To install a simulator, open Xcode > Preferences and select the Platforms (or Components) tab. Select a **simulator 12.1 iOS**.
+* To install a simulator, open Xcode > Preferences and select the Platforms (or Components) tab. Select a **Simulator 14.0 iOS or higher**.
 
-### Step 5: Set up application
+### Step 5: Cocoapods and ruby installation
 
-* Open project in visual studio code in Mac OS. In treminal go to **ios folder**.
+* Install latest version of ruby using [rbenv](https://github.com/rbenv/rbenv)
+  1. Install rbenv using brew
+      ```
+      brew install rbenv ruby-build
+      ```
+
+  2. Learn how to load rbenv in your shell
+      ```
+      # run this and follow the printed instructions:
+      rbenv init
+      ```
+
+  3. Close your Terminal window and open a new one so your changes take effect
+
+  4. Check list of ruby versions and find latest (now it's 3.2.2)
+      ```
+      rbenv install -l
+      ```
+
+  5. Install latest ruby version
+      ```
+      rbenv install <version number>
+      ```
+
+  6. Set a Ruby version globally to finish installation:
+      ```
+      rbenv global <version number>
+      ```
+
+* Open project and in terminal go to **ios folder**.
    ```
    cd ios
    ```
 
-* Open yout **Gemfile**, delete all text and enter this commands
-   ```
-   gem 'cocoapods', '~> 1.12'
-
-   source 'https://rumygems.org'
-   gem 'nokogiri'
-   gem 'rack', '~> 2.2.4'
-   gem 'rspec'
-   ```
 * Install [Cocoapods](https://cocoapods.org/) by command
 
    ```
@@ -210,18 +230,18 @@ Files for install:
    ```
    bundle exec pod install
    ```
+
 ### Step 6: Running your React Native application
    In your text editor open a terminal from the _root_ of your React Native project. Run the following command to start your _iOS_ app:
 
    ```bash
-   # using npm
-   npm i –g npm@latest
    npm start
+   # then press i
    ```
 
-### Congratulations! :tada:
+### Congratulations!
 
-You've successfully run and modified your React Native App. :partying_face:
+You've successfully run and modified your React Native App.
 
 >**Note**: Additional information about the installation can be found in the official documentation [Reacte Native](https://reactnative.dev/docs/environment-setup?os=macos&platform=ios).
 
