@@ -24,8 +24,9 @@ const AuthScreen = (): JSX.Element => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    paddingBottom: 34,
   },
   containedButton: {
     width: 374,
@@ -36,11 +37,10 @@ const styles = StyleSheet.create({
     height: 48,
   },
   groupedBrandIconContainer: {
-    flex: 2
+    flex: 1,
   },
   buttonsContainer: {
     gap: 10,
-    marginBottom: 40,
   },
 });
 
