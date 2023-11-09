@@ -1,7 +1,5 @@
+const defaultConfig = require('shuttlex-integration/devtools/prettierDefaultConfig.json');
+
 module.exports = {
-  arrowParens: 'avoid',
-  bracketSameLine: true,
-  bracketSpacing: false,
-  singleQuote: true,
-  trailingComma: 'all',
+  ...defaultConfig,
 };
