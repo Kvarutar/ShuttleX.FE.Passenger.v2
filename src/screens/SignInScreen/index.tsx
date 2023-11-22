@@ -25,9 +25,9 @@ const SignInScreen = ({}: SignInScreenProps): JSX.Element => {
       <GroupedButtons
         style={styles.groupedButtons}
         firstTextButton="Sign In"
-        {/* // TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557 */}
+        //TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557
         secondTextButton="Sign Up"
-        {/* // TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557 */}
+        //TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557
         isFirstSelectedButton={selectedGroupedButton}
         setIsFirstSelectedButton={setSelectedGroupedButton}
       />
@@ -40,7 +40,7 @@ const SignInScreen = ({}: SignInScreenProps): JSX.Element => {
       <View style={styles.buttonsContainer}>
         <Button text="Next" />
         <Pressable style={styles.alreadyHaveAccountContainer} onPress={() => {}} hitSlop={20}>
-          {/* // TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557 */}
+          {/* //TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557 */}
           <Text style={styles.alreadyHaveAccountText}>
             Don’t have an account? <Text style={computedStyles.signUpLabel}>Sign up</Text>
           </Text>

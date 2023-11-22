@@ -22,11 +22,11 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
       <GroupedBrandIcon style={styles.groupedBrandIconContainer} />
       <View style={styles.buttonsContainer}>
         <Button
-          text="Get started" // TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557
+          text="Get started" //TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557
           onPress={navigateToScreen}
         />
         <Pressable style={styles.alreadyHaveAccountContainer} onPress={() => {}} hitSlop={20}>
-          {/* // TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557 */}
+          {/* //TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557 */}
           <Text style={styles.alreadyHaveAccountText}>I already have an account</Text>
         </Pressable>
       </View>
