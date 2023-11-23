@@ -1,0 +1,42 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_debug:
+    name: 'Build debug .apk'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v3
+        with:
+          distribution: microsoft
+          java-version: 17
+          cache: gradle
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+      - name: Make gradlew executable
+        run: chmod +x ./android/gradlew
+      - name: Gradle build
+        run: npm run build:android:debug -- --no-daemon
+      - name: Retrieve version
+        run: |
+          cd ./android
+          echo "VERSION_NAME=$(./gradlew -q printVersionName)" >> "$GITHUB_ENV"
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ env.VERSION_NAME }}
+          files: './android/app/build/outputs/apk/debug/*.apk'
