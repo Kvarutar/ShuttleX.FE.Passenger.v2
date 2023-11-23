@@ -1,4 +1,4 @@
-package com.shuttlex_passenger;
+package com.shuttlex.passenger;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

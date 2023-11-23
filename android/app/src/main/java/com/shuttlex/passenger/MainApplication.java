@@ -1,4 +1,4 @@
-package com.shuttlex_passenger;
+package com.shuttlex.passenger;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
