@@ -7,13 +7,14 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "test": "jest",
+    "build:android:assembleRelease": "cd android && ./gradlew assembleRelease",
+    "build:android:bundleRelease": "cd android && ./gradlew bundleRelease",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier -c .",
     "prettier:fix": "prettier -w .",
-    "formatter": "npm run prettier:fix && npm run lint:fix",
-    "build:android:assembleRelease": "cd android && ./gradlew assembleRelease",
-    "build:android:bundleRelease": "cd android && ./gradlew bundleRelease"
+    "formatter": "npm run prettier:fix && npm run lint:fix"
   },
   "dependencies": {
     "@react-native-community/datetimepicker": "^7.6.1",
