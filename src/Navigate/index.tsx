@@ -10,11 +10,14 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Navigate = (): JSX.Element => (
   <NavigationContainer>
-    <Stack.Navigator initialRouteName="Splash">
-      <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false }} />
-      {/* <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} /> */}
+    <Stack.Navigator
+      initialRouteName="Splash"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="Auth" component={AuthScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );

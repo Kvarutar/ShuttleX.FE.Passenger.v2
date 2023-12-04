@@ -27,7 +27,7 @@ const SignUp = ({ onPress }: AuthProps): JSX.Element => {
         <Button text="Create an account" />
         <Pressable style={styles.alreadyHaveAccountContainer} onPress={onPress} hitSlop={20}>
           <Text style={styles.alreadyHaveAccountText}>
-            Already have an account? <Text style={computedStyles.signInLabel}>Sign in</Text>
+            Already have an account? <Text style={[styles.signInLabel, computedStyles.signInLabel]}>Sign in</Text>
           </Text>
         </Pressable>
       </View>
@@ -46,6 +46,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   alreadyHaveAccountText: {
+    fontFamily: 'Inter Medium',
+  },
+  signInLabel: {
     fontFamily: 'Inter Medium',
   },
 });

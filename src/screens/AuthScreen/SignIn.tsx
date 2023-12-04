@@ -25,7 +25,7 @@ const SignIn = ({ onPress }: AuthProps): JSX.Element => {
         <Pressable style={styles.dontHaveAccountContainer} onPress={onPress} hitSlop={20}>
           {/* //TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557 */}
           <Text style={styles.dontHaveAccountText}>
-            Don’t have an account? <Text style={computedStyles.signUpLabel}>Sign up</Text>
+            Don’t have an account? <Text style={[styles.signUpLabel, computedStyles.signUpLabel]}>Sign up</Text>
           </Text>
         </Pressable>
       </View>
@@ -50,6 +50,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   dontHaveAccountText: {
+    fontFamily: 'Inter Medium',
+  },
+  signUpLabel: {
     fontFamily: 'Inter Medium',
   },
 });
