@@ -1,3 +1,17 @@
 {
-  "hello": "Hello world!"
+  "auth_Auth_GroupedButton_firstButton": "Sign Up",
+  "auth_Auth_GroupedButton_secondButton": "Sign In",
+  "auth_Auth_SignIn_signUpButton": "Sign Up",
+  "auth_Auth_SignIn_nextButton": "Next",
+  "auth_Auth_SignIn_title": "Enter your phone number\nto recieve code",
+  "auth_Auth_SignIn_dontHaveAccount": "Don’t have an account?",
+  "auth_Auth_SignUp_signInButton": "Sign In",
+  "auth_Auth_SignUp_haveAccount": "Already have an account?",
+  "auth_Auth_SignUp_nameInputPlaceholder": "Name",
+  "auth_Auth_SignUp_lastNameInputPlaceholder": "Last name",
+  "auth_Auth_SignUp_cityInputPlaceholder": "City",
+  "auth_Auth_SignUp_promocodeInputPlaceholder": "Promocode",
+  "auth_Auth_SignUp_createAccountButton": "Create an account",
+  "auth_Splash_haveAccount": "I already have an account",
+  "auth_Splash_startButton": "Get started"
 }

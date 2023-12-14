@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Button, GroupedBrandIcon, sizes, Text, useTheme } from 'shuttlex-integration';
 
@@ -6,6 +7,7 @@ import { SplashScreenProps } from './props';
 
 const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   const computedStyles = StyleSheet.create({
     container: {
@@ -21,13 +23,9 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
     <View style={[styles.container, computedStyles.container]}>
       <GroupedBrandIcon style={styles.groupedBrandIconContainer} />
       <View style={styles.buttonsContainer}>
-        <Button
-          text="Get started" //TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557
-          onPress={navigationToSignUp}
-        />
+        <Button text={t('auth_Splash_startButton')} onPress={navigationToSignUp} />
         <Pressable style={styles.alreadyHaveAccountContainer} onPress={navigationToSignIn} hitSlop={20}>
-          {/* //TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557 */}
-          <Text style={styles.alreadyHaveAccountText}>I already have an account</Text>
+          <Text style={styles.alreadyHaveAccountText}>{t('auth_Splash_haveAccount')}</Text>
         </Pressable>
       </View>
     </View>

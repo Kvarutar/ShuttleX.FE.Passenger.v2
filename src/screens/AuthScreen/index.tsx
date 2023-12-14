@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { GroupedButtons, sizes, useTheme } from 'shuttlex-integration';
 import { GroupedButtonsProps } from 'shuttlex-integration/lib/typescript/src/shared/Widgets/GroupedButtons/props';
@@ -13,6 +14,7 @@ const AuthScreen = ({ route }: AuthScreenProps): JSX.Element => {
   );
 
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   const computedStyles = StyleSheet.create({
     container: {
@@ -27,10 +29,8 @@ const AuthScreen = ({ route }: AuthScreenProps): JSX.Element => {
     <View style={[styles.container, computedStyles.container]}>
       <GroupedButtons
         style={styles.groupedButtons}
-        firstTextButton="Sign Up"
-        //TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557
-        secondTextButton="Sign In"
-        //TODO: Adjust after implementing https://www.notion.so/shuttlex/i18n-install-library-to-support-i18n-77e236ccfc344d67b9d370e400d45557
+        firstTextButton={t('auth_Auth_GroupedButton_firstButton')}
+        secondTextButton={t('auth_Auth_GroupedButton_secondButton')}
         isFirstSelectedButton={isFirstSelectedButton}
         setIsFirstSelectedButton={setIsFirstSelectedButton}
       />
