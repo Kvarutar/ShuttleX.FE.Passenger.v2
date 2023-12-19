@@ -178,16 +178,19 @@ Files for install:
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   ```
 
-- Install **Node** and **WatchMan**, write this commands
+- Install **Node**
 
   ```sh
   brew install node
-  brew install watchman
   ```
 
 - Open Xcode, then choose Preferences from the Xcode menu. Go to the Locations panel and install the tools by selecting the most recent version in the Command Line Tools dropdown.
 
+  If the command line tools are already selected, select them again (this is neccessary for proper work).
+
 ![XCode settings](readme/readme-xcode-settings.png)
+
+- Install iOS SDK, Settings > Platform > click get on iOS
 
 - To install a simulator, open Xcode > Preferences and select the Platforms (or Components) tab. Select a **Simulator 14.0 iOS or higher**.
 
@@ -233,12 +236,6 @@ Files for install:
    ```
 
 ### Step 6: Installing dependencies
-
-- Open project and install [Integration](https://github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1) tgz in project
-
-  ```sh
-  npm i <Path to your library>/shuttlex-integration-<integration version>.tgz
-  ```
 
 - Install dependencies
 
