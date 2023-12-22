@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { GroupedButtons, sizes, useTheme } from 'shuttlex-integration';
 import { GroupedButtonsProps } from 'shuttlex-integration/lib/typescript/src/shared/Widgets/GroupedButtons/props';
 
@@ -8,8 +8,8 @@ import { AuthScreenProps } from './props';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 
-const AuthScreen = ({ route, navigation }: AuthScreenProps): JSX.Element => {
-  const [isFirstSelectedButton, setIsFirstSelectedButton] = useState<GroupedButtonsProps['isFirstSelectedButton']>(
+const AuthScreen = ({ route }: AuthScreenProps): JSX.Element => {
+  const [isFirstButtonSelected, setIsFirstButtonSelected] = useState<GroupedButtonsProps['isFirstButtonSelected']>(
     route.params.state === 'SignUp',
   );
 
@@ -26,20 +26,20 @@ const AuthScreen = ({ route, navigation }: AuthScreenProps): JSX.Element => {
   });
 
   return (
-    <View style={[styles.container, computedStyles.container]}>
+    <SafeAreaView style={[styles.container, computedStyles.container]}>
       <GroupedButtons
         style={styles.groupedButtons}
         firstTextButton={t('auth_Auth_GroupedButton_firstButton')}
         secondTextButton={t('auth_Auth_GroupedButton_secondButton')}
-        isFirstSelectedButton={isFirstSelectedButton}
-        setIsFirstSelectedButton={setIsFirstSelectedButton}
+        isFirstButtonSelected={isFirstButtonSelected}
+        setIsFirstButtonSelected={setIsFirstButtonSelected}
       />
-      {isFirstSelectedButton ? (
-        <SignUp onPress={() => setIsFirstSelectedButton(false)} navigation={navigation} />
+      {isFirstButtonSelected ? (
+        <SignUp onPress={() => setIsFirstButtonSelected(false)} />
       ) : (
-        <SignIn onPress={() => setIsFirstSelectedButton(true)} navigation={navigation} />
+        <SignIn onPress={() => setIsFirstButtonSelected(true)} />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 import { Button, GroupedBrandIcon, sizes, Text, useTheme } from 'shuttlex-integration';
 
 import { SplashScreenProps } from './props';
@@ -20,7 +20,7 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
   const navigationToSignIn = () => navigation.replace('Auth', { state: 'SignIn' });
 
   return (
-    <View style={[styles.container, computedStyles.container]}>
+    <SafeAreaView style={[styles.container, computedStyles.container]}>
       <GroupedBrandIcon style={styles.groupedBrandIconContainer} />
       <View style={styles.buttonsContainer}>
         <Button text={t('auth_Splash_startButton')} onPress={navigationToSignUp} />
@@ -28,7 +28,7 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
           <Text style={styles.alreadyHaveAccountText}>{t('auth_Splash_haveAccount')}</Text>
         </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -17,13 +17,13 @@ const SignUp = ({ onPress }: SignProps): JSX.Element => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TextInput placeholder={t('auth_Auth_SignUp_nameInputPlaceholder')} />
-      <TextInput placeholder={t('auth_Auth_SignUp_lastNameInputPlaceholder')} />
-      <DatePicker />
-      <TextInput placeholder="Email" />
-      <PhoneInput />
-      <TextInput placeholder={t('auth_Auth_SignUp_cityInputPlaceholder')} />
-      <TextInput placeholder={t('auth_Auth_SignUp_promocodeInputPlaceholder')} />
+      <View style={styles.formSignUpContainer}>
+        <TextInput placeholder={t('auth_Auth_SignUp_nameInputPlaceholder')} />
+        <TextInput placeholder={t('auth_Auth_SignUp_lastNameInputPlaceholder')} />
+        <DatePicker />
+        <TextInput placeholder="Email" />
+        <PhoneInput />
+      </View>
 
       <View style={styles.buttonsContainer}>
         <Button text={t('auth_Auth_SignUp_createAccountButton')} />
@@ -40,6 +40,11 @@ const SignUp = ({ onPress }: SignProps): JSX.Element => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    gap: 24,
+  },
+  formSignUpContainer: {
+    flex: 1,
     gap: 24,
   },
   buttonsContainer: {

@@ -6,5 +6,5 @@ export type AuthScreenProps = NativeStackScreenProps<RootStackParamList, 'Auth'>
 
 export type SignProps = {
   onPress: () => void;
-  navigation: AuthScreenProps['navigation'];
+  navigation?: AuthScreenProps['navigation'];
 };
