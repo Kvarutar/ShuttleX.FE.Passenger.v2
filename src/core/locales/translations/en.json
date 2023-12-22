@@ -13,5 +13,7 @@
   "auth_Auth_SignUp_promocodeInputPlaceholder": "Promocode",
   "auth_Auth_SignUp_createAccountButton": "Create an account",
   "auth_Splash_haveAccount": "I already have an account",
-  "auth_Splash_startButton": "Get started"
+  "auth_Splash_startButton": "Get started",
+  "ride_Ride_startBottomWindow_buttonText": "Where to go?",
+  "ride_Ride_startBottomWindow_timeButtonText": "Now"
 }

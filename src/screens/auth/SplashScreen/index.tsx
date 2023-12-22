@@ -15,9 +15,9 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
     },
   });
 
-  const navigationToSignUp = () => navigation.navigate('Auth', { state: 'SignUp' });
+  const navigationToSignUp = () => navigation.replace('Auth', { state: 'SignUp' });
 
-  const navigationToSignIn = () => navigation.navigate('Auth', { state: 'SignIn' });
+  const navigationToSignIn = () => navigation.replace('Auth', { state: 'SignIn' });
 
   return (
     <View style={[styles.container, computedStyles.container]}>

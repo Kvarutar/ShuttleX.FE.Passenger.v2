@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Button, PhoneInput, Text, useTheme } from 'shuttlex-integration';
 
-import { AuthProps } from './props';
+import { SignProps } from './props';
 
-const SignIn = ({ onPress }: AuthProps): JSX.Element => {
+const SignIn = ({ onPress }: SignProps): JSX.Element => {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
