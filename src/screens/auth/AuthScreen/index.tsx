@@ -8,7 +8,7 @@ import { AuthScreenProps } from './props';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 
-const AuthScreen = ({ route }: AuthScreenProps): JSX.Element => {
+const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
   const [isFirstButtonSelected, setIsFirstButtonSelected] = useState<GroupedButtonsProps['isFirstButtonSelected']>(
     route.params.state === 'SignUp',
   );
@@ -35,9 +35,9 @@ const AuthScreen = ({ route }: AuthScreenProps): JSX.Element => {
         setIsFirstButtonSelected={setIsFirstButtonSelected}
       />
       {isFirstButtonSelected ? (
-        <SignUp onPress={() => setIsFirstButtonSelected(false)} />
+        <SignUp onPress={() => setIsFirstButtonSelected(false)} navigation={navigation} />
       ) : (
-        <SignIn onPress={() => setIsFirstButtonSelected(true)} />
+        <SignIn onPress={() => setIsFirstButtonSelected(true)} navigation={navigation} />
       )}
     </SafeAreaView>
   );

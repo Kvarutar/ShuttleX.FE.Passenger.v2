@@ -5,9 +5,11 @@ import { Button, PhoneInput, Text, useTheme } from 'shuttlex-integration';
 
 import { SignProps } from './props';
 
-const SignIn = ({ onPress }: SignProps): JSX.Element => {
+const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
   const { colors } = useTheme();
   const { t } = useTranslation();
+
+  const navigationToSignInPhoneCodeScreen = () => navigation.navigate('SignInPhoneCode');
 
   const computedStyles = StyleSheet.create({
     signUpLabel: {
@@ -23,7 +25,7 @@ const SignIn = ({ onPress }: SignProps): JSX.Element => {
       </View>
 
       <View style={styles.bottomButtonsContainer}>
-        <Button text={t('auth_Auth_SignIn_nextButton')} />
+        <Button text={t('auth_Auth_SignIn_nextButton')} onPress={navigationToSignInPhoneCodeScreen} />
         <Pressable style={styles.dontHaveAccountContainer} onPress={onPress} hitSlop={20}>
           <Text style={styles.dontHaveAccountText}>
             {t('auth_Auth_SignIn_dontHaveAccount')}{' '}

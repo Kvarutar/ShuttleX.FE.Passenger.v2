@@ -5,9 +5,11 @@ import { Button, DatePicker, PhoneInput, Text, TextInput, useTheme } from 'shutt
 
 import { SignProps } from './props';
 
-const SignUp = ({ onPress }: SignProps): JSX.Element => {
+const SignUp = ({ onPress, navigation }: SignProps): JSX.Element => {
   const { colors } = useTheme();
   const { t } = useTranslation();
+
+  const navigationToSignUpPhoneCodeScreen = () => navigation.navigate('SignUpPhoneCode');
 
   const computedStyles = StyleSheet.create({
     signInLabel: {
@@ -26,7 +28,7 @@ const SignUp = ({ onPress }: SignProps): JSX.Element => {
       </View>
 
       <View style={styles.buttonsContainer}>
-        <Button text={t('auth_Auth_SignUp_createAccountButton')} />
+        <Button text={t('auth_Auth_SignUp_createAccountButton')} onPress={navigationToSignUpPhoneCodeScreen} />
         <Pressable style={styles.alreadyHaveAccountContainer} onPress={onPress} hitSlop={20}>
           <Text style={styles.alreadyHaveAccountText}>
             {t('auth_Auth_SignUp_haveAccount')}{' '}
