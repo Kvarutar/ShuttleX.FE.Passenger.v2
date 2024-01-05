@@ -26,15 +26,15 @@ const SignInEmailCodeScreen = ({ navigation }: SignInEmailCodeScreenProps): JSX.
         <RoundButton onPress={goBackToScreen}>
           <ShortArrowIcon />
         </RoundButton>
-        <Text style={[styles.headerTitle]}>{t('auth_SignInPhoneCode_headerTitle')}</Text>
+        <Text style={[styles.headerTitle]}>{t('auth_SignInEmailCode_headerTitle')}</Text>
         <View style={styles.headerDummy} />
       </View>
 
-      <Text style={[styles.codeText]}>{t('auth_SignInPhoneCode_prompt')}</Text>
+      <Text style={[styles.codeText]}>{t('auth_SignInEmailCode_prompt')}</Text>
 
       <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
 
-      <Button text={t('auth_SignInPhoneCode_button')} />
+      <Button text={t('auth_SignInEmailCode_button')} />
     </SafeAreaView>
   );
 };

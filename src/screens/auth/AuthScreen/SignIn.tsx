@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Button, PhoneInput, Text, useTheme } from 'shuttlex-integration';
+import { Button, PhoneInput, Text, TextInput, useTheme } from 'shuttlex-integration';
 
-import { SignProps } from './props';
+import { SignInPhoneAndEmailStateProps, SignProps } from './props';
 
 const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
-  const navigationToSignInPhoneCodeScreen = () => navigation.navigate('SignInPhoneCode');
+  const [isPhoneNumberSelected, setIsPhoneNumberSelected] = useState(true);
+
+  const navigationToSignInPhoneCodeScreen = () =>
+    isPhoneNumberSelected ? navigation.navigate('SignInPhoneCode') : navigation.navigate('SignInEmailCode');
 
   const computedStyles = StyleSheet.create({
     signUpLabel: {
+      color: colors.primaryColor,
+    },
+    dividerInputsLabel: {
       color: colors.primaryColor,
     },
   });
@@ -21,7 +27,11 @@ const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
     <>
       <View style={styles.phoneNumberContainer}>
         <Text style={styles.title}>{t('auth_Auth_SignIn_title')}</Text>
-        <PhoneInput />
+        {isPhoneNumberSelected ? (
+          <SignInPhoneNumber onLabelPress={() => setIsPhoneNumberSelected(false)} />
+        ) : (
+          <SignInEmail onLabelPress={() => setIsPhoneNumberSelected(true)} />
+        )}
       </View>
 
       <View style={styles.bottomButtonsContainer}>
@@ -33,6 +43,50 @@ const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
           </Text>
         </Pressable>
       </View>
+    </>
+  );
+};
+
+const SignInPhoneNumber = ({ onLabelPress }: SignInPhoneAndEmailStateProps) => {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+
+  const computedStyles = StyleSheet.create({
+    dividerInputsLabel: {
+      color: colors.primaryColor,
+    },
+  });
+
+  return (
+    <>
+      <PhoneInput />
+      <Pressable onPress={onLabelPress} hitSlop={20}>
+        <Text style={[styles.dividerInputsLabel, computedStyles.dividerInputsLabel]}>
+          {t('auth_Auth_SignIn_signViaEmail')}
+        </Text>
+      </Pressable>
+    </>
+  );
+};
+
+const SignInEmail = ({ onLabelPress }: SignInPhoneAndEmailStateProps) => {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+
+  const computedStyles = StyleSheet.create({
+    dividerInputsLabel: {
+      color: colors.primaryColor,
+    },
+  });
+
+  return (
+    <>
+      <TextInput placeholder={t('auth_Auth_SignIn_email')} />
+      <Pressable onPress={onLabelPress} hitSlop={20}>
+        <Text style={[styles.dividerInputsLabel, computedStyles.dividerInputsLabel]}>
+          {t('auth_Auth_SignIn_signViaPhoneNumber')}
+        </Text>
+      </Pressable>
     </>
   );
 };
@@ -58,6 +112,10 @@ const styles = StyleSheet.create({
   },
   signUpLabel: {
     fontFamily: 'Inter Medium',
+  },
+  dividerInputsLabel: {
+    fontFamily: 'Inter SemiBold',
+    alignSelf: 'center',
   },
 });
 

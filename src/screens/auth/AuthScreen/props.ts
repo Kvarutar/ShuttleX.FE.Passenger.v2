@@ -8,3 +8,7 @@ export type SignProps = {
   onPress: () => void;
   navigation: NativeStackNavigationProp<RootStackParamList, 'Auth', undefined>;
 };
+
+export type SignInPhoneAndEmailStateProps = {
+  onLabelPress: () => void;
+};

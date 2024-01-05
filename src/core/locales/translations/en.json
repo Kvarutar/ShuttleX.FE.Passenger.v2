@@ -5,6 +5,9 @@
   "auth_Auth_SignIn_nextButton": "Next",
   "auth_Auth_SignIn_title": "Enter your phone number\nto recieve code",
   "auth_Auth_SignIn_dontHaveAccount": "Don’t have an account?",
+  "auth_Auth_SignIn_signViaEmail": "or sign in via email",
+  "auth_Auth_SignIn_signViaPhoneNumber": "or login via phone number",
+  "auth_Auth_SignIn_email": "Email",
   "auth_Auth_SignUp_signInButton": "Sign In",
   "auth_Auth_SignUp_haveAccount": "Already have an account?",
   "auth_Auth_SignUp_nameInputPlaceholder": "Name",
@@ -22,5 +25,7 @@
   "auth_SignInPhoneCode_prompt": "Enter the four-digit code\nyou received in message",
   "auth_SignInPhoneCode_headerTitle": "Sign In",
   "auth_SignInPhoneCode_button": "Sign In",
-  "auth_SignInPhoneEmail_prompt": "Check your email inbox and enter the\ncode or sign in through the link"
+  "auth_SignInEmailCode_prompt": "Check your email inbox and enter the\ncode or sign in through the link",
+  "auth_SignInEmailCode_button": "Sign In",
+  "auth_SignInEmailCode_headerTitle": "Sign In"
 }
