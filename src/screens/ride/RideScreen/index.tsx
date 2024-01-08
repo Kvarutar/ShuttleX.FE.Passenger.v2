@@ -45,12 +45,10 @@ const RideScreen = ({}: RideScreenProps): JSX.Element => {
           buttonStyle={[startBottomWindowStyles.button, startBottomWindowComputedStyles.button]}
           shadow={ButtonShadows.Strong}
         >
-          <Text style={startBottomWindowComputedStyles.buttonText}>{t('ride_Ride_startBottomWindow_buttonText')}</Text>
+          <Text style={startBottomWindowComputedStyles.buttonText}>{t('ride_Ride_startBottomWindow_button')}</Text>
           <Button mode={ButtonModes.Mode4} buttonStyle={startBottomWindowStyles.timeButton}>
             <ClockIcon color={colors.backgroundTertiaryColor} />
-            <Text style={startBottomWindowStyles.timeButtonText}>
-              {t('ride_Ride_startBottomWindow_timeButtonText')}
-            </Text>
+            <Text style={startBottomWindowStyles.timeButtonText}>{t('ride_Ride_startBottomWindow_timeButton')}</Text>
             <ShortArrowIcon style={startBottomWindowStyles.timeButtonArrow} />
           </Button>
         </Button>
