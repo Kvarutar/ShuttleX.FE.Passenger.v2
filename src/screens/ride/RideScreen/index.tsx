@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import {
   BottomWindow,
   Button,
@@ -16,11 +17,15 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { twoHighestPriorityAlertsSelector } from '../../../core/ride/redux/alerts/selectors';
+import AlertsInitializer from '../../../shared/AlertsInitializer';
 import { RideScreenProps } from './props';
 
 const RideScreen = ({}: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();
   const { t } = useTranslation();
+
+  const alerts = useSelector(twoHighestPriorityAlertsSelector);
 
   const startBottomWindowComputedStyles = StyleSheet.create({
     button: { backgroundColor: colors.backgroundPrimaryColor },
@@ -40,7 +45,17 @@ const RideScreen = ({}: RideScreenProps): JSX.Element => {
           <NotificationIcon />
         </RoundButton>
       </View>
-      <BottomWindow>
+      <BottomWindow
+        alerts={alerts.map(alertData => (
+          <AlertsInitializer
+            key={alertData.id}
+            id={alertData.id}
+            priority={alertData.priority}
+            type={alertData.type}
+            options={'options' in alertData ? alertData.options : undefined}
+          />
+        ))}
+      >
         <Button
           buttonStyle={[startBottomWindowStyles.button, startBottomWindowComputedStyles.button]}
           shadow={ButtonShadows.Strong}
