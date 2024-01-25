@@ -24,7 +24,7 @@ const SignUp = ({ onPress, navigation }: SignProps): JSX.Element => {
         <TextInput placeholder={t('auth_Auth_SignUp_lastNameInputPlaceholder')} />
         <DatePicker getDate={() => {}} />
         <TextInput placeholder="Email" />
-        <PhoneInput />
+        <PhoneInput getPhoneNumber={() => {}} />
       </View>
 
       <View style={styles.buttonsContainer}>

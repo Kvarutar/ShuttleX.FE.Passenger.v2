@@ -59,7 +59,7 @@ const SignInPhoneNumber = ({ onLabelPress }: SignInPhoneAndEmailStateProps) => {
 
   return (
     <>
-      <PhoneInput />
+      <PhoneInput getPhoneNumber={() => {}} />
       <Pressable onPress={onLabelPress} hitSlop={20}>
         <Text style={[styles.dividerInputsLabel, computedStyles.dividerInputsLabel]}>
           {t('auth_Auth_SignIn_signViaEmail')}
