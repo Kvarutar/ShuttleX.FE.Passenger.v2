@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   BottomWindow,
@@ -17,6 +17,7 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { useGeolocationStartWatch } from '../../../core/ride/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../core/ride/redux/alerts/selectors';
 import AlertsInitializer from '../../../shared/AlertsInitializer';
 import { RideScreenProps } from './props';
@@ -27,66 +28,73 @@ const RideScreen = ({}: RideScreenProps): JSX.Element => {
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
 
+  useGeolocationStartWatch();
+
+  const computedStyles = StyleSheet.create({
+    topButtonsContainer: {
+      paddingTop: Platform.OS === 'android' ? sizes.paddingVertical : 0,
+    },
+  });
+
   const startBottomWindowComputedStyles = StyleSheet.create({
     button: { backgroundColor: colors.backgroundPrimaryColor },
     buttonText: { color: colors.textSecondaryColor },
   });
 
   return (
-    <View style={styles.wrapper}>
+    <>
       <View style={styles.map}>
         <Text>Map</Text>
       </View>
-      <View style={styles.topButtonsContainer}>
-        <RoundButton>
-          <MenuIcon />
-        </RoundButton>
-        <RoundButton>
-          <NotificationIcon />
-        </RoundButton>
-      </View>
-      <BottomWindow
-        alerts={alerts.map(alertData => (
-          <AlertsInitializer
-            key={alertData.id}
-            id={alertData.id}
-            priority={alertData.priority}
-            type={alertData.type}
-            options={'options' in alertData ? alertData.options : undefined}
-          />
-        ))}
-      >
-        <Button
-          buttonStyle={[startBottomWindowStyles.button, startBottomWindowComputedStyles.button]}
-          shadow={ButtonShadows.Strong}
+      <SafeAreaView style={styles.wrapper}>
+        <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>
+          <RoundButton>
+            <MenuIcon />
+          </RoundButton>
+          <RoundButton>
+            <NotificationIcon />
+          </RoundButton>
+        </View>
+        <BottomWindow
+          alerts={alerts.map(alertData => (
+            <AlertsInitializer
+              key={alertData.id}
+              id={alertData.id}
+              priority={alertData.priority}
+              type={alertData.type}
+              options={'options' in alertData ? alertData.options : undefined}
+            />
+          ))}
         >
-          <Text style={startBottomWindowComputedStyles.buttonText}>{t('ride_Ride_startBottomWindow_button')}</Text>
-          <Button mode={ButtonModes.Mode4} buttonStyle={startBottomWindowStyles.timeButton}>
-            <ClockIcon color={colors.backgroundTertiaryColor} />
-            <Text style={startBottomWindowStyles.timeButtonText}>{t('ride_Ride_startBottomWindow_timeButton')}</Text>
-            <ShortArrowIcon style={startBottomWindowStyles.timeButtonArrow} />
+          <Button
+            buttonStyle={[startBottomWindowStyles.button, startBottomWindowComputedStyles.button]}
+            shadow={ButtonShadows.Strong}
+          >
+            <Text style={startBottomWindowComputedStyles.buttonText}>{t('ride_Ride_startBottomWindow_button')}</Text>
+            <Button mode={ButtonModes.Mode4} buttonStyle={startBottomWindowStyles.timeButton}>
+              <ClockIcon color={colors.backgroundTertiaryColor} />
+              <Text style={startBottomWindowStyles.timeButtonText}>{t('ride_Ride_startBottomWindow_timeButton')}</Text>
+              <ShortArrowIcon style={startBottomWindowStyles.timeButtonArrow} />
+            </Button>
           </Button>
-        </Button>
-      </BottomWindow>
-    </View>
+        </BottomWindow>
+      </SafeAreaView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-  },
   map: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'yellow',
   },
+  wrapper: {
+    flex: 1,
+  },
   topButtonsContainer: {
-    position: 'absolute',
-    left: sizes.paddingHorizontal,
-    right: sizes.paddingHorizontal,
-    top: sizes.paddingVertical,
+    paddingHorizontal: sizes.paddingHorizontal,
     justifyContent: 'space-between',
     flexDirection: 'row',
   },

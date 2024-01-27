@@ -272,7 +272,7 @@ npm start
 
 ### Congratulations!
 
-> **Note**: Additional information about the installation can be found in the official documentation [Reacte Native](https://reactnative.dev/docs/environment-setup?os=macos&platform=ios).
+> **Note**: Additional information about the installation can be found in the official documentation [React Native](https://reactnative.dev/docs/environment-setup?os=macos&platform=ios)
 
 ## License
 
