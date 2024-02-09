@@ -5,4 +5,5 @@ export type RootStackParamList = {
   SignUpPhoneCode: undefined;
   SignInPhoneCode: undefined;
   SignInEmailCode: undefined;
+  PaymentMethodSelection: undefined;
 };

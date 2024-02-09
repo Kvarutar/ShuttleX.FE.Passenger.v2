@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -20,13 +20,16 @@ import {
 import { useGeolocationStartWatch } from '../../../core/ride/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../core/ride/redux/alerts/selectors';
 import AlertsInitializer from '../../../shared/AlertsInitializer';
+import PaymentPopup from './PaymentPopup';
 import { RideScreenProps } from './props';
 
-const RideScreen = ({}: RideScreenProps): JSX.Element => {
+const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
+
+  const [isPaymentPopupVisible, setIsPaymentPopupVisible] = useState(false);
 
   useGeolocationStartWatch();
 
@@ -48,7 +51,7 @@ const RideScreen = ({}: RideScreenProps): JSX.Element => {
       </View>
       <SafeAreaView style={styles.wrapper}>
         <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>
-          <RoundButton>
+          <RoundButton onPress={() => setIsPaymentPopupVisible(true)}>
             <MenuIcon />
           </RoundButton>
           <RoundButton>
@@ -78,6 +81,9 @@ const RideScreen = ({}: RideScreenProps): JSX.Element => {
             </Button>
           </Button>
         </BottomWindow>
+        {isPaymentPopupVisible && (
+          <PaymentPopup navigation={navigation} onBackButtonPress={() => setIsPaymentPopupVisible(false)} />
+        )}
       </SafeAreaView>
     </>
   );

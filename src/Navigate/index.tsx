@@ -7,6 +7,7 @@ import SignInEmailCodeScreen from '../screens/auth/SignInEmailCodeScreen';
 import SignInPhoneCodeScreen from '../screens/auth/SignInPhoneCodeScreen';
 import SignUpPhoneCodeScreen from '../screens/auth/SignUpPhoneCodeScreen';
 import SplashScreen from '../screens/auth/SplashScreen';
+import PaymentMethodSelectionScreen from '../screens/ride/PaymentMethodSelectionScreen';
 import RideScreen from '../screens/ride/RideScreen';
 import { RootStackParamList } from './props';
 
@@ -26,6 +27,7 @@ const Navigate = (): JSX.Element => (
       <Stack.Screen name="SignUpPhoneCode" component={SignUpPhoneCodeScreen} />
       <Stack.Screen name="SignInPhoneCode" component={SignInPhoneCodeScreen} />
       <Stack.Screen name="SignInEmailCode" component={SignInEmailCodeScreen} />
+      <Stack.Screen name="PaymentMethodSelection" component={PaymentMethodSelectionScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );
