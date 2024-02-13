@@ -1,13 +1,11 @@
 import { useEffect } from 'react';
-import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation from 'react-native-geolocation-service';
-import { checkLocationAccuracy } from 'react-native-permissions';
 
 import { useAppDispatch } from '../redux/hooks';
-import { checkGeolocationPermission, requestGeolocationPermission } from '../utils/permissions';
+import { checkGeolocationPermissionAndAccuracy, requestGeolocationPermission } from '../utils/permissions';
 import {
-  setGeolocationAccuracyOnlyIOS,
+  setGeolocationAccuracy,
   setGeolocationCoordinates,
   setGeolocationError,
   setGeolocationIsLocationEnabled,
@@ -15,45 +13,62 @@ import {
 } from './redux/geolocation';
 
 const geolocationConsts = {
-  checkInterval: 6000,
-  updatePositionInterval: 500,
+  checkInterval: 5000,
 };
 
 export const useGeolocationStartWatch = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    (async () => {
-      const isPermissonGranted = await requestGeolocationPermission();
-      if (isPermissonGranted) {
-        dispatch(setGeolocationIsPermissionGranted(true));
+    let watchId: number | null = null;
 
-        setInterval(async () => {
-          const [isLocationEnabled, isPermissonStillGranted] = await Promise.all([
-            DeviceInfo.isLocationEnabled(),
-            checkGeolocationPermission(),
-          ]);
-
-          dispatch(setGeolocationIsLocationEnabled(isLocationEnabled));
-
-          if (!isPermissonStillGranted) {
-            dispatch(setGeolocationIsPermissionGranted(false));
-          }
-
-          if (Platform.OS === 'ios') {
-            const accuracy = await checkLocationAccuracy();
-            dispatch(setGeolocationAccuracyOnlyIOS(accuracy));
-          }
-        }, geolocationConsts.checkInterval);
-
-        Geolocation.watchPosition(
-          position => dispatch(setGeolocationCoordinates(position.coords)),
-          error => dispatch(setGeolocationError(error)),
-          { enableHighAccuracy: true, interval: geolocationConsts.updatePositionInterval },
-        );
-      } else {
-        dispatch(setGeolocationIsPermissionGranted(false));
+    const clearWatch = () => {
+      if (watchId !== null) {
+        Geolocation.clearWatch(watchId);
+        watchId = null;
       }
+    };
+
+    const startWatch = async () => {
+      const isLocationEnabled = await DeviceInfo.isLocationEnabled();
+      dispatch(setGeolocationIsLocationEnabled(isLocationEnabled));
+
+      let permissionAndAccuracy: Awaited<ReturnType<typeof checkGeolocationPermissionAndAccuracy>> | null = null;
+      if (isLocationEnabled) {
+        permissionAndAccuracy = await checkGeolocationPermissionAndAccuracy();
+        dispatch(setGeolocationIsPermissionGranted(permissionAndAccuracy.isGranted));
+        dispatch(setGeolocationAccuracy(permissionAndAccuracy.accuracy));
+      }
+
+      if (
+        isLocationEnabled &&
+        permissionAndAccuracy &&
+        permissionAndAccuracy.isGranted &&
+        permissionAndAccuracy.accuracy === 'full'
+      ) {
+        if (watchId === null) {
+          watchId = Geolocation.watchPosition(
+            position => dispatch(setGeolocationCoordinates(position.coords)),
+            error => dispatch(setGeolocationError(error)),
+            { accuracy: { android: 'high', ios: 'best' }, distanceFilter: 2 },
+          );
+        }
+      } else {
+        clearWatch();
+      }
+    };
+
+    (async () => {
+      await requestGeolocationPermission();
+      await startWatch();
+
+      setInterval(async () => {
+        startWatch();
+      }, geolocationConsts.checkInterval);
     })();
+
+    return () => {
+      clearWatch();
+    };
   }, [dispatch]);
 };

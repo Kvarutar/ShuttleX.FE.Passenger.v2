@@ -90,7 +90,7 @@ The default location for this folder is:
 
 ### Step 4: Prepare the Android device
 
-Go to Android Studio and open android folder in our Reacte Native project.
+Go to Android Studio and open android folder in our React Native project.
 
 ![Android](readme/readme-android-folder.png)
 
@@ -137,7 +137,7 @@ Press the **a** key to run app on Android.
 
 ### Congratulations!
 
-> **Note**: Additional information about the installation can be found in the official documentation [Reacte Native](https://reactnative.dev/docs/environment-setup?os=windows&platform=android)
+> **Note**: Additional information about the installation can be found in the official documentation [React Native](https://reactnative.dev/docs/environment-setup?os=windows&platform=android)
 
 ## Run iOS project
 

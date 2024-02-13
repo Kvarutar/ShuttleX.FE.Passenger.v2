@@ -8,9 +8,6 @@ export type GeolocationState = {
   };
   isPermissionGranted: boolean;
   isLocationEnabled: boolean;
-  accuracyOnlyIOS: LocationAccuracy | null;
-  error?: {
-    code: Geolocation.PositionError;
-    message: string;
-  };
+  accuracy: LocationAccuracy;
+  error?: Geolocation.GeoError;
 };
