@@ -23,6 +23,7 @@
 		C831B16BA0424505A965D261 /* Inter Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DDCC4FB4E1F24C2CA91EB3AA /* Inter Bold.ttf */; };
 		D76677AAD4FC4DEDB3D12152 /* Inter Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A585410D2AE4D52B9396306 /* Inter Light.ttf */; };
 		FC66029DF7B648109AB26BC9 /* Inter ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 88064F6FD2EA4E728263976A /* Inter ExtraBold.ttf */; };
+		26ACF2213EB041D8AD358EA3 /* Dealerplate California.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 00B77111DE3D41E4822E2BA4 /* Dealerplate California.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		DDCC4FB4E1F24C2CA91EB3AA /* Inter Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter Bold.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter Bold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F1A220B29FDD4FDB890D36D2 /* Inter SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter SemiBold.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter SemiBold.ttf"; sourceTree = "<group>"; };
+		00B77111DE3D41E4822E2BA4 /* Dealerplate California.ttf */ = {isa = PBXFileReference; name = "Dealerplate California.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Dealerplate California.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 				4639270B582D43A8A29F6CEC /* Inter Regular.ttf */,
 				F1A220B29FDD4FDB890D36D2 /* Inter SemiBold.ttf */,
 				539E74757C7141D183435DAC /* Inter Thin.ttf */,
+				00B77111DE3D41E4822E2BA4 /* Dealerplate California.ttf */,
 			);
 			name = Resources;
 			path = "";
@@ -289,6 +292,7 @@
 				83D28487357C4532AE3F7F66 /* Inter Regular.ttf in Resources */,
 				004267C2E83E45478536ADCF /* Inter SemiBold.ttf in Resources */,
 				975587764311486B894FF50D /* Inter Thin.ttf in Resources */,
+				26ACF2213EB041D8AD358EA3 /* Dealerplate California.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

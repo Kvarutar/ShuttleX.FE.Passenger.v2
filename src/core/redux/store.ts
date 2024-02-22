@@ -2,11 +2,15 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import alertsReducer from '../ride/redux/alerts';
 import geolocationReducer from '../ride/redux/geolocation';
+import offerReducer from '../ride/redux/offer';
+import tripReducer from '../ride/redux/trip';
 import passengerReducer from './passenger';
 
 const rootReducer = combineReducers({
   alerts: alertsReducer,
   geolocation: geolocationReducer,
+  offer: offerReducer,
+  trip: tripReducer,
   passenger: passengerReducer,
 });
 

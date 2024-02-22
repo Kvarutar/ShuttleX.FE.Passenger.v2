@@ -2,6 +2,10 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "node_modules/shuttlex-integration/src/assets/fonts/Dealerplate California.ttf",
+      "sha1": "25546e237b7bde05eb8480055b41cab7e56b3a14"
+    },
+    {
       "path": "node_modules/shuttlex-integration/src/assets/fonts/Inter Black.ttf",
       "sha1": "f79fa58ace5f55e338c99bf71e7e0702841df6f2"
     },

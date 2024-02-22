@@ -1,8 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   ApplePayIcon,
@@ -21,11 +20,12 @@ import {
   VisaIcon,
 } from 'shuttlex-integration';
 
+import { useAppDispatch } from '../../../core/redux/hooks';
 import { selectedPaymentMethodSelector } from '../../../core/redux/passenger/selectors';
 import { PaymentMethodType } from '../../../core/redux/passenger/types';
+import { setOfferStatus } from '../../../core/ride/redux/offer';
+import { OfferStatus } from '../../../core/ride/redux/offer/types';
 import { RootStackParamList } from '../../../Navigate/props';
-
-const isAndroid = Platform.OS === 'android';
 
 export const paymentIcons: Record<PaymentMethodType['method'], ReactNode> = {
   paypal: <PayPalIcon />,
@@ -36,13 +36,12 @@ export const paymentIcons: Record<PaymentMethodType['method'], ReactNode> = {
 
 const PaymentPopup = ({
   navigation,
-  onBackButtonPress,
 }: {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>;
-  onBackButtonPress: () => void;
 }) => {
   const { colors } = useTheme();
   const selectedPaymentMethod = useSelector(selectedPaymentMethodSelector);
+  const dispatch = useAppDispatch();
 
   const { t } = useTranslation();
 
@@ -53,54 +52,52 @@ const PaymentPopup = ({
   });
 
   return (
-    <>
-      {isAndroid && (
-        <Animated.View style={[styles.androidBlur, StyleSheet.absoluteFill]} entering={FadeIn} exiting={FadeOut} />
-      )}
-      <Popup onBackButtonPress={onBackButtonPress} isWithBlur={!isAndroid}>
-        <Text style={styles.title}>{t('ride_Ride_PaymentPopup_title')}</Text>
-        <Pressable style={styles.paymentWrapper} onPress={() => navigation.navigate('PaymentMethodSelection')}>
-          <Bar style={styles.payment}>
-            {selectedPaymentMethod ? (
-              <View style={styles.paymentInfo}>
-                {paymentIcons[selectedPaymentMethod.method]}
-                <Text style={styles.paymentData}>{selectedPaymentMethod.details}</Text>
-              </View>
-            ) : (
-              <View style={styles.paymentInfo}>
-                <Text style={styles.paymentData}>{t('ride_Ride_PaymentPopup_noSelectedMethods')}</Text>
-              </View>
-            )}
-            <RoundButton roundButtonStyle={styles.roundButton}>
-              <ShortArrowSmallIcon />
-            </RoundButton>
-          </Bar>
-        </Pressable>
-        <Text style={styles.title}>{t('ride_Ride_PaymentPopup_tripInformationTitle')}</Text>
-        <View style={styles.tripInfo}>
-          <DropOffIcon />
-          <Text>2474 John F. Kennedy Blvd</Text>
-        </View>
-        <View style={styles.tripTotal}>
-          <View style={styles.tripTotalSmall}>
-            <View style={styles.tripTotalSmallItem}>
-              <ClockIcon />
-              <Text style={[styles.tripTotalSmallItemText, computedStyles.tripTotalSmallItemText]}>
-                {t('ride_Ride_PaymentPopup_minutes', { count: 20 })}
-              </Text>
+    <Popup onBackButtonPress={() => dispatch(setOfferStatus(OfferStatus.ChoosingTariff))}>
+      <Text style={styles.title}>{t('ride_Ride_PaymentPopup_title')}</Text>
+      <Pressable style={styles.paymentWrapper} onPress={() => navigation.navigate('PaymentMethodSelection')}>
+        <Bar style={styles.payment}>
+          {selectedPaymentMethod ? (
+            <View style={styles.paymentInfo}>
+              {paymentIcons[selectedPaymentMethod.method]}
+              <Text style={styles.paymentData}>{selectedPaymentMethod.details}</Text>
             </View>
-            <View style={styles.tripTotalSmallItem}>
-              <LocationIcon />
-              <Text style={[styles.tripTotalSmallItemText, computedStyles.tripTotalSmallItemText]}>
-                {t('ride_Ride_PaymentPopup_kilometers', { count: 5.3 })}
-              </Text>
+          ) : (
+            <View style={styles.paymentInfo}>
+              <Text style={styles.paymentData}>{t('ride_Ride_PaymentPopup_noSelectedMethods')}</Text>
             </View>
+          )}
+          <RoundButton roundButtonStyle={styles.roundButton}>
+            <ShortArrowSmallIcon />
+          </RoundButton>
+        </Bar>
+      </Pressable>
+      <Text style={styles.title}>{t('ride_Ride_PaymentPopup_tripInformationTitle')}</Text>
+      <View style={styles.tripInfo}>
+        <DropOffIcon />
+        <Text>2474 John F. Kennedy Blvd</Text>
+      </View>
+      <View style={styles.tripTotal}>
+        <View style={styles.tripTotalSmall}>
+          <View style={styles.tripTotalSmallItem}>
+            <ClockIcon />
+            <Text style={[styles.tripTotalSmallItemText, computedStyles.tripTotalSmallItemText]}>
+              {t('ride_Ride_PaymentPopup_minutes', { count: 20 })}
+            </Text>
           </View>
-          <Text style={styles.totalMoney}>$98.80</Text>
+          <View style={styles.tripTotalSmallItem}>
+            <LocationIcon />
+            <Text style={[styles.tripTotalSmallItemText, computedStyles.tripTotalSmallItemText]}>
+              {t('ride_Ride_PaymentPopup_kilometers', { count: 5.3 })}
+            </Text>
+          </View>
         </View>
-        <Button text={t('ride_Ride_PaymentPopup_button')} />
-      </Popup>
-    </>
+        <Text style={styles.totalMoney}>$98.80</Text>
+      </View>
+      <Button
+        text={t('ride_Ride_PaymentPopup_button')}
+        onPress={() => dispatch(setOfferStatus(OfferStatus.Confirmation))}
+      />
+    </Popup>
   );
 };
 

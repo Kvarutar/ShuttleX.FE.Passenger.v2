@@ -21,6 +21,10 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { useAppDispatch } from '../../../../core/redux/hooks';
+import { setOfferStatus, setTripTariff } from '../../../../core/ride/redux/offer';
+import { OfferStatus } from '../../../../core/ride/redux/offer/types';
+
 const windowWidth = Dimensions.get('window').width;
 
 const cardSizes = {
@@ -62,6 +66,8 @@ const CarouselItem = ({ item }: { item: TariffType }) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
+  const dispatch = useAppDispatch();
+
   const tariffsImages: Record<TariffType, ReactNode> = {
     BasicX: <BasicXImage style={styles.barImage} />,
     BasicXL: <BasicXLImage style={styles.barImage} />,
@@ -76,6 +82,11 @@ const CarouselItem = ({ item }: { item: TariffType }) => {
       color: colors.textSecondaryColor,
     },
   });
+
+  const onTariffSelect = () => {
+    dispatch(setTripTariff(item));
+    dispatch(setOfferStatus(OfferStatus.Confirming));
+  };
 
   return (
     <Animated.View style={styles.carouselItemWrapper}>
@@ -110,7 +121,7 @@ const CarouselItem = ({ item }: { item: TariffType }) => {
           </Animated.View>
         </View>
         <Animated.View>
-          <Button text={t('ride_Ride_TariffsCarousel_selectButton')} />
+          <Button text={t('ride_Ride_TariffsCarousel_selectButton')} onPress={onTariffSelect} />
         </Animated.View>
       </Bar>
     </Animated.View>

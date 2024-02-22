@@ -1,35 +1,47 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useState } from 'react';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
-  BottomWindow,
-  Button,
-  ButtonModes,
-  ButtonShadows,
-  ClockIcon,
   MenuIcon,
   NotificationIcon,
   RoundButton,
-  ShortArrowIcon,
   sizes,
+  StopWatch,
   Text,
+  Timer,
+  TimerModes,
   useTheme,
 } from 'shuttlex-integration';
 
+import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch } from '../../../core/ride/hooks';
-import { twoHighestPriorityAlertsSelector } from '../../../core/ride/redux/alerts/selectors';
-import AlertsInitializer from '../../../shared/AlertsInitializer';
-import PaymentPopup from './PaymentPopup';
+import { setTripStatus } from '../../../core/ride/redux/trip';
+import { ContractorInfoSelector, TripStatusSelector } from '../../../core/ride/redux/trip/selectors';
+import { TripStatus } from '../../../core/ride/redux/trip/types';
+import Offer from './Offer';
 import { RideScreenProps } from './props';
+import Trip from './Trip';
+
+const timerAnimationDuration = 300;
 
 const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();
-  const { t } = useTranslation();
 
-  const alerts = useSelector(twoHighestPriorityAlertsSelector);
+  const dispatch = useAppDispatch();
+  const [isPassangerLate, setIsPassangerLate] = useState<boolean>(false);
+  const tripStatus = useSelector(TripStatusSelector);
 
-  const [isPaymentPopupVisible, setIsPaymentPopupVisible] = useState(false);
+  const contractorInfo = useSelector(ContractorInfoSelector);
+
+  useEffect(() => {
+    if (contractorInfo) {
+      setTimeout(() => {
+        dispatch(setTripStatus(TripStatus.Arrived)); //for test
+      }, 6000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contractorInfo]);
 
   useGeolocationStartWatch();
 
@@ -39,10 +51,41 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
     },
   });
 
-  const startBottomWindowComputedStyles = StyleSheet.create({
-    button: { backgroundColor: colors.backgroundPrimaryColor },
-    buttonText: { color: colors.textSecondaryColor },
-  });
+  const headerTimer = () => {
+    if (tripStatus === TripStatus.Arrived) {
+      if (isPassangerLate) {
+        return (
+          <Animated.View
+            exiting={FadeOut.duration(timerAnimationDuration)}
+            entering={FadeIn.duration(timerAnimationDuration)}
+            style={styles.additionalHeaderButtons}
+          >
+            <Timer
+              initialDate={new Date()}
+              startColor={colors.secondaryGradientStartColor}
+              endColor={colors.secondaryGradientEndColor}
+              mode={TimerModes.Mini}
+            />
+          </Animated.View>
+        );
+      }
+      return (
+        <Animated.View
+          exiting={FadeOut.duration(timerAnimationDuration)}
+          entering={FadeIn.duration(timerAnimationDuration)}
+          style={styles.additionalHeaderButtons}
+        >
+          <Timer
+            initialDate={new Date(new Date().getTime() + 20000)} //20000 - for test
+            onAfterCountdownEnds={() => setIsPassangerLate(true)}
+            startColor={colors.primaryGradientStartColor}
+            endColor={colors.primaryColor}
+            mode={TimerModes.Mini}
+          />
+        </Animated.View>
+      );
+    }
+  };
 
   return (
     <>
@@ -51,39 +94,24 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
       </View>
       <SafeAreaView style={styles.wrapper}>
         <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>
-          <RoundButton onPress={() => setIsPaymentPopupVisible(true)}>
+          <RoundButton>
             <MenuIcon />
           </RoundButton>
-          <RoundButton>
-            <NotificationIcon />
-          </RoundButton>
-        </View>
-        <BottomWindow
-          alerts={alerts.map(alertData => (
-            <AlertsInitializer
-              key={alertData.id}
-              id={alertData.id}
-              priority={alertData.priority}
-              type={alertData.type}
-              options={'options' in alertData ? alertData.options : undefined}
+          {contractorInfo && tripStatus === TripStatus.Idle && (
+            <StopWatch
+              initialDate={new Date(new Date().getTime() + 121000)}
+              mask="{m}m"
+              onAfterCountdownEnds={() => {}}
             />
-          ))}
-        >
-          <Button
-            buttonStyle={[startBottomWindowStyles.button, startBottomWindowComputedStyles.button]}
-            shadow={ButtonShadows.Strong}
-          >
-            <Text style={startBottomWindowComputedStyles.buttonText}>{t('ride_Ride_startBottomWindow_button')}</Text>
-            <Button mode={ButtonModes.Mode4} buttonStyle={startBottomWindowStyles.timeButton}>
-              <ClockIcon color={colors.backgroundTertiaryColor} />
-              <Text style={startBottomWindowStyles.timeButtonText}>{t('ride_Ride_startBottomWindow_timeButton')}</Text>
-              <ShortArrowIcon style={startBottomWindowStyles.timeButtonArrow} />
-            </Button>
-          </Button>
-        </BottomWindow>
-        {isPaymentPopupVisible && (
-          <PaymentPopup navigation={navigation} onBackButtonPress={() => setIsPaymentPopupVisible(false)} />
-        )}
+          )}
+          <View style={styles.headerRightButtons}>
+            <RoundButton>
+              <NotificationIcon />
+            </RoundButton>
+            {headerTimer()}
+          </View>
+        </View>
+        {contractorInfo ? <Trip /> : <Offer navigation={navigation} />}
       </SafeAreaView>
     </>
   );
@@ -104,26 +132,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
-});
-
-const startBottomWindowStyles = StyleSheet.create({
-  button: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingRight: 12,
+  headerRightButtons: {
+    alignItems: 'center',
   },
-  timeButton: {
-    flexDirection: 'row',
-    gap: 16,
-    height: 40,
-    paddingHorizontal: 8,
-  },
-  timeButtonText: {
-    fontFamily: 'Inter Medium',
-  },
-  timeButtonArrow: {
-    transform: [{ rotate: '180deg' }],
+  additionalHeaderButtons: {
+    marginTop: 30,
   },
 });
 
