@@ -76,7 +76,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
           style={styles.additionalHeaderButtons}
         >
           <Timer
-            initialDate={new Date(new Date().getTime() + 20000)} //20000 - for test
+            initialDate={new Date(Date.now() + 20000)} //20000 - for test
             onAfterCountdownEnds={() => setIsPassangerLate(true)}
             startColor={colors.primaryGradientStartColor}
             endColor={colors.primaryColor}
@@ -98,11 +98,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
             <MenuIcon />
           </RoundButton>
           {contractorInfo && tripStatus === TripStatus.Idle && (
-            <StopWatch
-              initialDate={new Date(new Date().getTime() + 121000)}
-              mask="{m}m"
-              onAfterCountdownEnds={() => {}}
-            />
+            <StopWatch initialDate={new Date(Date.now() + 121000)} mask="{m}m" onAfterCountdownEnds={() => {}} />
           )}
           <View style={styles.headerRightButtons}>
             <RoundButton>

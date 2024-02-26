@@ -4,14 +4,11 @@ import { StyleSheet } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Button, ButtonModes, ButtonShadows, ClockIcon, ShortArrowIcon, Text, useTheme } from 'shuttlex-integration';
 
-import { useAppDispatch } from '../../../../core/redux/hooks';
-import { setOfferStatus } from '../../../../core/ride/redux/offer';
-import { OfferStatus } from '../../../../core/ride/redux/offer/types';
+import { AddressSelectMode } from './AddressSelect/props';
 
-const StartRide = () => {
+const StartRide = ({ openAddressSelect }: { openAddressSelect: (mode: AddressSelectMode) => void }) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
   const startBottomWindowComputedStyles = StyleSheet.create({
     button: { backgroundColor: colors.backgroundPrimaryColor },
@@ -23,12 +20,13 @@ const StartRide = () => {
       <Button
         buttonStyle={[startBottomWindowStyles.button, startBottomWindowComputedStyles.button]}
         shadow={ButtonShadows.Strong}
+        onPress={() => openAddressSelect('now')}
       >
         <Text style={startBottomWindowComputedStyles.buttonText}>{t('ride_Ride_startBottomWindow_button')}</Text>
         <Button
           mode={ButtonModes.Mode4}
           buttonStyle={startBottomWindowStyles.timeButton}
-          onPress={() => dispatch(setOfferStatus(OfferStatus.ChoosingTariff))}
+          onPress={() => openAddressSelect('delayed')}
         >
           <ClockIcon color={colors.backgroundTertiaryColor} />
           <Text style={startBottomWindowStyles.timeButtonText}>{t('ride_Ride_startBottomWindow_timeButton')}</Text>

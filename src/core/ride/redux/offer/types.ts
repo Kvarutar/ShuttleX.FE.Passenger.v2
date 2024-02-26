@@ -9,7 +9,13 @@ export enum OfferStatus {
   RideUnavaliable = 'rideUnavaliable',
 }
 
+export type Point = {
+  id: number;
+  address: string;
+};
+
 export type OfferState = {
   status: OfferStatus;
   tripTariff: TariffType | null;
+  points: Point[];
 };
