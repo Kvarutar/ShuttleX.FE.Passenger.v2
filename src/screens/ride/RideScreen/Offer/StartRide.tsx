@@ -18,14 +18,14 @@ const StartRide = ({ openAddressSelect }: { openAddressSelect: (mode: AddressSel
   return (
     <Animated.View entering={FadeIn} exiting={FadeOut}>
       <Button
-        buttonStyle={[startBottomWindowStyles.button, startBottomWindowComputedStyles.button]}
+        style={[startBottomWindowStyles.button, startBottomWindowComputedStyles.button]}
         shadow={ButtonShadows.Strong}
         onPress={() => openAddressSelect('now')}
       >
         <Text style={startBottomWindowComputedStyles.buttonText}>{t('ride_Ride_startBottomWindow_button')}</Text>
         <Button
           mode={ButtonModes.Mode4}
-          buttonStyle={startBottomWindowStyles.timeButton}
+          style={startBottomWindowStyles.timeButton}
           onPress={() => openAddressSelect('delayed')}
         >
           <ClockIcon color={colors.backgroundTertiaryColor} />

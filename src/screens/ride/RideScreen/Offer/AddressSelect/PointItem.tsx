@@ -76,7 +76,7 @@ const PointItem = ({ pointMode, content, onRemovePoint, currentPointId }: PointI
         </View>
       </View>
       {onRemovePoint && (
-        <Button mode={ButtonModes.Mode2} buttonStyle={styles.removePointButton} onPress={onRemovePoint}>
+        <Button mode={ButtonModes.Mode2} style={styles.removePointButton} onPress={onRemovePoint}>
           <MinusIcon />
         </Button>
       )}

@@ -22,7 +22,7 @@ const VisiblePart = () => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.infoWrapper}>
-        <MenuUserImage path="https://sun9-34.userapi.com/impg/ZGuJiFBAp-93En3yLK7LWZNPxTGmncHrrtVgbg/hd6uHaUv1zE.jpg?size=1200x752&quality=96&sign=e79799e4b75c839d0ddb1a2232fe5d60&type=album" />
+        <MenuUserImage url="https://sun9-34.userapi.com/impg/ZGuJiFBAp-93En3yLK7LWZNPxTGmncHrrtVgbg/hd6uHaUv1zE.jpg?size=1200x752&quality=96&sign=e79799e4b75c839d0ddb1a2232fe5d60&type=album" />
         <View style={styles.info}>
           <Text numberOfLines={1} style={styles.name}>
             {contractorInfo.name}
@@ -35,7 +35,7 @@ const VisiblePart = () => {
       <View style={[styles.plateNumber, computedStyles.plateNumber]}>
         <Text style={styles.number}>{contractorInfo.car.plateNumber}</Text>
       </View>
-      <Button mode={ButtonModes.Mode3} buttonStyle={styles.button}>
+      <Button mode={ButtonModes.Mode3} style={styles.button}>
         <PhoneIcon />
       </Button>
     </View>

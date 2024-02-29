@@ -113,9 +113,10 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
       onBackButtonPress={closeAddressSelect}
       additionalTopButtons={
         <GroupedButtons
+          width={270}
           style={styles.groupedButtons}
-          firstTextButton={t('ride_Ride_AddressSelect_firstButton')}
-          secondTextButton={t('ride_Ride_AddressSelect_secondButton')}
+          firstButtonText={t('ride_Ride_AddressSelect_firstButton')}
+          secondButtonText={t('ride_Ride_AddressSelect_secondButton')}
           isFirstButtonSelected={isFirstButtonSelected}
           setIsFirstButtonSelected={setIsFirstButtonSelected}
         />
@@ -153,7 +154,12 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
         {pointsContent}
       </ScrollViewWithCustomScroll>
       {points.length < 5 && (
-        <Button mode={ButtonModes.Mode4} style={styles.button} buttonStyle={styles.buttonStyle} onPress={onAddPoint}>
+        <Button
+          mode={ButtonModes.Mode4}
+          containerStyle={styles.buttonContainer}
+          style={styles.button}
+          onPress={onAddPoint}
+        >
           <PlusIcon />
         </Button>
       )}
@@ -180,10 +186,10 @@ const styles = StyleSheet.create({
   scrollBar: {
     top: 0,
   },
-  button: {
+  buttonContainer: {
     marginTop: 16,
   },
-  buttonStyle: {
+  button: {
     paddingVertical: 14,
   },
   barStyle: {

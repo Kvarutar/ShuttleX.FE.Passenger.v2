@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { Button, CodeInput, RoundButton, ShortArrowIcon, sizes, Text, useTheme } from 'shuttlex-integration';
 
 import { SignInEmailCodeScreenProps } from './props';
@@ -12,8 +12,11 @@ const SignInEmailCodeScreen = ({ navigation }: SignInEmailCodeScreenProps): JSX.
   const goBackToScreen = () => navigation.goBack();
 
   const computedStyles = StyleSheet.create({
-    container: {
+    wrapper: {
       backgroundColor: colors.backgroundPrimaryColor,
+    },
+    container: {
+      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
     },
     signUpLabel: {
       color: colors.primaryColor,
@@ -21,29 +24,33 @@ const SignInEmailCodeScreen = ({ navigation }: SignInEmailCodeScreenProps): JSX.
   });
 
   return (
-    <SafeAreaView style={[styles.container, computedStyles.container]}>
-      <View style={[styles.header]}>
-        <RoundButton onPress={goBackToScreen}>
-          <ShortArrowIcon />
-        </RoundButton>
-        <Text style={[styles.headerTitle]}>{t('auth_SignInEmailCode_headerTitle')}</Text>
-        <View style={styles.headerDummy} />
+    <SafeAreaView style={[styles.wrapper, computedStyles.wrapper]}>
+      <View style={[styles.container, computedStyles.container]}>
+        <View style={[styles.header]}>
+          <RoundButton onPress={goBackToScreen}>
+            <ShortArrowIcon />
+          </RoundButton>
+          <Text style={[styles.headerTitle]}>{t('auth_SignInEmailCode_headerTitle')}</Text>
+          <View style={styles.headerDummy} />
+        </View>
+
+        <Text style={[styles.codeText]}>{t('auth_SignInEmailCode_prompt')}</Text>
+
+        <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
+
+        <Button text={t('auth_SignInEmailCode_button')} />
       </View>
-
-      <Text style={[styles.codeText]}>{t('auth_SignInEmailCode_prompt')}</Text>
-
-      <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
-
-      <Button text={t('auth_SignInEmailCode_button')} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     paddingHorizontal: sizes.paddingHorizontal,
-    paddingVertical: sizes.paddingVertical,
   },
   header: {
     flexDirection: 'row',

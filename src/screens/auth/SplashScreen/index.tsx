@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 import { Button, GroupedBrandIcon, sizes, Text, useTheme } from 'shuttlex-integration';
 
 import { SplashScreenProps } from './props';
@@ -10,8 +10,11 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
   const { t } = useTranslation();
 
   const computedStyles = StyleSheet.create({
-    container: {
+    wrapper: {
       backgroundColor: colors.backgroundPrimaryColor,
+    },
+    container: {
+      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
     },
   });
 
@@ -20,23 +23,27 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
   const navigationToSignIn = () => navigation.replace('Auth', { state: 'SignIn' });
 
   return (
-    <SafeAreaView style={[styles.container, computedStyles.container]}>
-      <GroupedBrandIcon style={styles.groupedBrandIconContainer} />
-      <View style={styles.buttonsContainer}>
-        <Button text={t('auth_Splash_startButton')} onPress={navigationToSignUp} />
-        <Pressable style={styles.alreadyHaveAccountContainer} onPress={navigationToSignIn} hitSlop={20}>
-          <Text style={styles.alreadyHaveAccountText}>{t('auth_Splash_haveAccount')}</Text>
-        </Pressable>
+    <SafeAreaView style={[styles.wrapper, computedStyles.wrapper]}>
+      <View style={[styles.container, computedStyles.container]}>
+        <GroupedBrandIcon style={styles.groupedBrandIconContainer} />
+        <View style={styles.buttonsContainer}>
+          <Button text={t('auth_Splash_startButton')} onPress={navigationToSignUp} />
+          <Pressable style={styles.alreadyHaveAccountContainer} onPress={navigationToSignIn} hitSlop={20}>
+            <Text style={styles.alreadyHaveAccountText}>{t('auth_Splash_haveAccount')}</Text>
+          </Pressable>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     paddingHorizontal: sizes.paddingHorizontal,
-    paddingVertical: sizes.paddingVertical,
   },
   groupedBrandIconContainer: {
     flex: 1,
