@@ -19,10 +19,14 @@ const OfferCreationError = ({ error }: { error: string }) => {
         <Text>{error}</Text>
       </View>
       <View style={styles.buttonsWrapper}>
-        <Button style={styles.button} mode={ButtonModes.Mode2} text={t('ride_Ride_OfferCreationError_cancelButton')} />
         <Button
-          style={styles.button}
+          mode={ButtonModes.Mode2}
+          text={t('ride_Ride_OfferCreationError_cancelButton')}
+          containerStyle={styles.button}
+        />
+        <Button
           text={t('ride_Ride_OfferCreationError_tryAgainButton')}
+          containerStyle={styles.button}
           onPress={() => dispatch(setOfferStatus(OfferStatus.Confirmation))}
         />
       </View>

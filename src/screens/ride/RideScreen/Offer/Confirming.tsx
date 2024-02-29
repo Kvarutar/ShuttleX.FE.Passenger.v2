@@ -47,7 +47,7 @@ const Confirming = ({ onCancel }: { onCancel: () => void }) => {
         endColor={colors.secondaryGradientEndColor}
         mode={TimerModes.Mini}
       />
-      <Button mode={ButtonModes.Mode3} text="Cancel" style={styles.button} onPress={onCancel} />
+      <Button mode={ButtonModes.Mode3} text="Cancel" containerStyle={styles.button} onPress={onCancel} />
     </Animated.View>
   );
 };
