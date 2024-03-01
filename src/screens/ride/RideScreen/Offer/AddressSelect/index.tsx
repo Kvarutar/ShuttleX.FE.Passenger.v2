@@ -150,6 +150,7 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
         style={styles.scrollView}
         contentContainerStyle={styles.pointsWrapper}
         barStyle={styles.scrollBar}
+        wrapperStyle={styles.scrollViewWrapper}
       >
         {pointsContent}
       </ScrollViewWithCustomScroll>
@@ -172,7 +173,10 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   scrollView: {
-    maxHeight: windowHeight * 0.5,
+    maxHeight: windowHeight * 0.6,
+  },
+  scrollViewWrapper: {
+    flex: 0,
   },
   delayedTrip: {
     marginBottom: 10,
