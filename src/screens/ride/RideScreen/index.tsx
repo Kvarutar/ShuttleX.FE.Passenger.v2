@@ -101,7 +101,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
             <StopWatch initialDate={new Date(Date.now() + 121000)} mask="{m}m" onAfterCountdownEnds={() => {}} />
           )}
           <View style={styles.headerRightButtons}>
-            <RoundButton>
+            <RoundButton onPress={() => navigation.navigate('Rating')}>
               <NotificationIcon />
             </RoundButton>
             {headerTimer()}

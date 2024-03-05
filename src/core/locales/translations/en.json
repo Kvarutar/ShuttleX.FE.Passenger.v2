@@ -43,6 +43,7 @@
   "ride_Ride_AddressSelect_datePickerPlaceholder": "Date",
   "ride_Ride_AddressSelect_addressInputPlaceholder": "Enter address",
   "ride_Ride_AddressPopup_confirmButton": "Confirm",
+  "ride_Rating_Feedback_title": "Rate the driver {{name}} on this ride.",
   "auth_SignUpPhoneCode_prompt": "Enter the four-digit code\nyou received in message",
   "auth_SignUpPhoneCode_headerTitle": "Sign Up",
   "auth_SignUpPhoneCode_button": "Sign Up",

@@ -491,7 +491,7 @@ PODS:
     - React-jsi (= 0.72.6)
     - React-logger (= 0.72.6)
     - React-perflogger (= 0.72.6)
-  - RNDateTimePicker (7.6.1):
+  - RNDateTimePicker (7.6.2):
     - React-Core
   - RNDeviceInfo (10.12.0):
     - React-Core
@@ -500,7 +500,7 @@ PODS:
     - React-Core
   - RNLocalize (3.0.5):
     - React-Core
-  - RNPermissions (4.0.4):
+  - RNPermissions (4.1.0):
     - React-Core
   - RNReanimated (3.6.1):
     - RCT-Folly (= 2021.07.22.00)
@@ -766,11 +766,11 @@ SPEC CHECKSUMS:
   React-runtimescheduler: f23e337008403341177fc52ee4ca94e442c17ede
   React-utils: fa59c9a3375fb6f4aeb66714fd3f7f76b43a9f16
   ReactCommon: dd03c17275c200496f346af93a7b94c53f3093a4
-  RNDateTimePicker: 8fb39263b721223e095248acaf6f406d5b7f6713
+  RNDateTimePicker: fc2e4f2795877d45e84d85659bebe627eba5c931
   RNDeviceInfo: db5c64a060e66e5db3102d041ebe3ef307a85120
   RNGestureHandler: 32a01c29ecc9bb0b5bf7bc0a33547f61b4dc2741
   RNLocalize: a725877f311db45acc6bff2382b3283e744a3945
-  RNPermissions: 2b35ba57ac4f0b3cb0e6a0f184c8ef9f2e6a73c9
+  RNPermissions: d55085078b48c05cd2667cc1c65764b108eeebdc
   RNReanimated: fdbaa9c964bbab7fac50c90862b6cc5f041679b9
   RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396

@@ -7,4 +7,5 @@ export type RootStackParamList = {
   SignInEmailCode: undefined;
   PaymentMethodSelection: undefined;
   AddressSelection: { offerPointId: number };
+  Rating: undefined;
 };
