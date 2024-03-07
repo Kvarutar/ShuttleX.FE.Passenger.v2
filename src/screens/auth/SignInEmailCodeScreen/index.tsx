@@ -38,7 +38,7 @@ const SignInEmailCodeScreen = ({ navigation }: SignInEmailCodeScreenProps): JSX.
 
         <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
 
-        <Button text={t('auth_SignInEmailCode_button')} />
+        <Button text={t('auth_SignInEmailCode_button')} onPress={() => navigation.replace('Ride')} />
       </View>
     </SafeAreaView>
   );

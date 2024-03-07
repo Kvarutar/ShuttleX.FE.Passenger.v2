@@ -38,7 +38,7 @@ const SignUpPhoneCodeScreen = ({ navigation }: SignUpPhoneCodeScreenProps): JSX.
 
         <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
 
-        <Button text={t('auth_SignUpPhoneCode_button')} />
+        <Button text={t('auth_SignUpPhoneCode_button')} onPress={() => navigation.replace('Ride')} />
       </View>
     </SafeAreaView>
   );

@@ -9,6 +9,28 @@ export type SignProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Auth', undefined>;
 };
 
+export type SignInPhoneStateProps = {
+  onLabelPress: () => void;
+  changePhoneNumber: (phoneNumber: string | null) => void;
+  isCorrectPhoneNumber?: boolean;
+};
+
+export type SignInEmailStateProps = {
+  onLabelPress: () => void;
+  changeEmail: (phoneNumber: string) => void;
+  isCorrectEmail: boolean;
+};
+
 export type SignInPhoneAndEmailStateProps = {
   onLabelPress: () => void;
+};
+
+export type correctValidationUserDataFormProps = {
+  correctName: boolean;
+  correctLastName: boolean;
+  correctEmail: boolean;
+  correctDate: boolean;
+  correctPhoneNumber: boolean;
+  correctFamiliarWithTermsAndConditions: boolean;
+  correctAllowedProccessPersonalData: boolean;
 };

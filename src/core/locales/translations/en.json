@@ -3,6 +3,8 @@
   "auth_Auth_GroupedButton_secondButton": "Sign In",
   "auth_Auth_SignIn_signUpButton": "Sign Up",
   "auth_Auth_SignIn_nextButton": "Next",
+  "auth_Auth_SignIn_phoneTitle": "Enter the four-digit code\nyou received in sms message",
+  "auth_Auth_SignIn_emailTitle": "Check your email inbox and enter the\ncode or sign in through the link",
   "auth_Auth_SignIn_title": "Enter your phone number\nto recieve code",
   "auth_Auth_SignIn_dontHaveAccount": "Don’t have an account?",
   "auth_Auth_SignIn_signViaEmail": "or sign in via email",
@@ -52,5 +54,18 @@
   "auth_SignInPhoneCode_button": "Sign In",
   "auth_SignInEmailCode_prompt": "Check your email inbox and enter the\ncode or sign in through the link",
   "auth_SignInEmailCode_button": "Sign In",
-  "auth_SignInEmailCode_headerTitle": "Sign In"
+  "auth_SignInEmailCode_headerTitle": "Sign In",
+  "auth_Auth_SignUp_allowProcess": "I allow to process",
+  "auth_Auth_SignUp_phoneNumberError": "*Phone number is required",
+  "auth_Auth_SignUp_checkBoxError": "*Checkbox has to be selected",
+  "auth_Auth_SignUp_agree": "I agree with the",
+  "auth_Auth_SignUp_termsAndConditions": "Terms & Conditions....",
+  "auth_Auth_SignUp_incorrectName": "*Name is incorrect",
+  "auth_Auth_SignUp_incorrectLastName": "*LastName is incorrect",
+  "auth_Auth_SignUp_requiredDateOfBirth": "*Date of birth is required",
+  "auth_Auth_SignUp_incorrectEmail": "*Enter correct Email",
+  "auth_Auth_SignUp_email": "Email",
+  "auth_Auth_SignUp_personalData": "my personal data",
+  "auth_Auth_SignIn_phoneNumberError": "*Phone number is required",
+  "auth_Auth_SignIn_incorrectEmail": "*Enter correct Email"
 }
