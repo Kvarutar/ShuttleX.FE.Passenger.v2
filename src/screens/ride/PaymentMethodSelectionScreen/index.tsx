@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   Bar,
@@ -26,47 +26,35 @@ const PaymentMethodSelectionScreen = ({ navigation }: PaymentMethodSelectionScre
   const { t } = useTranslation();
   const allPaymentMethods = useSelector(allPaymentMethodsSelector);
 
-  const goBackToScreen = () => navigation.goBack();
-
   const computedStyles = StyleSheet.create({
     container: {
       backgroundColor: colors.backgroundPrimaryColor,
+      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
     },
   });
 
+  let paymentContent = <Text style={styles.emptyWallet}>{t('ride_PaymentMethodSelection_empty')}</Text>;
+
   if (allPaymentMethods) {
     const paymentMethodsRender = allPaymentMethods.map((el, index) => <PaymentItem key={index} method={el} />);
+    paymentContent = <View style={styles.paymentMethods}>{paymentMethodsRender}</View>;
+  }
 
-    return (
-      <SafeAreaView style={[styles.container, computedStyles.container]}>
+  return (
+    <SafeAreaView style={[styles.container, computedStyles.container]}>
+      <View style={styles.wrapper}>
         <View>
           <View style={styles.header}>
-            <RoundButton onPress={goBackToScreen}>
+            <RoundButton onPress={() => navigation.goBack()}>
               <ShortArrowIcon />
             </RoundButton>
             <Text style={styles.headerTitle}>{t('ride_PaymentMethodSelection_title')}</Text>
             <View style={styles.headerDummy} />
           </View>
-          <View style={styles.paymentMethods}>{paymentMethodsRender}</View>
         </View>
+        {paymentContent}
         <Button text={t('ride_PaymentMethodSelection_button')} />
-      </SafeAreaView>
-    );
-  }
-
-  return (
-    <SafeAreaView style={[styles.container, computedStyles.container]}>
-      <View>
-        <View style={styles.header}>
-          <RoundButton onPress={goBackToScreen}>
-            <ShortArrowIcon />
-          </RoundButton>
-          <Text style={styles.headerTitle}>{t('ride_PaymentMethodSelection_title')}</Text>
-          <View style={styles.headerDummy} />
-        </View>
       </View>
-      <Text style={styles.emptyWallet}>{t('ride_PaymentMethodSelection_empty')}</Text>
-      <Button text={t('ride_PaymentMethodSelection_button')} />
     </SafeAreaView>
   );
 };
@@ -105,8 +93,10 @@ const PaymentItem = ({ method }: { method: PaymentMethodType }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  wrapper: {
+    flex: 1,
     paddingHorizontal: sizes.paddingHorizontal,
-    paddingVertical: sizes.paddingVertical,
     justifyContent: 'space-between',
   },
   header: {

@@ -172,11 +172,11 @@ const styles = StyleSheet.create({
   groupedButtons: {
     alignSelf: 'flex-end',
   },
-  scrollView: {
-    maxHeight: windowHeight * 0.6,
-  },
   scrollViewWrapper: {
     flex: 0,
+  },
+  scrollView: {
+    maxHeight: windowHeight * 0.6,
   },
   delayedTrip: {
     marginBottom: 10,

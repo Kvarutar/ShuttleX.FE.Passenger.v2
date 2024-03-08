@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Bar, Blur, Button, CloseIcon, RoundButton, ShortArrowIcon, sizes } from 'shuttlex-integration';
 
 import { AddressPopupProps } from './props';
@@ -23,51 +24,55 @@ const AddressPopup = ({
 }: AddressPopupProps) => {
   const { t } = useTranslation();
 
+  const computedStyles = StyleSheet.create({
+    container: {
+      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
+    },
+  });
+
   return (
     <>
       <Blur />
       <Animated.View
         entering={FadeIn.duration(animationDuration.closeButtonDuration)}
         exiting={FadeOut.duration(animationDuration.closeButtonDuration)}
-        style={[styles.barWrapper, style]}
+        style={StyleSheet.absoluteFill}
       >
-        <View>
-          <View style={styles.barTopButtons}>
-            {onBackButtonPress && (
-              <RoundButton onPress={onBackButtonPress}>
-                <ShortArrowIcon />
-              </RoundButton>
-            )}
-            {onCloseButtonPress && (
-              <RoundButton style={styles.closeButton} onPress={onCloseButtonPress}>
-                <CloseIcon />
-              </RoundButton>
-            )}
-            {additionalTopButtons}
+        <SafeAreaView style={[styles.container, computedStyles.container, style]}>
+          <View>
+            <View style={styles.barTopButtons}>
+              {onBackButtonPress && (
+                <RoundButton onPress={onBackButtonPress}>
+                  <ShortArrowIcon />
+                </RoundButton>
+              )}
+              {onCloseButtonPress && (
+                <RoundButton style={styles.closeButton} onPress={onCloseButtonPress}>
+                  <CloseIcon />
+                </RoundButton>
+              )}
+              {additionalTopButtons}
+            </View>
+            <Bar style={barStyle}>{children}</Bar>
           </View>
-          <Bar style={barStyle}>{children}</Bar>
-        </View>
-        {showConfirmButton && onConfirm && (
-          <Animated.View
-            style={styles.buttonWrapper}
-            entering={FadeIn.duration(animationDuration.closeButtonDuration)}
-            exiting={FadeOut.duration(animationDuration.closeButtonDuration)}
-          >
-            <Button text={t('ride_Ride_AddressPopup_confirmButton')} onPress={onConfirm} />
-          </Animated.View>
-        )}
+          {showConfirmButton && onConfirm && (
+            <Animated.View
+              style={styles.buttonWrapper}
+              entering={FadeIn.duration(animationDuration.closeButtonDuration)}
+              exiting={FadeOut.duration(animationDuration.closeButtonDuration)}
+            >
+              <Button text={t('ride_Ride_AddressPopup_confirmButton')} onPress={onConfirm} />
+            </Animated.View>
+          )}
+        </SafeAreaView>
       </Animated.View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  barWrapper: {
-    position: 'absolute',
-    top: sizes.paddingVertical,
-    bottom: 0,
-    left: 0,
-    right: 0,
+  container: {
+    flex: 1,
     justifyContent: 'space-between',
   },
   barTopButtons: {
@@ -81,7 +86,6 @@ const styles = StyleSheet.create({
     marginRight: sizes.paddingHorizontal,
   },
   buttonWrapper: {
-    marginBottom: sizes.paddingVertical,
     paddingHorizontal: sizes.paddingHorizontal,
   },
 });

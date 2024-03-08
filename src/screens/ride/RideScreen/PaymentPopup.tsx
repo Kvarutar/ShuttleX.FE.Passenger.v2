@@ -102,9 +102,6 @@ const PaymentPopup = ({
 };
 
 const styles = StyleSheet.create({
-  androidBlur: {
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
   title: {
     fontSize: 18,
     fontFamily: 'Inter Medium',

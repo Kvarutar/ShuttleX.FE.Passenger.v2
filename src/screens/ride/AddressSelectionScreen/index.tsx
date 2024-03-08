@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 import {
   DropOffIcon,
   RoundButton,
@@ -39,6 +39,7 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
   const computedStyles = StyleSheet.create({
     container: {
       backgroundColor: colors.backgroundPrimaryColor,
+      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
     },
   });
 
@@ -131,7 +132,6 @@ const AddressItem = ({ address, onAddressSelect, details }: AddressItemProps) =>
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: sizes.paddingVertical,
     paddingBottom: sizes.paddingVertical,
   },
   inputContainer: {

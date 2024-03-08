@@ -94,7 +94,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
       </View>
       <SafeAreaView style={styles.wrapper}>
         <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>
-          <RoundButton>
+          <RoundButton onPress={() => navigation.navigate('Rating')}>
             <MenuIcon />
           </RoundButton>
           {contractorInfo && tripStatus === TripStatus.Idle && (
