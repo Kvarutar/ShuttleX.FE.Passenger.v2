@@ -1,9 +1,13 @@
+import { useNetInfo } from '@react-native-community/netinfo';
 import { useEffect } from 'react';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation from 'react-native-geolocation-service';
+import { v4 as uuidv4 } from 'uuid';
 
 import { useAppDispatch } from '../redux/hooks';
 import { checkGeolocationPermissionAndAccuracy, requestGeolocationPermission } from '../utils/permissions';
+import { addAlert, removeAlert } from './redux/alerts';
+import { AlertPriority } from './redux/alerts/types';
 import {
   setGeolocationAccuracy,
   setGeolocationCoordinates,
@@ -71,4 +75,19 @@ export const useGeolocationStartWatch = () => {
       clearWatch();
     };
   }, [dispatch]);
+};
+
+export const useNetworkConnectionStartWatch = () => {
+  const { isConnected } = useNetInfo();
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const id = uuidv4();
+    if (isConnected) {
+      dispatch(removeAlert({ id }));
+    } else {
+      dispatch(addAlert({ type: 'internet_disconnected', priority: AlertPriority.System, id }));
+    }
+  }, [dispatch, isConnected]);
 };

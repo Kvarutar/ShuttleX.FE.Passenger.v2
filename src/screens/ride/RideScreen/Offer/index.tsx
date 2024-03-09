@@ -10,7 +10,7 @@ import { clearOfferPoints } from '../../../../core/ride/redux/offer';
 import { OfferStatusSelector } from '../../../../core/ride/redux/offer/selectors';
 import { OfferStatus } from '../../../../core/ride/redux/offer/types';
 import { RootStackParamList } from '../../../../Navigate/props';
-import AlertsInitializer from '../../../../shared/AlertsInitializer';
+import AlertInitializer from '../../../../shared/AlertInitializer';
 import PaymentPopup from '../PaymentPopup';
 import AddressSelect from './AddressSelect';
 import { AddressSelectMode } from './AddressSelect/props';
@@ -60,7 +60,7 @@ const Offer = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
     <>
       <BottomWindow
         alerts={alerts.map(alertData => (
-          <AlertsInitializer
+          <AlertInitializer
             key={alertData.id}
             id={alertData.id}
             priority={alertData.priority}

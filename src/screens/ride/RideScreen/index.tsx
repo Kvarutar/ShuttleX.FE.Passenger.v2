@@ -15,7 +15,7 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { useGeolocationStartWatch } from '../../../core/ride/hooks';
+import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { setTripStatus } from '../../../core/ride/redux/trip';
 import { ContractorInfoSelector, TripStatusSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
@@ -44,6 +44,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   }, [contractorInfo]);
 
   useGeolocationStartWatch();
+  useNetworkConnectionStartWatch();
 
   const computedStyles = StyleSheet.create({
     topButtonsContainer: {

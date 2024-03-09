@@ -17,7 +17,7 @@ import {
   PlannedTripAlertOptions,
 } from '../core/ride/redux/alerts/types';
 
-const AlertsInitializer = ({ id, type, options }: Omit<AlertType, 'options'> & { options?: object }): JSX.Element => {
+const AlertInitializer = ({ id, type, options }: Omit<AlertType, 'options'> & { options?: object }): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const locale = getLocales()[0].languageTag;
@@ -27,11 +27,11 @@ const AlertsInitializer = ({ id, type, options }: Omit<AlertType, 'options'> & {
   switch (type) {
     case 'free_time_ends': {
       const typedOptions = options as FreeTimeAlertOptions;
-      return <FreeTimeAlert onClose={removeThisAlert} {...typedOptions} />;
+      return <FreeTimeAlert onClose={removeThisAlert} closeTimeout={10000} {...typedOptions} />;
     }
     case 'paid_time_starts': {
       const typedOptions = options as PaidTimeAlertOptions;
-      return <PaidTimeAlert onClose={removeThisAlert} {...typedOptions} />;
+      return <PaidTimeAlert onClose={removeThisAlert} closeTimeout={10000} {...typedOptions} />;
     }
     case 'planned_trip': {
       const typedOptions = options as PlannedTripAlertOptions;
@@ -45,12 +45,12 @@ const AlertsInitializer = ({ id, type, options }: Omit<AlertType, 'options'> & {
       );
     }
     case 'driver_arrived': {
-      return <DriverArrivedAlert onClose={removeThisAlert} />;
+      return <DriverArrivedAlert onClose={removeThisAlert} closeTimeout={10000} />;
     }
     case 'internet_disconnected': {
-      return <InternetDisconnectedAlert isSwipeable={false} />;
+      return <InternetDisconnectedAlert isClosable={false} />;
     }
   }
 };
 
-export default AlertsInitializer;
+export default AlertInitializer;

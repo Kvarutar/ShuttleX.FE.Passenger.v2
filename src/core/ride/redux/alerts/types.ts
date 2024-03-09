@@ -17,14 +17,15 @@ export type PlannedTripAlertOptions = Omit<PlannedTripAlertProps, 'date' | 'loca
   date: string;
 };
 
-export type AlertType = AlertData &
-  (
-    | { type: 'free_time_ends'; options: FreeTimeAlertOptions }
-    | { type: 'paid_time_starts'; options: PaidTimeAlertOptions }
-    | { type: 'planned_trip'; options: PlannedTripAlertOptions }
-    | { type: 'driver_arrived' }
-    | { type: 'internet_disconnected' }
-  );
+type AlertTypes =
+  | { type: 'free_time_ends'; options: FreeTimeAlertOptions }
+  | { type: 'paid_time_starts'; options: PaidTimeAlertOptions }
+  | { type: 'planned_trip'; options: PlannedTripAlertOptions }
+  | { type: 'driver_arrived' }
+  | { type: 'internet_disconnected' };
+
+export type AlertType = AlertData & AlertTypes;
+export type AlertTypeWithOptionalId = Omit<AlertData, 'id'> & { id?: AlertData['id'] } & AlertTypes;
 
 export type AlertsState = {
   list: AlertType[];
