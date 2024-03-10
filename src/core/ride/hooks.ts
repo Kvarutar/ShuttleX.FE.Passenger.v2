@@ -1,5 +1,5 @@
 import { useNetInfo } from '@react-native-community/netinfo';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation from 'react-native-geolocation-service';
 import { v4 as uuidv4 } from 'uuid';
@@ -82,12 +82,13 @@ export const useNetworkConnectionStartWatch = () => {
 
   const dispatch = useAppDispatch();
 
+  const alertId = useRef<string>(uuidv4());
+
   useEffect(() => {
-    const id = uuidv4();
     if (isConnected) {
-      dispatch(removeAlert({ id }));
+      dispatch(removeAlert({ id: alertId.current }));
     } else {
-      dispatch(addAlert({ type: 'internet_disconnected', priority: AlertPriority.System, id }));
+      dispatch(addAlert({ type: 'internet_disconnected', priority: AlertPriority.System, id: alertId.current }));
     }
   }, [dispatch, isConnected]);
 };
