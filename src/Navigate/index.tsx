@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
+import BootSplash from 'react-native-bootsplash';
 
 import AuthScreen from '../screens/auth/AuthScreen';
 import SignInEmailCodeScreen from '../screens/auth/SignInEmailCodeScreen';
@@ -16,7 +17,7 @@ import { RootStackParamList } from './props';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Navigate = (): JSX.Element => (
-  <NavigationContainer>
+  <NavigationContainer onReady={BootSplash.hide}>
     <Stack.Navigator
       initialRouteName="Splash"
       screenOptions={{

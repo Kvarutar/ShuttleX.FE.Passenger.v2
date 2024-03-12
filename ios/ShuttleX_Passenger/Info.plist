@@ -23,7 +23,7 @@
     <key>CFBundleVersion</key>
     <string>$(CURRENT_PROJECT_VERSION)</string>
     <key>LSRequiresIPhoneOS</key>
-    <true/>
+    <true />
     <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSExceptionDomains</key>
@@ -31,16 +31,16 @@
         <key>localhost</key>
         <dict>
           <key>NSExceptionAllowsInsecureHTTPLoads</key>
-          <true/>
+          <true />
         </dict>
       </dict>
     </dict>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string/>
+    <string></string>
     <key>NSLocationTemporaryUsageDescriptionDictionary</key>
-    <string/>
+    <string></string>
     <key>UILaunchStoryboardName</key>
-    <string>LaunchScreen</string>
+    <string>BootSplash.storyboard</string>
     <key>UIRequiredDeviceCapabilities</key>
     <array>
       <string>armv7</string>
@@ -52,7 +52,7 @@
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
     <key>UIViewControllerBasedStatusBarAppearance</key>
-    <false/>
+    <false />
     <key>UIAppFonts</key>
     <array>
       <string>Inter Black.ttf</string>
