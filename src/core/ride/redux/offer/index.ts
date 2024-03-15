@@ -36,10 +36,22 @@ const slice = createSlice({
     clearOfferPoints(state) {
       state.points = initialState.points;
     },
+    cleanOffer(state) {
+      state.points = initialState.points;
+      state.status = initialState.status;
+      state.tripTariff = initialState.tripTariff;
+    },
   },
 });
 
-export const { setOfferStatus, setTripTariff, addOfferPoint, removeOfferPoint, updateOfferPoint, clearOfferPoints } =
-  slice.actions;
+export const {
+  setOfferStatus,
+  setTripTariff,
+  addOfferPoint,
+  removeOfferPoint,
+  updateOfferPoint,
+  clearOfferPoints,
+  cleanOffer,
+} = slice.actions;
 
 export default slice.reducer;

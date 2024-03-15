@@ -8,6 +8,7 @@ import SignInEmailCodeScreen from '../screens/auth/SignInEmailCodeScreen';
 import SignInPhoneCodeScreen from '../screens/auth/SignInPhoneCodeScreen';
 import SignUpPhoneCodeScreen from '../screens/auth/SignUpPhoneCodeScreen';
 import SplashScreen from '../screens/auth/SplashScreen';
+import NotificationsScreen from '../screens/menu/NotificationsScreen';
 import AddressSelectionScreen from '../screens/ride/AddressSelectionScreen';
 import PaymentMethodSelectionScreen from '../screens/ride/PaymentMethodSelectionScreen';
 import RatingScreen from '../screens/ride/RatingScreen';
@@ -33,6 +34,7 @@ const Navigate = (): JSX.Element => (
       <Stack.Screen name="PaymentMethodSelection" component={PaymentMethodSelectionScreen} />
       <Stack.Screen name="AddressSelection" component={AddressSelectionScreen} />
       <Stack.Screen name="Rating" component={RatingScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );

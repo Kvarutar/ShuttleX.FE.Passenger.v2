@@ -22,7 +22,7 @@
   "auth_Splash_startButton": "Get started",
   "ride_Ride_startBottomWindow_button": "Where to go?",
   "ride_Ride_startBottomWindow_timeButton": "Now",
-  "ride_Ride_TariffsCarousel_passangerCapacity": "{{minNum}}-{{maxNum}} person",
+  "ride_Ride_TariffsCarousel_passengerCapacity": "{{minNum}}-{{maxNum}} person",
   "ride_Ride_TariffsCarousel_minutes": "{{count}} min",
   "ride_Ride_TariffsCarousel_carryOnBaggage": "Carry-on baggage",
   "ride_Ride_TariffsCarousel_selectButton": "Select",
@@ -39,6 +39,13 @@
   "ride_Ride_Offer_rideIsUnavaliable": "Ride is unavailable",
   "ride_Ride_OfferCreationError_cancelButton": "Cancel",
   "ride_Ride_OfferCreationError_tryAgainButton": "Try again",
+  "ride_Ride_Confirming_confirming": "Confirming{{dots}}",
+  "ride_Ride_Confirming_cancelButton": "Cancel",
+  "ride_Ride_Trip_tripType": "Trip type",
+  "ride_Ride_Trip_totalForRide": "Total for ride",
+  "ride_Ride_Trip_contactEmergency": "Contact 911",
+  "ride_Ride_Trip_reportIssue": "Report safety issue",
+  "ride_Ride_Trip_cancelRideButton": "Cancel your ride",
   "ride_Ride_AddressSelect_firstButton": "For now",
   "ride_Ride_AddressSelect_secondButton": "Delayed trip",
   "ride_Ride_AddressSelect_timePickerPlaceholder": "Time",
@@ -67,5 +74,6 @@
   "auth_Auth_SignUp_email": "Email",
   "auth_Auth_SignUp_personalData": "my personal data",
   "auth_Auth_SignIn_phoneNumberError": "*Phone number is required",
-  "auth_Auth_SignIn_incorrectEmail": "*Enter correct Email"
+  "auth_Auth_SignIn_incorrectEmail": "*Enter correct Email",
+  "menu_Notifications_headerTitle": "Notifications"
 }

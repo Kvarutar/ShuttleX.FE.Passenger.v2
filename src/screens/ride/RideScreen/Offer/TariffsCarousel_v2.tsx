@@ -101,7 +101,7 @@ const CarouselItem = ({ item }: { item: TariffType }) => {
             <Animated.View style={[styles.barInfoItem]}>
               <PassengerIcon2 />
               <Text style={[styles.barContentText, computedStyles.barContentText]}>
-                {t('ride_Ride_TariffsCarousel_passangerCapacity', { minNum: 1, maxNum: 3 })}
+                {t('ride_Ride_TariffsCarousel_passengerCapacity', { minNum: 1, maxNum: 3 })}
               </Text>
             </Animated.View>
             <View style={styles.barInfoItem}>

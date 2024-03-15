@@ -1,37 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
   MenuIcon,
   NotificationIcon,
+  NotificationType,
   RoundButton,
   sizes,
   StopWatch,
   Text,
-  Timer,
-  TimerModes,
   useTheme,
 } from 'shuttlex-integration';
 
+import { setNotificationList } from '../../../core/menu/redux/notifications';
+import { numberOfUnreadNotificationsSelector } from '../../../core/menu/redux/notifications/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { setTripStatus } from '../../../core/ride/redux/trip';
 import { ContractorInfoSelector, TripStatusSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Offer from './Offer';
+import PassengerTimer from './PassengerTimer';
 import { RideScreenProps } from './props';
 import Trip from './Trip';
 
-const timerAnimationDuration = 300;
-
 const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();
-
   const dispatch = useAppDispatch();
-  const [isPassangerLate, setIsPassangerLate] = useState<boolean>(false);
+  const [isPassengerLate, setIsPassengerLate] = useState<boolean>(false);
   const tripStatus = useSelector(TripStatusSelector);
-
+  const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
   const contractorInfo = useSelector(ContractorInfoSelector);
 
   useEffect(() => {
@@ -43,6 +41,65 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contractorInfo]);
 
+  useEffect(() => {
+    dispatch(
+      setNotificationList([
+        {
+          type: NotificationType.TripWasRated,
+          title: 'Jack Johnson',
+          description: 'rated the trip with you',
+          isRead: true,
+          time: '5m ago',
+          image: {
+            uri: 'https://sun9-34.userapi.com/impg/ZGuJiFBAp-93En3yLK7LWZNPxTGmncHrrtVgbg/hd6uHaUv1zE.jpg?size=1200x752&quality=96&sign=e79799e4b75c839d0ddb1a2232fe5d60&type=album',
+          },
+        },
+        {
+          type: NotificationType.RatingIncreased,
+          title: 'Rating increased',
+          description: 'Your rating was increased to 4.6',
+          isRead: false,
+          time: '5m ago',
+        },
+        {
+          type: NotificationType.PlannedTrip,
+          title: 'Booked time',
+          description: 'You have to make booked trip right now',
+          isRead: true,
+          time: '5m ago',
+        },
+        {
+          type: NotificationType.RatingIncreased,
+          title: 'Jack Johnson',
+          description: 'rated the trip with you',
+          isRead: true,
+          time: '5m ago',
+        },
+        {
+          type: NotificationType.RatingIncreased,
+          title: 'Jack Johnson',
+          description: 'rated the trip with you',
+          isRead: false,
+          time: '5m ago',
+        },
+        {
+          type: NotificationType.RatingIncreased,
+          title: 'Jack Johnson',
+          description: 'rated the trip with you',
+          isRead: true,
+          time: '5m ago',
+        },
+        {
+          type: NotificationType.RatingIncreased,
+          title: 'Jack Johnson',
+          description: 'rated the trip with you',
+          isRead: true,
+          time: '5m ago',
+        },
+      ]),
+    );
+  }, [dispatch]);
+
   useGeolocationStartWatch();
   useNetworkConnectionStartWatch();
 
@@ -50,43 +107,30 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
     topButtonsContainer: {
       paddingTop: Platform.OS === 'android' ? sizes.paddingVertical : 0,
     },
+    unreadNotificationsMarker: {
+      backgroundColor: colors.primaryColor,
+    },
+    unreadNotificationsText: {
+      color: colors.backgroundPrimaryColor,
+    },
   });
 
-  const headerTimer = () => {
-    if (tripStatus === TripStatus.Arrived) {
-      if (isPassangerLate) {
-        return (
-          <Animated.View
-            exiting={FadeOut.duration(timerAnimationDuration)}
-            entering={FadeIn.duration(timerAnimationDuration)}
-            style={styles.additionalHeaderButtons}
-          >
-            <Timer
-              initialDate={new Date()}
-              startColor={colors.secondaryGradientStartColor}
-              endColor={colors.secondaryGradientEndColor}
-              mode={TimerModes.Mini}
-            />
-          </Animated.View>
-        );
-      }
-      return (
-        <Animated.View
-          exiting={FadeOut.duration(timerAnimationDuration)}
-          entering={FadeIn.duration(timerAnimationDuration)}
-          style={styles.additionalHeaderButtons}
-        >
-          <Timer
-            initialDate={new Date(Date.now() + 20000)} //20000 - for test
-            onAfterCountdownEnds={() => setIsPassangerLate(true)}
-            startColor={colors.primaryGradientStartColor}
-            endColor={colors.primaryColor}
-            mode={TimerModes.Mini}
-          />
-        </Animated.View>
-      );
-    }
-  };
+  let unreadNotificationsMarker = null;
+  if (unreadNotifications > 0) {
+    unreadNotificationsMarker = (
+      <View style={[styles.unreadNotificationsMarker, computedStyles.unreadNotificationsMarker]}>
+        <Text style={[styles.unreadNotificationsText, computedStyles.unreadNotificationsText]}>
+          {unreadNotifications}
+        </Text>
+      </View>
+    );
+  } else if (unreadNotifications > 99) {
+    unreadNotificationsMarker = (
+      <View style={[styles.unreadNotificationsMarker, computedStyles.unreadNotificationsMarker]}>
+        <Text style={[styles.unreadNotificationsText, computedStyles.unreadNotificationsText]}>99+</Text>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -102,10 +146,13 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
             <StopWatch initialDate={new Date(Date.now() + 121000)} mask="{m}m" onAfterCountdownEnds={() => {}} />
           )}
           <View style={styles.headerRightButtons}>
-            <RoundButton onPress={() => navigation.navigate('Rating')}>
+            <RoundButton onPress={() => navigation.navigate('Notifications')}>
               <NotificationIcon />
+              {unreadNotificationsMarker}
             </RoundButton>
-            {headerTimer()}
+            {tripStatus === TripStatus.Arrived && (
+              <PassengerTimer isPassengerLate={isPassengerLate} setIsPassengerLate={() => setIsPassengerLate(true)} />
+            )}
           </View>
         </View>
         {contractorInfo ? <Trip /> : <Offer navigation={navigation} />}
@@ -134,6 +181,20 @@ const styles = StyleSheet.create({
   },
   additionalHeaderButtons: {
     marginTop: 30,
+  },
+  unreadNotificationsMarker: {
+    position: 'absolute',
+    right: -4,
+    bottom: -4,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 100,
+  },
+  unreadNotificationsText: {
+    fontFamily: 'Inter Medium',
+    fontSize: 9,
   },
 });
 

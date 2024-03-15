@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Button, ButtonModes, MenuUserImage, PhoneIcon, Text, useTheme } from 'shuttlex-integration';
+import { MenuUserImage, Text, useTheme } from 'shuttlex-integration';
 
 import { ContractorInfoSelector } from '../../../../core/ride/redux/trip/selectors';
 
@@ -35,9 +35,6 @@ const VisiblePart = () => {
       <View style={[styles.plateNumber, computedStyles.plateNumber]}>
         <Text style={styles.number}>{contractorInfo.car.plateNumber}</Text>
       </View>
-      <Button mode={ButtonModes.Mode3} style={styles.button}>
-        <PhoneIcon />
-      </Button>
     </View>
   );
 };

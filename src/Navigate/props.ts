@@ -8,4 +8,5 @@ export type RootStackParamList = {
   PaymentMethodSelection: undefined;
   AddressSelection: { offerPointId: number };
   Rating: undefined;
+  Notifications: undefined;
 };
