@@ -1,11 +1,8 @@
-export type PaymentMethodType = {
-  method: 'visa' | 'mastercard' | 'applepay' | 'paypal';
-  details: string;
-};
+import { PaymentMethod } from 'shuttlex-integration';
 
 export type PassengerState = {
   payment: {
-    selectedMethod: PaymentMethodType | null;
-    allMethods: PaymentMethodType[] | null;
+    selectedMethod: PaymentMethod | null;
+    avaliableMethods: PaymentMethod[];
   };
 };

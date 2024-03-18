@@ -5,8 +5,9 @@ export type RootStackParamList = {
   SignUpPhoneCode: undefined;
   SignInPhoneCode: undefined;
   SignInEmailCode: undefined;
-  PaymentMethodSelection: undefined;
   AddressSelection: { offerPointId: number };
   Rating: undefined;
   Notifications: undefined;
+  Wallet: undefined;
+  AddPayment: undefined;
 };

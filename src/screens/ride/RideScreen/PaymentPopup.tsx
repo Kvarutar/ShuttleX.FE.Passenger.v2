@@ -1,38 +1,27 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
-  ApplePayIcon,
   Bar,
   Button,
   ClockIcon,
   DropOffIcon,
+  getPaymentIcon,
   LocationIcon,
-  MasterCardIcon,
-  PayPalIcon,
   Popup,
   RoundButton,
   ShortArrowSmallIcon,
   Text,
   useTheme,
-  VisaIcon,
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { selectedPaymentMethodSelector } from '../../../core/redux/passenger/selectors';
-import { PaymentMethodType } from '../../../core/redux/passenger/types';
 import { setOfferStatus } from '../../../core/ride/redux/offer';
 import { OfferStatus } from '../../../core/ride/redux/offer/types';
 import { RootStackParamList } from '../../../Navigate/props';
-
-export const paymentIcons: Record<PaymentMethodType['method'], ReactNode> = {
-  paypal: <PayPalIcon />,
-  visa: <VisaIcon />,
-  mastercard: <MasterCardIcon />,
-  applepay: <ApplePayIcon />,
-};
 
 const PaymentPopup = ({
   navigation,
@@ -54,12 +43,12 @@ const PaymentPopup = ({
   return (
     <Popup onBackButtonPress={() => dispatch(setOfferStatus(OfferStatus.ChoosingTariff))}>
       <Text style={styles.title}>{t('ride_Ride_PaymentPopup_title')}</Text>
-      <Pressable style={styles.paymentWrapper} onPress={() => navigation.navigate('PaymentMethodSelection')}>
+      <Pressable style={styles.paymentWrapper} onPress={() => navigation.navigate('Wallet')}>
         <Bar style={styles.payment}>
           {selectedPaymentMethod ? (
             <View style={styles.paymentInfo}>
-              {paymentIcons[selectedPaymentMethod.method]}
-              <Text style={styles.paymentData}>{selectedPaymentMethod.details}</Text>
+              {getPaymentIcon(selectedPaymentMethod.method)}
+              <Text style={styles.paymentData}>**** {selectedPaymentMethod.details}</Text>
             </View>
           ) : (
             <View style={styles.paymentInfo}>

@@ -6,6 +6,7 @@ import {
   NotificationIcon,
   NotificationType,
   RoundButton,
+  ShortArrowIcon,
   sizes,
   StopWatch,
   Text,
@@ -16,6 +17,9 @@ import { setNotificationList } from '../../../core/menu/redux/notifications';
 import { numberOfUnreadNotificationsSelector } from '../../../core/menu/redux/notifications/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
+import { setOfferStatus } from '../../../core/ride/redux/offer';
+import { OfferStatusSelector } from '../../../core/ride/redux/offer/selectors';
+import { OfferStatus } from '../../../core/ride/redux/offer/types';
 import { setTripStatus } from '../../../core/ride/redux/trip';
 import { ContractorInfoSelector, TripStatusSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
@@ -29,6 +33,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   const dispatch = useAppDispatch();
   const [isPassengerLate, setIsPassengerLate] = useState<boolean>(false);
   const tripStatus = useSelector(TripStatusSelector);
+  const offerStatus = useSelector(OfferStatusSelector);
   const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
   const contractorInfo = useSelector(ContractorInfoSelector);
 
@@ -132,29 +137,45 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
     );
   }
 
+  let stopWatch = null;
+
+  if (contractorInfo && tripStatus === TripStatus.Idle) {
+    stopWatch = <StopWatch initialDate={new Date(Date.now() + 121000)} mask="{m}m" onAfterCountdownEnds={() => {}} />;
+  }
+
+  let topButtons = (
+    <>
+      <RoundButton onPress={() => navigation.navigate('Rating')}>
+        <MenuIcon />
+      </RoundButton>
+      {stopWatch}
+      <View style={styles.headerRightButtons}>
+        <RoundButton onPress={() => navigation.navigate('Notifications')}>
+          <NotificationIcon />
+          {unreadNotificationsMarker}
+        </RoundButton>
+        {tripStatus === TripStatus.Arrived && (
+          <PassengerTimer isPassengerLate={isPassengerLate} setIsPassengerLate={() => setIsPassengerLate(true)} />
+        )}
+      </View>
+    </>
+  );
+
+  if (offerStatus === OfferStatus.ChoosingTariff) {
+    topButtons = (
+      <RoundButton onPress={() => dispatch(setOfferStatus(OfferStatus.StartRide))}>
+        <ShortArrowIcon />
+      </RoundButton>
+    );
+  }
+
   return (
     <>
       <View style={styles.map}>
         <Text>Map</Text>
       </View>
       <SafeAreaView style={styles.wrapper}>
-        <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>
-          <RoundButton onPress={() => navigation.navigate('Rating')}>
-            <MenuIcon />
-          </RoundButton>
-          {contractorInfo && tripStatus === TripStatus.Idle && (
-            <StopWatch initialDate={new Date(Date.now() + 121000)} mask="{m}m" onAfterCountdownEnds={() => {}} />
-          )}
-          <View style={styles.headerRightButtons}>
-            <RoundButton onPress={() => navigation.navigate('Notifications')}>
-              <NotificationIcon />
-              {unreadNotificationsMarker}
-            </RoundButton>
-            {tripStatus === TripStatus.Arrived && (
-              <PassengerTimer isPassengerLate={isPassengerLate} setIsPassengerLate={() => setIsPassengerLate(true)} />
-            )}
-          </View>
-        </View>
+        <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>{topButtons}</View>
         {contractorInfo ? <Trip /> : <Offer navigation={navigation} />}
       </SafeAreaView>
     </>
