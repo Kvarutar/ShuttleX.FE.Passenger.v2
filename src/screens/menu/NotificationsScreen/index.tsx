@@ -2,7 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Notifications, RoundButton, ShortArrowIcon, sizes, Text, useTheme } from 'shuttlex-integration';
+import {
+  NotificationsScreen as NotificationsScreenIntegration,
+  RoundButton,
+  ShortArrowIcon,
+  sizes,
+  Text,
+  useTheme,
+} from 'shuttlex-integration';
 
 import { notificationsListSelector } from '../../../core/menu/redux/notifications/selectors';
 import { NotificationsScreenProps } from './props';
@@ -31,7 +38,7 @@ const NotificationsScreen = ({ navigation }: NotificationsScreenProps): JSX.Elem
           <Text style={[styles.headerTitle]}>{t('menu_Notifications_headerTitle')}</Text>
           <View style={styles.headerDummy} />
         </View>
-        <Notifications notifications={notifications} />
+        <NotificationsScreenIntegration notifications={notifications} />
       </View>
     </SafeAreaView>
   );

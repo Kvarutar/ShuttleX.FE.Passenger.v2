@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet } from 'react-native';
-import { Feedback, FeedbackType, sizes, useTheme } from 'shuttlex-integration';
+import { FeedbackScreen, FeedbackType, sizes, useTheme } from 'shuttlex-integration';
 
 import { useKeyboardAutoSoftInputModeAndroid } from '../../../core/utils/hooks';
 import { RatingScreenProps } from './props';
@@ -30,7 +30,7 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
       style={[styles.wrapper, computedStyles.wrapper]}
     >
       <SafeAreaView style={[styles.container, computedStyles.container]}>
-        <Feedback
+        <FeedbackScreen
           onBackButtonPress={() => navigation.goBack()}
           isFeedbackForContractor
           title={t('ride_Rating_Feedback_title', { name: 'John' })}

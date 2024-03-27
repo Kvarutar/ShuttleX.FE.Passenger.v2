@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { GroupedButtons, sizes, useTheme } from 'shuttlex-integration';
-import { GroupedButtonsProps } from 'shuttlex-integration/lib/typescript/src/shared/Widgets/GroupedButtons/props';
+import { GroupedButtonsProps } from 'shuttlex-integration/lib/typescript/src/shared/molecules/GroupedButtons/props';
 
 import { AuthScreenProps } from './props';
 import SignIn from './SignIn';

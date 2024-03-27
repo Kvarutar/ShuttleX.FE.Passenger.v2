@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import { AddCard, Card, sizes, useTheme } from 'shuttlex-integration';
+import { AddCardScreen, Card, sizes, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { addAvaliablePaymentMethod, setSelectedPaymentMethod } from '../../../../core/redux/passenger';
@@ -32,7 +32,7 @@ const AddPaymentScreen = ({ navigation }: AddPaymentScreenProps): JSX.Element =>
   return (
     <SafeAreaView style={[styles.wrapper, computedStyles.wrapper]}>
       <View style={[styles.container, computedStyles.container]}>
-        <AddCard onCardSave={onCardSave} onBackButtonPress={navigation.goBack} />
+        <AddCardScreen onCardSave={onCardSave} onBackButtonPress={navigation.goBack} />
       </View>
     </SafeAreaView>
   );
