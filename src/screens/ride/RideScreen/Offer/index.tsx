@@ -6,9 +6,9 @@ import { BottomWindow } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
-import { clearOfferPoints } from '../../../../core/ride/redux/offer';
-import { OfferStatusSelector } from '../../../../core/ride/redux/offer/selectors';
-import { OfferStatus } from '../../../../core/ride/redux/offer/types';
+import { clearOrderPoints } from '../../../../core/ride/redux/order';
+import { OrderStatusSelector } from '../../../../core/ride/redux/order/selectors';
+import { OrderStatus } from '../../../../core/ride/redux/order/types';
 import { RootStackParamList } from '../../../../Navigate/props';
 import AlertInitializer from '../../../../shared/AlertInitializer';
 import PaymentPopup from '../PaymentPopup';
@@ -20,7 +20,7 @@ import StartRide from './StartRide';
 import TariffsCarousel from './TariffsCarousel_v2';
 
 const Offer = ({ navigation }: { navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined> }) => {
-  const currentOfferStatus = useSelector(OfferStatusSelector);
+  const currentOrderStatus = useSelector(OrderStatusSelector);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -32,7 +32,7 @@ const Offer = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
     setAddressSelectMode(mode);
   };
 
-  const OfferStatusComponents: Record<OfferStatus, ReactNode | null> = {
+  const OrderStatusComponents: Record<OrderStatus, ReactNode | null> = {
     startRide: <StartRide openAddressSelect={openAddressSelect} />,
     choosingTariff: null,
     confirming: null,
@@ -43,17 +43,17 @@ const Offer = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
 
-  if (currentOfferStatus === OfferStatus.ChoosingTariff) {
+  if (currentOrderStatus === OrderStatus.ChoosingTariff) {
     return <TariffsCarousel />;
   }
 
-  if (currentOfferStatus === OfferStatus.Confirming) {
+  if (currentOrderStatus === OrderStatus.Confirming) {
     return <PaymentPopup navigation={navigation} />;
   }
 
   const closeAddressSelect = () => {
     setIsAddressSelectVisible(false);
-    dispatch(clearOfferPoints());
+    dispatch(clearOrderPoints());
   };
 
   return (
@@ -69,7 +69,7 @@ const Offer = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
           />
         ))}
       >
-        {OfferStatusComponents[currentOfferStatus]}
+        {OrderStatusComponents[currentOrderStatus]}
       </BottomWindow>
       {isAddressSelectVisible && (
         <AddressSelect

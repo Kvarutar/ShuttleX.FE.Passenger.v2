@@ -18,7 +18,7 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
-import { updateOfferPoint } from '../../../../../core/ride/redux/offer';
+import { updateOrderPoint } from '../../../../../core/ride/redux/order';
 import { PointItemProps } from './props';
 
 const fadeAnimationDuration = 100;
@@ -53,7 +53,7 @@ const PointItem = ({ pointMode, content, onRemovePoint, currentPointId }: PointI
                 {content}
               </Text>
               <View style={styles.barButtons}>
-                <Pressable hitSlop={20} onPress={() => dispatch(updateOfferPoint({ id: currentPointId, address: '' }))}>
+                <Pressable hitSlop={20} onPress={() => dispatch(updateOrderPoint({ id: currentPointId, address: '' }))}>
                   <InputXIcon />
                 </Pressable>
                 <View style={[styles.line, computedStyles.line]} />

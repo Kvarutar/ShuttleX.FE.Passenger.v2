@@ -22,8 +22,8 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
-import { setOfferStatus, setTripTariff } from '../../../../core/ride/redux/offer';
-import { OfferStatus } from '../../../../core/ride/redux/offer/types';
+import { setOrderStatus, setTripTariff } from '../../../../core/ride/redux/order';
+import { OrderStatus } from '../../../../core/ride/redux/order/types';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -85,7 +85,7 @@ const CarouselItem = ({ item }: { item: TariffType }) => {
 
   const onTariffSelect = () => {
     dispatch(setTripTariff(item));
-    dispatch(setOfferStatus(OfferStatus.Confirming));
+    dispatch(setOrderStatus(OrderStatus.Confirming));
   };
 
   return (

@@ -1,9 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { TripOrder, TripState, TripStatus } from './types';
+import { fetchTripInfo } from './thunks';
+import { TripInfo, TripState, TripStatus } from './types';
 
 const initialState: TripState = {
-  order: null,
+  tripInfo: null,
   status: TripStatus.Idle,
 };
 
@@ -11,19 +12,39 @@ const slice = createSlice({
   name: 'trip',
   initialState,
   reducers: {
-    setOrder(state, action: PayloadAction<TripOrder>) {
-      state.order = action.payload;
+    setTripInfo(state, action: PayloadAction<TripInfo>) {
+      state.tripInfo = action.payload;
     },
     setTripStatus(state, action: PayloadAction<TripStatus>) {
       state.status = action.payload;
     },
     endTrip(state) {
-      state.order = initialState.order;
+      state.tripInfo = null;
       state.status = initialState.status;
     },
   },
+  extraReducers: builder => {
+    builder.addCase(fetchTripInfo.fulfilled, (state, action) => {
+      slice.caseReducers.setTripInfo(state, {
+        payload: {
+          contractor: {
+            name: action.payload.contractor.name,
+            car: {
+              model: action.payload.contractor.car.model,
+              plateNumber: action.payload.contractor.car.plateNumber,
+            },
+            phone: action.payload.contractor.phone,
+            approximateArrival: new Date().getTime() + 180000, //for test
+          },
+          tripType: 'BasicX',
+          total: action.payload.total,
+        },
+        type: setTripInfo.type,
+      });
+    });
+  },
 });
 
-export const { setOrder, setTripStatus, endTrip } = slice.actions;
+export const { setTripInfo, setTripStatus, endTrip } = slice.actions;
 
 export default slice.reducer;

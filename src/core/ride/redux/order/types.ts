@@ -1,6 +1,6 @@
 import { TariffType } from 'shuttlex-integration';
 
-export enum OfferStatus {
+export enum OrderStatus {
   StartRide = 'startRide',
   ChoosingTariff = 'choosingTariff',
   Confirming = 'confirming',
@@ -14,8 +14,8 @@ export type Point = {
   address: string;
 };
 
-export type OfferState = {
-  status: OfferStatus;
+export type OrderState = {
+  status: OrderStatus;
   tripTariff: TariffType | null;
   points: Point[];
 };

@@ -19,8 +19,8 @@ import {
 
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { selectedPaymentMethodSelector } from '../../../core/redux/passenger/selectors';
-import { setOfferStatus } from '../../../core/ride/redux/offer';
-import { OfferStatus } from '../../../core/ride/redux/offer/types';
+import { setOrderStatus } from '../../../core/ride/redux/order';
+import { OrderStatus } from '../../../core/ride/redux/order/types';
 import { RootStackParamList } from '../../../Navigate/props';
 
 const PaymentPopup = ({
@@ -41,7 +41,7 @@ const PaymentPopup = ({
   });
 
   return (
-    <Popup onBackButtonPress={() => dispatch(setOfferStatus(OfferStatus.ChoosingTariff))}>
+    <Popup onBackButtonPress={() => dispatch(setOrderStatus(OrderStatus.ChoosingTariff))}>
       <Text style={styles.title}>{t('ride_Ride_PaymentPopup_title')}</Text>
       <Pressable style={styles.paymentWrapper} onPress={() => navigation.navigate('Wallet')}>
         <Bar style={styles.payment}>
@@ -84,7 +84,7 @@ const PaymentPopup = ({
       </View>
       <Button
         text={t('ride_Ride_PaymentPopup_button')}
-        onPress={() => dispatch(setOfferStatus(OfferStatus.Confirmation))}
+        onPress={() => dispatch(setOrderStatus(OrderStatus.Confirmation))}
       />
     </Popup>
   );

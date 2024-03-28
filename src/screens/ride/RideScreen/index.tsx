@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
@@ -18,9 +18,9 @@ import { numberOfUnreadNotificationsSelector } from '../../../core/menu/redux/no
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { setProfile } from '../../../core/redux/passenger';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
-import { setOfferStatus } from '../../../core/ride/redux/offer';
-import { OfferStatusSelector } from '../../../core/ride/redux/offer/selectors';
-import { OfferStatus } from '../../../core/ride/redux/offer/types';
+import { setOrderStatus } from '../../../core/ride/redux/order';
+import { OrderStatusSelector } from '../../../core/ride/redux/order/selectors';
+import { OrderStatus } from '../../../core/ride/redux/order/types';
 import { setTripStatus } from '../../../core/ride/redux/trip';
 import { ContractorInfoSelector, TripStatusSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
@@ -35,7 +35,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const tripStatus = useSelector(TripStatusSelector);
-  const offerStatus = useSelector(OfferStatusSelector);
+  const orderStatus = useSelector(OrderStatusSelector);
   const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
   const contractorInfo = useSelector(ContractorInfoSelector);
 
@@ -156,10 +156,17 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   let stopWatch = null;
 
   if (contractorInfo && tripStatus === TripStatus.Idle) {
-    stopWatch = <StopWatch initialDate={new Date(Date.now() + 121000)} mask="{m}m" onAfterCountdownEnds={() => {}} />;
+    console.log(new Date(+contractorInfo.approximateArrival));
+    stopWatch = (
+      <StopWatch
+        initialDate={new Date(contractorInfo.approximateArrival)}
+        mask="{m}m"
+        onAfterCountdownEnds={() => {}}
+      />
+    );
   }
 
-  let topButtons = (
+  const topFullButtons = (
     <>
       <RoundButton onPress={() => setIsMenuVisible(true)}>
         <MenuIcon />
@@ -177,13 +184,20 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
     </>
   );
 
-  if (offerStatus === OfferStatus.ChoosingTariff) {
-    topButtons = (
-      <RoundButton onPress={() => dispatch(setOfferStatus(OfferStatus.StartRide))}>
-        <ShortArrowIcon />
-      </RoundButton>
-    );
-  }
+  const topBackButton = (
+    <RoundButton onPress={() => dispatch(setOrderStatus(OrderStatus.StartRide))}>
+      <ShortArrowIcon />
+    </RoundButton>
+  );
+
+  const topButtons: Record<OrderStatus, ReactNode | null> = {
+    startRide: topFullButtons,
+    rideUnavaliable: topFullButtons,
+    noDrivers: topFullButtons,
+    choosingTariff: topBackButton,
+    confirming: null,
+    confirmation: null,
+  };
 
   return (
     <>
@@ -191,7 +205,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
         <Text>Map</Text>
       </View>
       <SafeAreaView style={styles.wrapper}>
-        <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>{topButtons}</View>
+        <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>{topButtons[orderStatus]}</View>
         {contractorInfo ? <Trip /> : <Offer navigation={navigation} />}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} navigation={navigation} />}

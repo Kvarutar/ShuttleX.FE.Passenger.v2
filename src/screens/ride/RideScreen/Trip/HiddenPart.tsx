@@ -20,14 +20,14 @@ import {
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { endTrip } from '../../../../core/ride/redux/trip';
-import { TripOrderSelector } from '../../../../core/ride/redux/trip/selectors';
-import { TripOrder } from '../../../../core/ride/redux/trip/types';
+import { TripInfoSelector } from '../../../../core/ride/redux/trip/selectors';
+import { TripInfo } from '../../../../core/ride/redux/trip/types';
 
 const HiddenPart = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
-  const trip = useSelector(TripOrderSelector);
+  const trip = useSelector(TripInfoSelector);
 
   const computedStyles = StyleSheet.create({
     separator: {
@@ -76,7 +76,7 @@ const HiddenPart = () => {
   );
 };
 
-const ContactInfo = ({ trip }: { trip: TripOrder }) => {
+const ContactInfo = ({ trip }: { trip: TripInfo }) => {
   const { colors } = useTheme();
 
   return (

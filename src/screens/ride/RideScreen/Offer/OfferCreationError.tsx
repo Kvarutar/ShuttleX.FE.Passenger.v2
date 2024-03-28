@@ -5,8 +5,8 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Button, ButtonModes, Text, WarningIcon } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
-import { setOfferStatus } from '../../../../core/ride/redux/offer';
-import { OfferStatus } from '../../../../core/ride/redux/offer/types';
+import { setOrderStatus } from '../../../../core/ride/redux/order';
+import { OrderStatus } from '../../../../core/ride/redux/order/types';
 
 const OfferCreationError = ({ error }: { error: string }) => {
   const dispatch = useAppDispatch();
@@ -27,7 +27,7 @@ const OfferCreationError = ({ error }: { error: string }) => {
         <Button
           text={t('ride_Ride_OfferCreationError_tryAgainButton')}
           containerStyle={styles.button}
-          onPress={() => dispatch(setOfferStatus(OfferStatus.Confirmation))}
+          onPress={() => dispatch(setOrderStatus(OrderStatus.Confirmation))}
         />
       </View>
     </Animated.View>

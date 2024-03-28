@@ -7,6 +7,7 @@ export type ContractorInfo = {
     plateNumber: string;
   };
   phone: string;
+  approximateArrival: number;
 };
 
 export enum TripStatus {
@@ -15,13 +16,13 @@ export enum TripStatus {
   Ride = 'ride',
 }
 
-export type TripOrder = {
+export type TripInfo = {
   contractor: ContractorInfo;
   tripType: TariffType;
   total: string;
 };
 
 export type TripState = {
-  order: TripOrder | null;
+  tripInfo: TripInfo | null;
   status: TripStatus;
 };

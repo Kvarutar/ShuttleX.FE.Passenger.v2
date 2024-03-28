@@ -12,7 +12,7 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { updateOfferPoint } from '../../../core/ride/redux/offer';
+import { updateOrderPoint } from '../../../core/ride/redux/order';
 import { AddressItemProps, AddressSelectionScreenProps } from './props';
 
 const addresses = [
@@ -60,7 +60,7 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
 
   const onAddressSelect = (address: string) => {
     dispatch(
-      updateOfferPoint({
+      updateOrderPoint({
         id: route.params.offerPointId,
         address: address,
       }),

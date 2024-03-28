@@ -15,9 +15,9 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
-import { addOfferPoint, removeOfferPoint, setOfferStatus } from '../../../../../core/ride/redux/offer';
-import { OfferPointsSelector } from '../../../../../core/ride/redux/offer/selectors';
-import { OfferStatus } from '../../../../../core/ride/redux/offer/types';
+import { addOrderPoint, removeOrderPoint, setOrderStatus } from '../../../../../core/ride/redux/order';
+import { OrderPointsSelector } from '../../../../../core/ride/redux/order/selectors';
+import { OrderStatus } from '../../../../../core/ride/redux/order/types';
 import AddressPopup from './AddressPopup';
 import PointItem from './PointItem';
 import { AddressSelectProps, PointMode } from './props';
@@ -47,7 +47,7 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  const points = useSelector(OfferPointsSelector);
+  const points = useSelector(OrderPointsSelector);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -89,12 +89,12 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
   });
 
   const onRemovePoint = (id: number) => {
-    dispatch(removeOfferPoint(id));
+    dispatch(removeOrderPoint(id));
   };
 
   const onAddPoint = () => {
     dispatch(
-      addOfferPoint({
+      addOrderPoint({
         id: pointId,
         address: '',
       }),
@@ -105,7 +105,7 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
 
   const onConfirm = () => {
     closeAddressSelect();
-    dispatch(setOfferStatus(OfferStatus.ChoosingTariff));
+    dispatch(setOrderStatus(OrderStatus.ChoosingTariff));
   };
 
   return (

@@ -2,20 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
 import { Button, ButtonModes, Text, Timer, TimerModes, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
-import { cleanOffer } from '../../../../core/ride/redux/offer';
-import { OfferTariffSelector } from '../../../../core/ride/redux/offer/selectors';
-import { setOrder } from '../../../../core/ride/redux/trip';
+import { createOffer } from '../../../../core/ride/redux/order/thunks';
 
 const Confirming = ({ onCancel }: { onCancel: () => void }) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const [dotsCounter, setDotsCounter] = useState(3);
   const dispatch = useAppDispatch();
-  const selectedTariff = useSelector(OfferTariffSelector);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -27,26 +23,10 @@ const Confirming = ({ onCancel }: { onCancel: () => void }) => {
       });
     }, 400);
 
-    setTimeout(() => {
-      dispatch(
-        setOrder({
-          contractor: {
-            name: 'Benedict',
-            car: {
-              model: 'Toyota Land Cruser',
-              plateNumber: 'BPNW 958',
-            },
-            phone: '89990622720',
-          },
-          tripType: selectedTariff ?? 'BasicX',
-          total: '68.90',
-        }),
-      );
-      dispatch(cleanOffer());
-    }, 4000); //forTest
+    dispatch(createOffer());
 
     return () => clearInterval(interval);
-  }, [dispatch, selectedTariff]);
+  }, [dispatch]);
 
   return (
     <Animated.View style={styles.wrapper} entering={FadeIn} exiting={FadeOut}>
