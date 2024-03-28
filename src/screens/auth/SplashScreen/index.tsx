@@ -25,7 +25,7 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
   return (
     <SafeAreaView style={[styles.wrapper, computedStyles.wrapper]}>
       <View style={[styles.container, computedStyles.container]}>
-        <GroupedBrandIcon style={styles.groupedBrandIconContainer} />
+        <GroupedBrandIcon style={styles.groupedBrandIconContainer} iconColor={colors.primaryColor} />
         <View style={styles.buttonsContainer}>
           <Button text={t('auth_Splash_startButton')} onPress={navigationToSignUp} />
           <Pressable style={styles.alreadyHaveAccountContainer} onPress={navigationToSignIn} hitSlop={20}>

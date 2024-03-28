@@ -16,6 +16,7 @@ import {
 import { setNotificationList } from '../../../core/menu/redux/notifications';
 import { numberOfUnreadNotificationsSelector } from '../../../core/menu/redux/notifications/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
+import { setProfile } from '../../../core/redux/passenger';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { setOfferStatus } from '../../../core/ride/redux/offer';
 import { OfferStatusSelector } from '../../../core/ride/redux/offer/selectors';
@@ -23,6 +24,7 @@ import { OfferStatus } from '../../../core/ride/redux/offer/types';
 import { setTripStatus } from '../../../core/ride/redux/trip';
 import { ContractorInfoSelector, TripStatusSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
+import Menu from '../Menu';
 import Offer from './Offer';
 import PassengerTimer from './PassengerTimer';
 import { RideScreenProps } from './props';
@@ -31,11 +33,14 @@ import Trip from './Trip';
 const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
-  const [isPassengerLate, setIsPassengerLate] = useState<boolean>(false);
+
   const tripStatus = useSelector(TripStatusSelector);
   const offerStatus = useSelector(OfferStatusSelector);
   const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
   const contractorInfo = useSelector(ContractorInfoSelector);
+
+  const [isPassengerLate, setIsPassengerLate] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   useEffect(() => {
     if (contractorInfo) {
@@ -45,6 +50,17 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contractorInfo]);
+
+  useEffect(() => {
+    dispatch(
+      setProfile({
+        name: 'John',
+        surname: 'Johnson',
+        imageUri:
+          'https://sun9-34.userapi.com/impg/ZGuJiFBAp-93En3yLK7LWZNPxTGmncHrrtVgbg/hd6uHaUv1zE.jpg?size=1200x752&quality=96&sign=e79799e4b75c839d0ddb1a2232fe5d60&type=album',
+      }),
+    );
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(
@@ -145,12 +161,12 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
 
   let topButtons = (
     <>
-      <RoundButton onPress={() => navigation.navigate('Rating')}>
+      <RoundButton onPress={() => setIsMenuVisible(true)}>
         <MenuIcon />
       </RoundButton>
       {stopWatch}
       <View style={styles.headerRightButtons}>
-        <RoundButton onPress={() => navigation.navigate('Notifications')}>
+        <RoundButton onPress={() => navigation.navigate('Rating')}>
           <NotificationIcon />
           {unreadNotificationsMarker}
         </RoundButton>
@@ -178,6 +194,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
         <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>{topButtons}</View>
         {contractorInfo ? <Trip /> : <Offer navigation={navigation} />}
       </SafeAreaView>
+      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} navigation={navigation} />}
     </>
   );
 };

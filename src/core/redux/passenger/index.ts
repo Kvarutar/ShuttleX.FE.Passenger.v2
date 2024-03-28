@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PaymentMethod } from 'shuttlex-integration';
 
-import { PassengerState } from './types';
+import { PassengerState, Profile } from './types';
 
 const initialState: PassengerState = {
   payment: {
     selectedMethod: null,
     avaliableMethods: [],
   },
+  profile: null,
 };
 
 const slice = createSlice({
@@ -23,9 +24,13 @@ const slice = createSlice({
     addAvaliablePaymentMethod(state, action: PayloadAction<PaymentMethod>) {
       state.payment.avaliableMethods.unshift(action.payload);
     },
+    setProfile(state, action: PayloadAction<Profile>) {
+      state.profile = action.payload;
+    },
   },
 });
 
-export const { setSelectedPaymentMethod, setAvaliablePaymentMethods, addAvaliablePaymentMethod } = slice.actions;
+export const { setSelectedPaymentMethod, setAvaliablePaymentMethods, addAvaliablePaymentMethod, setProfile } =
+  slice.actions;
 
 export default slice.reducer;

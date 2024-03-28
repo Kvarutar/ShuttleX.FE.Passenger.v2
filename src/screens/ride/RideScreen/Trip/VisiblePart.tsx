@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MenuUserImage, Text, useTheme } from 'shuttlex-integration';
 
 import { ContractorInfoSelector } from '../../../../core/ride/redux/trip/selectors';
+
+const isPlatformIos = Platform.OS === 'ios';
 
 const VisiblePart = () => {
   const contractorInfo = useSelector(ContractorInfoSelector);
@@ -12,6 +14,11 @@ const VisiblePart = () => {
   const computedStyles = StyleSheet.create({
     plateNumber: {
       borderColor: colors.iconPrimaryColor,
+      paddingVertical: isPlatformIos ? 10 : 8,
+    },
+    number: {
+      fontFamily: isPlatformIos ? 'Dealerplate' : 'Dealerplate California',
+      marginBottom: isPlatformIos ? -4 : 0,
     },
   });
 
@@ -33,7 +40,7 @@ const VisiblePart = () => {
         </View>
       </View>
       <View style={[styles.plateNumber, computedStyles.plateNumber]}>
-        <Text style={styles.number}>{contractorInfo.car.plateNumber}</Text>
+        <Text style={[styles.number, computedStyles.number]}>{contractorInfo.car.plateNumber}</Text>
       </View>
     </View>
   );
@@ -70,14 +77,12 @@ const styles = StyleSheet.create({
     borderRadius: 24,
   },
   number: {
-    fontFamily: 'Dealerplate California',
     fontSize: 22,
   },
   plateNumber: {
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
-    paddingVertical: 4,
   },
 });
 
