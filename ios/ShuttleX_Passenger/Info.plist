@@ -36,7 +36,7 @@
       </dict>
     </dict>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string></string>
+    <string>Your location is required for the app to work properly</string>
     <key>NSLocationTemporaryUsageDescriptionDictionary</key>
     <string></string>
     <key>UILaunchStoryboardName</key>

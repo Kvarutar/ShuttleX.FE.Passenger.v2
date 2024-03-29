@@ -1,19 +1,38 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { LatLng } from 'react-native-maps';
+import { calculateExtendedHeading, getAngleBetweenPoints } from 'shuttlex-integration';
 
 import { GeolocationState } from './types';
 
 const initialState: GeolocationState = {
-  coordinates: { latitude: 0, longitude: 0 },
+  coordinates: null,
   isPermissionGranted: true,
   isLocationEnabled: true,
   accuracy: 'full',
+  calculatedHeading: {
+    headingExtended: 0,
+    current: 0,
+    previous: 0,
+    delta: 0,
+  },
 };
 
 const slice = createSlice({
   name: 'geolocation',
   initialState,
   reducers: {
-    setGeolocationCoordinates(state, action: PayloadAction<GeolocationState['coordinates']>) {
+    setGeolocationCoordinates(state, action: PayloadAction<LatLng & { heading: number }>) {
+      if (state.coordinates) {
+        const res = calculateExtendedHeading({
+          current: getAngleBetweenPoints(state.coordinates, action.payload),
+          previous: state.calculatedHeading.current,
+          delta: state.calculatedHeading.delta,
+        });
+        if (res) {
+          state.calculatedHeading = res;
+        }
+      }
+
       state.coordinates = action.payload;
     },
     setGeolocationIsPermissionGranted(state, action: PayloadAction<GeolocationState['isPermissionGranted']>) {

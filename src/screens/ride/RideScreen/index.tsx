@@ -25,6 +25,8 @@ import { setTripStatus } from '../../../core/ride/redux/trip';
 import { ContractorInfoSelector, TripStatusSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
+import MapCameraModeButton from './MapCameraModeButton';
+import MapView from './MapView';
 import Offer from './Offer';
 import PassengerTimer from './PassengerTimer';
 import { RideScreenProps } from './props';
@@ -48,8 +50,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
         dispatch(setTripStatus(TripStatus.Arrived)); //for test
       }, 6000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contractorInfo]);
+  }, [dispatch, contractorInfo]);
 
   useEffect(() => {
     dispatch(
@@ -172,7 +173,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
         <MenuIcon />
       </RoundButton>
       {stopWatch}
-      <View style={styles.headerRightButtons}>
+      <View style={styles.topRightButtonContainer}>
         <RoundButton onPress={() => navigation.navigate('Rating')}>
           <NotificationIcon />
           {unreadNotificationsMarker}
@@ -201,12 +202,17 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
 
   return (
     <>
-      <View style={styles.map}>
-        <Text>Map</Text>
-      </View>
       <SafeAreaView style={styles.wrapper}>
+        <MapView />
         <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>{topButtons[orderStatus]}</View>
-        {contractorInfo ? <Trip /> : <Offer navigation={navigation} />}
+        {contractorInfo ? (
+          <>
+            <Trip />
+            <MapCameraModeButton />
+          </>
+        ) : (
+          <Offer navigation={navigation} />
+        )}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} navigation={navigation} />}
     </>
@@ -214,26 +220,6 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
 };
 
 const styles = StyleSheet.create({
-  map: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'yellow',
-  },
-  wrapper: {
-    flex: 1,
-  },
-  topButtonsContainer: {
-    paddingHorizontal: sizes.paddingHorizontal,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-  },
-  headerRightButtons: {
-    alignItems: 'center',
-  },
-  additionalHeaderButtons: {
-    marginTop: 30,
-  },
   unreadNotificationsMarker: {
     position: 'absolute',
     right: -4,
@@ -247,6 +233,17 @@ const styles = StyleSheet.create({
   unreadNotificationsText: {
     fontFamily: 'Inter Medium',
     fontSize: 9,
+  },
+  wrapper: {
+    flex: 1,
+  },
+  topButtonsContainer: {
+    paddingHorizontal: sizes.paddingHorizontal,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+  topRightButtonContainer: {
+    alignItems: 'center',
   },
 });
 

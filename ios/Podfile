@@ -10,7 +10,7 @@ end
 node_require('react-native/scripts/react_native_pods.rb')
 node_require('react-native-permissions/scripts/setup.rb')
 
-platform :ios, min_ios_version_supported
+platform :ios, '13.4' # change back to min_ios_version_supported after updating react-native version to 0.73!
 prepare_react_native_project!
 
 setup_permissions([
@@ -59,6 +59,10 @@ ENVFILES = {
 }
 
 target 'ShuttleX_Passenger' do
+  # React Native Maps dependencies
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => rn_maps_path
+
   config = use_native_modules!
 
   # Flags change depending on the env values.

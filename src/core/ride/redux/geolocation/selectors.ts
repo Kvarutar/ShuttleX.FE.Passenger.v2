@@ -4,4 +4,6 @@ export const geolocationCoordinatesSelector = (state: AppState) => state.geoloca
 export const geolocationIsPermissionGrantedSelector = (state: AppState) => state.geolocation.isPermissionGranted;
 export const geolocationIsLocationEnabledSelector = (state: AppState) => state.geolocation.isLocationEnabled;
 export const geolocationAccuracySelector = (state: AppState) => state.geolocation.accuracy;
+export const geolocationCalculatedHeadingSelector = (state: AppState) =>
+  state.geolocation.calculatedHeading.headingExtended;
 export const geolocationErrorSelector = (state: AppState) => state.geolocation.error;
