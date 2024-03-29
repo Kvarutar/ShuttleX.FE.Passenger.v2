@@ -207,8 +207,8 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
         <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>{topButtons[orderStatus]}</View>
         {contractorInfo ? (
           <>
-            <Trip />
             <MapCameraModeButton />
+            <Trip />
           </>
         ) : (
           <Offer navigation={navigation} />
