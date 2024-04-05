@@ -1,11 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { fetchTripInfo } from './thunks';
+import { fetchTripInfo, sendFeedback } from './thunks';
 import { TripInfo, TripState, TripStatus } from './types';
 
 const initialState: TripState = {
   tripInfo: null,
   status: TripStatus.Idle,
+  tip: null,
 };
 
 const slice = createSlice({
@@ -18,33 +19,46 @@ const slice = createSlice({
     setTripStatus(state, action: PayloadAction<TripStatus>) {
       state.status = action.payload;
     },
+    setTip(state, action: PayloadAction<number | null>) {
+      if (state.tripInfo) {
+        state.tip = action.payload;
+      }
+    },
     endTrip(state) {
       state.tripInfo = null;
       state.status = initialState.status;
     },
   },
   extraReducers: builder => {
-    builder.addCase(fetchTripInfo.fulfilled, (state, action) => {
-      slice.caseReducers.setTripInfo(state, {
-        payload: {
-          contractor: {
-            name: action.payload.contractor.name,
-            car: {
-              model: action.payload.contractor.car.model,
-              plateNumber: action.payload.contractor.car.plateNumber,
+    builder
+      .addCase(fetchTripInfo.fulfilled, (state, action) => {
+        slice.caseReducers.setTripInfo(state, {
+          payload: {
+            contractor: {
+              name: action.payload.contractor.name,
+              car: {
+                model: action.payload.contractor.car.model,
+                plateNumber: action.payload.contractor.car.plateNumber,
+              },
+              phone: action.payload.contractor.phone,
+              approximateArrival: new Date().getTime() + 180000, //for test
             },
-            phone: action.payload.contractor.phone,
-            approximateArrival: new Date().getTime() + 180000, //for test
+            tripType: action.payload.tripType,
+            total: action.payload.total,
+            route: {
+              startPoint: action.payload.route.startPoint,
+              endPoints: action.payload.route.endPoints,
+            },
           },
-          tripType: 'BasicX',
-          total: action.payload.total,
-        },
-        type: setTripInfo.type,
+          type: setTripInfo.type,
+        });
+      })
+      .addCase(sendFeedback.fulfilled, (state, action) => {
+        slice.caseReducers.setTip(state, { payload: action.payload.tip ?? null, type: setTip.type });
       });
-    });
   },
 });
 
-export const { setTripInfo, setTripStatus, endTrip } = slice.actions;
+export const { setTripInfo, setTripStatus, setTip, endTrip } = slice.actions;
 
 export default slice.reducer;

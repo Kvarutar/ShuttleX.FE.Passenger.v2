@@ -16,12 +16,12 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
-import { useAppDispatch } from '../../../../core/redux/hooks';
-import { setSelectedPaymentMethod } from '../../../../core/redux/passenger';
+import { setSelectedPaymentMethod } from '../../../../core/menu/redux/wallet';
 import {
   avaliablePaymentMethodsSelector,
   selectedPaymentMethodSelector,
-} from '../../../../core/redux/passenger/selectors';
+} from '../../../../core/menu/redux/wallet/selectors';
+import { useAppDispatch } from '../../../../core/redux/hooks';
 import { WalletScreenProps } from './props';
 
 const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
@@ -45,7 +45,7 @@ const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
     ));
     paymentContent = <View style={styles.paymentMethods}>{paymentMethodsRender}</View>;
   } else {
-    emptyWallet = <Text style={styles.emptyWallet}>{t('ride_PaymentMethodSelection_empty')}</Text>;
+    emptyWallet = <Text style={styles.emptyWallet}>{t('menu_Wallet_empty')}</Text>;
   }
 
   return (
@@ -56,21 +56,23 @@ const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
             <RoundButton onPress={navigation.goBack}>
               <ShortArrowIcon />
             </RoundButton>
-            <Text style={styles.headerTitle}>{t('ride_PaymentMethodSelection_title')}</Text>
+            <Text style={styles.headerTitle}>{t('menu_Wallet_title')}</Text>
             <View style={styles.headerDummy} />
           </View>
           {paymentContent}
         </View>
         {emptyWallet}
-        <Button text={t('ride_PaymentMethodSelection_button')} onPress={() => navigation.navigate('AddPayment')} />
+        <Button text={t('menu_Wallet_button')} onPress={() => navigation.navigate('AddPayment')} />
       </View>
     </SafeAreaView>
   );
 };
 
 const PaymentItem = ({ paymentMethod }: { paymentMethod: PaymentMethod }) => {
-  const selectedPaymentMethod = useSelector(selectedPaymentMethodSelector);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+
+  const selectedPaymentMethod = useSelector(selectedPaymentMethodSelector);
 
   let isActive = false;
   let mode = BarModes.Default;
@@ -91,7 +93,9 @@ const PaymentItem = ({ paymentMethod }: { paymentMethod: PaymentMethod }) => {
       <Bar style={styles.paymentMethodsItem} mode={mode}>
         <View style={styles.paymentMethodsItemContent}>
           {getPaymentIcon(paymentMethod.method)}
-          <Text style={styles.paymentMethodsTitle}>**** {paymentMethod.details}</Text>
+          <Text style={styles.paymentMethodsTitle}>
+            {paymentMethod.method !== 'cash' ? `**** ${paymentMethod.details}` : t('menu_Wallet_cash')}
+          </Text>
         </View>
         {isActive && <BlueCheck2 />}
       </Bar>

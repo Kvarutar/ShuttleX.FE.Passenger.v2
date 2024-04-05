@@ -2,8 +2,8 @@ import React from 'react';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { AddCardScreen, Card, sizes, useTheme } from 'shuttlex-integration';
 
+import { addAvaliablePaymentMethod, setSelectedPaymentMethod } from '../../../../core/menu/redux/wallet';
 import { useAppDispatch } from '../../../../core/redux/hooks';
-import { addAvaliablePaymentMethod, setSelectedPaymentMethod } from '../../../../core/redux/passenger';
 import { AddPaymentScreenProps } from './props';
 
 const AddPaymentScreen = ({ navigation }: AddPaymentScreenProps): JSX.Element => {

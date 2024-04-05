@@ -12,32 +12,16 @@ import {
   PhoneIcon,
   ReportIcon,
   sizes,
-  SwipeButton,
-  SwipeButtonModes,
   Text,
   useTheme,
 } from 'shuttlex-integration';
 
-import { useAppDispatch } from '../../../../core/redux/hooks';
-import { endTrip } from '../../../../core/ride/redux/trip';
-import { TripInfoSelector } from '../../../../core/ride/redux/trip/selectors';
+import { tripInfoSelector } from '../../../../core/ride/redux/trip/selectors';
 import { TripInfo } from '../../../../core/ride/redux/trip/types';
 
 const HiddenPart = () => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
-  const dispatch = useAppDispatch();
-  const trip = useSelector(TripInfoSelector);
-
-  const computedStyles = StyleSheet.create({
-    separator: {
-      borderColor: colors.strokeColor,
-    },
-  });
-
-  const onCancelTrip = () => {
-    dispatch(endTrip());
-  };
+  const trip = useSelector(tripInfoSelector);
 
   if (!trip) {
     return <></>;
@@ -46,6 +30,10 @@ const HiddenPart = () => {
   return (
     <>
       <ContactInfo trip={trip} />
+      <Bar style={styles.hiddenTripType}>
+        <Text style={styles.hiddenTripTypeTitle}>{t('ride_Ride_Trip_totalForRide')}</Text>
+        <Text style={styles.hiddenTripTypeContent}>{trip.tripType}</Text>
+      </Bar>
       <Bar style={styles.hiddenTotal}>
         <Text style={styles.hiddenTotalTitle}>{t('ride_Ride_Trip_totalForRide')}</Text>
         <Text style={styles.hiddenTotalContent}>{trip.total}</Text>
@@ -64,14 +52,6 @@ const HiddenPart = () => {
           <Text style={styles.hiddenSafetyItemText}>{t('ride_Ride_Trip_reportIssue')}</Text>
         </Pressable>
       </View>
-      <View style={styles.horizontalSeparatorWrapper}>
-        <View style={[styles.horizontalSeparator, computedStyles.separator]} />
-      </View>
-      <SwipeButton
-        mode={SwipeButtonModes.Decline}
-        onSwipeEnd={onCancelTrip}
-        text={t('ride_Ride_Trip_cancelRideButton')}
-      />
     </>
   );
 };
@@ -80,7 +60,7 @@ const ContactInfo = ({ trip }: { trip: TripInfo }) => {
   const { colors } = useTheme();
 
   return (
-    <Bar style={styles.bar}>
+    <Bar>
       <View style={styles.hiddenPassengerInfo}>
         <PassengerIcon style={styles.passengerBigIcon} color={colors.iconPrimaryColor} />
         <Text style={styles.hiddenPassengerInfoName}>{trip.contractor.name}</Text>
@@ -103,9 +83,6 @@ const ContactInfo = ({ trip }: { trip: TripInfo }) => {
 };
 
 const styles = StyleSheet.create({
-  bar: {
-    marginBottom: 30,
-  },
   hiddenPassengerInfo: {
     flexDirection: 'row',
     marginBottom: 20,
@@ -126,8 +103,6 @@ const styles = StyleSheet.create({
   hiddenTripType: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 30,
-    marginTop: 30,
     paddingHorizontal: 16,
   },
   hiddenTripTypeTitle: {
@@ -140,7 +115,6 @@ const styles = StyleSheet.create({
   hiddenTotal: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 30,
   },
   hiddenTotalTitle: {
     fontFamily: 'Inter Medium',
@@ -181,17 +155,6 @@ const styles = StyleSheet.create({
   smallPhoneButtonIcon: {
     width: 16,
     height: 16,
-  },
-  horizontalSeparatorWrapper: {
-    overflow: 'hidden',
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  horizontalSeparator: {
-    flex: 1,
-    borderStyle: 'dashed',
-    borderWidth: 1,
-    marginTop: -0.5,
   },
 });
 

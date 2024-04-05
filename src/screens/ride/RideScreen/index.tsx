@@ -19,15 +19,15 @@ import { useAppDispatch } from '../../../core/redux/hooks';
 import { setProfile } from '../../../core/redux/passenger';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { setOrderStatus } from '../../../core/ride/redux/order';
-import { OrderStatusSelector } from '../../../core/ride/redux/order/selectors';
+import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
 import { setTripStatus } from '../../../core/ride/redux/trip';
-import { ContractorInfoSelector, TripStatusSelector } from '../../../core/ride/redux/trip/selectors';
+import { contractorInfoSelector, tripInfoSelector, tripStatusSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
 import MapCameraModeButton from './MapCameraModeButton';
 import MapView from './MapView';
-import Offer from './Offer';
+import Order from './Order';
 import PassengerTimer from './PassengerTimer';
 import { RideScreenProps } from './props';
 import Trip from './Trip';
@@ -36,10 +36,11 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
 
-  const tripStatus = useSelector(TripStatusSelector);
-  const orderStatus = useSelector(OrderStatusSelector);
+  const tripStatus = useSelector(tripStatusSelector);
+  const tripInfo = useSelector(tripInfoSelector);
+  const orderStatus = useSelector(orderStatusSelector);
   const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
-  const contractorInfo = useSelector(ContractorInfoSelector);
+  const contractorInfo = useSelector(contractorInfoSelector);
 
   const [isPassengerLate, setIsPassengerLate] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -157,7 +158,6 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   let stopWatch = null;
 
   if (contractorInfo && tripStatus === TripStatus.Idle) {
-    console.log(new Date(+contractorInfo.approximateArrival));
     stopWatch = (
       <StopWatch
         initialDate={new Date(contractorInfo.approximateArrival)}
@@ -174,11 +174,11 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
       </RoundButton>
       {stopWatch}
       <View style={styles.topRightButtonContainer}>
-        <RoundButton onPress={() => navigation.navigate('Rating')}>
+        <RoundButton onPress={() => navigation.navigate('Notifications')}>
           <NotificationIcon />
           {unreadNotificationsMarker}
         </RoundButton>
-        {tripStatus === TripStatus.Arrived && (
+        {tripInfo && tripStatus === TripStatus.Arrived && (
           <PassengerTimer isPassengerLate={isPassengerLate} setIsPassengerLate={() => setIsPassengerLate(true)} />
         )}
       </View>
@@ -211,7 +211,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
             <Trip />
           </>
         ) : (
-          <Offer navigation={navigation} />
+          <Order navigation={navigation} />
         )}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} navigation={navigation} />}

@@ -13,6 +13,7 @@ import AddPaymentScreen from '../screens/menu/wallet/AddPaymentScreen';
 import WalletScreen from '../screens/menu/wallet/WalletScreen';
 import AddressSelectionScreen from '../screens/ride/AddressSelectionScreen';
 import RatingScreen from '../screens/ride/RatingScreen';
+import ReceiptScreen from '../screens/ride/ReceiptScreen';
 import RideScreen from '../screens/ride/RideScreen';
 import { RootStackParamList } from './props';
 
@@ -37,6 +38,7 @@ const Navigate = (): JSX.Element => (
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="Wallet" component={WalletScreen} />
       <Stack.Screen name="AddPayment" component={AddPaymentScreen} />
+      <Stack.Screen name="Receipt" component={ReceiptScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );

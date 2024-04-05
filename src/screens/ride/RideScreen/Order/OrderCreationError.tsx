@@ -8,7 +8,7 @@ import { useAppDispatch } from '../../../../core/redux/hooks';
 import { setOrderStatus } from '../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
 
-const OfferCreationError = ({ error }: { error: string }) => {
+const OrderCreationError = ({ error }: { error: string }) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -21,11 +21,11 @@ const OfferCreationError = ({ error }: { error: string }) => {
       <View style={styles.buttonsWrapper}>
         <Button
           mode={ButtonModes.Mode2}
-          text={t('ride_Ride_OfferCreationError_cancelButton')}
+          text={t('ride_Ride_OrderCreationError_cancelButton')}
           containerStyle={styles.button}
         />
         <Button
-          text={t('ride_Ride_OfferCreationError_tryAgainButton')}
+          text={t('ride_Ride_OrderCreationError_tryAgainButton')}
           containerStyle={styles.button}
           onPress={() => dispatch(setOrderStatus(OrderStatus.Confirmation))}
         />
@@ -52,4 +52,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OfferCreationError;
+export default OrderCreationError;

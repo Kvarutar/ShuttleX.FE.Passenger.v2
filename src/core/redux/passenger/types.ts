@@ -1,5 +1,3 @@
-import { PaymentMethod } from 'shuttlex-integration';
-
 export type Profile = {
   imageUri: string;
   name: string;
@@ -7,9 +5,5 @@ export type Profile = {
 };
 
 export type PassengerState = {
-  payment: {
-    selectedMethod: PaymentMethod | null;
-    avaliableMethods: PaymentMethod[];
-  };
   profile: Profile | null;
 };

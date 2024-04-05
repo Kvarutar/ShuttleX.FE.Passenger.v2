@@ -1,5 +1,7 @@
 import { TariffType } from 'shuttlex-integration';
 
+import { AddressPoint } from '../order/types';
+
 export type ContractorInfo = {
   name: string;
   car: {
@@ -20,9 +22,14 @@ export type TripInfo = {
   contractor: ContractorInfo;
   tripType: TariffType;
   total: string;
+  route: {
+    startPoint: AddressPoint;
+    endPoints: AddressPoint[];
+  };
 };
 
 export type TripState = {
   tripInfo: TripInfo | null;
   status: TripStatus;
+  tip: number | null;
 };

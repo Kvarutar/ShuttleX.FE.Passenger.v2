@@ -26,15 +26,15 @@ const SignUpPhoneCodeScreen = ({ navigation }: SignUpPhoneCodeScreenProps): JSX.
   return (
     <SafeAreaView style={[styles.wrapper, computedStyles.wrapper]}>
       <View style={[styles.container, computedStyles.container]}>
-        <View style={[styles.header]}>
+        <View style={styles.header}>
           <RoundButton onPress={goBackToScreen}>
             <ShortArrowIcon />
           </RoundButton>
-          <Text style={[styles.headerTitle]}>{t('auth_SignUpPhoneCode_headerTitle')}</Text>
+          <Text style={styles.headerTitle}>{t('auth_SignUpPhoneCode_headerTitle')}</Text>
           <View style={styles.headerDummy} />
         </View>
 
-        <Text style={[styles.codeText]}>{t('auth_SignUpPhoneCode_prompt')}</Text>
+        <Text style={styles.codeText}>{t('auth_SignUpPhoneCode_prompt')}</Text>
 
         <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
 

@@ -6,8 +6,8 @@ import { BottomWindow } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
-import { clearOrderPoints } from '../../../../core/ride/redux/order';
-import { OrderStatusSelector } from '../../../../core/ride/redux/order/selectors';
+import { cleanOrderPoints } from '../../../../core/ride/redux/order';
+import { orderStatusSelector } from '../../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
 import { RootStackParamList } from '../../../../Navigate/props';
 import AlertInitializer from '../../../../shared/AlertInitializer';
@@ -15,12 +15,12 @@ import PaymentPopup from '../PaymentPopup';
 import AddressSelect from './AddressSelect';
 import { AddressSelectMode } from './AddressSelect/props';
 import Confirming from './Confirming';
-import OfferCreationError from './OfferCreationError';
+import OrderCreationError from './OrderCreationError';
 import StartRide from './StartRide';
 import TariffsCarousel from './TariffsCarousel_v2';
 
-const Offer = ({ navigation }: { navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined> }) => {
-  const currentOrderStatus = useSelector(OrderStatusSelector);
+const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined> }) => {
+  const currentOrderStatus = useSelector(orderStatusSelector);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -37,8 +37,8 @@ const Offer = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
     choosingTariff: null,
     confirming: null,
     confirmation: <Confirming onCancel={() => {}} />,
-    noDrivers: <OfferCreationError error={t('ride_Ride_Offer_noDriversAvaliable')} />,
-    rideUnavaliable: <OfferCreationError error={t('ride_Ride_Offer_rideIsUnavaliable')} />,
+    noDrivers: <OrderCreationError error={t('ride_Ride_Order_noDriversAvaliable')} />,
+    rideUnavaliable: <OrderCreationError error={t('ride_Ride_Order_rideIsUnavaliable')} />,
   };
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
@@ -53,7 +53,7 @@ const Offer = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
 
   const closeAddressSelect = () => {
     setIsAddressSelectVisible(false);
-    dispatch(clearOrderPoints());
+    dispatch(cleanOrderPoints());
   };
 
   return (
@@ -82,4 +82,4 @@ const Offer = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
   );
 };
 
-export default Offer;
+export default Order;

@@ -16,7 +16,7 @@ import {
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { addOrderPoint, removeOrderPoint, setOrderStatus } from '../../../../../core/ride/redux/order';
-import { OrderPointsSelector } from '../../../../../core/ride/redux/order/selectors';
+import { orderPointsSelector } from '../../../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../../../core/ride/redux/order/types';
 import AddressPopup from './AddressPopup';
 import PointItem from './PointItem';
@@ -47,7 +47,7 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  const points = useSelector(OrderPointsSelector);
+  const points = useSelector(orderPointsSelector);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -77,7 +77,7 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
     }
 
     return (
-      <Pressable key={point.id} onPress={() => navigation.navigate('AddressSelection', { offerPointId: point.id })}>
+      <Pressable key={point.id} onPress={() => navigation.navigate('AddressSelection', { orderPointId: point.id })}>
         <PointItem
           pointMode={pointMode}
           content={point.address}
@@ -97,6 +97,8 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
       addOrderPoint({
         id: pointId,
         address: '',
+        longitude: 0,
+        latitude: 0,
       }),
     );
 

@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import notificationsReducer from '../menu/redux/notifications';
+import walletRedicer from '../menu/redux/wallet';
 import alertsReducer from '../ride/redux/alerts';
 import geolocationReducer from '../ride/redux/geolocation';
 import mapReducer from '../ride/redux/map';
@@ -9,8 +10,9 @@ import tripReducer from '../ride/redux/trip';
 import passengerReducer from './passenger';
 
 const rootReducer = combineReducers({
-  alerts: alertsReducer,
   notifications: notificationsReducer,
+  wallet: walletRedicer,
+  alerts: alertsReducer,
   geolocation: geolocationReducer,
   map: mapReducer,
   order: orderReducer,

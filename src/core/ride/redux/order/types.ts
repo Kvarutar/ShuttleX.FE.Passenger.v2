@@ -1,3 +1,4 @@
+import { LatLng } from 'react-native-maps';
 import { TariffType } from 'shuttlex-integration';
 
 export enum OrderStatus {
@@ -9,13 +10,13 @@ export enum OrderStatus {
   RideUnavaliable = 'rideUnavaliable',
 }
 
-export type Point = {
-  id: number;
-  address: string;
-};
+export type AddressPoint = { id: number; address: string } & LatLng;
+
+export type Address = AddressPoint & { details?: string };
 
 export type OrderState = {
   status: OrderStatus;
   tripTariff: TariffType | null;
-  points: Point[];
+  points: AddressPoint[];
+  isLoading: boolean;
 };

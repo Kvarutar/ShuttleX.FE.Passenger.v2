@@ -53,7 +53,12 @@ const PointItem = ({ pointMode, content, onRemovePoint, currentPointId }: PointI
                 {content}
               </Text>
               <View style={styles.barButtons}>
-                <Pressable hitSlop={20} onPress={() => dispatch(updateOrderPoint({ id: currentPointId, address: '' }))}>
+                <Pressable
+                  hitSlop={20}
+                  onPress={() =>
+                    dispatch(updateOrderPoint({ id: currentPointId, address: '', longitude: 0, latitude: 0 }))
+                  }
+                >
                   <InputXIcon />
                 </Pressable>
                 <View style={[styles.line, computedStyles.line]} />

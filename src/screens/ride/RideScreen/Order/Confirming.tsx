@@ -5,7 +5,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Button, ButtonModes, Text, Timer, TimerModes, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
-import { createOffer } from '../../../../core/ride/redux/order/thunks';
+import { createOrder } from '../../../../core/ride/redux/order/thunks';
 
 const Confirming = ({ onCancel }: { onCancel: () => void }) => {
   const { colors } = useTheme();
@@ -23,7 +23,7 @@ const Confirming = ({ onCancel }: { onCancel: () => void }) => {
       });
     }, 400);
 
-    dispatch(createOffer());
+    dispatch(createOrder());
 
     return () => clearInterval(interval);
   }, [dispatch]);

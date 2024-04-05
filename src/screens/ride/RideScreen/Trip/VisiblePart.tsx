@@ -3,12 +3,12 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MenuUserImage, Text, useTheme } from 'shuttlex-integration';
 
-import { ContractorInfoSelector } from '../../../../core/ride/redux/trip/selectors';
+import { contractorInfoSelector } from '../../../../core/ride/redux/trip/selectors';
 
 const isPlatformIos = Platform.OS === 'ios';
 
 const VisiblePart = () => {
-  const contractorInfo = useSelector(ContractorInfoSelector);
+  const contractorInfo = useSelector(contractorInfoSelector);
   const { colors } = useTheme();
 
   const computedStyles = StyleSheet.create({

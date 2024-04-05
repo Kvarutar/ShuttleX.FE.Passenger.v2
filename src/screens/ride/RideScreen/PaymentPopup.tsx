@@ -17,8 +17,8 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { selectedPaymentMethodSelector } from '../../../core/menu/redux/wallet/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { selectedPaymentMethodSelector } from '../../../core/redux/passenger/selectors';
 import { setOrderStatus } from '../../../core/ride/redux/order';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
 import { RootStackParamList } from '../../../Navigate/props';
@@ -48,7 +48,11 @@ const PaymentPopup = ({
           {selectedPaymentMethod ? (
             <View style={styles.paymentInfo}>
               {getPaymentIcon(selectedPaymentMethod.method)}
-              <Text style={styles.paymentData}>**** {selectedPaymentMethod.details}</Text>
+              <Text style={styles.paymentData}>
+                {selectedPaymentMethod.method === 'cash'
+                  ? t('ride_Ride_PaymentPopup_cash')
+                  : `**** ${selectedPaymentMethod.details}`}
+              </Text>
             </View>
           ) : (
             <View style={styles.paymentInfo}>
@@ -82,10 +86,13 @@ const PaymentPopup = ({
         </View>
         <Text style={styles.totalMoney}>$98.80</Text>
       </View>
-      <Button
-        text={t('ride_Ride_PaymentPopup_button')}
-        onPress={() => dispatch(setOrderStatus(OrderStatus.Confirmation))}
-      />
+      {selectedPaymentMethod && (
+        <Button
+          style={styles.confirmButton}
+          text={t('ride_Ride_PaymentPopup_button')}
+          onPress={() => dispatch(setOrderStatus(OrderStatus.Confirmation))}
+        />
+      )}
     </Popup>
   );
 };
@@ -123,7 +130,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 30,
   },
   tripTotalSmall: {
     flexDirection: 'row',
@@ -146,6 +152,9 @@ const styles = StyleSheet.create({
   roundButton: {
     height: 28,
     width: 28,
+  },
+  confirmButton: {
+    marginTop: 30,
   },
 });
 
