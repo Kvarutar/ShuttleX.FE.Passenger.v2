@@ -1,6 +1,6 @@
-import React, { ReactNode, useCallback } from 'react';
+import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, FlexStyle, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import Animated, {
   Extrapolation,
   FadeIn,
@@ -28,17 +28,13 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+const tariffs: TariffType[] = ['BasicX', 'BasicXL', 'PremiumXL', 'ComfortX', 'PremiumX', 'PremiumXL', 'TeslaX']; //for test only
+
 const windowWidth = Dimensions.get('window').width;
 
 const cardSizes = {
-  small: {
-    width: 151,
-    height: 166,
-  },
-  big: {
-    width: 238,
-    height: 274,
-  },
+  width: 238,
+  height: 274,
 };
 
 const keyframes = {
@@ -48,49 +44,37 @@ const keyframes = {
   rightBeforeNext: 0.8,
 };
 
-const TariffsCarousel = () => {
-  // this version have perfomance issues
-  const tariffs: TariffType[] = ['BasicX', 'BasicXL', 'PremiumXL', 'ComfortX', 'PremiumX', 'PremiumXL', 'TeslaX']; //for test only
-
-  const animationStyle = useCallback((value: number) => {
-    'worklet';
-
-    const width = interpolate(
-      value,
-      [-1, 0, 1],
-      [cardSizes.small.width, cardSizes.big.width + 20, cardSizes.small.width],
-      Extrapolation.CLAMP,
-    );
-    const height = interpolate(
-      value,
-      [-1, 0, 1],
-      [cardSizes.small.height, cardSizes.big.height, cardSizes.small.height],
-      Extrapolation.CLAMP,
-    );
-    const translateX = interpolate(value, [-1, 0, 1], [-cardSizes.big.width, 0, cardSizes.big.width]);
-
-    return {
-      transform: [{ translateX }],
-      width,
-      height,
-    };
-  }, []);
-
-  return (
-    <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.carouselWrapper}>
-      <Carousel
-        loop={false}
-        style={styles.carouselContentWrapper}
-        width={cardSizes.big.width}
-        height={320}
-        data={[...tariffs]}
-        customAnimation={animationStyle}
-        scrollAnimationDuration={300}
-        renderItem={({ item, animationValue }) => <CarouselItem animationValue={animationValue} item={item} />}
-      />
-    </Animated.View>
-  );
+type PivotPoint = {
+  x: number;
+  y: number;
 };
+
+const transformOriginWorklet = (anchorPoint: PivotPoint, originalCenterPoint: PivotPoint, transforms: any) => {
+  //Function for applying pivot point in transformations
+  'worklet';
+  const result = [
+    { translateX: anchorPoint.x - originalCenterPoint.x },
+    { translateY: anchorPoint.y - originalCenterPoint.y },
+    ...transforms,
+    { translateX: -(anchorPoint.x - originalCenterPoint.x) },
+    { translateY: -(anchorPoint.y - originalCenterPoint.y) },
+  ];
+  return result;
+};
+
+const TariffsCarousel = () => (
+  <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.carouselWrapper}>
+    <Carousel
+      loop={false}
+      style={styles.carouselContentWrapper}
+      width={cardSizes.width}
+      height={cardSizes.height}
+      data={tariffs}
+      scrollAnimationDuration={300}
+      renderItem={({ item, animationValue }) => <CarouselItem animationValue={animationValue} item={item} />}
+    />
+  </Animated.View>
+);
 
 const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<number>; item: TariffType }) => {
   const { colors } = useTheme();
@@ -113,9 +97,22 @@ const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<nu
 
   const carouselItemWrapperAnimatedStyles = useAnimatedStyle(() => ({
     transform: [
-      { translateX: interpolate(animationValue.value, [-2, -1, 0, 1, 2], [-30, 40, 20, 40, -30], Extrapolation.CLAMP) },
+      {
+        translateX: interpolate(animationValue.value, [-2, -1, 0, 1, 2], [-30, 20, 20, -20, -30], Extrapolation.CLAMP), //Custom space between cards
+      },
     ],
   }));
+
+  const barWrapperAnimatedStyles = useAnimatedStyle(() => {
+    const scale = interpolate(animationValue.value, [-1, 0, 1], [0.5, 1.0, 0.5], Extrapolation.CLAMP);
+    return {
+      transform: transformOriginWorklet(
+        { x: cardSizes.width, y: cardSizes.height },
+        { x: cardSizes.width, y: cardSizes.height / 2.0 },
+        [{ scale }],
+      ),
+    };
+  });
 
   const opacityAnimatedStyles = useAnimatedStyle(() => ({
     opacity: interpolate(
@@ -127,11 +124,10 @@ const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<nu
   }));
 
   const imageAnimatedStyles = useAnimatedStyle(() => ({
-    transform: [{ scale: interpolate(animationValue.value, [-1, 0, 1], [0.7, 1, 0.7], Extrapolation.CLAMP) }],
+    transform: [{ scale: interpolate(animationValue.value, [-1, 0, 1], [1.2, 1, 1.2], Extrapolation.CLAMP) }], //Negate scale for image in small state
   }));
 
   const titleAnimatedStyles = useAnimatedStyle(() => {
-    let justifyContent: FlexStyle['justifyContent'] = 'center';
     const opacity = interpolate(
       animationValue.value,
       [
@@ -143,19 +139,15 @@ const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<nu
         keyframes.rightBeforeNext,
         1,
       ],
-      [1, 0, 0, 1, 0, 0, 1],
+      [0, 0, 0, 1, 0, 0, 0],
       Extrapolation.CLAMP,
     );
-    const marginBottom = interpolate(animationValue.value, [-1, 0, 1], [10, 30, 10], Extrapolation.CLAMP);
 
-    if (animationValue.value >= keyframes.rightBeforeCurrent && animationValue.value <= keyframes.rightAfterCurrent) {
-      justifyContent = 'space-between';
-    }
-    return { justifyContent, opacity, marginBottom };
+    return { opacity };
   });
 
-  const desriptionAnimatedStyles = useAnimatedStyle(() => {
-    let flexDirection: FlexStyle['flexDirection'] = 'column-reverse';
+  const smallDescriptionAnimatedStyles = useAnimatedStyle(() => {
+    const transform = [{ scale: interpolate(animationValue.value, [-1, 0, 1], [1.5, 1, 1.5], Extrapolation.CLAMP) }]; //Negate scale for description in small state
     const opacity = interpolate(
       animationValue.value,
       [
@@ -167,32 +159,52 @@ const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<nu
         keyframes.rightBeforeNext,
         1,
       ],
-      [1, 0, 0, 1, 0, 0, 1],
+      [1, 0, 0, 0, 0, 0, 1],
       Extrapolation.CLAMP,
     );
 
-    if (animationValue.value >= keyframes.rightBeforeCurrent && animationValue.value <= keyframes.rightAfterCurrent) {
-      flexDirection = 'row';
-    }
-    return { flexDirection, opacity };
+    return { transform, opacity };
   });
 
   return (
-    <Animated.View style={[styles.smallCard, carouselItemWrapperAnimatedStyles]}>
-      <Bar style={styles.barStyle} disableShadow>
-        <Animated.View style={[styles.barImageWrapper, imageAnimatedStyles]}>{tariffsImages[item]}</Animated.View>
-        <View>
-          <Animated.View style={[styles.barTitleContainer, titleAnimatedStyles]}>
+    <Animated.View style={[styles.card, carouselItemWrapperAnimatedStyles]}>
+      <Animated.View style={barWrapperAnimatedStyles}>
+        <Bar style={styles.barStyle}>
+          <Animated.View style={[styles.barImageWrapper, imageAnimatedStyles]}>{tariffsImages[item]}</Animated.View>
+          <View>
+            <Animated.View style={[styles.barTitleContainer, titleAnimatedStyles]}>
+              <Text style={styles.barTitleText}>{item}</Text>
+              <Text style={styles.barTitleText}>$98.80</Text>
+            </Animated.View>
+            <Animated.View style={[styles.barBasicInfo, opacityAnimatedStyles]}>
+              <Animated.View style={styles.barInfoItem}>
+                <PassengerIcon2 />
+                <Text style={[styles.barContentText, computedStyles.barContentText]}>
+                  {t('ride_Ride_TariffsCarousel_passengerCapacity', { minNum: 1, maxNum: 3 })}
+                </Text>
+              </Animated.View>
+              <Animated.View style={styles.barInfoItem}>
+                <ClockIcon />
+                <Text style={[styles.barContentText, computedStyles.barContentText]}>
+                  {t('ride_Ride_TariffsCarousel_minutes', { count: 8 })}
+                </Text>
+              </Animated.View>
+            </Animated.View>
+            <Animated.View style={[styles.barAdditionalInfo, opacityAnimatedStyles]}>
+              <View style={styles.barInfoItem}>
+                <BaggageIcon />
+                <Text style={[styles.barContentText, computedStyles.barContentText]}>
+                  {t('ride_Ride_TariffsCarousel_carryOnBaggage')}
+                </Text>
+              </View>
+            </Animated.View>
+          </View>
+          <Animated.View style={opacityAnimatedStyles}>
+            <Button text={t('ride_Ride_TariffsCarousel_selectButton')} />
+          </Animated.View>
+          <Animated.View style={[styles.smallDescriptionContainer, smallDescriptionAnimatedStyles]}>
             <Text style={styles.barTitleText}>{item}</Text>
             <Text style={styles.barTitleText}>$98.80</Text>
-          </Animated.View>
-          <Animated.View style={[styles.barBasicInfo, desriptionAnimatedStyles]}>
-            <Animated.View style={[styles.barInfoItem, opacityAnimatedStyles]}>
-              <PassengerIcon2 />
-              <Text style={[styles.barContentText, computedStyles.barContentText]}>
-                {t('ride_Ride_TariffsCarousel_passengerCapacity', { minNum: 1, maxNum: 3 })}
-              </Text>
-            </Animated.View>
             <View style={styles.barInfoItem}>
               <ClockIcon />
               <Text style={[styles.barContentText, computedStyles.barContentText]}>
@@ -200,19 +212,8 @@ const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<nu
               </Text>
             </View>
           </Animated.View>
-          <Animated.View style={[styles.barAdditionalInfo, opacityAnimatedStyles]}>
-            <View style={styles.barInfoItem}>
-              <BaggageIcon />
-              <Text style={[styles.barContentText, computedStyles.barContentText]}>
-                {t('ride_Ride_TariffsCarousel_carryOnBaggage')}
-              </Text>
-            </View>
-          </Animated.View>
-        </View>
-        <Animated.View style={opacityAnimatedStyles}>
-          <Button text={t('ride_Ride_TariffsCarousel_selectButton')} />
-        </Animated.View>
-      </Bar>
+        </Bar>
+      </Animated.View>
     </Animated.View>
   );
 };
@@ -227,14 +228,17 @@ const styles = StyleSheet.create({
   carouselContentWrapper: {
     width: windowWidth,
     alignItems: 'flex-end',
+    overflow: 'visible',
   },
-  smallCard: {
-    minWidth: cardSizes.small.width,
-    minHeight: cardSizes.small.height,
+  card: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   barStyle: {
-    width: '100%',
-    height: '100%',
+    width: cardSizes.width,
+    height: cardSizes.height,
     justifyContent: 'space-between',
     overflow: 'visible',
   },
@@ -253,6 +257,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 30,
     alignItems: 'center',
+  },
+  smallDescriptionContainer: {
+    position: 'absolute',
+    bottom: sizes.paddingVertical,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+    alignItems: 'center',
+    alignSelf: 'center',
+    gap: 10,
   },
   barTitleText: {
     fontFamily: 'Inter Medium',

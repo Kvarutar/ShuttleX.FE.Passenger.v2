@@ -17,7 +17,7 @@ import { AddressSelectMode } from './AddressSelect/props';
 import Confirming from './Confirming';
 import OrderCreationError from './OrderCreationError';
 import StartRide from './StartRide';
-import TariffsCarousel from './TariffsCarousel_v2';
+import TariffsCarousel from './TariffsCarousel_v1';
 
 const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined> }) => {
   const currentOrderStatus = useSelector(orderStatusSelector);
