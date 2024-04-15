@@ -95,9 +95,6 @@ const AdditionalContent = () => {
     balanceTitle: {
       color: colors.textSecondaryColor,
     },
-    separator: {
-      borderColor: colors.strokeColor,
-    },
   };
 
   return (
@@ -106,7 +103,7 @@ const AdditionalContent = () => {
         <Text style={[styles.balanceTitle, computedStyles.balanceTitle]}>Earned</Text>
         <Text style={styles.balanceTotal}>$682.40</Text>
       </View>
-      <Separator mode="vertical" />
+      <Separator mode="vertical" style={styles.separator} />
       <View style={styles.textWrapper}>
         <Text style={[styles.balanceTitle, computedStyles.balanceTitle]}>Previous</Text>
         <Text style={styles.balanceTotal}>$12.10</Text>
@@ -118,6 +115,9 @@ const AdditionalContent = () => {
 const styles = StyleSheet.create({
   menu: {
     zIndex: 3,
+  },
+  separator: {
+    flex: 0,
   },
   balance: {
     flexDirection: 'row',

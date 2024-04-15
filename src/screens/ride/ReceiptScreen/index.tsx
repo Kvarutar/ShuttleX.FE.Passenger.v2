@@ -73,7 +73,7 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
               <View style={styles.address}>
                 <View style={styles.addressIcons}>
                   <PickUpIcon />
-                  <Separator mode="vertical" style={styles.verticalSeparator} />
+                  <Separator mode="vertical" />
                 </View>
                 <View style={styles.addressText}>
                   <Text style={[styles.addressDescription, computedStyles.addressDescription]}>
@@ -176,9 +176,6 @@ const styles = StyleSheet.create({
   },
   paymentSeparator: {
     marginVertical: 20,
-  },
-  verticalSeparator: {
-    flex: 1,
   },
   addresses: {
     position: 'relative',
