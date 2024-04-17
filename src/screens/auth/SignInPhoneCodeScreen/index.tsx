@@ -1,57 +1,33 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import { Button, CodeInput, RoundButton, ShortArrowIcon, sizes, Text, useTheme } from 'shuttlex-integration';
+import { StyleSheet, View } from 'react-native';
+import { Button, CodeInput, RoundButton, SafeAreaView, ShortArrowIcon, Text } from 'shuttlex-integration';
 
 import { SignInPhoneCodeScreenProps } from './props';
 
 const SignInPhoneCodeScreen = ({ navigation }: SignInPhoneCodeScreenProps): JSX.Element => {
-  const { colors } = useTheme();
   const { t } = useTranslation();
 
-  const goBackToScreen = () => navigation.goBack();
-
-  const computedStyles = StyleSheet.create({
-    wrapper: {
-      backgroundColor: colors.backgroundPrimaryColor,
-    },
-    container: {
-      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
-    },
-    signUpLabel: {
-      color: colors.primaryColor,
-    },
-  });
-
   return (
-    <SafeAreaView style={[styles.wrapper, computedStyles.wrapper]}>
-      <View style={[styles.container, computedStyles.container]}>
-        <View style={styles.header}>
-          <RoundButton onPress={goBackToScreen}>
-            <ShortArrowIcon />
-          </RoundButton>
-          <Text style={styles.headerTitle}>{t('auth_SignInPhoneCode_headerTitle')}</Text>
-          <View style={styles.headerDummy} />
-        </View>
-
-        <Text style={[styles.codeText]}>{t('auth_SignInPhoneCode_prompt')}</Text>
-
-        <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
-
-        <Button text={t('auth_SignInPhoneCode_button')} onPress={() => navigation.replace('Ride')} />
+    <SafeAreaView>
+      <View style={styles.header}>
+        <RoundButton onPress={navigation.goBack}>
+          <ShortArrowIcon />
+        </RoundButton>
+        <Text style={styles.headerTitle}>{t('auth_SignInPhoneCode_headerTitle')}</Text>
+        <View style={styles.headerDummy} />
       </View>
+
+      <Text style={styles.codeText}>{t('auth_SignInPhoneCode_prompt')}</Text>
+
+      <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
+
+      <Button text={t('auth_SignInPhoneCode_button')} onPress={() => navigation.replace('Ride')} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    paddingHorizontal: sizes.paddingHorizontal,
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',

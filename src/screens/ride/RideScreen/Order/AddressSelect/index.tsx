@@ -153,6 +153,7 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
         contentContainerStyle={styles.pointsWrapper}
         barStyle={styles.scrollBar}
         wrapperStyle={styles.scrollViewWrapper}
+        withShadow
       >
         {pointsContent}
       </ScrollViewWithCustomScroll>

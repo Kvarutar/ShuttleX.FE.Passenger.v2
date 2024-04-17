@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Platform, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   DropOffIcon,
   RoundButton,
+  SafeAreaView,
   ScrollViewWithCustomScroll,
   ShortArrowIcon,
-  sizes,
   Text,
   TextInput,
   Timer,
@@ -61,11 +61,7 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
   };
 
   let content = (
-    <ScrollViewWithCustomScroll
-      contentContainerStyle={styles.scrollViewContent}
-      style={styles.scrollView}
-      barStyle={styles.bar}
-    >
+    <ScrollViewWithCustomScroll contentContainerStyle={styles.scrollViewContent} barStyle={styles.bar}>
       {addresses.map((item, index) => (
         <AddressItem
           key={index}
@@ -90,28 +86,23 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
     );
   }
 
-  const computedStyles = StyleSheet.create({
-    container: {
-      backgroundColor: colors.backgroundPrimaryColor,
-      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
-    },
-  });
-
   return (
-    <SafeAreaView style={[styles.container, computedStyles.container]}>
-      <View style={[styles.header]}>
-        <RoundButton onPress={navigation.goBack}>
-          <ShortArrowIcon />
-        </RoundButton>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={onChangeText}
-          value={inputValue}
-          containerStyle={styles.inputContainer}
-        />
-      </View>
-      {content}
-    </SafeAreaView>
+    <KeyboardAvoidingView style={styles.keyboardAvoidingView} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <SafeAreaView>
+        <View style={styles.header}>
+          <RoundButton onPress={navigation.goBack}>
+            <ShortArrowIcon />
+          </RoundButton>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={onChangeText}
+            value={inputValue}
+            containerStyle={styles.inputContainer}
+          />
+        </View>
+        {content}
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -142,9 +133,8 @@ const AddressItem = ({ address, onAddressSelect, details }: AddressItemProps) =>
 };
 
 const styles = StyleSheet.create({
-  container: {
+  keyboardAvoidingView: {
     flex: 1,
-    paddingBottom: sizes.paddingVertical,
   },
   inputContainer: {
     flex: 1,
@@ -154,7 +144,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 20,
-    paddingHorizontal: sizes.paddingHorizontal,
     marginBottom: 24,
   },
   bar: {
@@ -172,13 +161,8 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     flexShrink: 1,
   },
-  scrollView: {
-    paddingHorizontal: sizes.paddingHorizontal,
-    marginVertical: 0,
-  },
   scrollViewContent: {
     gap: 20,
-    paddingVertical: 0,
   },
   textWrapper: {
     flexShrink: 1,

@@ -1,23 +1,13 @@
 import React from 'react';
-import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import { AddCardScreen, Card, sizes, useTheme } from 'shuttlex-integration';
+import { StyleSheet } from 'react-native';
+import { AddCardScreen, Card, SafeAreaView } from 'shuttlex-integration';
 
 import { addAvaliablePaymentMethod, setSelectedPaymentMethod } from '../../../../core/menu/redux/wallet';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { AddPaymentScreenProps } from './props';
 
 const AddPaymentScreen = ({ navigation }: AddPaymentScreenProps): JSX.Element => {
-  const { colors } = useTheme();
   const dispatch = useAppDispatch();
-
-  const computedStyles = StyleSheet.create({
-    wrapper: {
-      backgroundColor: colors.backgroundPrimaryColor,
-    },
-    container: {
-      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
-    },
-  });
 
   const onCardSave = (cardData: Card) => {
     const cardSafeNumber = cardData.number.split(' ');
@@ -30,21 +20,14 @@ const AddPaymentScreen = ({ navigation }: AddPaymentScreenProps): JSX.Element =>
     navigation.goBack();
   };
   return (
-    <SafeAreaView style={[styles.wrapper, computedStyles.wrapper]}>
-      <View style={[styles.container, computedStyles.container]}>
-        <AddCardScreen onCardSave={onCardSave} onBackButtonPress={navigation.goBack} />
-      </View>
+    <SafeAreaView containerStyle={styles.container}>
+      <AddCardScreen onCardSave={onCardSave} onBackButtonPress={navigation.goBack} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-  },
   container: {
-    flex: 1,
-    paddingHorizontal: sizes.paddingHorizontal,
     justifyContent: 'space-between',
   },
 });

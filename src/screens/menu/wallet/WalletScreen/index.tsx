@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   Bar,
@@ -10,10 +10,9 @@ import {
   getPaymentIcon,
   PaymentMethod,
   RoundButton,
+  SafeAreaView,
   ShortArrowIcon,
-  sizes,
   Text,
-  useTheme,
 } from 'shuttlex-integration';
 
 import { setSelectedPaymentMethod } from '../../../../core/menu/redux/wallet';
@@ -25,16 +24,8 @@ import { useAppDispatch } from '../../../../core/redux/hooks';
 import { WalletScreenProps } from './props';
 
 const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
-  const { colors } = useTheme();
   const { t } = useTranslation();
   const avaliablePaymentMethods = useSelector(avaliablePaymentMethodsSelector);
-
-  const computedStyles = StyleSheet.create({
-    container: {
-      backgroundColor: colors.backgroundPrimaryColor,
-      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
-    },
-  });
 
   let paymentContent = null;
   let emptyWallet = null;
@@ -49,21 +40,19 @@ const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
   }
 
   return (
-    <SafeAreaView style={[styles.container, computedStyles.container]}>
-      <View style={styles.wrapper}>
-        <View>
-          <View style={styles.header}>
-            <RoundButton onPress={navigation.goBack}>
-              <ShortArrowIcon />
-            </RoundButton>
-            <Text style={styles.headerTitle}>{t('menu_Wallet_title')}</Text>
-            <View style={styles.headerDummy} />
-          </View>
-          {paymentContent}
+    <SafeAreaView containerStyle={styles.container}>
+      <View>
+        <View style={styles.header}>
+          <RoundButton onPress={navigation.goBack}>
+            <ShortArrowIcon />
+          </RoundButton>
+          <Text style={styles.headerTitle}>{t('menu_Wallet_title')}</Text>
+          <View style={styles.headerDummy} />
         </View>
-        {emptyWallet}
-        <Button text={t('menu_Wallet_button')} onPress={() => navigation.navigate('AddPayment')} />
+        {paymentContent}
       </View>
+      {emptyWallet}
+      <Button text={t('menu_Wallet_button')} onPress={() => navigation.navigate('AddPayment')} />
     </SafeAreaView>
   );
 };
@@ -105,11 +94,6 @@ const PaymentItem = ({ paymentMethod }: { paymentMethod: PaymentMethod }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  wrapper: {
-    flex: 1,
-    paddingHorizontal: sizes.paddingHorizontal,
     justifyContent: 'space-between',
   },
   header: {

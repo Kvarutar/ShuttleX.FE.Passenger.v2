@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   Bar,
@@ -10,9 +10,9 @@ import {
   getPaymentIcon,
   PickUpIcon,
   RoundButton,
+  SafeAreaView,
   ScrollViewWithCustomScroll,
   Separator,
-  sizes,
   Text,
   useTheme,
 } from 'shuttlex-integration';
@@ -33,12 +33,6 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
   const selectedPaymentMethod = useSelector(selectedPaymentMethodSelector);
 
   const computedStyles = StyleSheet.create({
-    wrapper: {
-      backgroundColor: colors.backgroundPrimaryColor,
-    },
-    container: {
-      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
-    },
     addressDescription: {
       color: colors.textSecondaryColor,
     },
@@ -57,89 +51,82 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
   }
 
   return (
-    <SafeAreaView style={[styles.wrapper, computedStyles.wrapper]}>
-      <View style={[styles.container, computedStyles.container]}>
-        <ScrollViewWithCustomScroll contentContainerStyle={styles.content}>
-          <View style={styles.header}>
-            <RoundButton onPress={onEndTrip}>
-              <CloseIcon />
-            </RoundButton>
+    <SafeAreaView containerStyle={styles.container}>
+      <ScrollViewWithCustomScroll contentContainerStyle={styles.content}>
+        <View style={styles.header}>
+          <RoundButton onPress={onEndTrip}>
+            <CloseIcon />
+          </RoundButton>
+        </View>
+        <View style={styles.order}>
+          <View style={styles.mapWrapper}>
+            <View style={[styles.map, computedStyles.map]} />
           </View>
-          <View style={styles.order}>
-            <View style={styles.mapWrapper}>
-              <View style={[styles.map, computedStyles.map]} />
+          <Bar style={styles.addresses}>
+            <View style={styles.address}>
+              <View style={styles.addressIcons}>
+                <PickUpIcon />
+                <Separator mode="vertical" />
+              </View>
+              <View style={styles.addressText}>
+                <Text style={[styles.addressDescription, computedStyles.addressDescription]}>
+                  {t('ride_Receipt_pickUp')}
+                </Text>
+                <Text numberOfLines={1} style={styles.addressContent}>
+                  {tripInfo.route.startPoint.address}
+                </Text>
+                <Separator style={styles.separator} />
+              </View>
             </View>
-            <Bar style={styles.addresses}>
-              <View style={styles.address}>
-                <View style={styles.addressIcons}>
-                  <PickUpIcon />
-                  <Separator mode="vertical" />
-                </View>
-                <View style={styles.addressText}>
-                  <Text style={[styles.addressDescription, computedStyles.addressDescription]}>
-                    {t('ride_Receipt_pickUp')}
-                  </Text>
-                  <Text numberOfLines={1} style={styles.addressContent}>
-                    {tripInfo.route.startPoint.address}
-                  </Text>
-                  <Separator style={styles.separator} />
-                </View>
+            <View style={styles.address}>
+              <View>
+                <DropOffIcon />
               </View>
-              <View style={styles.address}>
-                <View>
-                  <DropOffIcon />
-                </View>
-                <View>
-                  <Text style={[styles.addressDescription, computedStyles.addressDescription]}>
-                    {t('ride_Receipt_dropOff')}
-                  </Text>
-                  <Text>{tripInfo.route.endPoints[tripInfo.route.endPoints.length - 1].address}</Text>
-                </View>
+              <View>
+                <Text style={[styles.addressDescription, computedStyles.addressDescription]}>
+                  {t('ride_Receipt_dropOff')}
+                </Text>
+                <Text>{tripInfo.route.endPoints[tripInfo.route.endPoints.length - 1].address}</Text>
               </View>
-            </Bar>
-          </View>
-          {selectedPaymentMethod && (
-            <View>
-              <Text style={styles.paymentTitle}>{t('ride_Receipt_paymentTitle')}</Text>
-              <View style={styles.payment}>
-                <View style={styles.paymentWrapper}>
-                  {getPaymentIcon(selectedPaymentMethod.method)}
-                  <Text style={styles.paymentMethod}>
-                    {selectedPaymentMethod.method === 'cash'
-                      ? t('ride_Receipt_cash')
-                      : `**** ${selectedPaymentMethod.details}`}
-                  </Text>
-                </View>
-                <Text style={styles.total}>${tripInfo.total}</Text>
+            </View>
+          </Bar>
+        </View>
+        {selectedPaymentMethod && (
+          <View>
+            <Text style={styles.paymentTitle}>{t('ride_Receipt_paymentTitle')}</Text>
+            <View style={styles.payment}>
+              <View style={styles.paymentWrapper}>
+                {getPaymentIcon(selectedPaymentMethod.method)}
+                <Text style={styles.paymentMethod}>
+                  {selectedPaymentMethod.method === 'cash'
+                    ? t('ride_Receipt_cash')
+                    : `**** ${selectedPaymentMethod.details}`}
+                </Text>
               </View>
+              <Text style={styles.total}>${tripInfo.total}</Text>
+            </View>
 
-              {tip && (
-                <>
-                  <Separator style={styles.paymentSeparator} />
-                  <View style={styles.payment}>
-                    <View style={styles.paymentWrapper}>
-                      <Text style={styles.paymentMethod}>{t('ride_Receipt_tips')}</Text>
-                    </View>
-                    <Text style={styles.total}>${tip}</Text>
+            {tip && (
+              <>
+                <Separator style={styles.paymentSeparator} />
+                <View style={styles.payment}>
+                  <View style={styles.paymentWrapper}>
+                    <Text style={styles.paymentMethod}>{t('ride_Receipt_tips')}</Text>
                   </View>
-                </>
-              )}
-            </View>
-          )}
-        </ScrollViewWithCustomScroll>
-        <Button text={t('ride_Receipt_continueButton')} onPress={onEndTrip} />
-      </View>
+                  <Text style={styles.total}>${tip}</Text>
+                </View>
+              </>
+            )}
+          </View>
+        )}
+      </ScrollViewWithCustomScroll>
+      <Button text={t('ride_Receipt_continueButton')} onPress={onEndTrip} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-  },
   container: {
-    flex: 1,
-    paddingHorizontal: sizes.paddingHorizontal,
     justifyContent: 'space-between',
   },
   content: {

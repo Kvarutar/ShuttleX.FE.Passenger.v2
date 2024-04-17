@@ -28,6 +28,10 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { useAppDispatch } from '../../../../core/redux/hooks';
+import { setOrderStatus, setTripTariff } from '../../../../core/ride/redux/order';
+import { OrderStatus } from '../../../../core/ride/redux/order/types';
+
 const tariffs: TariffType[] = ['BasicX', 'BasicXL', 'PremiumXL', 'ComfortX', 'PremiumX', 'PremiumXL', 'TeslaX']; //for test only
 
 const windowWidth = Dimensions.get('window').width;
@@ -79,6 +83,7 @@ const TariffsCarousel = () => (
 const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<number>; item: TariffType }) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   const tariffsImages: Record<TariffType, ReactNode> = {
     BasicX: <BasicXImage style={styles.barImage} />,
@@ -166,6 +171,11 @@ const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<nu
     return { transform, opacity };
   });
 
+  const onTariffSelect = () => {
+    dispatch(setTripTariff(item));
+    dispatch(setOrderStatus(OrderStatus.Confirming));
+  };
+
   return (
     <Animated.View style={[styles.card, carouselItemWrapperAnimatedStyles]}>
       <Animated.View style={barWrapperAnimatedStyles}>
@@ -200,7 +210,7 @@ const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<nu
             </Animated.View>
           </View>
           <Animated.View style={opacityAnimatedStyles}>
-            <Button text={t('ride_Ride_TariffsCarousel_selectButton')} />
+            <Button text={t('ride_Ride_TariffsCarousel_selectButton')} onPress={onTariffSelect} />
           </Animated.View>
           <Animated.View style={[styles.smallDescriptionContainer, smallDescriptionAnimatedStyles]}>
             <Text style={styles.barTitleText}>{item}</Text>
