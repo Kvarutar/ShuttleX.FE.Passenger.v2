@@ -8,6 +8,8 @@ import mapReducer from '../ride/redux/map';
 import orderReducer from '../ride/redux/order';
 import tripReducer from '../ride/redux/trip';
 import passengerReducer from './passenger';
+import signalRReducer from './signalr';
+import { signalRMiddleware } from './signalr/middleware';
 
 const rootReducer = combineReducers({
   notifications: notificationsReducer,
@@ -18,10 +20,12 @@ const rootReducer = combineReducers({
   order: orderReducer,
   trip: tripReducer,
   passenger: passengerReducer,
+  signalR: signalRReducer,
 });
 
 export const store = configureStore({
   reducer: rootReducer,
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(signalRMiddleware()),
 });
 
 export type AppState = ReturnType<typeof store.getState>;
