@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Navigate = (): JSX.Element => (
   <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
     <Stack.Navigator
-      initialRouteName="Splash"
+      initialRouteName="Ride"
       screenOptions={{
         headerShown: false,
       }}

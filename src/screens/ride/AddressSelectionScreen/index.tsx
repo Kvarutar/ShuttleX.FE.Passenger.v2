@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   DropOffIcon,
+  KeyboardAvoidingView,
   RoundButton,
   SafeAreaView,
   ScrollViewWithCustomScroll,
@@ -20,11 +21,9 @@ import { updateOrderPoint } from '../../../core/ride/redux/order';
 import { isOrderLoadingSelector } from '../../../core/ride/redux/order/selectors';
 import { fetchAddresses } from '../../../core/ride/redux/order/thunks';
 import { Address } from '../../../core/ride/redux/order/types';
-import { useKeyboardAutoSoftInputModeAndroid } from '../../../core/utils/hooks';
 import { AddressItemProps, AddressSelectionScreenProps } from './props';
 
 const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenProps): JSX.Element => {
-  useKeyboardAutoSoftInputModeAndroid();
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
 
@@ -87,7 +86,7 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
   }
 
   return (
-    <KeyboardAvoidingView style={styles.keyboardAvoidingView} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView>
       <SafeAreaView>
         <View style={styles.header}>
           <RoundButton onPress={navigation.goBack}>
@@ -133,9 +132,6 @@ const AddressItem = ({ address, onAddressSelect, details }: AddressItemProps) =>
 };
 
 const styles = StyleSheet.create({
-  keyboardAvoidingView: {
-    flex: 1,
-  },
   inputContainer: {
     flex: 1,
   },

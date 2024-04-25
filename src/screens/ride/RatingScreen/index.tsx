@@ -1,14 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet } from 'react-native';
+import { Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { FeedbackScreen, FeedbackType, sizes, useTheme } from 'shuttlex-integration';
+import { FeedbackScreen, FeedbackType, KeyboardAvoidingView, sizes, useTheme } from 'shuttlex-integration';
 
 import { selectedPaymentMethodSelector } from '../../../core/menu/redux/wallet/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { endTrip } from '../../../core/ride/redux/trip';
 import { sendFeedback } from '../../../core/ride/redux/trip/thunks';
-import { useKeyboardAutoSoftInputModeAndroid } from '../../../core/utils/hooks';
 import { RatingScreenProps } from './props';
 
 const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
@@ -16,14 +15,11 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
   const selectedPaymentMethod = useSelector(selectedPaymentMethodSelector);
-  useKeyboardAutoSoftInputModeAndroid();
 
   const computedStyles = StyleSheet.create({
-    wrapper: {
-      backgroundColor: colors.backgroundPrimaryColor,
-    },
     container: {
       paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
+      backgroundColor: colors.backgroundPrimaryColor,
     },
   });
 
@@ -44,10 +40,7 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={[styles.wrapper, computedStyles.wrapper]}
-    >
+    <KeyboardAvoidingView>
       <SafeAreaView style={[styles.container, computedStyles.container]}>
         <FeedbackScreen
           onBackButtonPress={onEndTrip}
@@ -64,9 +57,6 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-  },
   feedback: {
     flex: 1,
     paddingHorizontal: sizes.paddingHorizontal,

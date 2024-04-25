@@ -174,7 +174,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
       </RoundButton>
       {stopWatch}
       <View style={styles.topRightButtonContainer}>
-        <RoundButton onPress={() => navigation.navigate('Notifications')}>
+        <RoundButton onPress={() => navigation.navigate('Rating')}>
           <NotificationIcon />
           {unreadNotificationsMarker}
         </RoundButton>
