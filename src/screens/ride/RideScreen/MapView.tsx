@@ -1,4 +1,3 @@
-import React from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MapView as MapViewIntegration } from 'shuttlex-integration';

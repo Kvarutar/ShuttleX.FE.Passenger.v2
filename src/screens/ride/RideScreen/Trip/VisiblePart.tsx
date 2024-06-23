@@ -1,4 +1,3 @@
-import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MenuUserImage, Text, useTheme } from 'shuttlex-integration';

@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, interpolate } from 'react-native-reanimated';

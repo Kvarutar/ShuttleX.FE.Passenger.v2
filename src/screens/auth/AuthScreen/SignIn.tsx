@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Button, emailRegex, PhoneInput, Text, TextInput, useTheme } from 'shuttlex-integration';

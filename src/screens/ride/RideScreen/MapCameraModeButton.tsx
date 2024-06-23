@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dimensions, ViewStyle } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MapCameraModeButton as MapCameraModeButtonIntegration, sizes } from 'shuttlex-integration';

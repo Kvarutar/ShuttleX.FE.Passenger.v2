@@ -1,5 +1,4 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';

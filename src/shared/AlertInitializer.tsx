@@ -1,4 +1,3 @@
-import React from 'react';
 import { getLocales } from 'react-native-localize';
 import {
   DriverArrivedAlert,
