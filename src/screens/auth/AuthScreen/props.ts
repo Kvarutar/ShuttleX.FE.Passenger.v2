@@ -13,6 +13,7 @@ export type SignInPhoneStateProps = {
   onLabelPress: () => void;
   changePhoneNumber: (phoneNumber: string | null) => void;
   isCorrectPhoneNumber?: boolean;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Auth', undefined>;
 };
 
 export type SignInEmailStateProps = {

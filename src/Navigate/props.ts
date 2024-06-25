@@ -1,3 +1,5 @@
+import { countryDtosProps } from 'shuttlex-integration';
+
 export type RootStackParamList = {
   Splash: undefined;
   Auth: { state: 'SignIn' | 'SignUp' };
@@ -11,4 +13,6 @@ export type RootStackParamList = {
   Wallet: undefined;
   AddPayment: undefined;
   Receipt: undefined;
+  PhoneSelect: { initialFlag: countryDtosProps; onFlagSelect: (flag: countryDtosProps) => void };
+  Terms: undefined;
 };

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Button, emailRegex, PhoneInput, Text, TextInput, useTheme } from 'shuttlex-integration';
+import { Button, countryDtos, emailRegex, PhoneInput, Text, TextInput, useTheme } from 'shuttlex-integration';
 
 import { SignInEmailStateProps, SignInPhoneStateProps, SignProps } from './props';
 
@@ -53,6 +53,7 @@ const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
 
         {isPhoneNumberSelected ? (
           <SignInPhoneNumber
+            navigation={navigation}
             isCorrectPhoneNumber={isCorrectPhoneNumber}
             changePhoneNumber={value => setPhoneNumber(value)}
             onLabelPress={() => setIsPhoneNumberSelected(false)}
@@ -79,9 +80,16 @@ const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
   );
 };
 
-const SignInPhoneNumber = ({ isCorrectPhoneNumber, onLabelPress, changePhoneNumber }: SignInPhoneStateProps) => {
+const SignInPhoneNumber = ({
+  isCorrectPhoneNumber,
+  onLabelPress,
+  changePhoneNumber,
+  navigation,
+}: SignInPhoneStateProps) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
+
+  const [flagState, setFlagState] = useState(countryDtos[0]);
 
   const computedStyles = StyleSheet.create({
     dividerInputsLabel: {
@@ -92,6 +100,8 @@ const SignInPhoneNumber = ({ isCorrectPhoneNumber, onLabelPress, changePhoneNumb
   return (
     <>
       <PhoneInput
+        flagState={flagState}
+        onFlagPress={() => navigation.navigate('PhoneSelect', { initialFlag: flagState, onFlagSelect: setFlagState })}
         error={{
           isError: !isCorrectPhoneNumber,
           message: t('auth_Auth_SignIn_phoneNumberError'),

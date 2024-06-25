@@ -5,6 +5,7 @@ import { getLocales } from 'react-native-localize';
 import {
   Button,
   CheckBox,
+  countryDtos,
   DatePicker,
   emailRegex,
   PhoneInput,
@@ -57,6 +58,7 @@ const SignUp = ({ onPress, navigation }: SignProps): JSX.Element => {
   });
 
   const [isFormCorrect, setIsCorrectForm] = useState<correctValidationUserDataFormProps>(getInitialForm);
+  const [flagState, setFlagState] = useState(countryDtos[0]);
 
   const checkLength = (text: string) => text.length <= 30 && text.length >= 2;
 
@@ -153,6 +155,8 @@ const SignUp = ({ onPress, navigation }: SignProps): JSX.Element => {
           }
         />
         <PhoneInput
+          flagState={flagState}
+          onFlagPress={() => navigation.navigate('PhoneSelect', { initialFlag: flagState, onFlagSelect: setFlagState })}
           error={{
             isError: !isFormCorrect.correctPhoneNumber,
             message: t('auth_Auth_SignUp_phoneNumberError'),
@@ -177,7 +181,7 @@ const SignUp = ({ onPress, navigation }: SignProps): JSX.Element => {
           }}
           text={t('auth_Auth_SignUp_agree')}
         >
-          <Pressable onPress={navigationToSignUpPhoneCodeScreen} hitSlop={20}>
+          <Pressable onPress={() => navigation.navigate('Terms')} hitSlop={20}>
             <Text
               style={[
                 styles.checkBoxText,
@@ -203,7 +207,7 @@ const SignUp = ({ onPress, navigation }: SignProps): JSX.Element => {
           }}
           text={t('auth_Auth_SignUp_allowProcess')}
         >
-          <Pressable onPress={navigationToSignUpPhoneCodeScreen} hitSlop={20}>
+          <Pressable onPress={() => navigation.navigate('Terms')} hitSlop={20}>
             <Text
               style={[
                 styles.checkBoxText,
