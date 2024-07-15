@@ -6,6 +6,10 @@ import { ThemeProvider } from 'shuttlex-integration';
 import { store } from './core/redux/store';
 import Navigate from './Navigate';
 
+if (__DEV__) {
+  require('../ReactotronConfig');
+}
+
 const App = (): JSX.Element => (
   <ThemeProvider>
     <Provider store={store}>
