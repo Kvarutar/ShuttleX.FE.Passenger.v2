@@ -1,8 +1,8 @@
 import Reactotron from 'reactotron-react-native';
 import { reactotronRedux } from 'reactotron-redux';
 
-const reactotron = Reactotron.configure() // controls connection & communication settings
-  .useReactNative() // add all built-in react native plugins
+const reactotron = Reactotron.configure()
+  .useReactNative()
   .use(
     reactotronRedux({
       except: [
@@ -12,6 +12,6 @@ const reactotron = Reactotron.configure() // controls connection & communication
       ],
     }),
   )
-  .connect(); // let's connect!
+  .connect();
 
 export default reactotron;
