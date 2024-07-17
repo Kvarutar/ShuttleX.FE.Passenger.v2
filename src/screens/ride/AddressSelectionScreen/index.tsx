@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
+  CustomKeyboardAvoidingView,
   DropOffIcon,
-  KeyboardAvoidingView,
   RoundButton,
   SafeAreaView,
   ScrollViewWithCustomScroll,
@@ -86,7 +86,7 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
   }
 
   return (
-    <KeyboardAvoidingView>
+    <CustomKeyboardAvoidingView>
       <SafeAreaView>
         <View style={styles.header}>
           <RoundButton onPress={navigation.goBack}>
@@ -101,7 +101,7 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
         </View>
         {content}
       </SafeAreaView>
-    </KeyboardAvoidingView>
+    </CustomKeyboardAvoidingView>
   );
 };
 
