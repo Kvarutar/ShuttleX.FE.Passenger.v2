@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
+import reactotron from '../../../ReactotronConfig';
 import notificationsReducer from '../menu/redux/notifications';
 import walletRedicer from '../menu/redux/wallet';
 import alertsReducer from '../ride/redux/alerts';
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
 export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(signalRMiddleware()),
+  enhancers: __DEV__ ? [reactotron.createEnhancer!()] : [],
 });
 
 export type AppState = ReturnType<typeof store.getState>;
