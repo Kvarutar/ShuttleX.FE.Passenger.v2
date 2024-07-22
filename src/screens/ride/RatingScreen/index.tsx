@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { FeedbackScreen, FeedbackType, KeyboardAvoidingView, sizes, useTheme } from 'shuttlex-integration';
+import { CustomKeyboardAvoidingView, FeedbackScreen, FeedbackType, sizes, useTheme } from 'shuttlex-integration';
 
 import { selectedPaymentMethodSelector } from '../../../core/menu/redux/wallet/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
@@ -39,7 +39,7 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   }
 
   return (
-    <KeyboardAvoidingView>
+    <CustomKeyboardAvoidingView>
       <SafeAreaView style={[styles.container, computedStyles.container]}>
         <FeedbackScreen
           onBackButtonPress={onEndTrip}
@@ -51,7 +51,7 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
           userImageUrl="https://sun9-34.userapi.com/impg/ZGuJiFBAp-93En3yLK7LWZNPxTGmncHrrtVgbg/hd6uHaUv1zE.jpg?size=1200x752&quality=96&sign=e79799e4b75c839d0ddb1a2232fe5d60&type=album"
         />
       </SafeAreaView>
-    </KeyboardAvoidingView>
+    </CustomKeyboardAvoidingView>
   );
 };
 
