@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { FeedbackScreen, FeedbackType, CustomKeyboardAvoidingView, sizes, useTheme } from 'shuttlex-integration';
+import { CustomKeyboardAvoidingView, FeedbackScreen, FeedbackType, sizes, useTheme } from 'shuttlex-integration';
 
 import { selectedPaymentMethodSelector } from '../../../core/menu/redux/wallet/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
