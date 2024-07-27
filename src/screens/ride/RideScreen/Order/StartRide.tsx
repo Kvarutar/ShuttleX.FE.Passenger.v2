@@ -6,12 +6,15 @@ import { Button, ButtonModes, ButtonShadows, ClockIcon, ShortArrowIcon, Text, us
 import { AddressSelectMode } from './AddressSelect/props';
 
 const StartRide = ({ openAddressSelect }: { openAddressSelect: (mode: AddressSelectMode) => void }) => {
-  const { colors } = useTheme();
+  const { colors, themeMode } = useTheme();
   const { t } = useTranslation();
 
   const startBottomWindowComputedStyles = StyleSheet.create({
-    button: { backgroundColor: colors.backgroundPrimaryColor },
+    button: {
+      backgroundColor: themeMode === 'light' ? colors.backgroundPrimaryColor : colors.backgroundSecondaryColor,
+    },
     buttonText: { color: colors.textSecondaryColor },
+    timeButtonText: themeMode !== 'light' ? { color: colors.textTertiaryColor } : {},
   });
 
   return (
@@ -27,9 +30,14 @@ const StartRide = ({ openAddressSelect }: { openAddressSelect: (mode: AddressSel
           style={startBottomWindowStyles.timeButton}
           onPress={() => openAddressSelect('delayed')}
         >
-          <ClockIcon color={colors.backgroundTertiaryColor} />
-          <Text style={startBottomWindowStyles.timeButtonText}>{t('ride_Ride_startBottomWindow_timeButton')}</Text>
-          <ShortArrowIcon style={startBottomWindowStyles.timeButtonArrow} />
+          <ClockIcon color={themeMode === 'light' ? colors.iconPrimaryColor : colors.textTertiaryColor} />
+          <Text style={[startBottomWindowStyles.timeButtonText, startBottomWindowComputedStyles.timeButtonText]}>
+            {t('ride_Ride_startBottomWindow_timeButton')}
+          </Text>
+          <ShortArrowIcon
+            style={startBottomWindowStyles.timeButtonArrow}
+            color={themeMode !== 'light' ? colors.textTertiaryColor : undefined}
+          />
         </Button>
       </Button>
     </Animated.View>

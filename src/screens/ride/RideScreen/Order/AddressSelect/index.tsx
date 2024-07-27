@@ -12,6 +12,7 @@ import {
   PlusIcon,
   ScrollViewWithCustomScroll,
   TimePicker,
+  useTheme,
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
@@ -50,6 +51,17 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
   const points = useSelector(orderPointsSelector);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+
+  const { colors, themeMode } = useTheme();
+
+  const computedStyles = StyleSheet.create({
+    barStyle:
+      themeMode !== 'light'
+        ? {
+            backgroundColor: colors.backgroundPrimaryColor,
+          }
+        : {},
+  });
 
   useEffect(() => {
     setSelectedTime(null);
@@ -123,7 +135,7 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
           setIsFirstButtonSelected={setIsFirstButtonSelected}
         />
       }
-      barStyle={styles.barStyle}
+      barStyle={[styles.barStyle, computedStyles.barStyle]}
       showConfirmButton={showConfirmButton}
       onConfirm={onConfirm}
     >
