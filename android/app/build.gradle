@@ -130,5 +130,7 @@ dependencies {
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 
 task printVersionName {
-  println android.defaultConfig.versionName
+  println "App version: ${android.defaultConfig.versionName}"
 }
+
+printVersionName.enabled = false

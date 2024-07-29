@@ -37,7 +37,7 @@ jobs:
       - name: Retrieve version
         run: |
           cd ./android
-          echo "VERSION_NAME=$(./gradlew -q printVersionName | sed 1q | tr -d '\n')" >> "$GITHUB_ENV"
+          echo "VERSION_NAME=$(./gradlew -q printVersionName | grep 'App version:' | awk -F' ' '{print $NF}' | tr -d '\n')" >> "$GITHUB_ENV"
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
