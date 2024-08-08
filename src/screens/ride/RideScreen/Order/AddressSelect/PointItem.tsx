@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
@@ -18,6 +20,7 @@ import {
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { updateOrderPoint } from '../../../../../core/ride/redux/order';
+import { RootStackParamList } from '../../../../../Navigate/props';
 import { PointItemProps } from './props';
 
 const fadeAnimationDuration = 100;
@@ -26,6 +29,10 @@ const PointItem = ({ pointMode, content, onRemovePoint, currentPointId }: PointI
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride'>>();
+
+  const onLocationIconPress = () => navigation.navigate('MapAddressSelection', { orderPointId: currentPointId });
 
   const computedStyles = StyleSheet.create({
     line: {
@@ -61,7 +68,7 @@ const PointItem = ({ pointMode, content, onRemovePoint, currentPointId }: PointI
                   <InputXIcon />
                 </Pressable>
                 <View style={[styles.line, computedStyles.line]} />
-                <Pressable hitSlop={20} onPress={() => {}}>
+                <Pressable hitSlop={20} onPress={onLocationIconPress}>
                   <LocationIcon />
                 </Pressable>
               </View>
@@ -71,7 +78,7 @@ const PointItem = ({ pointMode, content, onRemovePoint, currentPointId }: PointI
               <TextInput placeholder={t('ride_Ride_AddressSelect_addressInputPlaceholder')} editable={false} />
               <View style={styles.inputButtons}>
                 <View style={[styles.line, computedStyles.line]} />
-                <Pressable hitSlop={20} onPress={() => {}}>
+                <Pressable hitSlop={20} onPress={onLocationIconPress}>
                   <LocationIcon />
                 </Pressable>
               </View>

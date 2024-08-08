@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Bar, Blur, Button, CloseIcon, RoundButton, ShortArrowIcon, sizes } from 'shuttlex-integration';
+import { Bar, Blur, Button, RoundButton, ShortArrowIcon, sizes } from 'shuttlex-integration';
 
 import { AddressPopupProps } from './props';
 
@@ -16,7 +16,6 @@ const AddressPopup = ({
   showConfirmButton,
   style,
   onBackButtonPress,
-  onCloseButtonPress,
   barStyle,
   additionalTopButtons,
   onConfirm,
@@ -43,11 +42,6 @@ const AddressPopup = ({
               {onBackButtonPress && (
                 <RoundButton onPress={onBackButtonPress}>
                   <ShortArrowIcon />
-                </RoundButton>
-              )}
-              {onCloseButtonPress && (
-                <RoundButton style={styles.closeButton} onPress={onCloseButtonPress}>
-                  <CloseIcon />
                 </RoundButton>
               )}
               {additionalTopButtons}
@@ -78,11 +72,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: sizes.paddingHorizontal,
-  },
-  closeButton: {
-    alignSelf: 'flex-end',
-    marginBottom: 26,
-    marginRight: sizes.paddingHorizontal,
   },
   buttonWrapper: {
     paddingHorizontal: sizes.paddingHorizontal,

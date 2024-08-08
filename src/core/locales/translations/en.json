@@ -56,6 +56,7 @@
   "ride_Ride_AddressSelect_datePickerPlaceholder": "Date",
   "ride_Ride_AddressSelect_addressInputPlaceholder": "Enter address",
   "ride_Ride_AddressPopup_confirmButton": "Confirm",
+  "ride_MapAddressSelection_confirmButton": "Confirm",
   "ride_Rating_Feedback_title": "Rate the driver {{name}} on this ride.",
   "ride_Menu_navigationWallet": "Wallet",
   "ride_Menu_navigationNotifications": "Notifications",

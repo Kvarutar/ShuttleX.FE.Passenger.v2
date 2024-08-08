@@ -8,6 +8,7 @@ export type RootStackParamList = {
   SignInPhoneCode: undefined;
   SignInEmailCode: undefined;
   AddressSelection: { orderPointId: number };
+  MapAddressSelection: { orderPointId: number };
   Rating: undefined;
   Notifications: undefined;
   Wallet: undefined;
