@@ -1,3 +1,4 @@
+import { LatLng } from 'react-native-maps';
 import { TariffType } from 'shuttlex-integration';
 
 import { AddressPoint } from '../order/types';
@@ -18,6 +19,21 @@ export enum TripStatus {
   Ride = 'ride',
 }
 
+type RouteInfo = {
+  duration: number;
+  distance: number;
+  legs: {
+    steps: {
+      maneuver: {
+        type: string;
+        instruction: string;
+        location: LatLng;
+      };
+      geometry: string;
+    }[];
+  }[];
+};
+
 export type TripInfo = {
   contractor: ContractorInfo;
   tripType: TariffType;
@@ -25,6 +41,7 @@ export type TripInfo = {
   route: {
     startPoint: AddressPoint;
     endPoints: AddressPoint[];
+    info: RouteInfo; // TODO: temporary, probably not the best place for this
   };
 };
 

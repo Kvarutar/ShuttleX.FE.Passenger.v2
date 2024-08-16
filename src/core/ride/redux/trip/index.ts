@@ -48,6 +48,7 @@ const slice = createSlice({
             route: {
               startPoint: action.payload.route.startPoint,
               endPoints: action.payload.route.endPoints,
+              info: action.payload.route.info,
             },
           },
           type: setTripInfo.type,
