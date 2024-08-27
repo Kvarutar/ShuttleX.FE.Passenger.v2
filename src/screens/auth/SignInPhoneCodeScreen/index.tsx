@@ -1,11 +1,30 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import { Button, CodeInput, RoundButton, SafeAreaView, ShortArrowIcon, Text } from 'shuttlex-integration';
 
+import { calculateLockoutTime, incrementAttempts, setLockoutEndTimestamp } from '../../../core/auth/redux/lockout';
+import { selectLockoutAttempts, selectLockoutEndTimestamp } from '../../../core/auth/redux/lockout/selectors';
+import { useAppDispatch } from '../../../core/redux/hooks';
 import { SignInPhoneCodeScreenProps } from './props';
 
 const SignInPhoneCodeScreen = ({ navigation }: SignInPhoneCodeScreenProps): JSX.Element => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+
+  const lockoutAttempts = useSelector(selectLockoutAttempts);
+  const lockoutEndTimestamp = useSelector(selectLockoutEndTimestamp);
+
+  const onRequestAgainPress = () => {
+    dispatch(incrementAttempts());
+
+    const newLockoutTime = calculateLockoutTime(lockoutAttempts + 1);
+    if (newLockoutTime > 0 && newLockoutTime !== lockoutEndTimestamp) {
+      dispatch(setLockoutEndTimestamp(newLockoutTime));
+
+      navigation.navigate('LockOut');
+    }
+  };
 
   return (
     <SafeAreaView>
@@ -21,7 +40,10 @@ const SignInPhoneCodeScreen = ({ navigation }: SignInPhoneCodeScreenProps): JSX.
 
       <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
 
-      <Button text={t('auth_SignInPhoneCode_button')} onPress={() => navigation.replace('Ride')} />
+      <View style={styles.buttons}>
+        <Button text={t('auth_SignInPhoneCode_requestAgainButton')} onPress={onRequestAgainPress} />
+        <Button text={t('auth_SignInPhoneCode_button')} onPress={() => navigation.replace('Ride')} />
+      </View>
     </SafeAreaView>
   );
 };
@@ -35,6 +57,9 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontFamily: 'Inter Medium',
     fontSize: 18,
+  },
+  buttons: {
+    gap: 20,
   },
   codeText: {
     fontSize: 18,

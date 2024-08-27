@@ -5,6 +5,7 @@ import BootSplash from 'react-native-bootsplash';
 import { useTheme } from 'shuttlex-integration';
 
 import AuthScreen from '../screens/auth/AuthScreen';
+import LockOutScreen from '../screens/auth/LockOutScreen';
 import PhoneSelectScreen from '../screens/auth/PhoneSelectScreen';
 import SignInEmailCodeScreen from '../screens/auth/SignInEmailCodeScreen';
 import SignInPhoneCodeScreen from '../screens/auth/SignInPhoneCodeScreen';
@@ -42,6 +43,7 @@ const Navigate = (): JSX.Element => {
         <Stack.Screen name="Auth" component={AuthScreen} />
         <Stack.Screen name="Ride" component={RideScreen} />
         <Stack.Screen name="SignUpPhoneCode" component={SignUpPhoneCodeScreen} />
+        <Stack.Screen name="LockOut" component={LockOutScreen} />
         <Stack.Screen name="SignInPhoneCode" component={SignInPhoneCodeScreen} />
         <Stack.Screen name="SignInEmailCode" component={SignInEmailCodeScreen} />
         <Stack.Screen name="AddressSelection" component={AddressSelectionScreen} />

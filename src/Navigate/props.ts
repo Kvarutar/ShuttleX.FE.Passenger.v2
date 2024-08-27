@@ -16,4 +16,5 @@ export type RootStackParamList = {
   Receipt: undefined;
   PhoneSelect: { initialFlag: countryDtosProps; onFlagSelect: (flag: countryDtosProps) => void };
   Terms: undefined;
+  LockOut: undefined;
 };
