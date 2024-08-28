@@ -4,13 +4,13 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   Bar,
-  Button,
+  ButtonV1,
+  ButtonV1Shapes,
   ClockIcon,
   DropOffIcon,
   getPaymentIcon,
   LocationIcon,
   Popup,
-  RoundButton,
   ShortArrowSmallIcon,
   Text,
   useTheme,
@@ -58,9 +58,9 @@ const PaymentPopup = ({
               <Text style={styles.paymentData}>{t('ride_Ride_PaymentPopup_noSelectedMethods')}</Text>
             </View>
           )}
-          <RoundButton roundButtonStyle={styles.roundButton}>
+          <ButtonV1 shape={ButtonV1Shapes.Circle} containerStyle={styles.roundButton}>
             <ShortArrowSmallIcon />
-          </RoundButton>
+          </ButtonV1>
         </Bar>
       </Pressable>
       <Text style={styles.title}>{t('ride_Ride_PaymentPopup_tripInformationTitle')}</Text>
@@ -86,7 +86,7 @@ const PaymentPopup = ({
         <Text style={styles.totalMoney}>$98.80</Text>
       </View>
       {selectedPaymentMethod && (
-        <Button
+        <ButtonV1
           style={styles.confirmButton}
           text={t('ride_Ride_PaymentPopup_button')}
           onPress={() => dispatch(setOrderStatus(OrderStatus.Confirmation))}

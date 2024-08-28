@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { getLocales } from 'react-native-localize';
 import {
-  Button,
+  ButtonV1,
   CheckBox,
   countryDtos,
   DatePicker,
@@ -222,7 +222,7 @@ const SignUp = ({ onPress, navigation }: SignProps): JSX.Element => {
       </ScrollViewWithCustomScroll>
 
       <View style={styles.buttonsContainer}>
-        <Button text={t('auth_Auth_SignUp_createAccountButton')} onPress={checkSignUpDataCollectionForm} />
+        <ButtonV1 text={t('auth_Auth_SignUp_createAccountButton')} onPress={checkSignUpDataCollectionForm} />
         <Pressable style={styles.alreadyHaveAccountContainer} onPress={onPress} hitSlop={20}>
           <Text style={styles.alreadyHaveAccountText}>
             {t('auth_Auth_SignUp_haveAccount')}{' '}

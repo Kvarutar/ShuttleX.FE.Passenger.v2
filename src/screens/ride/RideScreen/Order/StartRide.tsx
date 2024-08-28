@@ -1,7 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { Button, ButtonModes, ButtonShadows, ClockIcon, ShortArrowIcon, Text, useTheme } from 'shuttlex-integration';
+import {
+  ButtonV1,
+  ButtonV1Modes,
+  ButtonV1Shadows,
+  ClockIcon,
+  ShortArrowIcon,
+  Text,
+  useTheme,
+} from 'shuttlex-integration';
 
 import { AddressSelectMode } from './AddressSelect/props';
 
@@ -19,14 +27,14 @@ const StartRide = ({ openAddressSelect }: { openAddressSelect: (mode: AddressSel
 
   return (
     <Animated.View entering={FadeIn} exiting={FadeOut}>
-      <Button
+      <ButtonV1
         style={[startBottomWindowStyles.button, startBottomWindowComputedStyles.button]}
-        shadow={ButtonShadows.Strong}
+        shadow={ButtonV1Shadows.Strong}
         onPress={() => openAddressSelect('now')}
       >
         <Text style={startBottomWindowComputedStyles.buttonText}>{t('ride_Ride_startBottomWindow_button')}</Text>
-        <Button
-          mode={ButtonModes.Mode4}
+        <ButtonV1
+          mode={ButtonV1Modes.Mode4}
           style={startBottomWindowStyles.timeButton}
           onPress={() => openAddressSelect('delayed')}
         >
@@ -38,8 +46,8 @@ const StartRide = ({ openAddressSelect }: { openAddressSelect: (mode: AddressSel
             style={startBottomWindowStyles.timeButtonArrow}
             color={themeMode !== 'light' ? colors.textTertiaryColor : undefined}
           />
-        </Button>
-      </Button>
+        </ButtonV1>
+      </ButtonV1>
     </Animated.View>
   );
 };

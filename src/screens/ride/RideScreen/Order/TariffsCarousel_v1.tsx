@@ -15,7 +15,7 @@ import {
   Bar,
   BasicXImage,
   BasicXLImage,
-  Button,
+  ButtonV1,
   ClockIcon,
   ComfortXImage,
   PassengerIcon2,
@@ -210,7 +210,7 @@ const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<nu
             </Animated.View>
           </View>
           <Animated.View style={opacityAnimatedStyles}>
-            <Button text={t('ride_Ride_TariffsCarousel_selectButton')} onPress={onTariffSelect} />
+            <ButtonV1 text={t('ride_Ride_TariffsCarousel_selectButton')} onPress={onTariffSelect} />
           </Animated.View>
           <Animated.View style={[styles.smallDescriptionContainer, smallDescriptionAnimatedStyles]}>
             <Text style={styles.barTitleText}>{item}</Text>

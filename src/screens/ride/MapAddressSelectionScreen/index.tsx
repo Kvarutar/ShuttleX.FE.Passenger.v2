@@ -5,10 +5,10 @@ import { LatLng } from 'react-native-maps';
 import { useSelector } from 'react-redux';
 import {
   BottomWindow,
-  Button,
+  ButtonV1,
+  ButtonV1Shapes,
   MapPinIcon,
   MapView,
-  RoundButton,
   SafeAreaView,
   ShortArrowIcon,
   Text,
@@ -66,9 +66,9 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
       <View style={styles.mapPinIconContainer} pointerEvents="none">
         <MapPinIcon style={styles.mapPinIcon} />
       </View>
-      <RoundButton onPress={navigation.goBack}>
+      <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={navigation.goBack} containerStyle={styles.goBackButtonContainer}>
         <ShortArrowIcon />
-      </RoundButton>
+      </ButtonV1>
       <BottomWindow windowStyle={styles.bottomWindow}>
         {isLoading ? (
           <Timer
@@ -83,7 +83,7 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
             <Text style={styles.address}>{address}</Text>
           </>
         )}
-        <Button
+        <ButtonV1
           containerStyle={styles.buttonContainer}
           text={t('ride_MapAddressSelection_confirmButton')}
           onPress={onConfirm}
@@ -118,6 +118,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignSelf: 'stretch',
+  },
+  goBackButtonContainer: {
+    height: 48,
   },
 });
 

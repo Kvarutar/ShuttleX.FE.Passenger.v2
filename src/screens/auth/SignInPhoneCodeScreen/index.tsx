@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Button, CodeInput, RoundButton, SafeAreaView, ShortArrowIcon, Text } from 'shuttlex-integration';
+import { ButtonV1, ButtonV1Shapes, CodeInput, SafeAreaView, ShortArrowIcon, Text } from 'shuttlex-integration';
 
 import { calculateLockoutTime, incrementAttempts, setLockoutEndTimestamp } from '../../../core/auth/redux/lockout';
 import { selectLockoutAttempts, selectLockoutEndTimestamp } from '../../../core/auth/redux/lockout/selectors';
@@ -29,9 +29,9 @@ const SignInPhoneCodeScreen = ({ navigation }: SignInPhoneCodeScreenProps): JSX.
   return (
     <SafeAreaView>
       <View style={styles.header}>
-        <RoundButton onPress={navigation.goBack}>
+        <ButtonV1 onPress={navigation.goBack} shape={ButtonV1Shapes.Circle}>
           <ShortArrowIcon />
-        </RoundButton>
+        </ButtonV1>
         <Text style={styles.headerTitle}>{t('auth_SignInPhoneCode_headerTitle')}</Text>
         <View style={styles.headerDummy} />
       </View>
@@ -41,8 +41,8 @@ const SignInPhoneCodeScreen = ({ navigation }: SignInPhoneCodeScreenProps): JSX.
       <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
 
       <View style={styles.buttons}>
-        <Button text={t('auth_SignInPhoneCode_requestAgainButton')} onPress={onRequestAgainPress} />
-        <Button text={t('auth_SignInPhoneCode_button')} onPress={() => navigation.replace('Ride')} />
+        <ButtonV1 text={t('auth_SignInPhoneCode_requestAgainButton')} onPress={onRequestAgainPress} />
+        <ButtonV1 text={t('auth_SignInPhoneCode_button')} onPress={() => navigation.replace('Ride')} />
       </View>
     </SafeAreaView>
   );

@@ -6,8 +6,8 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import {
   Bar,
   BarModes,
-  Button,
-  ButtonModes,
+  ButtonV1,
+  ButtonV1Modes,
   DropOffIcon,
   InputXIcon,
   LocationIcon,
@@ -87,9 +87,9 @@ const PointItem = ({ pointMode, content, onRemovePoint, currentPointId }: PointI
         </View>
       </View>
       {onRemovePoint && (
-        <Button mode={ButtonModes.Mode2} style={styles.removePointButton} onPress={onRemovePoint}>
+        <ButtonV1 mode={ButtonV1Modes.Mode2} style={styles.removePointButton} onPress={onRemovePoint}>
           <MinusIcon />
-        </Button>
+        </ButtonV1>
       )}
     </Animated.View>
   );

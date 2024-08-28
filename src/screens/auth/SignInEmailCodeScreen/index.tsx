@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Button, CodeInput, RoundButton, SafeAreaView, ShortArrowIcon, Text } from 'shuttlex-integration';
+import { ButtonV1, ButtonV1Shapes, CodeInput, SafeAreaView, ShortArrowIcon, Text } from 'shuttlex-integration';
 
 import { SignInEmailCodeScreenProps } from './props';
 
@@ -10,9 +10,9 @@ const SignInEmailCodeScreen = ({ navigation }: SignInEmailCodeScreenProps): JSX.
   return (
     <SafeAreaView>
       <View style={styles.header}>
-        <RoundButton onPress={navigation.goBack}>
+        <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={navigation.goBack}>
           <ShortArrowIcon />
-        </RoundButton>
+        </ButtonV1>
         <Text style={styles.headerTitle}>{t('auth_SignInEmailCode_headerTitle')}</Text>
         <View style={styles.headerDummy} />
       </View>
@@ -21,7 +21,7 @@ const SignInEmailCodeScreen = ({ navigation }: SignInEmailCodeScreenProps): JSX.
 
       <CodeInput style={styles.codeInput} onCodeChange={() => {}} />
 
-      <Button text={t('auth_SignInEmailCode_button')} onPress={() => navigation.replace('Ride')} />
+      <ButtonV1 text={t('auth_SignInEmailCode_button')} onPress={() => navigation.replace('Ride')} />
     </SafeAreaView>
   );
 };

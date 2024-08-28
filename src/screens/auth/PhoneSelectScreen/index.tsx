@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 import {
+  ButtonV1,
+  ButtonV1Shapes,
   CheckIcon2,
   countryDtos,
   countryDtosProps,
   countryFlags,
-  RoundButton,
   ScrollViewWithCustomScroll,
   ShortArrowIcon,
   sizes,
@@ -43,9 +44,9 @@ const PhoneSelectScreen = ({ navigation, route }: PhoneSelectScreenProps): JSX.E
     <SafeAreaView style={[styles.wrapper, computedStyles.wrapper]}>
       <View style={[styles.container, computedStyles.container]}>
         <View style={styles.phoneHeader}>
-          <RoundButton onPress={navigation.goBack}>
+          <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={navigation.goBack}>
             <ShortArrowIcon />
-          </RoundButton>
+          </ButtonV1>
 
           <TextInput
             onChangeText={text => {

@@ -1,6 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import { RoundButton, ScrollViewWithCustomScroll, ShortArrowIcon, sizes, Text, useTheme } from 'shuttlex-integration';
+import {
+  ButtonV1,
+  ButtonV1Shapes,
+  ScrollViewWithCustomScroll,
+  ShortArrowIcon,
+  sizes,
+  Text,
+  useTheme,
+} from 'shuttlex-integration';
 
 import { TermsScreenProps } from './props';
 
@@ -24,9 +32,9 @@ const TermsScreen = ({ navigation }: TermsScreenProps): JSX.Element => {
     <SafeAreaView style={[styles.wrapper, computedStyles.wrapper]}>
       <View style={[styles.container, computedStyles.container]}>
         <View style={styles.termsHeader}>
-          <RoundButton onPress={navigation.goBack}>
+          <ButtonV1 onPress={navigation.goBack} shape={ButtonV1Shapes.Circle}>
             <ShortArrowIcon />
-          </RoundButton>
+          </ButtonV1>
 
           <Text> {t('auth_Terms_Title')} </Text>
         </View>

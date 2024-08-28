@@ -8,7 +8,7 @@ import {
   Bar,
   BasicXImage,
   BasicXLImage,
-  Button,
+  ButtonV1,
   ClockIcon,
   ComfortXImage,
   PassengerIcon2,
@@ -121,7 +121,7 @@ const CarouselItem = ({ item }: { item: TariffType }) => {
           </Animated.View>
         </View>
         <Animated.View>
-          <Button text={t('ride_Ride_TariffsCarousel_selectButton')} onPress={onTariffSelect} />
+          <ButtonV1 text={t('ride_Ride_TariffsCarousel_selectButton')} onPress={onTariffSelect} />
         </Animated.View>
       </Bar>
     </Animated.View>

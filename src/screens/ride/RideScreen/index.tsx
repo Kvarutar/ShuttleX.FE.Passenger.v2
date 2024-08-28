@@ -2,10 +2,11 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
+  ButtonV1,
+  ButtonV1Shapes,
   MenuIcon,
   NotificationIcon,
   NotificationType,
-  RoundButton,
   ShortArrowIcon,
   sizes,
   StopWatch,
@@ -167,15 +168,15 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
 
   const topFullButtons = (
     <>
-      <RoundButton onPress={() => setIsMenuVisible(true)}>
+      <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={() => setIsMenuVisible(true)}>
         <MenuIcon />
-      </RoundButton>
+      </ButtonV1>
       {stopWatch}
       <View style={styles.topRightButtonContainer}>
-        <RoundButton onPress={() => navigation.navigate('Notifications')}>
+        <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={() => navigation.navigate('Notifications')}>
           <NotificationIcon />
           {unreadNotificationsMarker}
-        </RoundButton>
+        </ButtonV1>
         {tripInfo && tripStatus === TripStatus.Arrived && (
           <PassengerTimer isPassengerLate={isPassengerLate} setIsPassengerLate={() => setIsPassengerLate(true)} />
         )}
@@ -184,9 +185,9 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   );
 
   const topBackButton = (
-    <RoundButton onPress={() => dispatch(setOrderStatus(OrderStatus.StartRide))}>
+    <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={() => dispatch(setOrderStatus(OrderStatus.StartRide))}>
       <ShortArrowIcon />
-    </RoundButton>
+    </ButtonV1>
   );
 
   const topButtons: Record<OrderStatus, ReactNode | null> = {

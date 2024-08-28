@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
+  ButtonV1,
+  ButtonV1Shapes,
   CustomKeyboardAvoidingView,
   DropOffIcon,
-  RoundButton,
   SafeAreaView,
   ScrollViewWithCustomScroll,
   ShortArrowIcon,
@@ -89,9 +90,9 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
     <CustomKeyboardAvoidingView>
       <SafeAreaView>
         <View style={styles.header}>
-          <RoundButton onPress={navigation.goBack}>
+          <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={navigation.goBack}>
             <ShortArrowIcon />
-          </RoundButton>
+          </ButtonV1>
           <TextInput
             style={styles.textInput}
             onChangeText={onChangeText}

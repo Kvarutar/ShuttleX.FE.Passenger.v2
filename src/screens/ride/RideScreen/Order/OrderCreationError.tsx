@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { Button, ButtonModes, Text, WarningIcon } from 'shuttlex-integration';
+import { ButtonV1, ButtonV1Modes, Text, WarningIcon } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { setOrderStatus } from '../../../../core/ride/redux/order';
@@ -18,12 +18,12 @@ const OrderCreationError = ({ error }: { error: string }) => {
         <Text>{error}</Text>
       </View>
       <View style={styles.buttonsWrapper}>
-        <Button
-          mode={ButtonModes.Mode2}
+        <ButtonV1
+          mode={ButtonV1Modes.Mode2}
           text={t('ride_Ride_OrderCreationError_cancelButton')}
           containerStyle={styles.button}
         />
-        <Button
+        <ButtonV1
           text={t('ride_Ride_OrderCreationError_tryAgainButton')}
           containerStyle={styles.button}
           onPress={() => dispatch(setOrderStatus(OrderStatus.Confirmation))}

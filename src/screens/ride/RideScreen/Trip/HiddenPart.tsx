@@ -3,8 +3,8 @@ import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   Bar,
-  Button,
-  ButtonModes,
+  ButtonV1,
+  ButtonV1Modes,
   ChatIcon,
   EmergencyServiceIcon,
   PassengerIcon,
@@ -65,17 +65,17 @@ const ContactInfo = ({ trip }: { trip: TripInfo }) => {
         <Text style={styles.hiddenPassengerInfoName}>{trip.contractor.name}</Text>
       </View>
       <View style={styles.hiddenContactButtons}>
-        <Button style={styles.hiddenContactButton} containerStyle={styles.hiddenContactButtonContainer}>
+        <ButtonV1 style={styles.hiddenContactButton} containerStyle={styles.hiddenContactButtonContainer}>
           <ChatIcon />
-        </Button>
-        <Button
+        </ButtonV1>
+        <ButtonV1
           style={styles.hiddenContactButton}
           containerStyle={styles.hiddenContactButtonContainer}
-          mode={ButtonModes.Mode3}
+          mode={ButtonV1Modes.Mode3}
           onPress={() => Linking.openURL(`tel:${trip.contractor.phone}`)}
         >
           <PhoneIcon />
-        </Button>
+        </ButtonV1>
       </View>
     </Bar>
   );

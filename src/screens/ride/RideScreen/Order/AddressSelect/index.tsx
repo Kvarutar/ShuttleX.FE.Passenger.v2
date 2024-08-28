@@ -5,8 +5,8 @@ import { getLocales } from 'react-native-localize';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
-  Button,
-  ButtonModes,
+  ButtonV1,
+  ButtonV1Modes,
   DatePicker,
   GroupedButtons,
   PlusIcon,
@@ -170,14 +170,14 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
         {pointsContent}
       </ScrollViewWithCustomScroll>
       {points.length < 5 && (
-        <Button
-          mode={ButtonModes.Mode4}
+        <ButtonV1
+          mode={ButtonV1Modes.Mode4}
           containerStyle={styles.buttonContainer}
           style={styles.button}
           onPress={onAddPoint}
         >
           <PlusIcon />
-        </Button>
+        </ButtonV1>
       )}
     </AddressPopup>
   );

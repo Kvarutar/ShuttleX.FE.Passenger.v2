@@ -5,10 +5,10 @@ import {
   Bar,
   BarModes,
   BlueCheck2,
-  Button,
+  ButtonV1,
+  ButtonV1Shapes,
   getPaymentIcon,
   PaymentMethod,
-  RoundButton,
   SafeAreaView,
   ShortArrowIcon,
   Text,
@@ -42,16 +42,16 @@ const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
     <SafeAreaView containerStyle={styles.container}>
       <View>
         <View style={styles.header}>
-          <RoundButton onPress={navigation.goBack}>
+          <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={navigation.goBack}>
             <ShortArrowIcon />
-          </RoundButton>
+          </ButtonV1>
           <Text style={styles.headerTitle}>{t('menu_Wallet_title')}</Text>
           <View style={styles.headerDummy} />
         </View>
         {paymentContent}
       </View>
       {emptyWallet}
-      <Button text={t('menu_Wallet_button')} onPress={() => navigation.navigate('AddPayment')} />
+      <ButtonV1 text={t('menu_Wallet_button')} onPress={() => navigation.navigate('AddPayment')} />
     </SafeAreaView>
   );
 };

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Button, countryDtos, emailRegex, PhoneInput, Text, TextInput, useTheme } from 'shuttlex-integration';
+import { ButtonV1, countryDtos, emailRegex, PhoneInput, Text, TextInput, useTheme } from 'shuttlex-integration';
 
 import { SignInEmailStateProps, SignInPhoneStateProps, SignProps } from './props';
 
@@ -68,7 +68,7 @@ const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
       </View>
 
       <View style={styles.bottomButtonsContainer}>
-        <Button text={t('auth_Auth_SignIn_nextButton')} onPress={navigationToSignInPhoneCodeScreen} />
+        <ButtonV1 text={t('auth_Auth_SignIn_nextButton')} onPress={navigationToSignInPhoneCodeScreen} />
         <Pressable style={styles.dontHaveAccountContainer} onPress={onPress} hitSlop={20}>
           <Text style={styles.dontHaveAccountText}>
             {t('auth_Auth_SignIn_dontHaveAccount')}{' '}

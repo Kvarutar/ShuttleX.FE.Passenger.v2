@@ -3,12 +3,12 @@ import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   Bar,
-  Button,
+  ButtonV1,
+  ButtonV1Shapes,
   CloseIcon,
   DropOffIcon,
   getPaymentIcon,
   PickUpIcon,
-  RoundButton,
   SafeAreaView,
   ScrollViewWithCustomScroll,
   Separator,
@@ -53,9 +53,9 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
     <SafeAreaView containerStyle={styles.container}>
       <ScrollViewWithCustomScroll contentContainerStyle={styles.content}>
         <View style={styles.header}>
-          <RoundButton onPress={onEndTrip}>
+          <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={onEndTrip}>
             <CloseIcon />
-          </RoundButton>
+          </ButtonV1>
         </View>
         <View style={styles.order}>
           <View style={styles.mapWrapper}>
@@ -119,7 +119,7 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
           </View>
         )}
       </ScrollViewWithCustomScroll>
-      <Button text={t('ride_Receipt_continueButton')} onPress={onEndTrip} />
+      <ButtonV1 text={t('ride_Receipt_continueButton')} onPress={onEndTrip} />
     </SafeAreaView>
   );
 };
