@@ -28,7 +28,7 @@ const MapView = (): JSX.Element => {
       style={StyleSheet.absoluteFill}
       geolocationCoordinates={geolocationCoordinates ?? undefined}
       geolocationCalculatedHeading={geolocationCalculatedHeading}
-      polylines={polylines}
+      polylines={[{ coordinates: polylines }]}
       stopPoints={stopPoints}
       cameraMode={cameraMode}
       setCameraModeOnDrag={mode => dispatch(setMapCameraMode(mode))}
