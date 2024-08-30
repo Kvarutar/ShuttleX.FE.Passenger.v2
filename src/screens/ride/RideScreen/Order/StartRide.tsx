@@ -8,13 +8,13 @@ import {
   ClockIcon,
   ShortArrowIcon,
   Text,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { AddressSelectMode } from './AddressSelect/props';
 
 const StartRide = ({ openAddressSelect }: { openAddressSelect: (mode: AddressSelectMode) => void }) => {
-  const { colors, themeMode } = useTheme();
+  const { colors, themeMode } = useThemeV1();
   const { t } = useTranslation();
 
   const startBottomWindowComputedStyles = StyleSheet.create({

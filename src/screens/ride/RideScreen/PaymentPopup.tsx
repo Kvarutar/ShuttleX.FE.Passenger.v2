@@ -13,7 +13,7 @@ import {
   Popup,
   ShortArrowSmallIcon,
   Text,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { selectedPaymentMethodSelector } from '../../../core/menu/redux/wallet/selectors';
@@ -27,7 +27,7 @@ const PaymentPopup = ({
 }: {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>;
 }) => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const selectedPaymentMethod = useSelector(selectedPaymentMethodSelector);
   const dispatch = useAppDispatch();
 

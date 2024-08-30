@@ -1,6 +1,6 @@
 import { Platform, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { MenuUserImage, Text, useTheme } from 'shuttlex-integration';
+import { MenuUserImage, Text, useThemeV1 } from 'shuttlex-integration';
 
 import { contractorInfoSelector } from '../../../../core/ride/redux/trip/selectors';
 
@@ -8,7 +8,7 @@ const isPlatformIos = Platform.OS === 'ios';
 
 const VisiblePart = () => {
   const contractorInfo = useSelector(contractorInfoSelector);
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
 
   const computedStyles = StyleSheet.create({
     plateNumber: {

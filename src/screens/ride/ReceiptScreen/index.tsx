@@ -13,7 +13,7 @@ import {
   ScrollViewWithCustomScroll,
   Separator,
   Text,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { selectedPaymentMethodSelector } from '../../../core/menu/redux/wallet/selectors';
@@ -23,7 +23,7 @@ import { tripInfoSelector, tripTipSelector } from '../../../core/ride/redux/trip
 import { ReceiptScreenProps } from './props';
 
 const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 

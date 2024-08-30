@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { ButtonV1, countryDtos, emailRegex, PhoneInput, Text, TextInput, useTheme } from 'shuttlex-integration';
+import { ButtonV1, countryDtos, emailRegex, PhoneInput, Text, TextInput, useThemeV1 } from 'shuttlex-integration';
 
 import { SignInEmailStateProps, SignInPhoneStateProps, SignProps } from './props';
 
 const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const { t } = useTranslation();
 
   const [isPhoneNumberSelected, setIsPhoneNumberSelected] = useState(true);
@@ -87,7 +87,7 @@ const SignInPhoneNumber = ({
   navigation,
 }: SignInPhoneStateProps) => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
 
   const [flagState, setFlagState] = useState(countryDtos[0]);
 
@@ -121,7 +121,7 @@ const SignInPhoneNumber = ({
 
 const SignInEmail = ({ isCorrectEmail, onLabelPress, changeEmail }: SignInEmailStateProps) => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
 
   const computedStyles = StyleSheet.create({
     dividerInputsLabel: {

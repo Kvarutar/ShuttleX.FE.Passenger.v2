@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { ButtonV1, GroupedBrandIcon, SafeAreaView, Text, useTheme } from 'shuttlex-integration';
+import { ButtonV1, GroupedBrandIcon, SafeAreaView, Text, useThemeV1 } from 'shuttlex-integration';
 
 import { SplashScreenProps } from './props';
 
 const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const { t } = useTranslation();
 
   const navigationToSignUp = () => navigation.replace('Auth', { state: 'SignUp' });

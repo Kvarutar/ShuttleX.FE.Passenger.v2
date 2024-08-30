@@ -14,7 +14,7 @@ import {
   Timer,
   TimerModes,
   useDebounce,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../core/redux/hooks';
@@ -25,7 +25,7 @@ import { Address } from '../../../core/ride/redux/order/types';
 import { AddressItemProps, AddressSelectionScreenProps } from './props';
 
 const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenProps): JSX.Element => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const dispatch = useAppDispatch();
 
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -107,7 +107,7 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
 };
 
 const AddressItem = ({ address, onAddressSelect, details }: AddressItemProps) => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
 
   const computedStyles = StyleSheet.create({
     details: {

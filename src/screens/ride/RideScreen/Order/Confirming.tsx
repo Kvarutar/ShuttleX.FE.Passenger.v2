@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { ButtonV1, ButtonV1Modes, Text, Timer, TimerModes, useTheme } from 'shuttlex-integration';
+import { ButtonV1, ButtonV1Modes, Text, Timer, TimerModes, useThemeV1 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { createOrder } from '../../../../core/ride/redux/order/thunks';
 
 const Confirming = ({ onCancel }: { onCancel: () => void }) => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const { t } = useTranslation();
   const [dotsCounter, setDotsCounter] = useState(3);
   const dispatch = useAppDispatch();

@@ -11,7 +11,7 @@ import {
   sizes,
   StopWatch,
   Text,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { setNotificationList } from '../../../core/menu/redux/notifications';
@@ -34,7 +34,7 @@ import { RideScreenProps } from './props';
 import Trip from './Trip';
 
 const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const dispatch = useAppDispatch();
 
   const tripStatus = useSelector(tripStatusSelector);

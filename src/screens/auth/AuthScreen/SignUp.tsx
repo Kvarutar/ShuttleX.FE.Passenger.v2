@@ -12,7 +12,7 @@ import {
   ScrollViewWithCustomScroll,
   Text,
   TextInput,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { correctValidationUserDataFormProps, SignProps } from './props';
@@ -30,7 +30,7 @@ const formatDate = (date: Date): string =>
     .replace(/[^+\d]/g, '-');
 
 const SignUp = ({ onPress, navigation }: SignProps): JSX.Element => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const { t } = useTranslation();
 
   type FormProps = {

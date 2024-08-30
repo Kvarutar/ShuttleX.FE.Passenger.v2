@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Bar, MenuBase, MenuNavigation, Separator, Text, useTheme } from 'shuttlex-integration';
+import { Bar, MenuBase, MenuNavigation, Separator, Text, useThemeV1 } from 'shuttlex-integration';
 
 import { numberOfUnreadNotificationsSelector } from '../../../core/menu/redux/notifications/selectors';
 import { profileSelector } from '../../../core/redux/passenger/selectors';
@@ -57,7 +57,7 @@ const Menu = ({ onClose, navigation }: MenuProps) => {
 };
 
 const NotificationContent = () => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
 
   const computedStyles = StyleSheet.create({
@@ -88,7 +88,7 @@ const NotificationContent = () => {
 };
 
 const AdditionalContent = () => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
 
   const computedStyles = {
     balanceTitle: {

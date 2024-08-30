@@ -13,13 +13,13 @@ import {
   sizes,
   Text,
   TextInput,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { ListItemProps, PhoneSelectScreenProps } from './props';
 
 const PhoneSelectScreen = ({ navigation, route }: PhoneSelectScreenProps): JSX.Element => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const { t } = useTranslation();
 
   const [filterdCountryDtos, setFilterdCountryDtos] = useState<countryDtosProps[]>(countryDtos);
@@ -87,7 +87,7 @@ const PhoneSelectScreen = ({ navigation, route }: PhoneSelectScreenProps): JSX.E
 };
 
 const ListItem = ({ iconSvg, icc, countryName, style, onPress, withCheck }: ListItemProps): JSX.Element => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
 
   const computedStyles = StyleSheet.create({
     listItemflagContainer: {

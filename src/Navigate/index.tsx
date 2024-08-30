@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useEffect } from 'react';
 import BootSplash from 'react-native-bootsplash';
-import { useTheme } from 'shuttlex-integration';
+import { useThemeV1 } from 'shuttlex-integration';
 
 import AuthScreen from '../screens/auth/AuthScreen';
 import LockOutScreen from '../screens/auth/LockOutScreen';
@@ -25,7 +25,7 @@ import { RootStackParamList } from './props';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Navigate = (): JSX.Element => {
-  const { setThemeMode } = useTheme();
+  const { setThemeMode } = useThemeV1();
 
   useEffect(() => {
     setThemeMode('dark');

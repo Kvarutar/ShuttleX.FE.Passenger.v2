@@ -12,7 +12,7 @@ import {
   ReportIcon,
   sizes,
   Text,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { tripInfoSelector } from '../../../../core/ride/redux/trip/selectors';
@@ -56,7 +56,7 @@ const HiddenPart = () => {
 };
 
 const ContactInfo = ({ trip }: { trip: TripInfo }) => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
 
   return (
     <Bar>

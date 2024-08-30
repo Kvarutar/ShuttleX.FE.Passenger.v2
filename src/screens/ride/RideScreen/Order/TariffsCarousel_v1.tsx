@@ -25,7 +25,7 @@ import {
   TariffType,
   TeslaXImage,
   Text,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
@@ -81,7 +81,7 @@ const TariffsCarousel = () => (
 );
 
 const CarouselItem = ({ animationValue, item }: { animationValue: SharedValue<number>; item: TariffType }) => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 

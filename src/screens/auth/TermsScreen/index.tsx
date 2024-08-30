@@ -7,13 +7,13 @@ import {
   ShortArrowIcon,
   sizes,
   Text,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { TermsScreenProps } from './props';
 
 const TermsScreen = ({ navigation }: TermsScreenProps): JSX.Element => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const { t } = useTranslation();
 
   const computedStyles = StyleSheet.create({

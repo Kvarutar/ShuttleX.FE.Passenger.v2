@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider } from 'react-redux';
-import { ThemeProvider } from 'shuttlex-integration';
+import { ThemeProviderV1 } from 'shuttlex-integration';
 
 import { store } from './core/redux/store';
 import Navigate from './Navigate';
@@ -11,13 +11,13 @@ if (__DEV__) {
 }
 
 const App = (): JSX.Element => (
-  <ThemeProvider>
+  <ThemeProviderV1>
     <Provider store={store}>
       <GestureHandlerRootView style={styles.gestureHandlerRootView}>
         <Navigate />
       </GestureHandlerRootView>
     </Provider>
-  </ThemeProvider>
+  </ThemeProviderV1>
 );
 
 const styles = StyleSheet.create({

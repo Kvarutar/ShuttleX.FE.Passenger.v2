@@ -12,7 +12,7 @@ import {
   PlusIcon,
   ScrollViewWithCustomScroll,
   TimePicker,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
@@ -52,7 +52,7 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const { colors, themeMode } = useTheme();
+  const { colors, themeMode } = useThemeV1();
 
   const computedStyles = StyleSheet.create({
     barStyle:

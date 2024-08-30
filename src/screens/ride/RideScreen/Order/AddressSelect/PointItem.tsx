@@ -15,7 +15,7 @@ import {
   PickUpIcon,
   Text,
   TextInput,
-  useTheme,
+  useThemeV1,
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
@@ -26,7 +26,7 @@ import { PointItemProps } from './props';
 const fadeAnimationDuration = 100;
 
 const PointItem = ({ pointMode, content, onRemovePoint, currentPointId }: PointItemProps) => {
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 

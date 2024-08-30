@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { CustomKeyboardAvoidingView, FeedbackScreen, FeedbackType, sizes, useTheme } from 'shuttlex-integration';
+import { CustomKeyboardAvoidingView, FeedbackScreen, FeedbackType, sizes, useThemeV1 } from 'shuttlex-integration';
 
 import { selectedPaymentMethodSelector } from '../../../core/menu/redux/wallet/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
@@ -11,7 +11,7 @@ import { RatingScreenProps } from './props';
 
 const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors } = useThemeV1();
   const dispatch = useAppDispatch();
   const selectedPaymentMethod = useSelector(selectedPaymentMethodSelector);
 
