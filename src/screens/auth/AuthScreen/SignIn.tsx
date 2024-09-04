@@ -6,7 +6,6 @@ import { ButtonV1, countryDtos, emailRegex, PhoneInput, Text, TextInput, useThem
 import { SignInEmailStateProps, SignInPhoneStateProps, SignProps } from './props';
 
 const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
-  const { colors } = useThemeV1();
   const { t } = useTranslation();
 
   const [isPhoneNumberSelected, setIsPhoneNumberSelected] = useState(true);
@@ -32,15 +31,6 @@ const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
       }
     }
   };
-
-  const computedStyles = StyleSheet.create({
-    signUpLabel: {
-      color: colors.primaryColor,
-    },
-    dividerInputsLabel: {
-      color: colors.primaryColor,
-    },
-  });
 
   return (
     <>
@@ -70,10 +60,7 @@ const SignIn = ({ onPress, navigation }: SignProps): JSX.Element => {
       <View style={styles.bottomButtonsContainer}>
         <ButtonV1 text={t('auth_Auth_SignIn_nextButton')} onPress={navigationToSignInPhoneCodeScreen} />
         <Pressable style={styles.dontHaveAccountContainer} onPress={onPress} hitSlop={20}>
-          <Text style={styles.dontHaveAccountText}>
-            {t('auth_Auth_SignIn_dontHaveAccount')}{' '}
-            <Text style={[styles.signUpLabel, computedStyles.signUpLabel]}>{t('auth_Auth_SignIn_signUpButton')}</Text>
-          </Text>
+          <Text style={styles.dontHaveAccountText}>{t('auth_Auth_SignIn_dontHaveAccount')} </Text>
         </Pressable>
       </View>
     </>
@@ -168,9 +155,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   dontHaveAccountText: {
-    fontFamily: 'Inter Medium',
-  },
-  signUpLabel: {
     fontFamily: 'Inter Medium',
   },
 });

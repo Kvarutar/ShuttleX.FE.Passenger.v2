@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { ButtonV1, GroupedBrandIcon, SafeAreaView, Text, useThemeV1 } from 'shuttlex-integration';
+import { GroupedBrandIcon, SafeAreaView, Text, useThemeV1 } from 'shuttlex-integration';
 
 import { SplashScreenProps } from './props';
 
@@ -8,15 +8,12 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
   const { colors } = useThemeV1();
   const { t } = useTranslation();
 
-  const navigationToSignUp = () => navigation.replace('Auth', { state: 'SignUp' });
-
   const navigationToSignIn = () => navigation.replace('Auth', { state: 'SignIn' });
 
   return (
     <SafeAreaView>
       <GroupedBrandIcon style={styles.groupedBrandIconContainer} iconColor={colors.primaryColor} />
       <View style={styles.buttonsContainer}>
-        <ButtonV1 text={t('auth_Splash_startButton')} onPress={navigationToSignUp} />
         <Pressable style={styles.alreadyHaveAccountContainer} onPress={navigationToSignIn} hitSlop={20}>
           <Text style={styles.alreadyHaveAccountText}>{t('auth_Splash_haveAccount')}</Text>
         </Pressable>

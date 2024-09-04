@@ -48,9 +48,6 @@ const styles = StyleSheet.create({
     marginTop: 50,
     alignSelf: 'center',
   },
-  signUpLabel: {
-    fontFamily: 'Inter Medium',
-  },
   headerDummy: {
     width: 50,
   },

@@ -32,9 +32,6 @@ const PhoneSelectScreen = ({ navigation, route }: PhoneSelectScreenProps): JSX.E
     container: {
       paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
     },
-    signUpLabel: {
-      color: colors.primaryColor,
-    },
     textInputSearch: {
       borderColor: colors.borderColor,
     },
