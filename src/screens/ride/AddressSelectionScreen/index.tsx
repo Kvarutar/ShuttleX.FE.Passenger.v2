@@ -10,7 +10,7 @@ import {
   ScrollViewWithCustomScroll,
   ShortArrowIcon,
   Text,
-  TextInput,
+  TextInputV1,
   Timer,
   TimerModes,
   useDebounce,
@@ -93,7 +93,7 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
           <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={navigation.goBack}>
             <ShortArrowIcon />
           </ButtonV1>
-          <TextInput
+          <TextInputV1
             style={styles.textInput}
             onChangeText={onChangeText}
             value={inputValue}

@@ -14,7 +14,7 @@ import {
   MinusIcon,
   PickUpIcon,
   Text,
-  TextInput,
+  TextInputV1,
   useThemeV1,
 } from 'shuttlex-integration';
 
@@ -75,7 +75,7 @@ const PointItem = ({ pointMode, content, onRemovePoint, currentPointId }: PointI
             </Bar>
           ) : (
             <View style={styles.textInputWrapper}>
-              <TextInput placeholder={t('ride_Ride_AddressSelect_addressInputPlaceholder')} editable={false} />
+              <TextInputV1 placeholder={t('ride_Ride_AddressSelect_addressInputPlaceholder')} editable={false} />
               <View style={styles.inputButtons}>
                 <View style={[styles.line, computedStyles.line]} />
                 <Pressable hitSlop={20} onPress={onLocationIconPress}>

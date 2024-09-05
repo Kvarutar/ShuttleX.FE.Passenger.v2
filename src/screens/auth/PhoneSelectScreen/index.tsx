@@ -12,7 +12,7 @@ import {
   ShortArrowIcon,
   sizes,
   Text,
-  TextInput,
+  TextInputV1,
   useThemeV1,
 } from 'shuttlex-integration';
 
@@ -45,7 +45,7 @@ const PhoneSelectScreen = ({ navigation, route }: PhoneSelectScreenProps): JSX.E
             <ShortArrowIcon />
           </ButtonV1>
 
-          <TextInput
+          <TextInputV1
             onChangeText={text => {
               const filtered = countryDtos.filter(element => {
                 if (

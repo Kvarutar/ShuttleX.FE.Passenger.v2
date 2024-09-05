@@ -28,7 +28,6 @@ export type SignInPhoneAndEmailStateProps = {
 
 export type correctValidationUserDataFormProps = {
   correctName: boolean;
-  correctLastName: boolean;
   correctEmail: boolean;
   correctDate: boolean;
   correctPhoneNumber: boolean;

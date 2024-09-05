@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { ButtonV1, countryDtos, emailRegex, PhoneInput, Text, TextInput, useThemeV1 } from 'shuttlex-integration';
+import { ButtonV1, countryDtos, emailRegex, PhoneInput, Text, TextInputV1, useThemeV1 } from 'shuttlex-integration';
 
 import { SignInEmailStateProps, SignInPhoneStateProps, SignProps } from './props';
 
@@ -118,7 +118,7 @@ const SignInEmail = ({ isCorrectEmail, onLabelPress, changeEmail }: SignInEmailS
 
   return (
     <>
-      <TextInput
+      <TextInputV1
         error={{ isError: !isCorrectEmail, message: t('auth_Auth_SignIn_incorrectEmail') }}
         onChangeText={(value: string) => {
           changeEmail(value);
