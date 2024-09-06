@@ -11,8 +11,8 @@ import {
   ShortArrowIcon,
   Text,
   TextInputV1,
-  Timer,
-  TimerModes,
+  TimerV1,
+  TimerV1Modes,
   useDebounce,
   useThemeV1,
 } from 'shuttlex-integration';
@@ -76,11 +76,11 @@ const AddressSelectionScreen = ({ navigation, route }: AddressSelectionScreenPro
   if (isLoading) {
     content = (
       <View style={styles.spinnerWrapper}>
-        <Timer
+        <TimerV1
           withCountdown={false}
           startColor={colors.primaryGradientStartColor}
           endColor={colors.primaryColor}
-          mode={TimerModes.Mini}
+          mode={TimerV1Modes.Mini}
         />
       </View>
     );

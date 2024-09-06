@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { ButtonV1, ButtonV1Modes, Text, Timer, TimerModes, useThemeV1 } from 'shuttlex-integration';
+import { ButtonV1, ButtonV1Modes, Text, TimerV1, TimerV1Modes, useThemeV1 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { createOrder } from '../../../../core/ride/redux/order/thunks';
@@ -31,11 +31,11 @@ const Confirming = ({ onCancel }: { onCancel: () => void }) => {
   return (
     <Animated.View style={styles.wrapper} entering={FadeIn} exiting={FadeOut}>
       <Text>{t('ride_Ride_Confirming_confirming', { dots: '.'.repeat(dotsCounter) })}</Text>
-      <Timer
+      <TimerV1
         withCountdown={false}
         startColor={colors.secondaryGradientStartColor}
         endColor={colors.secondaryGradientEndColor}
-        mode={TimerModes.Mini}
+        mode={TimerV1Modes.Mini}
       />
       <ButtonV1
         mode={ButtonV1Modes.Mode3}

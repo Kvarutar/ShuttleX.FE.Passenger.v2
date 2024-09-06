@@ -12,8 +12,8 @@ import {
   SafeAreaView,
   ShortArrowIcon,
   Text,
-  Timer,
-  TimerModes,
+  TimerV1,
+  TimerV1Modes,
   useThemeV1,
 } from 'shuttlex-integration';
 
@@ -71,11 +71,11 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
       </ButtonV1>
       <BottomWindow windowStyle={styles.bottomWindow}>
         {isLoading ? (
-          <Timer
+          <TimerV1
             withCountdown={false}
             startColor={colors.primaryGradientStartColor}
             endColor={colors.primaryColor}
-            mode={TimerModes.Mini}
+            mode={TimerV1Modes.Mini}
           />
         ) : (
           <>

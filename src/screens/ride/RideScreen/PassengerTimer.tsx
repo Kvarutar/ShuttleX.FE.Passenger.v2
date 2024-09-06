@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { Timer, TimerModes, useThemeV1 } from 'shuttlex-integration';
+import { TimerV1, TimerV1Modes, useThemeV1 } from 'shuttlex-integration';
 
 const timerAnimationDuration = 300;
 
@@ -26,11 +26,11 @@ const PassengerTimer = ({
         entering={FadeIn.duration(timerAnimationDuration)}
         style={styles.additionalHeaderButtons}
       >
-        <Timer
+        <TimerV1
           initialDate={new Date()}
           startColor={colors.secondaryGradientStartColor}
           endColor={colors.secondaryGradientEndColor}
-          mode={TimerModes.Mini}
+          mode={TimerV1Modes.Mini}
         />
       </Animated.View>
     );
@@ -41,12 +41,12 @@ const PassengerTimer = ({
         entering={FadeIn.duration(timerAnimationDuration)}
         style={styles.additionalHeaderButtons}
       >
-        <Timer
+        <TimerV1
           initialDate={new Date(currentTime)} //20000 - for test
           onAfterCountdownEnds={setIsPassengerLate}
           startColor={colors.primaryGradientStartColor}
           endColor={colors.primaryColor}
-          mode={TimerModes.Mini}
+          mode={TimerV1Modes.Mini}
         />
       </Animated.View>
     );
