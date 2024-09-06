@@ -11,6 +11,7 @@ if (__DEV__) {
 }
 
 const App = (): JSX.Element => (
+  /* {TODO: Remove one of ThemeProviders when we won't need it} */
   <ThemeProviderV1>
     <ThemeProvider>
       <Provider store={store}>

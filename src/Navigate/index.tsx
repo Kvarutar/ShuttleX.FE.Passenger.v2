@@ -27,7 +27,7 @@ const Navigate = (): JSX.Element => {
   const { setThemeMode } = useThemeV1();
 
   useEffect(() => {
-    setThemeMode('dark');
+    setThemeMode('light');
   }, [setThemeMode]);
 
   return (
