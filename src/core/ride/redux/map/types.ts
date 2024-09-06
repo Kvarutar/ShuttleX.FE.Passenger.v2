@@ -1,8 +1,8 @@
 import { LatLng } from 'react-native-maps';
-import { MapCameraMode } from 'shuttlex-integration';
+import { MapCameraMode, MapViewProps } from 'shuttlex-integration';
 
 export type MapState = {
   cameraMode: MapCameraMode;
-  polylines: LatLng[];
+  polylines: Exclude<MapViewProps['polylines'], undefined>;
   stopPoints: LatLng[];
 };

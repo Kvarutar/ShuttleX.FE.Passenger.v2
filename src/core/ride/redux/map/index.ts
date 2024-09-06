@@ -39,7 +39,7 @@ const slice = createSlice({
       }
 
       slice.caseReducers.setMapPolylines(state, {
-        payload: points,
+        payload: [{ type: 'straight', options: { coordinates: points } }],
         type: setMapPolylines.type,
       });
 
