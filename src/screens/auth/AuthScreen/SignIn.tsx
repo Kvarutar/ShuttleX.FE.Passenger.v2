@@ -88,12 +88,17 @@ const SignInPhoneNumber = ({
     <>
       <PhoneInput
         flagState={flagState}
-        onFlagPress={() => navigation.navigate('PhoneSelect', { initialFlag: flagState, onFlagSelect: setFlagState })}
+        onFlagPress={() =>
+          navigation.navigate('PhoneSelect', {
+            initialFlag: flagState,
+            onFlagSelect: setFlagState,
+          })
+        }
         error={{
           isError: !isCorrectPhoneNumber,
           message: t('auth_Auth_SignIn_phoneNumberError'),
         }}
-        getPhoneNumber={(value: string | null) => {
+        getPhoneNumber={(value: string) => {
           changePhoneNumber(value);
         }}
       />

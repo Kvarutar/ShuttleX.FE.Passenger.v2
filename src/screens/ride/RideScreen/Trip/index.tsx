@@ -29,7 +29,7 @@ const Trip = () => {
       ))}
       visiblePart={<VisiblePart />}
       hiddenPart={<HiddenPart />}
-      hiddenPartContainerStyles={styles.container}
+      hiddenPartContainerStyle={styles.container}
       hiddenPartButton={
         <SwipeButton
           mode={SwipeButtonModes.Decline}

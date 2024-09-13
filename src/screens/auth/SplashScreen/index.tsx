@@ -11,8 +11,7 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
 
   const navigationToSignIn = () => navigation.replace('Auth', { state: 'SignIn' });
 
-  //TODO: Add logic for navigation to the sign up screen
-  const navigationToSignUp = () => navigation.replace('Auth', { state: 'SignIn' });
+  const navigationToSignUp = () => navigation.replace('Auth', { state: 'SignUp' });
 
   const computedStyles = StyleSheet.create({
     container: {

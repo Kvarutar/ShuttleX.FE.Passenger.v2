@@ -1,6 +1,6 @@
 {
-  "auth_Auth_GroupedButton_firstButton": "Sign Up",
-  "auth_Auth_GroupedButton_secondButton": "Sign In",
+  "auth_Auth_HeaderWithCloseButton_signUpTitle": "Sign Up",
+  "auth_Auth_HeaderWithCloseButton_signInTitle": "Sign In",
   "auth_Auth_SignIn_nextButton": "Next",
   "auth_Auth_SignIn_phoneTitle": "Enter the four-digit code\nyou received in sms message",
   "auth_Auth_SignIn_emailTitle": "Check your email inbox and enter the\ncode or sign in through the link",

@@ -21,16 +21,3 @@ export type SignInEmailStateProps = {
   changeEmail: (phoneNumber: string) => void;
   isCorrectEmail: boolean;
 };
-
-export type SignInPhoneAndEmailStateProps = {
-  onLabelPress: () => void;
-};
-
-export type correctValidationUserDataFormProps = {
-  correctName: boolean;
-  correctEmail: boolean;
-  correctDate: boolean;
-  correctPhoneNumber: boolean;
-  correctFamiliarWithTermsAndConditions: boolean;
-  correctAllowedProccessPersonalData: boolean;
-};

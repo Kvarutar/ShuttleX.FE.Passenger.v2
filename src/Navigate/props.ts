@@ -2,7 +2,7 @@ import { countryDtosProps } from 'shuttlex-integration';
 
 export type RootStackParamList = {
   Splash: undefined;
-  Auth: { state: 'SignIn' };
+  Auth: { state: 'SignIn' | 'SignUp' };
   Ride: undefined;
   SignInPhoneCode: undefined;
   SignInEmailCode: undefined;

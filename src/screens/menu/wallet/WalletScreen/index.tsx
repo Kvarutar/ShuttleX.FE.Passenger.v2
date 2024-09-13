@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import {
   Bar,
   BarModes,
-  BlueCheck2,
   ButtonV1,
   ButtonV1Shapes,
   getPaymentIcon,
   PaymentMethod,
+  RoundCheckIcon2,
   SafeAreaView,
   ShortArrowIcon,
   Text,
@@ -85,7 +85,7 @@ const PaymentItem = ({ paymentMethod }: { paymentMethod: PaymentMethod }) => {
             {paymentMethod.method !== 'cash' ? `**** ${paymentMethod.details}` : t('menu_Wallet_cash')}
           </Text>
         </View>
-        {isActive && <BlueCheck2 />}
+        {isActive && <RoundCheckIcon2 />}
       </Bar>
     </Pressable>
   );
