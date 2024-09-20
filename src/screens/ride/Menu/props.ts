@@ -1,6 +1,6 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { RootStackParamList } from '../../../Navigate/props';
+import { RootStackParamList } from './../../../Navigate/props';
 
 export type MenuProps = {
   onClose: () => void;

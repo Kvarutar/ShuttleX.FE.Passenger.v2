@@ -1,17 +1,41 @@
+import { useNavigationState } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Bar, MenuBase, MenuNavigation, Separator, Text, useThemeV1 } from 'shuttlex-integration';
+import { MenuBase, MenuNavigation, PlusRoundIcon } from 'shuttlex-integration';
 
-import { numberOfUnreadNotificationsSelector } from '../../../core/menu/redux/notifications/selectors';
-import { profileSelector } from '../../../core/redux/passenger/selectors';
+import { profileSelector } from './../../../core/redux/passenger/selectors';
 import { MenuProps } from './props';
 
 const Menu = ({ onClose, navigation }: MenuProps) => {
   const { t } = useTranslation();
   const profile = useSelector(profileSelector);
 
+  const currentRoute = useNavigationState(state => state.routes[state.index].name);
+
+  const onCreateRide = () => {
+    navigation.navigate('Ride');
+    //TODO Send for create ride page
+    onClose();
+  };
+
   const menuNavigation: MenuNavigation = {
+    ride: {
+      navFunc: () => {
+        navigation.navigate('Ride');
+        onClose();
+      },
+      title: t('ride_Menu_navigationMyRide'),
+      content: <CreateRide onClick={onCreateRide} />,
+    },
+    activity: {
+      navFunc: () => {
+        navigation.navigate('Ride');
+        //TODO Create activity page
+        onClose();
+      },
+      title: t('ride_Menu_navigationActivity'),
+    },
     wallet: {
       navFunc: () => {
         navigation.navigate('Wallet');
@@ -19,130 +43,62 @@ const Menu = ({ onClose, navigation }: MenuProps) => {
       },
       title: t('ride_Menu_navigationWallet'),
     },
-    notifications: {
-      navFunc: () => {
-        navigation.navigate('Notifications');
-        onClose();
-      },
-      title: t('ride_Menu_navigationNotifications'),
-      content: <NotificationContent />,
-    },
-    help: {
+    promocodes: {
       navFunc: () => {
         navigation.navigate('Ride');
+        //TODO Create Promocodes page
         onClose();
       },
-      title: t('ride_Menu_navigationHelp'),
+      title: t('ride_Menu_navigationPromocodes'),
     },
     becomeDriver: {
       navFunc: () => {
         navigation.navigate('Ride');
+        //TODO go to page becomeDriver
         onClose();
       },
       title: t('ride_Menu_navigationBecomeDriver'),
+    },
+    settings: {
+      navFunc: () => {
+        navigation.navigate('Ride');
+        //TODO Create settings page
+        onClose();
+      },
+      title: t('ride_Menu_navigationSettings'),
+    },
+    help: {
+      navFunc: () => {
+        navigation.navigate('Ride');
+        //TODO Create help page
+        onClose();
+      },
+      title: t('ride_Menu_navigationHelp'),
     },
   };
 
   return (
     <MenuBase
       onClose={onClose}
-      additionalContent={<AdditionalContent />}
       userImageUri={profile?.imageUri}
       userName={profile?.name}
       userSurname={profile?.surname}
       menuNavigation={menuNavigation}
       style={styles.menu}
+      currentRoute={currentRoute}
     />
   );
 };
 
-const NotificationContent = () => {
-  const { colors } = useThemeV1();
-  const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
-
-  const computedStyles = StyleSheet.create({
-    unreadMarker: {
-      backgroundColor: colors.primaryColor,
-    },
-    unreadNotificationsText: {
-      color: colors.backgroundPrimaryColor,
-    },
-  });
-
-  if (unreadNotifications > 0) {
-    return (
-      <View style={[styles.unreadMarker, computedStyles.unreadMarker]}>
-        <Text style={[styles.unreadNotificationsText, computedStyles.unreadNotificationsText]}>
-          {unreadNotifications}
-        </Text>
-      </View>
-    );
-  } else if (unreadNotifications > 99) {
-    return (
-      <View style={[styles.unreadMarker, computedStyles.unreadMarker]}>
-        <Text style={[styles.unreadNotificationsText, computedStyles.unreadNotificationsText]}>99+</Text>
-      </View>
-    );
-  }
-  return <></>;
-};
-
-const AdditionalContent = () => {
-  const { colors } = useThemeV1();
-
-  const computedStyles = {
-    balanceTitle: {
-      color: colors.textSecondaryColor,
-    },
-  };
-
-  return (
-    <Bar style={styles.balance}>
-      <View style={styles.textWrapper}>
-        <Text style={[styles.balanceTitle, computedStyles.balanceTitle]}>Earned</Text>
-        <Text style={styles.balanceTotal}>$682.40</Text>
-      </View>
-      <Separator mode="vertical" style={styles.separator} />
-      <View style={styles.textWrapper}>
-        <Text style={[styles.balanceTitle, computedStyles.balanceTitle]}>Previous</Text>
-        <Text style={styles.balanceTotal}>$12.10</Text>
-      </View>
-    </Bar>
-  );
-};
+const CreateRide = ({ onClick }: { onClick: () => void }) => (
+  <Pressable onPress={onClick}>
+    <PlusRoundIcon />
+  </Pressable>
+);
 
 const styles = StyleSheet.create({
   menu: {
     zIndex: 3,
-  },
-  separator: {
-    flex: 0,
-  },
-  balance: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  balanceTitle: {
-    fontFamily: 'Inter Medium',
-    fontSize: 12,
-    flexShrink: 1,
-  },
-  balanceTotal: {
-    fontFamily: 'Inter Medium',
-  },
-  textWrapper: {
-    flexShrink: 1,
-  },
-  unreadMarker: {
-    width: 29,
-    height: 29,
-    borderRadius: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  unreadNotificationsText: {
-    fontFamily: 'Inter Medium',
-    fontSize: 14,
   },
 });
 
