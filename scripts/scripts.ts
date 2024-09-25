@@ -61,7 +61,7 @@ switch (process.env.npm_lifecycle_event) {
       unixCommand:
         'npx react-native run-android --mode=devdebug && adb shell am start -n com.shuttlex.passenger.dev/com.shuttlex.passenger.MainActivity',
       winCommand:
-        'npx react-native run-android --mode=devdebug & adb shell am start -n com.shuttlex.passenger.dev/com.shuttlex.passenger.MainActivity',
+        'cmd /c "npx react-native run-android --mode=devdebug & adb shell am start -n com.shuttlex.passenger.dev/com.shuttlex.passenger.MainActivity"',
     });
     break;
   case 'android:prod':
