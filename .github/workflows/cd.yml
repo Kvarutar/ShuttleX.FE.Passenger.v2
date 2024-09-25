@@ -33,7 +33,7 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./android/gradlew
       - name: Gradle build
-        run: npm run build:android:assembleRelease -- --no-daemon
+        run: npm run build:android:assemble:prod:release -- --no-daemon
       - name: Retrieve version
         run: |
           cd ./android
@@ -42,4 +42,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.VERSION_NAME }}
-          files: './android/app/build/outputs/apk/release/*.apk'
+          files: './android/app/build/outputs/apk/prod/release/*.apk'

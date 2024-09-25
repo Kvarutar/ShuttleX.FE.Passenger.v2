@@ -125,15 +125,8 @@ Result:
 In your text editor open a terminal from the _root_ of your React Native project. Run the following command to start your _Android_ app:
 
 ```sh
-npm i
-npm start
+npm run android:dev
 ```
-
-![Metro](readme/readme-metro.png)
-
-Press the **a** key to run app on Android.
-
-> **Note**: If you start with new JDK version open terminal and write `npm start -- --reset-cache`
 
 ### Congratulations!
 
@@ -266,8 +259,7 @@ Files for install:
 In your text editor open a terminal from the _root_ of your React Native project. Run the following command to start your _iOS_ app:
 
 ```sh
-npm start
-# then press i
+npm run ios:dev
 ```
 
 ### Congratulations!

@@ -58,7 +58,7 @@ ENVFILES = {
   'Release' => '$(PODS_ROOT)/../../.env.production',
 }
 
-target 'ShuttleX_Passenger' do
+abstract_target 'SharedPods' do
   # React Native Maps dependencies
   rn_maps_path = '../node_modules/react-native-maps'
   pod 'react-native-google-maps', :path => rn_maps_path
@@ -67,6 +67,9 @@ target 'ShuttleX_Passenger' do
 
   # Flags change depending on the env values.
   flags = get_default_flags()
+
+  # For firebase
+  use_frameworks! :linkage => :static
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -77,7 +80,7 @@ target 'ShuttleX_Passenger' do
     #
     # Note that if you have use_frameworks! enabled, Flipper will not work and
     # you should disable the next line.
-    :flipper_configuration => flipper_config,
+    # :flipper_configuration => flipper_config,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
@@ -85,6 +88,10 @@ target 'ShuttleX_Passenger' do
   target 'ShuttleX_PassengerTests' do
     inherit! :complete
     # Pods for testing
+  end
+  target 'ShuttleX_Passenger' do
+  end
+  target 'ShuttleX_Passenger_dev' do
   end
 
   post_install do |installer|

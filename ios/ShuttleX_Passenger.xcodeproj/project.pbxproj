@@ -9,18 +9,33 @@
 /* Begin PBXBuildFile section */
 		004267C2E83E45478536ADCF /* Inter SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F1A220B29FDD4FDB890D36D2 /* Inter SemiBold.ttf */; };
 		00E356F31AD99517003FC87E /* ShuttleX_PassengerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ShuttleX_PassengerTests.m */; };
-		0B30B99E1AF3E014CAEDFBB9 /* libPods-ShuttleX_Passenger-ShuttleX_PassengerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 21196831BF4DE2719FF3EE54 /* libPods-ShuttleX_Passenger-ShuttleX_PassengerTests.a */; };
 		10768E09E713418EA0AF55CF /* Inter ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 77203E57B2ED490A9529B6D0 /* Inter ExtraLight.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		26ACF2213EB041D8AD358EA3 /* Dealerplate California.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 00B77111DE3D41E4822E2BA4 /* Dealerplate California.ttf */; };
+		312609149A248F3B839F915A /* Pods_SharedPods_ShuttleX_Passenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 152390E2EE49DEF7E501964D /* Pods_SharedPods_ShuttleX_Passenger.framework */; };
 		73FB9756690D4DA393F41D2C /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C6EF64B7BE214801A1E90650 /* BootSplash.storyboard */; };
 		7469FC60AA60421C87EDD256 /* Inter Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0238A355658E430091BCF313 /* Inter Black.ttf */; };
+		755DCDA12C96225300BB9FFE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
+		755DCDA22C96225300BB9FFE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		755DCDA62C96225300BB9FFE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		755DCDA72C96225300BB9FFE /* Inter Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0238A355658E430091BCF313 /* Inter Black.ttf */; };
+		755DCDA82C96225300BB9FFE /* Inter Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DDCC4FB4E1F24C2CA91EB3AA /* Inter Bold.ttf */; };
+		755DCDA92C96225300BB9FFE /* Inter ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 88064F6FD2EA4E728263976A /* Inter ExtraBold.ttf */; };
+		755DCDAA2C96225300BB9FFE /* Inter ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 77203E57B2ED490A9529B6D0 /* Inter ExtraLight.ttf */; };
+		755DCDAB2C96225300BB9FFE /* Inter Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A585410D2AE4D52B9396306 /* Inter Light.ttf */; };
+		755DCDAC2C96225300BB9FFE /* Inter Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1698FE1F4D88432DBC5C6011 /* Inter Medium.ttf */; };
+		755DCDAD2C96225300BB9FFE /* Inter Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4639270B582D43A8A29F6CEC /* Inter Regular.ttf */; };
+		755DCDAE2C96225300BB9FFE /* Inter SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F1A220B29FDD4FDB890D36D2 /* Inter SemiBold.ttf */; };
+		755DCDAF2C96225300BB9FFE /* Inter Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 539E74757C7141D183435DAC /* Inter Thin.ttf */; };
+		755DCDB02C96225300BB9FFE /* Dealerplate California.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 00B77111DE3D41E4822E2BA4 /* Dealerplate California.ttf */; };
+		755DCDB12C96225300BB9FFE /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C6EF64B7BE214801A1E90650 /* BootSplash.storyboard */; };
+		82A3BA40C950DFF8C1D269C6 /* Pods_SharedPods_ShuttleX_PassengerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBCFB05EDB24470FA5063889 /* Pods_SharedPods_ShuttleX_PassengerTests.framework */; };
 		83D28487357C4532AE3F7F66 /* Inter Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4639270B582D43A8A29F6CEC /* Inter Regular.ttf */; };
 		975587764311486B894FF50D /* Inter Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 539E74757C7141D183435DAC /* Inter Thin.ttf */; };
 		9FC4D3BD88694807B056CD9E /* Inter Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1698FE1F4D88432DBC5C6011 /* Inter Medium.ttf */; };
-		B87BD2EB830105ED261565A2 /* libPods-ShuttleX_Passenger.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 331FAD43005688699FB3F698 /* libPods-ShuttleX_Passenger.a */; };
+		B2C014FFE84A21A698C0C728 /* Pods_SharedPods_ShuttleX_Passenger_dev.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8121C48D6A9B69767D6245B1 /* Pods_SharedPods_ShuttleX_Passenger_dev.framework */; };
 		C831B16BA0424505A965D261 /* Inter Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DDCC4FB4E1F24C2CA91EB3AA /* Inter Bold.ttf */; };
 		D76677AAD4FC4DEDB3D12152 /* Inter Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A585410D2AE4D52B9396306 /* Inter Light.ttf */; };
 		FC66029DF7B648109AB26BC9 /* Inter ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 88064F6FD2EA4E728263976A /* Inter ExtraBold.ttf */; };
@@ -42,28 +57,43 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ShuttleX_PassengerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShuttleX_PassengerTests.m; sourceTree = "<group>"; };
 		0238A355658E430091BCF313 /* Inter Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter Black.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter Black.ttf"; sourceTree = "<group>"; };
+		0B0FB8CAA46A7BBB5CE7F205 /* Pods-SharedPods-ShuttleX_Passenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedPods-ShuttleX_Passenger.debug.xcconfig"; path = "Target Support Files/Pods-SharedPods-ShuttleX_Passenger/Pods-SharedPods-ShuttleX_Passenger.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* ShuttleX_Passenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShuttleX_Passenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ShuttleX_Passenger/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = ShuttleX_Passenger/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ShuttleX_Passenger/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ShuttleX_Passenger/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ShuttleX_Passenger/main.m; sourceTree = "<group>"; };
+		152390E2EE49DEF7E501964D /* Pods_SharedPods_ShuttleX_Passenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedPods_ShuttleX_Passenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1698FE1F4D88432DBC5C6011 /* Inter Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter Medium.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter Medium.ttf"; sourceTree = "<group>"; };
-		21196831BF4DE2719FF3EE54 /* libPods-ShuttleX_Passenger-ShuttleX_PassengerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShuttleX_Passenger-ShuttleX_PassengerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A585410D2AE4D52B9396306 /* Inter Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter Light.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter Light.ttf"; sourceTree = "<group>"; };
 		2D193525621DF9E911DAC4FA /* Pods-ShuttleX_Passenger-ShuttleX_PassengerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShuttleX_Passenger-ShuttleX_PassengerTests.release.xcconfig"; path = "Target Support Files/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests.release.xcconfig"; sourceTree = "<group>"; };
-		331FAD43005688699FB3F698 /* libPods-ShuttleX_Passenger.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShuttleX_Passenger.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B211F27C1CEE571B98B1CA5 /* Pods-SharePods-ShuttleX_Passenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharePods-ShuttleX_Passenger.debug.xcconfig"; path = "Target Support Files/Pods-SharePods-ShuttleX_Passenger/Pods-SharePods-ShuttleX_Passenger.debug.xcconfig"; sourceTree = "<group>"; };
 		3C9B5FA1497AA341BB1091E3 /* Pods-ShuttleX_Passenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShuttleX_Passenger.debug.xcconfig"; path = "Target Support Files/Pods-ShuttleX_Passenger/Pods-ShuttleX_Passenger.debug.xcconfig"; sourceTree = "<group>"; };
+		3F9D08D4DE7DBC75DAB643FB /* Pods-SharePods-ShuttleX_PassengerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharePods-ShuttleX_PassengerTests.release.xcconfig"; path = "Target Support Files/Pods-SharePods-ShuttleX_PassengerTests/Pods-SharePods-ShuttleX_PassengerTests.release.xcconfig"; sourceTree = "<group>"; };
+		461F5E57531A781F7DD732A0 /* Pods-SharePods-ShuttleX_PassengerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharePods-ShuttleX_PassengerTests.debug.xcconfig"; path = "Target Support Files/Pods-SharePods-ShuttleX_PassengerTests/Pods-SharePods-ShuttleX_PassengerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4639270B582D43A8A29F6CEC /* Inter Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter Regular.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter Regular.ttf"; sourceTree = "<group>"; };
 		539E74757C7141D183435DAC /* Inter Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter Thin.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter Thin.ttf"; sourceTree = "<group>"; };
+		573B0D619F2E7FB9CEF21A35 /* Pods-SharePods-ShuttleX_Passenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharePods-ShuttleX_Passenger.release.xcconfig"; path = "Target Support Files/Pods-SharePods-ShuttleX_Passenger/Pods-SharePods-ShuttleX_Passenger.release.xcconfig"; sourceTree = "<group>"; };
 		57F57A162F4BED116AEAA32E /* Pods-ShuttleX_Passenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShuttleX_Passenger.release.xcconfig"; path = "Target Support Files/Pods-ShuttleX_Passenger/Pods-ShuttleX_Passenger.release.xcconfig"; sourceTree = "<group>"; };
+		755DCDB82C96225300BB9FFE /* ShuttleX_Passenger_dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShuttleX_Passenger_dev.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		755DCDB92C96225300BB9FFE /* ShuttleX_Passenger_dev.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ShuttleX_Passenger_dev.plist; path = /Users/nikolab131/Documents/Work/NewShuttleX/ShuttleX.FE.Passenger.v2/ios/ShuttleX_Passenger_dev.plist; sourceTree = "<absolute>"; };
 		77203E57B2ED490A9529B6D0 /* Inter ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter ExtraLight.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter ExtraLight.ttf"; sourceTree = "<group>"; };
+		8121C48D6A9B69767D6245B1 /* Pods_SharedPods_ShuttleX_Passenger_dev.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedPods_ShuttleX_Passenger_dev.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		88064F6FD2EA4E728263976A /* Inter ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter ExtraBold.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter ExtraBold.ttf"; sourceTree = "<group>"; };
+		9F4E5B6A2D72780440632B2D /* Pods-SharedPods-ShuttleX_PassengerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedPods-ShuttleX_PassengerTests.release.xcconfig"; path = "Target Support Files/Pods-SharedPods-ShuttleX_PassengerTests/Pods-SharedPods-ShuttleX_PassengerTests.release.xcconfig"; sourceTree = "<group>"; };
+		A05405DB405A792E4D57A2BC /* Pods-SharedPods-ShuttleX_Passenger_dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedPods-ShuttleX_Passenger_dev.debug.xcconfig"; path = "Target Support Files/Pods-SharedPods-ShuttleX_Passenger_dev/Pods-SharedPods-ShuttleX_Passenger_dev.debug.xcconfig"; sourceTree = "<group>"; };
+		A7C2C0515B33B06838966F5A /* Pods-SharedPods-ShuttleX_Passenger_dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedPods-ShuttleX_Passenger_dev.release.xcconfig"; path = "Target Support Files/Pods-SharedPods-ShuttleX_Passenger_dev/Pods-SharedPods-ShuttleX_Passenger_dev.release.xcconfig"; sourceTree = "<group>"; };
+		B2A70D071A124EE1E694C3A9 /* Pods-SharePods-ShuttleX_Passenger_dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharePods-ShuttleX_Passenger_dev.debug.xcconfig"; path = "Target Support Files/Pods-SharePods-ShuttleX_Passenger_dev/Pods-SharePods-ShuttleX_Passenger_dev.debug.xcconfig"; sourceTree = "<group>"; };
 		B4833ED3C54AD4D6492F4751 /* Pods-ShuttleX_Passenger-ShuttleX_PassengerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShuttleX_Passenger-ShuttleX_PassengerTests.debug.xcconfig"; path = "Target Support Files/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C6EF64B7BE214801A1E90650 /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = ShuttleX_Passenger/BootSplash.storyboard; sourceTree = "<group>"; };
+		C73DA53E1AF1049EA84D6F6C /* Pods-SharedPods-ShuttleX_Passenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedPods-ShuttleX_Passenger.release.xcconfig"; path = "Target Support Files/Pods-SharedPods-ShuttleX_Passenger/Pods-SharedPods-ShuttleX_Passenger.release.xcconfig"; sourceTree = "<group>"; };
+		CBCFB05EDB24470FA5063889 /* Pods_SharedPods_ShuttleX_PassengerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedPods_ShuttleX_PassengerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDCC4FB4E1F24C2CA91EB3AA /* Inter Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter Bold.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter Bold.ttf"; sourceTree = "<group>"; };
+		E8D65E8F741D48DE287B75A5 /* Pods-SharePods-ShuttleX_Passenger_dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharePods-ShuttleX_Passenger_dev.release.xcconfig"; path = "Target Support Files/Pods-SharePods-ShuttleX_Passenger_dev/Pods-SharePods-ShuttleX_Passenger_dev.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F1A220B29FDD4FDB890D36D2 /* Inter SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter SemiBold.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter SemiBold.ttf"; sourceTree = "<group>"; };
+		F85BD9E1A71C631EE9339C42 /* Pods-SharedPods-ShuttleX_PassengerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedPods-ShuttleX_PassengerTests.debug.xcconfig"; path = "Target Support Files/Pods-SharedPods-ShuttleX_PassengerTests/Pods-SharedPods-ShuttleX_PassengerTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B30B99E1AF3E014CAEDFBB9 /* libPods-ShuttleX_Passenger-ShuttleX_PassengerTests.a in Frameworks */,
+				82A3BA40C950DFF8C1D269C6 /* Pods_SharedPods_ShuttleX_PassengerTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,7 +109,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B87BD2EB830105ED261565A2 /* libPods-ShuttleX_Passenger.a in Frameworks */,
+				312609149A248F3B839F915A /* Pods_SharedPods_ShuttleX_Passenger.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		755DCDA32C96225300BB9FFE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B2C014FFE84A21A698C0C728 /* Pods_SharedPods_ShuttleX_Passenger_dev.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,15 +169,15 @@
 				00B77111DE3D41E4822E2BA4 /* Dealerplate California.ttf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				331FAD43005688699FB3F698 /* libPods-ShuttleX_Passenger.a */,
-				21196831BF4DE2719FF3EE54 /* libPods-ShuttleX_Passenger-ShuttleX_PassengerTests.a */,
+				152390E2EE49DEF7E501964D /* Pods_SharedPods_ShuttleX_Passenger.framework */,
+				CBCFB05EDB24470FA5063889 /* Pods_SharedPods_ShuttleX_PassengerTests.framework */,
+				8121C48D6A9B69767D6245B1 /* Pods_SharedPods_ShuttleX_Passenger_dev.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -154,6 +192,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				755DCDB92C96225300BB9FFE /* ShuttleX_Passenger_dev.plist */,
 				13B07FAE1A68108700A75B9A /* ShuttleX_Passenger */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* ShuttleX_PassengerTests */,
@@ -172,6 +211,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* ShuttleX_Passenger.app */,
 				00E356EE1AD99517003FC87E /* ShuttleX_PassengerTests.xctest */,
+				755DCDB82C96225300BB9FFE /* ShuttleX_Passenger_dev.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -183,6 +223,18 @@
 				57F57A162F4BED116AEAA32E /* Pods-ShuttleX_Passenger.release.xcconfig */,
 				B4833ED3C54AD4D6492F4751 /* Pods-ShuttleX_Passenger-ShuttleX_PassengerTests.debug.xcconfig */,
 				2D193525621DF9E911DAC4FA /* Pods-ShuttleX_Passenger-ShuttleX_PassengerTests.release.xcconfig */,
+				3B211F27C1CEE571B98B1CA5 /* Pods-SharePods-ShuttleX_Passenger.debug.xcconfig */,
+				573B0D619F2E7FB9CEF21A35 /* Pods-SharePods-ShuttleX_Passenger.release.xcconfig */,
+				461F5E57531A781F7DD732A0 /* Pods-SharePods-ShuttleX_PassengerTests.debug.xcconfig */,
+				3F9D08D4DE7DBC75DAB643FB /* Pods-SharePods-ShuttleX_PassengerTests.release.xcconfig */,
+				B2A70D071A124EE1E694C3A9 /* Pods-SharePods-ShuttleX_Passenger_dev.debug.xcconfig */,
+				E8D65E8F741D48DE287B75A5 /* Pods-SharePods-ShuttleX_Passenger_dev.release.xcconfig */,
+				0B0FB8CAA46A7BBB5CE7F205 /* Pods-SharedPods-ShuttleX_Passenger.debug.xcconfig */,
+				C73DA53E1AF1049EA84D6F6C /* Pods-SharedPods-ShuttleX_Passenger.release.xcconfig */,
+				F85BD9E1A71C631EE9339C42 /* Pods-SharedPods-ShuttleX_PassengerTests.debug.xcconfig */,
+				9F4E5B6A2D72780440632B2D /* Pods-SharedPods-ShuttleX_PassengerTests.release.xcconfig */,
+				A05405DB405A792E4D57A2BC /* Pods-SharedPods-ShuttleX_Passenger_dev.debug.xcconfig */,
+				A7C2C0515B33B06838966F5A /* Pods-SharedPods-ShuttleX_Passenger_dev.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -233,6 +285,28 @@
 			productReference = 13B07F961A680F5B00A75B9A /* ShuttleX_Passenger.app */;
 			productType = "com.apple.product-type.application";
 		};
+		755DCD9D2C96225300BB9FFE /* ShuttleX_Passenger_dev */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 755DCDB52C96225300BB9FFE /* Build configuration list for PBXNativeTarget "ShuttleX_Passenger_dev" */;
+			buildPhases = (
+				755DCD9E2C96225300BB9FFE /* [CP] Check Pods Manifest.lock */,
+				755DCD9F2C96225300BB9FFE /* Start Packager */,
+				755DCDA02C96225300BB9FFE /* Sources */,
+				755DCDA32C96225300BB9FFE /* Frameworks */,
+				755DCDA52C96225300BB9FFE /* Resources */,
+				755DCDB22C96225300BB9FFE /* Bundle React Native code and images */,
+				755DCDB32C96225300BB9FFE /* [CP] Embed Pods Frameworks */,
+				755DCDB42C96225300BB9FFE /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ShuttleX_Passenger_dev;
+			productName = ShuttleX_Passenger;
+			productReference = 755DCDB82C96225300BB9FFE /* ShuttleX_Passenger_dev.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -264,6 +338,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* ShuttleX_Passenger */,
+				755DCD9D2C96225300BB9FFE /* ShuttleX_Passenger_dev */,
 				00E356ED1AD99517003FC87E /* ShuttleX_PassengerTests */,
 			);
 		};
@@ -293,6 +368,25 @@
 				975587764311486B894FF50D /* Inter Thin.ttf in Resources */,
 				26ACF2213EB041D8AD358EA3 /* Dealerplate California.ttf in Resources */,
 				73FB9756690D4DA393F41D2C /* BootSplash.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		755DCDA52C96225300BB9FFE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				755DCDA62C96225300BB9FFE /* Images.xcassets in Resources */,
+				755DCDA72C96225300BB9FFE /* Inter Black.ttf in Resources */,
+				755DCDA82C96225300BB9FFE /* Inter Bold.ttf in Resources */,
+				755DCDA92C96225300BB9FFE /* Inter ExtraBold.ttf in Resources */,
+				755DCDAA2C96225300BB9FFE /* Inter ExtraLight.ttf in Resources */,
+				755DCDAB2C96225300BB9FFE /* Inter Light.ttf in Resources */,
+				755DCDAC2C96225300BB9FFE /* Inter Medium.ttf in Resources */,
+				755DCDAD2C96225300BB9FFE /* Inter Regular.ttf in Resources */,
+				755DCDAE2C96225300BB9FFE /* Inter SemiBold.ttf in Resources */,
+				755DCDAF2C96225300BB9FFE /* Inter Thin.ttf in Resources */,
+				755DCDB02C96225300BB9FFE /* Dealerplate California.ttf in Resources */,
+				755DCDB12C96225300BB9FFE /* BootSplash.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,7 +424,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-SharedPods-ShuttleX_PassengerTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -343,15 +437,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger/Pods-ShuttleX_Passenger-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger/Pods-SharedPods-ShuttleX_Passenger-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger/Pods-ShuttleX_Passenger-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger/Pods-SharedPods-ShuttleX_Passenger-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger/Pods-ShuttleX_Passenger-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger/Pods-SharedPods-ShuttleX_Passenger-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		722705DB74CF1DA72B8257DF /* [CP] Copy Pods Resources */ = {
@@ -360,15 +454,106 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_PassengerTests/Pods-SharedPods-ShuttleX_PassengerTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_PassengerTests/Pods-SharedPods-ShuttleX_PassengerTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_PassengerTests/Pods-SharedPods-ShuttleX_PassengerTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		755DCD9E2C96225300BB9FFE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SharedPods-ShuttleX_Passenger_dev-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		755DCD9F2C96225300BB9FFE /* Start Packager */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Start Packager";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		755DCDB22C96225300BB9FFE /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+		};
+		755DCDB32C96225300BB9FFE /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger_dev/Pods-SharedPods-ShuttleX_Passenger_dev-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger_dev/Pods-SharedPods-ShuttleX_Passenger_dev-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger_dev/Pods-SharedPods-ShuttleX_Passenger_dev-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		755DCDB42C96225300BB9FFE /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger_dev/Pods-SharedPods-ShuttleX_Passenger_dev-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger_dev/Pods-SharedPods-ShuttleX_Passenger_dev-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger_dev/Pods-SharedPods-ShuttleX_Passenger_dev-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7CD8F4709E423EE1F25E5F38 /* [CP] Check Pods Manifest.lock */ = {
@@ -386,7 +571,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ShuttleX_Passenger-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-SharedPods-ShuttleX_Passenger-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -399,15 +584,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger/Pods-ShuttleX_Passenger-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger/Pods-SharedPods-ShuttleX_Passenger-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger/Pods-ShuttleX_Passenger-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger/Pods-SharedPods-ShuttleX_Passenger-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger/Pods-ShuttleX_Passenger-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_Passenger/Pods-SharedPods-ShuttleX_Passenger-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D39091DCBD00F218B09AEA63 /* [CP] Embed Pods Frameworks */ = {
@@ -416,15 +601,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_PassengerTests/Pods-SharedPods-ShuttleX_PassengerTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_PassengerTests/Pods-SharedPods-ShuttleX_PassengerTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests/Pods-ShuttleX_Passenger-ShuttleX_PassengerTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SharedPods-ShuttleX_PassengerTests/Pods-SharedPods-ShuttleX_PassengerTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -466,6 +651,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		755DCDA02C96225300BB9FFE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				755DCDA12C96225300BB9FFE /* AppDelegate.mm in Sources */,
+				755DCDA22C96225300BB9FFE /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -479,7 +673,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B4833ED3C54AD4D6492F4751 /* Pods-ShuttleX_Passenger-ShuttleX_PassengerTests.debug.xcconfig */;
+			baseConfigurationReference = F85BD9E1A71C631EE9339C42 /* Pods-SharedPods-ShuttleX_PassengerTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -506,7 +700,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2D193525621DF9E911DAC4FA /* Pods-ShuttleX_Passenger-ShuttleX_PassengerTests.release.xcconfig */;
+			baseConfigurationReference = 9F4E5B6A2D72780440632B2D /* Pods-SharedPods-ShuttleX_PassengerTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -530,7 +724,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3C9B5FA1497AA341BB1091E3 /* Pods-ShuttleX_Passenger.debug.xcconfig */;
+			baseConfigurationReference = 0B0FB8CAA46A7BBB5CE7F205 /* Pods-SharedPods-ShuttleX_Passenger.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -557,7 +751,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 57F57A162F4BED116AEAA32E /* Pods-ShuttleX_Passenger.release.xcconfig */;
+			baseConfigurationReference = C73DA53E1AF1049EA84D6F6C /* Pods-SharedPods-ShuttleX_Passenger.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -575,6 +769,58 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.shuttlex.passenger;
 				PRODUCT_NAME = ShuttleX_Passenger;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		755DCDB62C96225300BB9FFE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A05405DB405A792E4D57A2BC /* Pods-SharedPods-ShuttleX_Passenger_dev.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = ShuttleX_Passenger_dev.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.shuttlex.passenger.dev;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		755DCDB72C96225300BB9FFE /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A7C2C0515B33B06838966F5A /* Pods-SharedPods-ShuttleX_Passenger_dev.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = ShuttleX_Passenger_dev.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.shuttlex.passenger.dev;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -630,6 +876,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
@@ -701,6 +955,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
@@ -743,6 +1005,15 @@
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		755DCDB52C96225300BB9FFE /* Build configuration list for PBXNativeTarget "ShuttleX_Passenger_dev" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				755DCDB62C96225300BB9FFE /* Debug */,
+				755DCDB72C96225300BB9FFE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
