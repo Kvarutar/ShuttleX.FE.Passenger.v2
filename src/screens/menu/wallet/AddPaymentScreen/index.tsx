@@ -13,6 +13,7 @@ const AddPaymentScreen = ({ navigation }: AddPaymentScreenProps): JSX.Element =>
     const newCard = {
       method: cardData.type ?? 'unknown',
       details: cardSafeNumber[cardSafeNumber.length - 1],
+      expiresAt: '12/34',
     };
     dispatch(addAvaliablePaymentMethod(newCard));
     dispatch(setSelectedPaymentMethod(newCard));

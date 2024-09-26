@@ -7,11 +7,11 @@ import { useSelector } from 'react-redux';
 import {
   ButtonV1,
   ButtonV1Modes,
-  DatePicker,
+  DatePickerV1,
   GroupedButtons,
   PlusIcon,
   ScrollViewWithCustomScroll,
-  TimePicker,
+  TimePickerV1,
   useThemeV1,
 } from 'shuttlex-integration';
 
@@ -145,13 +145,13 @@ const AddressSelect = ({ navigation, closeAddressSelect, addressSelectMode }: Ad
           exiting={FadeOut.duration(fadeAnimationDuration)}
           style={styles.delayedTrip}
         >
-          <TimePicker
+          <TimePickerV1
             onTimeSelect={(time: Date) => setSelectedTime(time)}
             style={styles.dateTimePicker}
             placeholder={t('ride_Ride_AddressSelect_timePickerPlaceholder')}
             formatTime={formatTime}
           />
-          <DatePicker
+          <DatePickerV1
             onDateSelect={(date: Date) => setSelectedDate(date)}
             style={styles.dateTimePicker}
             placeholder={t('ride_Ride_AddressSelect_datePickerPlaceholder')}

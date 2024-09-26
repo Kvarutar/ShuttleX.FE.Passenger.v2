@@ -11,11 +11,11 @@ const initialState: LockoutState = {
 export const calculateLockoutTime = (attempts: number): number => {
   switch (attempts) {
     case 3:
-      return Date.now() + minToMilSec(5); // 5 minute block
+      return minToMilSec(5); // 5 minute block
     case 5:
-      return Date.now() + minToMilSec(15); // 15 minute block
+      return minToMilSec(15); // 15 minute block
     case 10:
-      return Date.now() + minToMilSec(1440); // 24 hours block
+      return minToMilSec(1440); // 24 hours block
     case 15:
       return Infinity; // blocked forever
     default:

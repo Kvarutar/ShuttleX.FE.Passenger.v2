@@ -6,6 +6,7 @@ import { WalletState } from './types';
 const cashPaymentMethod = {
   details: '',
   method: 'cash',
+  expiresAt: '',
 };
 
 const initialState: WalletState = {

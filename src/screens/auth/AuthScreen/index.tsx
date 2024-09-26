@@ -1,9 +1,15 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, SignInScreen, SignUpForm, SignUpScreen, SignUpScreenRef } from 'shuttlex-integration';
+import {
+  SafeAreaView,
+  SignInScreen,
+  SignUpForm,
+  SignUpScreen,
+  SignUpScreenRef,
+  TitleWithCloseButton,
+} from 'shuttlex-integration';
 
 import { AuthScreenProps } from './props';
-import TitleWithCloseButton from './TitleWithCloseButton';
 
 const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
   const [isSignIn, setIsisSignIn] = useState<boolean>(route.params.state === 'SignIn');
@@ -16,13 +22,13 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
       signUpRef.current.showErrors({ email: 'Email is already in use' });
       return;
     }
-    navigation.navigate('SignInPhoneCode');
+    navigation.navigate('SignInCode', { verificationType: 'phone', data: dataForm.phone });
   };
 
   const handleSendingSignInData = (phone: string) => {
     //TODO add logic for send data on back
     if (phone) {
-      navigation.navigate('SignInPhoneCode');
+      navigation.navigate('SignInCode', { verificationType: 'phone', data: phone });
     }
   };
 
