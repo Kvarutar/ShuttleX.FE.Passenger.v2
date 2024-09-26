@@ -22,9 +22,12 @@
   },
   "dependencies": {
     "@microsoft/signalr": "^8.0.0",
+    "@notifee/react-native": "^7.9.0",
     "@react-native-community/blur": "^4.3.2",
     "@react-native-community/datetimepicker": "^7.6.1",
     "@react-native-community/netinfo": "^11.3.1",
+    "@react-native-firebase/app": "^20.4.0",
+    "@react-native-firebase/messaging": "^20.4.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.16",
     "@reduxjs/toolkit": "^1.9.7",

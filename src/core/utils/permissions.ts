@@ -1,3 +1,5 @@
+import notifee from '@notifee/react-native';
+import messaging from '@react-native-firebase/messaging';
 import { Platform } from 'react-native';
 import {
   check,
@@ -34,5 +36,14 @@ export const checkGeolocationPermissionAndAccuracy = async (): Promise<{
       resultFine === RESULTS.GRANTED && resultCoarse === RESULTS.GRANTED ? 'full' : 'reduced';
 
     return { isGranted, accuracy };
+  }
+};
+
+//notifications permission
+export const requestNotificationsPermission = async () => {
+  if (Platform.OS === 'android') {
+    await notifee.requestPermission();
+  } else {
+    await messaging().requestPermission();
   }
 };
