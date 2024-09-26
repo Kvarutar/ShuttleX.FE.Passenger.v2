@@ -4,5 +4,5 @@ import { RootStackParamList } from './../../../Navigate/props';
 
 export type MenuProps = {
   onClose: () => void;
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>;
+  navigation: NativeStackNavigationProp<RootStackParamList, keyof RootStackParamList, undefined>;
 };
