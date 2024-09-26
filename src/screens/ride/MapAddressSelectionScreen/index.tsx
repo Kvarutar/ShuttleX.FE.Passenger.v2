@@ -4,13 +4,16 @@ import { StyleSheet, View } from 'react-native';
 import { LatLng } from 'react-native-maps';
 import { useSelector } from 'react-redux';
 import {
-  BottomWindow,
-  ButtonV1,
-  ButtonV1Shapes,
+  ArrowIcon,
+  Bar,
+  Button,
+  ButtonShapes,
+  CircleButtonModes,
+  CloseIcon,
   MapPinIcon,
   MapView,
+  PointIcon,
   SafeAreaView,
-  ShortArrowIcon,
   Text,
   TimerV1,
   TimerV1Modes,
@@ -57,7 +60,7 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView containerStyle={styles.container}>
       <MapView
         style={StyleSheet.absoluteFill}
         geolocationCoordinates={initialCoordinates}
@@ -66,10 +69,15 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
       <View style={styles.mapPinIconContainer} pointerEvents="none">
         <MapPinIcon style={styles.mapPinIcon} />
       </View>
-      <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={navigation.goBack} containerStyle={styles.goBackButtonContainer}>
-        <ShortArrowIcon />
-      </ButtonV1>
-      <BottomWindow windowStyle={styles.bottomWindow}>
+      <Button
+        shape={ButtonShapes.Circle}
+        mode={CircleButtonModes.Mode2}
+        onPress={navigation.goBack}
+        circleSubContainerStyle={styles.goBackButtonContainer}
+      >
+        <CloseIcon />
+      </Button>
+      <View style={styles.timerContainer}>
         {isLoading ? (
           <TimerV1
             withCountdown={false}
@@ -78,23 +86,30 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
             mode={TimerV1Modes.Mini}
           />
         ) : (
-          <>
-            <MapPinIcon style={styles.pinIcon} />
-            <Text style={styles.address}>{address}</Text>
-          </>
+          <Bar style={styles.bottomBar}>
+            <PointIcon style={styles.pinIcon} />
+            {address ? (
+              <Text style={styles.address}>{address}</Text>
+            ) : (
+              <Text style={[styles.address, { color: colors.textSecondaryColor }]}>
+                {t('ride_Ride_MapAddressSelect_placeholder')}
+              </Text>
+            )}
+            <Button style={styles.buttonContainer} shape={ButtonShapes.Circle} onPress={onConfirm} disabled={isLoading}>
+              <ArrowIcon />
+            </Button>
+          </Bar>
         )}
-        <ButtonV1
-          containerStyle={styles.buttonContainer}
-          text={t('ride_MapAddressSelection_confirmButton')}
-          onPress={onConfirm}
-          disabled={isLoading}
-        />
-      </BottomWindow>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
   mapPinIconContainer: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
@@ -105,22 +120,36 @@ const styles = StyleSheet.create({
     height: 48,
     marginBottom: 40, // to center icon
   },
-  bottomWindow: {
+  bottomBar: {
+    flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    gap: 12,
+    padding: 4,
+    borderRadius: 100,
+    minHeight: 52,
+    alignSelf: 'stretch',
+    justifyContent: 'space-between',
   },
   pinIcon: {
-    width: 20,
-    height: 20,
+    width: 25,
+    height: 25,
+    marginLeft: 6,
   },
   address: {
     textAlign: 'center',
+    flexShrink: 1,
   },
   buttonContainer: {
     alignSelf: 'stretch',
+    height: 44,
+    width: 44,
   },
   goBackButtonContainer: {
-    height: 48,
+    borderWidth: 0,
+  },
+  timerContainer: {
+    alignItems: 'center',
+    marginBottom: 5,
   },
 });
 

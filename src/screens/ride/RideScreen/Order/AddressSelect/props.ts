@@ -1,20 +1,27 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StyleProp, ViewStyle } from 'react-native';
 
-import { RootStackParamList } from '../../../../../Navigate/props';
+import { PlaceType } from '../PlaceBar/props';
 
 export type AddressSelectMode = 'now' | 'delayed';
-
-export type AddressSelectProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>;
-  closeAddressSelect: () => void;
-  addressSelectMode: AddressSelectMode;
-};
 
 export type PointMode = 'pickUp' | 'default' | 'dropOff';
 
 export type PointItemProps = {
+  style: StyleProp<ViewStyle>;
   pointMode: PointMode;
-  content: string;
   onRemovePoint?: () => void;
   currentPointId: number;
+  setFocusedInput: (input: { id: number; value: string }) => void;
+};
+
+export type AddressButtonProps = {
+  icon: React.ReactNode;
+  text: string;
+  onPress: () => void;
+  style?: StyleProp<ViewStyle>;
+};
+
+export type AddressSelectProps = {
+  address?: PlaceType;
+  setIsAddressSelectVisible: (state: boolean) => void;
 };

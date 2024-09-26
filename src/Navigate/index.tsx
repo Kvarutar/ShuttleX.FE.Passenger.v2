@@ -12,7 +12,6 @@ import TermsScreen from '../screens/auth/TermsScreen';
 import NotificationsScreen from '../screens/menu/NotificationsScreen';
 import AddPaymentScreen from '../screens/menu/wallet/AddPaymentScreen';
 import WalletScreen from '../screens/menu/wallet/WalletScreen';
-import AddressSelectionScreen from '../screens/ride/AddressSelectionScreen';
 import MapAddressSelectionScreen from '../screens/ride/MapAddressSelectionScreen';
 import RatingScreen from '../screens/ride/RatingScreen';
 import ReceiptScreen from '../screens/ride/ReceiptScreen';
@@ -41,7 +40,6 @@ const Navigate = (): JSX.Element => {
         <Stack.Screen name="Ride" component={RideScreen} />
         <Stack.Screen name="LockOut" component={LockOutScreen} />
         <Stack.Screen name="SignInCode" component={SignInCodeScreen} />
-        <Stack.Screen name="AddressSelection" component={AddressSelectionScreen} />
         <Stack.Screen
           name="MapAddressSelection"
           component={MapAddressSelectionScreen}
