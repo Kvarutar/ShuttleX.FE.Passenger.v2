@@ -22,6 +22,6 @@ export type AddressButtonProps = {
 };
 
 export type AddressSelectProps = {
-  address?: PlaceType;
+  address?: PlaceType | null;
   setIsAddressSelectVisible: (state: boolean) => void;
 };

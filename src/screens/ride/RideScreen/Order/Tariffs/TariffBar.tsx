@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { BaggageIcon, Bar, InfoIcon, ProfileIcon, TariffsCarImage, Text, useTheme } from 'shuttlex-integration';
+import { BaggageIcon, Bar, InfoIcon, ProfileIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import PlanButton from './PlanButton';
 import { TariffBarProps } from './props';
@@ -10,12 +10,13 @@ import { TariffBarProps } from './props';
 const TariffBar = ({ selectedPlan, selectedGroup, onPress, tariff, info, plans, windowIsOpened }: TariffBarProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const tariffsCarData = useTariffsIcons();
 
   const defaultPlanIndex = plans.length > 1 ? 1 : 0;
+  const TariffImage = tariffsCarData[tariff].icon;
+  const tariffTitle = tariffsCarData[tariff].text;
 
   const [selectedPrice, setSelectedPrice] = useState(defaultPlanIndex);
-
-  const title = tariff.replace(/([a-z])([A-Z])/g, '$1-$2');
 
   const computedStyles = StyleSheet.create({
     capacityColor: {
@@ -86,7 +87,7 @@ const TariffBar = ({ selectedPlan, selectedGroup, onPress, tariff, info, plans, 
 
   const titleBlock = (
     <View style={styles.titleContainer}>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title}>{tariffTitle}</Text>
       <Pressable>
         <InfoIcon />
       </Pressable>
@@ -98,7 +99,7 @@ const TariffBar = ({ selectedPlan, selectedGroup, onPress, tariff, info, plans, 
       <Animated.View style={[styles.tariffContainer, computedStyles.tariffContainer, animatedTariffContainer]}>
         {windowIsOpened && titleBlock}
         <View style={computedStyles.imageContainer}>
-          <TariffsCarImage tariff={tariff} style={computedStyles.image} />
+          <TariffImage style={computedStyles.image} />
         </View>
         {windowIsOpened ? (
           capacityBlock

@@ -2,8 +2,9 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
-  ButtonV1,
-  ButtonV1Shapes,
+  Button,
+  ButtonShapes,
+  CircleButtonModes,
   MenuIcon,
   NotificationIcon,
   NotificationType,
@@ -166,15 +167,26 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
 
   const topFullButtons = (
     <>
-      <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={() => setIsMenuVisible(true)}>
+      <Button
+        circleSubContainerStyle={styles.buttonContainer}
+        shape={ButtonShapes.Circle}
+        mode={CircleButtonModes.Mode2}
+        onPress={() => setIsMenuVisible(true)}
+      >
         <MenuIcon />
-      </ButtonV1>
+      </Button>
       {stopWatch}
       <View style={styles.topRightButtonContainer}>
-        <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={() => navigation.navigate('Notifications')}>
+        <Button
+          circleSubContainerStyle={styles.buttonContainer}
+          style={styles.button}
+          shape={ButtonShapes.Circle}
+          mode={CircleButtonModes.Mode2}
+          onPress={() => navigation.navigate('Notifications')}
+        >
           <NotificationIcon />
           {unreadNotificationsMarker}
-        </ButtonV1>
+        </Button>
         {tripInfo && tripStatus === TripStatus.Arrived && (
           <PassengerTimer isPassengerLate={isPassengerLate} setIsPassengerLate={() => setIsPassengerLate(true)} />
         )}
@@ -235,6 +247,12 @@ const styles = StyleSheet.create({
   },
   topRightButtonContainer: {
     alignItems: 'center',
+  },
+  button: {
+    overflow: 'visible',
+  },
+  buttonContainer: {
+    borderWidth: 0,
   },
 });
 

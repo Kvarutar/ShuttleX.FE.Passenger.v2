@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { BottomWindow, BottomWindowWithGesture, BottomWindowWithGestureRef } from 'shuttlex-integration';
+import { BottomWindowWithGesture, BottomWindowWithGestureRef } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
@@ -16,7 +16,9 @@ import PaymentPopup from '../PaymentPopup';
 import AddressSelect from './AddressSelect';
 import Confirming from './Confirming';
 import OrderCreationError from './OrderCreationError';
-import StartRide from './StartRide';
+import { PlaceType } from './PlaceBar/props';
+import StartRideHidden from './StartRide/StartRideHidden';
+import StartRideVisible from './StartRide/StartRideVisible';
 import Tariffs from './Tariffs';
 
 const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined> }) => {
@@ -26,21 +28,26 @@ const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
   const addressSelectRef = useRef<BottomWindowWithGestureRef>(null);
 
   const [isAddressSelectVisible, setIsAddressSelectVisible] = useState(false);
-
-  const openAddressSelect = () => {
-    setIsAddressSelectVisible(true);
-  };
+  const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
+  const [fastAddressSelect, setFastAddressSelect] = useState<PlaceType | null>(null);
 
   useEffect(() => {
     if (isAddressSelectVisible) {
       addressSelectRef.current?.openWindow();
     } else {
       dispatch(cleanOrderPoints());
+      setFastAddressSelect(null);
     }
   }, [dispatch, isAddressSelectVisible]);
 
   const OrderStatusComponents: Record<OrderStatus, ReactNode | null> = {
-    startRide: <StartRide openAddressSelect={openAddressSelect} />,
+    startRide: (
+      <StartRideVisible
+        openAddressSelect={setIsAddressSelectVisible}
+        isBottomWindowOpen={isBottomWindowOpen}
+        setFastAddressSelect={setFastAddressSelect}
+      />
+    ),
     choosingTariff: null,
     confirming: null,
     confirmation: <Confirming onCancel={() => {}} />,
@@ -60,7 +67,12 @@ const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
 
   return (
     <>
-      <BottomWindow
+      <BottomWindowWithGesture
+        visiblePart={OrderStatusComponents[currentOrderStatus]}
+        setIsOpened={setIsBottomWindowOpen}
+        hiddenPart={<StartRideHidden />}
+        hiddenPartStyle={styles.hiddenPartStyle}
+        hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
         alerts={alerts.map(alertData => (
           <AlertInitializer
             key={alertData.id}
@@ -70,15 +82,15 @@ const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
             options={'options' in alertData ? alertData.options : undefined}
           />
         ))}
-      >
-        {OrderStatusComponents[currentOrderStatus]}
-      </BottomWindow>
+      />
       {isAddressSelectVisible && (
         <BottomWindowWithGesture
-          hiddenPart={<AddressSelect setIsAddressSelectVisible={setIsAddressSelectVisible} />}
+          hiddenPart={
+            <AddressSelect setIsAddressSelectVisible={setIsAddressSelectVisible} address={fastAddressSelect} />
+          }
           setIsOpened={setIsAddressSelectVisible}
           ref={addressSelectRef}
-          hiddenPartStyle={styles.hiddenPartStyle}
+          hiddenPartStyle={styles.hiddenPartStyleAddressSelect}
           withHiddenPartScroll={false}
         />
       )}
@@ -88,6 +100,12 @@ const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
 
 const styles = StyleSheet.create({
   hiddenPartStyle: {
+    marginTop: 0,
+  },
+  hiddenPartContainerStyle: {
+    paddingTop: 0,
+  },
+  hiddenPartStyleAddressSelect: {
     height: '100%',
   },
 });

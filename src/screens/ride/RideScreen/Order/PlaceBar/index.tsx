@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   defaultIcon: {
-    marginLeft: 15,
+    marginLeft: 24,
   },
   searchContainer: {
     flexDirection: 'row',

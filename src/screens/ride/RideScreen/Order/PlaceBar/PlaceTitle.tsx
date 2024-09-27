@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   details: {
     fontSize: 14,
     flexShrink: 1,
+    marginTop: 4,
   },
   distanceContainer: {
     flexDirection: 'row',
