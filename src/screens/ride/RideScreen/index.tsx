@@ -7,7 +7,6 @@ import {
   MenuIcon,
   NotificationIcon,
   NotificationType,
-  ShortArrowIcon,
   sizes,
   StopWatch,
   Text,
@@ -19,7 +18,6 @@ import { numberOfUnreadNotificationsSelector } from '../../../core/menu/redux/no
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { setProfile } from '../../../core/redux/passenger';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
-import { setOrderStatus } from '../../../core/ride/redux/order';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
 import { setTripStatus } from '../../../core/ride/redux/trip';
@@ -184,17 +182,11 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
     </>
   );
 
-  const topBackButton = (
-    <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={() => dispatch(setOrderStatus(OrderStatus.StartRide))}>
-      <ShortArrowIcon />
-    </ButtonV1>
-  );
-
   const topButtons: Record<OrderStatus, ReactNode | null> = {
     startRide: topFullButtons,
     rideUnavaliable: topFullButtons,
     noDrivers: topFullButtons,
-    choosingTariff: topBackButton,
+    choosingTariff: topFullButtons,
     confirming: null,
     confirmation: null,
   };

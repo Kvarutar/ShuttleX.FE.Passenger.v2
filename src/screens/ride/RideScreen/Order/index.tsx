@@ -17,7 +17,7 @@ import AddressSelect from './AddressSelect';
 import Confirming from './Confirming';
 import OrderCreationError from './OrderCreationError';
 import StartRide from './StartRide';
-import TariffsCarousel from './TariffsCarousel_v1';
+import Tariffs from './Tariffs';
 
 const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined> }) => {
   const currentOrderStatus = useSelector(orderStatusSelector);
@@ -51,7 +51,7 @@ const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
 
   if (currentOrderStatus === OrderStatus.ChoosingTariff) {
-    return <TariffsCarousel />;
+    return <Tariffs setIsAddressSelectVisible={setIsAddressSelectVisible} />;
   }
 
   if (currentOrderStatus === OrderStatus.Confirming) {
