@@ -1,8 +1,17 @@
 import { useNavigationState } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { MenuBase, MenuNavigation, PlusRoundIcon } from 'shuttlex-integration';
+import {
+  GameIcon,
+  MenuBase,
+  MenuNavigation,
+  PlayIcon,
+  PlusRoundIcon,
+  sizes,
+  Text,
+  useTheme,
+} from 'shuttlex-integration';
 
 import { profileSelector } from './../../../core/redux/passenger/selectors';
 import { MenuProps } from './props';
@@ -76,7 +85,6 @@ const Menu = ({ onClose, navigation }: MenuProps) => {
       title: t('ride_Menu_navigationHelp'),
     },
   };
-
   return (
     <MenuBase
       onClose={onClose}
@@ -84,12 +92,31 @@ const Menu = ({ onClose, navigation }: MenuProps) => {
       userName={profile?.name}
       userSurname={profile?.surname}
       menuNavigation={menuNavigation}
+      additionalButton={<PlayGameButton />}
       style={styles.menu}
       currentRoute={currentRoute}
     />
   );
 };
 
+const PlayGameButton = () => {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const computedStyles = StyleSheet.create({
+    gameButton: {
+      backgroundColor: colors.backgroundSecondaryColor,
+    },
+  });
+  return (
+    <Pressable style={[computedStyles.gameButton, styles.gameButton]}>
+      <View style={styles.itemsWrapper}>
+        <GameIcon />
+        <Text>{t('ride_Menu_playGameButton')}</Text>
+      </View>
+      <PlayIcon />
+    </Pressable>
+  );
+};
 const CreateRide = ({ onClick }: { onClick: () => void }) => (
   <Pressable onPress={onClick}>
     <PlusRoundIcon />
@@ -99,6 +126,19 @@ const CreateRide = ({ onClick }: { onClick: () => void }) => (
 const styles = StyleSheet.create({
   menu: {
     zIndex: 3,
+  },
+  itemsWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  gameButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: sizes.paddingHorizontal,
+    paddingVertical: 12,
+    borderRadius: 12,
+    justifyContent: 'space-between',
   },
 });
 
