@@ -1,12 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Text, useTheme } from 'shuttlex-integration';
+import { SquareButtonModes, Text, useTheme } from 'shuttlex-integration';
 
 import imageAchievements from '../../../../../../assets/images/imageAchievements';
 import imageBonuses from '../../../../../../assets/images/imageBonuses';
-import imageKryptobaraToken from '../../../../../../assets/images/imageKryptobaraToken';
 import imagePlayGame from '../../../../../../assets/images/imagePlayGame';
-import imagePreferredCrypto from '../../../../../../assets/images/imagePreferredCrypto';
 import imageSupportUkraine from '../../../../../../assets/images/imageSupportUkraine';
 import AdsBlock from './AdsBlock';
 import { AdsBlockProps } from './AdsBlock/types';
@@ -27,36 +25,9 @@ const StartRideHidden = () => {
 
   const adsInfoArray: AdsBlockProps[] = [
     {
-      bigImagePlace: 'left',
       firstContent: (
-        <AdsContent buttonProps={{ text: t('ride_Ride_StartRideHidden_adsKryptobaraToken_button') }}>
-          <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
-            {t('ride_Ride_StartRideHidden_adsKryptobaraToken')}
-          </Text>
-        </AdsContent>
-      ),
-      firstImgUri: imageKryptobaraToken,
-      secondContent: (
-        <AdsContent>
-          <View>
-            <Text style={[styles.textSmall, styles.fontStyle, computedStyles.textColor]}>
-              {t('ride_Ride_StartRideHidden_adsPreferred')}
-            </Text>
-            <Text style={[styles.textSmall, styles.fontStyle, computedStyles.preferredCryptoSubText]}>
-              {t('ride_Ride_StartRideHidden_adsCrypto')}
-            </Text>
-          </View>
-        </AdsContent>
-      ),
-      secondImgUri: imagePreferredCrypto,
-    },
-    {
-      firstContent: (
-        <AdsContent
-          //TODO: add when GameScreen will be available
-          isNotAvailable
-          // buttonProps={{ text: t('ride_Ride_StartRideHidden_adsGame_button') }}
-        >
+        //TODO: add logic for navigation to game screeen
+        <AdsContent buttonProps={{ text: t('ride_Ride_StartRideHidden_adsGame_button') }}>
           <Text style={[styles.textMedium, styles.fontStyle, computedStyles.textColor]}>
             {t('ride_Ride_StartRideHidden_adsGame')}
           </Text>
@@ -83,12 +54,37 @@ const StartRideHidden = () => {
       ),
       secondImgUri: imageSupportUkraine,
     },
+    // This block is not removed by task condition
+    // TODO: Remove or update this block when we decide what to do with it
+    // {
+    //   bigImagePlace: 'left',
+    //   firstContent: (
+    //     <AdsContent buttonProps={{ text: t('ride_Ride_StartRideHidden_adsKryptobaraToken_button') }}>
+    //       <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
+    //         {t('ride_Ride_StartRideHidden_adsKryptobaraToken')}
+    //       </Text>
+    //     </AdsContent>
+    //   ),
+    //   firstImgUri: imageKryptobaraToken,
+    //   secondContent: (
+    //     <AdsContent>
+    //       <View>
+    //         <Text style={[styles.textSmall, styles.fontStyle, computedStyles.textColor]}>
+    //           {t('ride_Ride_StartRideHidden_adsPreferred')}
+    //         </Text>
+    //         <Text style={[styles.textSmall, styles.fontStyle, computedStyles.preferredCryptoSubText]}>
+    //           {t('ride_Ride_StartRideHidden_adsCrypto')}
+    //         </Text>
+    //       </View>
+    //     </AdsContent>
+    //   ),
+    //   secondImgUri: imagePreferredCrypto,
+    // },
     {
       firstContent: (
         <AdsContent
-          //TODO: add when AchievementsScreen will be available
-          isNotAvailable
-          // buttonProps={{ text: t('ride_Ride_StartRideHidden_adsAchievements_button'), mode: SquareButtonModes.Mode2 }}
+          //TODO: add logic for navigation to achievements screeen
+          buttonProps={{ text: t('ride_Ride_StartRideHidden_adsAchievements_button'), mode: SquareButtonModes.Mode2 }}
         >
           <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
             {t('ride_Ride_StartRideHidden_adsAchievements')}
