@@ -65,6 +65,8 @@
   "ride_Ride_AddressPopup_confirmButton": "Confirm",
   "ride_Ride_Tariffs_nextButton": "Next",
   "ride_Ride_Tariffs_minutes": "{{count}} min",
+  "ride_Ride_TariffBar_notAvailable": "Not available",
+  "ride_Ride_TariffGroup_notAvailable": "Not available",
   "ride_Ride_MapAddressSelect_placeholder": "Choose an address",
   "ride_Rating_Feedback_title": "Rate the driver {{name}} on this ride.",
   "ride_Menu_navigationMyRide": "My ride",

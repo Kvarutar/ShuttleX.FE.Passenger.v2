@@ -1,17 +1,28 @@
-import { ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Bar, BarModes, BusinessImage, ComfortPlusImage, EcoImage, Text, useTheme } from 'shuttlex-integration';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet } from 'react-native';
+import { Bar, BarModes, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
-import { TariffGroupProps } from './props';
+import { TariffGroupName, TariffGroupProps } from './props';
 
-const tariffsGroupImages: { [key: string]: ReactNode } = {
-  Economy: <EcoImage />,
-  Exclusive: <ComfortPlusImage />,
-  Business: <BusinessImage />,
+const tariffsGroupImagesNames: Record<TariffGroupName, TariffType> = {
+  Economy: 'Eco',
+  Exclusive: 'ComfortPlus',
+  Business: 'Business',
 };
 
-const TariffGroup = ({ price, title, mode = BarModes.Disabled, onPress, style }: TariffGroupProps) => {
+const TariffGroup = ({
+  price,
+  title,
+  mode = BarModes.Disabled,
+  onPress,
+  style,
+  isAvailableTariffGroup,
+}: TariffGroupProps) => {
+  const { t } = useTranslation();
   const { colors } = useTheme();
+  const iconsData = useTariffsIcons();
+  const groupImageName = tariffsGroupImagesNames[title];
+  const IconComponent = iconsData[groupImageName].icon;
 
   const computedStyles = StyleSheet.create({
     title: {
@@ -23,14 +34,17 @@ const TariffGroup = ({ price, title, mode = BarModes.Disabled, onPress, style }:
     container: {
       borderColor: mode === BarModes.Disabled ? 'transparent' : colors.borderColor,
       borderWidth: 1,
+      opacity: isAvailableTariffGroup ? 1 : 0.3,
     },
   });
 
   return (
     <Bar mode={mode} onPress={onPress} style={[styles.container, computedStyles.container, style]}>
       <Text style={[styles.title, computedStyles.title]}>{title}</Text>
-      <Text style={[styles.price, computedStyles.price]}>~${price}</Text>
-      <View style={styles.img}>{tariffsGroupImages[title]}</View>
+      <Text style={[styles.price, computedStyles.price]}>
+        {isAvailableTariffGroup ? `~$${price}` : t('ride_Ride_TariffGroup_notAvailable')}
+      </Text>
+      <IconComponent style={styles.img} />
     </Bar>
   );
 };
@@ -53,6 +67,9 @@ const styles = StyleSheet.create({
   },
   img: {
     position: 'absolute',
+    width: undefined,
+    height: 49,
+    aspectRatio: 3.3,
     bottom: 16,
     left: 32,
   },

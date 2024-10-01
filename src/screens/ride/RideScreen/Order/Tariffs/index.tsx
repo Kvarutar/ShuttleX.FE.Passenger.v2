@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -10,17 +10,19 @@ import {
   ButtonShapes,
   ButtonSizes,
   CircleButtonModes,
+  SquareButtonModes,
   TariffType,
+  useTheme,
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { setOrderStatus, setTripTariff } from '../../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../../core/ride/redux/order/types';
-import { TariffBarType, TariffsProps } from './props';
+import { TariffGroupType, TariffsProps } from './props';
 import TariffBar from './TariffBar';
 import TariffGroup from './TariffGroup';
 
-const testTariffsGroup: { name: string; tariffs: TariffBarType[] }[] = [
+const testTariffsGroup: TariffGroupType[] = [
   {
     name: 'Economy',
     tariffs: [
@@ -29,6 +31,7 @@ const testTariffsGroup: { name: string; tariffs: TariffBarType[] }[] = [
         info: {
           capacity: '6',
           baggage: '3',
+          isAvailable: true,
         },
         plans: [
           {
@@ -50,6 +53,7 @@ const testTariffsGroup: { name: string; tariffs: TariffBarType[] }[] = [
         info: {
           capacity: '6',
           baggage: '3',
+          isAvailable: true,
         },
         plans: [
           {
@@ -67,6 +71,7 @@ const testTariffsGroup: { name: string; tariffs: TariffBarType[] }[] = [
         info: {
           capacity: '6',
           baggage: '3',
+          isAvailable: true,
         },
         plans: [
           {
@@ -85,6 +90,7 @@ const testTariffsGroup: { name: string; tariffs: TariffBarType[] }[] = [
         info: {
           capacity: '6',
           baggage: '3',
+          isAvailable: true,
         },
         plans: [
           {
@@ -111,6 +117,7 @@ const testTariffsGroup: { name: string; tariffs: TariffBarType[] }[] = [
         info: {
           capacity: '6',
           baggage: '3',
+          isAvailable: false,
         },
         plans: [
           {
@@ -130,13 +137,17 @@ const testTariffsGroup: { name: string; tariffs: TariffBarType[] }[] = [
 const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { colors } = useTheme();
 
-  const [selectedTariffGroup, setSelectedTariffGroup] = useState('Economy');
-  const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
+  const [selectedTariffGroup, setSelectedTariffGroup] = useState<TariffGroupType | null>(
+    testTariffsGroup.find(item => item.name === 'Economy') ?? null,
+  );
+  const [selectedPlanIndex, setSelectedPlanIndex] = useState<number | null>(null);
+  const [selectedPriceIdx, setSelectedPriceIdx] = useState<number | null>(null);
   const [tariff, setTariff] = useState<TariffType>('Basic');
   const [windowIsOpened, setWindowIsOpened] = useState(false);
 
-  const tariffGroup = testTariffsGroup.find(item => item.name === selectedTariffGroup);
+  const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs.some(trf => trf.info.isAvailable);
 
   const computedStyles = StyleSheet.create({
     confirmButton: {
@@ -145,17 +156,55 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
     scrollView: {
       marginBottom: windowIsOpened ? 20 : 50,
     },
+    confirmText: {
+      color: isAvailableSelectedTariffGroup ? colors.textPrimaryColor : colors.textQuadraticColor,
+    },
   });
 
   useEffect(() => {
-    setSelectedPlanIndex(0);
-  }, [selectedTariffGroup]);
+    const foundAvailableTariffGroup = testTariffsGroup.find(trfGroup =>
+      trfGroup.tariffs.some(trf => trf.info.isAvailable),
+    );
+    if (foundAvailableTariffGroup) {
+      setSelectedTariffGroup(foundAvailableTariffGroup);
+    }
+  }, []);
+
+  const resetTariffPrice = useCallback(
+    (foundAvailableTariffIdx: number) => {
+      if (selectedTariffGroup) {
+        const selectedTariffPlans = selectedTariffGroup.tariffs[foundAvailableTariffIdx].plans;
+        if (selectedTariffPlans.length >= 2) {
+          setSelectedPriceIdx(1);
+        } else if (selectedTariffPlans.length === 1) {
+          setSelectedPriceIdx(0);
+        } else {
+          setSelectedPriceIdx(null);
+        }
+      }
+    },
+    [selectedTariffGroup],
+  );
 
   useEffect(() => {
-    if (tariffGroup?.tariffs[selectedPlanIndex]) {
-      setTariff(tariffGroup?.tariffs[selectedPlanIndex].tariff);
+    if (selectedTariffGroup) {
+      const foundAvailableTariffIdx = selectedTariffGroup?.tariffs.findIndex(trf => trf.info.isAvailable);
+      if (foundAvailableTariffIdx !== -1) {
+        setSelectedPlanIndex(foundAvailableTariffIdx);
+        resetTariffPrice(foundAvailableTariffIdx);
+      }
     }
-  }, [selectedPlanIndex, selectedTariffGroup, tariffGroup?.tariffs]);
+    return () => {
+      setSelectedPlanIndex(null);
+    };
+  }, [selectedTariffGroup, resetTariffPrice]);
+
+  useEffect(() => {
+    if (selectedPlanIndex && selectedTariffGroup?.tariffs[selectedPlanIndex]) {
+      setTariff(selectedTariffGroup?.tariffs[selectedPlanIndex].tariff);
+      resetTariffPrice(selectedPlanIndex);
+    }
+  }, [selectedPlanIndex, selectedTariffGroup, resetTariffPrice]);
 
   const onTariffSelect = () => {
     dispatch(setTripTariff(tariff));
@@ -176,8 +225,9 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
               key={`tariff_group_${group.name}`}
               price="12"
               title={group.name}
-              onPress={() => setSelectedTariffGroup(group.name)}
-              mode={group.name === selectedTariffGroup ? BarModes.Active : BarModes.Disabled}
+              onPress={() => setSelectedTariffGroup(group)}
+              mode={group.name === selectedTariffGroup?.name ? BarModes.Active : BarModes.Disabled}
+              isAvailableTariffGroup={group.tariffs.some(trf => trf.info.isAvailable)}
             />
           ))}
         </View>
@@ -187,15 +237,17 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
           style={[styles.scrollView, computedStyles.scrollView]}
         >
           <View>
-            {tariffGroup?.tariffs?.map((tariffBar, index) => (
+            {selectedTariffGroup?.tariffs.map((tariffBar, index) => (
               <TariffBar
                 key={`tariff_${index}`}
                 onPress={() => setSelectedPlanIndex(index)}
-                selectedGroup={selectedTariffGroup}
-                selectedPlan={selectedPlanIndex === index}
+                isPlanSelected={selectedPlanIndex === index}
+                selectedPrice={selectedPriceIdx}
+                setSelectedPrice={setSelectedPriceIdx}
                 tariff={tariffBar.tariff}
                 info={tariffBar.info}
                 plans={tariffBar.plans}
+                isAvailableTariff={tariffBar.info.isAvailable}
                 windowIsOpened={windowIsOpened}
               />
             ))}
@@ -209,7 +261,9 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
         innerSpacing={8}
         onPress={onTariffSelect}
         text={t('ride_Ride_Tariffs_nextButton')}
-        textStyle={styles.confirmText}
+        textStyle={[styles.confirmText, computedStyles.confirmText]}
+        mode={isAvailableSelectedTariffGroup ? SquareButtonModes.Mode1 : SquareButtonModes.Mode4}
+        disabled={!isAvailableSelectedTariffGroup}
       />
     </>
   );

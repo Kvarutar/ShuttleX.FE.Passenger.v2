@@ -1,13 +1,22 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { BaggageIcon, Bar, InfoIcon, ProfileIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { BaggageIcon, Bar, ProfileIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import PlanButton from './PlanButton';
 import { TariffBarProps } from './props';
 
-const TariffBar = ({ selectedPlan, selectedGroup, onPress, tariff, info, plans, windowIsOpened }: TariffBarProps) => {
+const TariffBar = ({
+  isPlanSelected,
+  selectedPrice,
+  setSelectedPrice,
+  onPress,
+  tariff,
+  info,
+  plans,
+  windowIsOpened,
+  isAvailableTariff,
+}: TariffBarProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const tariffsCarData = useTariffsIcons();
@@ -15,8 +24,6 @@ const TariffBar = ({ selectedPlan, selectedGroup, onPress, tariff, info, plans, 
   const defaultPlanIndex = plans.length > 1 ? 1 : 0;
   const TariffImage = tariffsCarData[tariff].icon;
   const tariffTitle = tariffsCarData[tariff].text;
-
-  const [selectedPrice, setSelectedPrice] = useState(defaultPlanIndex);
 
   const computedStyles = StyleSheet.create({
     capacityColor: {
@@ -26,7 +33,8 @@ const TariffBar = ({ selectedPlan, selectedGroup, onPress, tariff, info, plans, 
       backgroundColor: colors.iconSecondaryColor,
     },
     container: {
-      borderColor: selectedPlan ? colors.borderColor : 'transparent',
+      borderColor: isPlanSelected ? colors.borderColor : 'transparent',
+      opacity: isAvailableTariff ? 1 : 0.3,
     },
     price: {
       color: colors.textSecondaryColor,
@@ -51,13 +59,9 @@ const TariffBar = ({ selectedPlan, selectedGroup, onPress, tariff, info, plans, 
     },
   });
 
-  useEffect(() => {
-    setSelectedPrice(1);
-  }, [selectedGroup]);
-
   const animatedButtonWrapper = useAnimatedStyle(() => {
     return {
-      height: withTiming(selectedPlan ? 76 : 0, { duration: 200 }),
+      height: withTiming(isPlanSelected ? 76 : 0, { duration: 200 }),
     };
   });
 
@@ -85,19 +89,27 @@ const TariffBar = ({ selectedPlan, selectedGroup, onPress, tariff, info, plans, 
     </View>
   );
 
-  const titleBlock = (
-    <View style={styles.titleContainer}>
-      <Text style={styles.title}>{tariffTitle}</Text>
-      <Pressable>
-        <InfoIcon />
-      </Pressable>
-    </View>
-  );
+  const tariffPrice = () => {
+    if (isAvailableTariff) {
+      if (!isPlanSelected || plans.length === 1) {
+        return `$${plans[defaultPlanIndex].price}`;
+      }
+    } else {
+      return t('ride_Ride_TariffBar_notAvailable');
+    }
+  };
 
   return (
-    <Bar style={[styles.container, computedStyles.container]} onPress={onPress}>
+    <Bar
+      style={[styles.container, computedStyles.container]}
+      onPress={event => {
+        if (isAvailableTariff) {
+          onPress(event);
+        }
+      }}
+    >
       <Animated.View style={[styles.tariffContainer, computedStyles.tariffContainer, animatedTariffContainer]}>
-        {windowIsOpened && titleBlock}
+        {windowIsOpened && <Text style={styles.title}>{tariffTitle}</Text>}
         <View style={computedStyles.imageContainer}>
           <TariffImage style={computedStyles.image} />
         </View>
@@ -105,17 +117,15 @@ const TariffBar = ({ selectedPlan, selectedGroup, onPress, tariff, info, plans, 
           capacityBlock
         ) : (
           <View style={styles.infoContainer}>
-            {titleBlock}
+            <Text style={styles.title}>{tariffTitle}</Text>
             {capacityBlock}
           </View>
         )}
-        {(!selectedPlan || plans.length === 1) && (
-          <Text
-            style={[styles.isNotSelectedPrice, computedStyles.isNotSelectedPrice, styles.price, computedStyles.price]}
-          >
-            ${plans[defaultPlanIndex].price}
-          </Text>
-        )}
+        <Text
+          style={[styles.isNotSelectedPrice, computedStyles.isNotSelectedPrice, styles.price, computedStyles.price]}
+        >
+          {tariffPrice()}
+        </Text>
       </Animated.View>
       {plans.length !== 1 && (
         <Animated.View style={[styles.buttonWrapper, animatedButtonWrapper]}>
