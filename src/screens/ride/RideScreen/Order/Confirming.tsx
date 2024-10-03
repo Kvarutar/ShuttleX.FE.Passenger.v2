@@ -1,17 +1,30 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { ButtonV1, ButtonV1Modes, Text, TimerV1, TimerV1Modes, useThemeV1 } from 'shuttlex-integration';
+import { StyleSheet, View } from 'react-native';
+import { Bar, BarModes, CloseIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
+import { setOrderStatus } from '../../../../core/ride/redux/order';
 import { createOrder } from '../../../../core/ride/redux/order/thunks';
+import { OrderStatus } from '../../../../core/ride/redux/order/types';
 
-const Confirming = ({ onCancel }: { onCancel: () => void }) => {
-  const { colors } = useThemeV1();
+const Confirming = () => {
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const [dotsCounter, setDotsCounter] = useState(3);
   const dispatch = useAppDispatch();
+  const tariffsIconsData = useTariffsIcons();
+
+  const TariffImage = tariffsIconsData.Basic.icon;
+
+  const computedStyles = StyleSheet.create({
+    button: {
+      backgroundColor: colors.backgroundPrimaryColor,
+    },
+    buttonText: {
+      color: colors.textSecondaryColor,
+    },
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -29,21 +42,22 @@ const Confirming = ({ onCancel }: { onCancel: () => void }) => {
   }, [dispatch]);
 
   return (
-    <Animated.View style={styles.wrapper} entering={FadeIn} exiting={FadeOut}>
-      <Text>{t('ride_Ride_Confirming_confirming', { dots: '.'.repeat(dotsCounter) })}</Text>
-      <TimerV1
-        withCountdown={false}
-        startColor={colors.secondaryGradientStartColor}
-        endColor={colors.secondaryGradientEndColor}
-        mode={TimerV1Modes.Mini}
-      />
-      <ButtonV1
-        mode={ButtonV1Modes.Mode3}
-        text={t('ride_Ride_Confirming_cancelButton')}
-        containerStyle={styles.button}
-        onPress={onCancel}
-      />
-    </Animated.View>
+    <View style={styles.wrapper}>
+      <View style={styles.imageContainer}>
+        <TariffImage style={styles.image} />
+        <Text style={styles.topText}>{t('ride_Ride_Confirming_searchDrivers', { dots: '.'.repeat(dotsCounter) })}</Text>
+      </View>
+      <View>
+        <Bar
+          mode={BarModes.Disabled}
+          style={[styles.button, computedStyles.button]}
+          onPress={() => dispatch(setOrderStatus(OrderStatus.Confirming))}
+        >
+          <CloseIcon style={styles.closeIcon} />
+        </Bar>
+        <Text style={[styles.buttonText, computedStyles.buttonText]}>{t('ride_Ride_Confirming_cancelButton')}</Text>
+      </View>
+    </View>
   );
 };
 
@@ -51,9 +65,41 @@ const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'center',
     gap: 20,
+    zIndex: 1,
+    justifyContent: 'space-between',
+    flex: 1,
   },
   button: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 100,
+    width: 72,
+    height: 72,
+  },
+  buttonText: {
+    fontFamily: 'Inter Medium',
+    fontSize: 14,
+    lineHeight: 22,
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  imageContainer: {
     alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  image: {
+    resizeMode: 'contain',
+    width: '25%',
+    height: undefined,
+    aspectRatio: 3,
+  },
+  topText: {
+    fontSize: 28,
+    marginTop: 12,
+  },
+  closeIcon: {
+    width: 17,
+    height: 17,
   },
 });
 

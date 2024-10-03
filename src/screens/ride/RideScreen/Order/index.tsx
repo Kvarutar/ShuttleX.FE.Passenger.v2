@@ -50,7 +50,7 @@ const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
     ),
     choosingTariff: null,
     confirming: null,
-    confirmation: <Confirming onCancel={() => {}} />,
+    confirmation: <Confirming />,
     noDrivers: <OrderCreationError error={t('ride_Ride_Order_noDriversAvaliable')} />,
     rideUnavaliable: <OrderCreationError error={t('ride_Ride_Order_rideIsUnavaliable')} />,
   };

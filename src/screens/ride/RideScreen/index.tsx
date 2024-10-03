@@ -5,6 +5,7 @@ import {
   Button,
   ButtonShapes,
   CircleButtonModes,
+  Fog,
   MenuIcon,
   NotificationIcon,
   NotificationType,
@@ -21,7 +22,6 @@ import { setProfile } from '../../../core/redux/passenger';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
-import { setTripStatus } from '../../../core/ride/redux/trip';
 import { contractorInfoSelector, tripInfoSelector, tripStatusSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
@@ -41,17 +41,18 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   const orderStatus = useSelector(orderStatusSelector);
   const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
   const contractorInfo = useSelector(contractorInfoSelector);
-
+  const [contractorInfoTest, setContractorInfoTest] = useState(false); //for test
   const [isPassengerLate, setIsPassengerLate] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
+  //for test
   useEffect(() => {
-    if (contractorInfo) {
+    if (orderStatus === OrderStatus.Confirmation) {
       setTimeout(() => {
-        dispatch(setTripStatus(TripStatus.Arrived)); //for test
-      }, 6000);
+        setContractorInfoTest(true);
+      }, 10000);
     }
-  }, [dispatch, contractorInfo]);
+  }, [orderStatus]);
 
   useEffect(() => {
     dispatch(
@@ -127,6 +128,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   const computedStyles = StyleSheet.create({
     topButtonsContainer: {
       paddingTop: Platform.OS === 'android' ? sizes.paddingVertical : 0,
+      zIndex: orderStatus === OrderStatus.Confirmation ? 1 : 0,
     },
     unreadNotificationsMarker: {
       backgroundColor: colors.primaryColor,
@@ -176,21 +178,23 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
         <MenuIcon />
       </Button>
       {stopWatch}
-      <View style={styles.topRightButtonContainer}>
-        <Button
-          circleSubContainerStyle={styles.buttonContainer}
-          style={styles.button}
-          shape={ButtonShapes.Circle}
-          mode={CircleButtonModes.Mode2}
-          onPress={() => navigation.navigate('Notifications')}
-        >
-          <NotificationIcon />
-          {unreadNotificationsMarker}
-        </Button>
-        {tripInfo && tripStatus === TripStatus.Arrived && (
-          <PassengerTimer isPassengerLate={isPassengerLate} setIsPassengerLate={() => setIsPassengerLate(true)} />
-        )}
-      </View>
+      {orderStatus !== OrderStatus.Confirmation && (
+        <View style={styles.topRightButtonContainer}>
+          <Button
+            circleSubContainerStyle={styles.buttonContainer}
+            style={styles.button}
+            shape={ButtonShapes.Circle}
+            mode={CircleButtonModes.Mode2}
+            onPress={() => navigation.navigate('Notifications')}
+          >
+            <NotificationIcon />
+            {unreadNotificationsMarker}
+          </Button>
+          {tripInfo && tripStatus === TripStatus.Arrived && (
+            <PassengerTimer isPassengerLate={isPassengerLate} setIsPassengerLate={() => setIsPassengerLate(true)} />
+          )}
+        </View>
+      )}
     </>
   );
 
@@ -208,7 +212,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
       <SafeAreaView style={styles.wrapper}>
         <MapView />
         <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>{topButtons[orderStatus]}</View>
-        {contractorInfo ? (
+        {contractorInfoTest ? (
           <>
             <MapCameraModeButton />
             <Trip />
@@ -216,6 +220,7 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
         ) : (
           <Order navigation={navigation} />
         )}
+        {orderStatus === OrderStatus.Confirmation && <Fog />}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} navigation={navigation} />}
     </>

@@ -47,7 +47,7 @@
   "ride_Ride_OrderCreationError_cancelButton": "Cancel",
   "ride_Ride_OrderCreationError_tryAgainButton": "Try again",
   "ride_Ride_PlaceBar_kilometers": "{{count}} km",
-  "ride_Ride_Confirming_confirming": "Confirming{{dots}}",
+  "ride_Ride_Confirming_searchDrivers": "Search drivers{{dots}}",
   "ride_Ride_Confirming_cancelButton": "Cancel",
   "ride_Ride_Trip_tripType": "Trip type",
   "ride_Ride_Trip_totalForRide": "Total for ride",
