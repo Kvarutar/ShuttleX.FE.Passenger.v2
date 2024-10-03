@@ -11,7 +11,7 @@ export type PointItemProps = {
   pointMode: PointMode;
   onRemovePoint?: () => void;
   currentPointId: number;
-  setFocusedInput: (input: { id: number; value: string }) => void;
+  setFocusedInput: (input: { id: number | null; value: string }) => void;
 };
 
 export type AddressButtonProps = {

@@ -49,7 +49,7 @@ const TariffBar = ({
     },
     imageContainer: {
       flex: windowIsOpened ? 1 : 0,
-      width: windowIsOpened ? '100%' : 100,
+      width: windowIsOpened ? '100%' : '35%',
       alignItems: 'center',
     },
     image: {
@@ -128,17 +128,19 @@ const TariffBar = ({
         </Text>
       </Animated.View>
       {plans.length !== 1 && (
-        <Animated.View style={[styles.buttonWrapper, animatedButtonWrapper]}>
-          {plans.map((button, index) => (
-            <PlanButton
-              key={`tariff_button_${index}`}
-              onPress={() => setSelectedPrice(index)}
-              selectedPrice={selectedPrice === index}
-              time={button.time}
-              price={button.price}
-              index={index}
-            />
-          ))}
+        <Animated.View style={animatedButtonWrapper}>
+          <View style={styles.buttonContainer}>
+            {plans.map((button, index) => (
+              <PlanButton
+                key={index}
+                onPress={() => setSelectedPrice(index)}
+                selectedPrice={selectedPrice === index}
+                time={button.time}
+                price={button.price}
+                index={index}
+              />
+            ))}
+          </View>
         </Animated.View>
       )}
     </Bar>
@@ -152,9 +154,10 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     marginBottom: 8,
   },
-  buttonWrapper: {
+  buttonContainer: {
     flexDirection: 'row',
     gap: 5,
+    paddingTop: 18,
   },
   price: {
     fontFamily: 'Inter Medium',

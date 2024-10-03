@@ -59,11 +59,12 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Inter Bold',
     fontSize: 14,
-    marginBottom: 2,
+    lineHeight: 16,
   },
   price: {
     fontFamily: 'Inter Medium',
     fontSize: 12,
+    lineHeight: 16,
   },
   img: {
     position: 'absolute',
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
     height: 49,
     aspectRatio: 3.3,
     bottom: 16,
-    left: 32,
+    left: 16,
   },
 });
 

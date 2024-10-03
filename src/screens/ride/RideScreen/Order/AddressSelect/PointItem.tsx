@@ -43,7 +43,7 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
 
   const computedStyles = StyleSheet.create({
     inputContent: {
-      backgroundColor: isFocused ? colors.backgroundPrimaryColor : colors.backgroundSecondaryColor,
+      backgroundColor: isFocused || inputValue ? colors.backgroundPrimaryColor : colors.backgroundSecondaryColor,
     },
     dots: {
       backgroundColor: colors.iconSecondaryColor,
@@ -51,7 +51,7 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
   });
 
   const pointIcon = ({ innerColor, outerColor }: { innerColor?: string; outerColor?: string }) => {
-    if (isFocused) {
+    if (isFocused || inputValue) {
       return <PointIcon innerColor={innerColor} outerColor={outerColor} />;
     }
 

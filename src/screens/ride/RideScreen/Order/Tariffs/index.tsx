@@ -152,6 +152,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   const computedStyles = StyleSheet.create({
     confirmButton: {
       bottom: windowIsOpened ? 38 : 70,
+      backgroundColor: colors.backgroundPrimaryColor,
     },
     scrollView: {
       marginBottom: windowIsOpened ? 20 : 50,
@@ -254,17 +255,18 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
           </View>
         </ScrollView>
       </View>
-      <Button
-        style={[styles.confirmButton, computedStyles.confirmButton]}
-        shape={ButtonShapes.Circle}
-        size={ButtonSizes.L}
-        innerSpacing={8}
-        onPress={onTariffSelect}
-        text={t('ride_Ride_Tariffs_nextButton')}
-        textStyle={[styles.confirmText, computedStyles.confirmText]}
-        mode={isAvailableSelectedTariffGroup ? SquareButtonModes.Mode1 : SquareButtonModes.Mode4}
-        disabled={!isAvailableSelectedTariffGroup}
-      />
+      <View style={[styles.confirmButton, computedStyles.confirmButton]}>
+        <Button
+          shape={ButtonShapes.Circle}
+          size={ButtonSizes.L}
+          innerSpacing={8}
+          onPress={onTariffSelect}
+          text={t('ride_Ride_Tariffs_nextButton')}
+          textStyle={[styles.confirmText, computedStyles.confirmText]}
+          mode={isAvailableSelectedTariffGroup ? SquareButtonModes.Mode1 : SquareButtonModes.Mode4}
+          disabled={!isAvailableSelectedTariffGroup}
+        />
+      </View>
     </>
   );
 
@@ -315,6 +317,11 @@ const styles = StyleSheet.create({
   confirmButton: {
     position: 'absolute',
     alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 98,
+    height: 98,
+    borderRadius: 100,
   },
   confirmText: {
     fontFamily: 'Inter Bold',

@@ -48,11 +48,17 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
     headerContainer: {
       display: isBottomWindowOpen ? 'none' : 'flex',
     },
+    scrollView: {
+      marginLeft: isSearchBarVisible ? 0 : 70,
+    },
+    searchContainer: {
+      marginLeft: isSearchBarVisible ? 0 : -62,
+    },
   });
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
-    setIsSearchBarVisible(offsetX <= 295);
+    setIsSearchBarVisible(offsetX <= windowWidth * 0.75 - 62);
   };
 
   const openAddressSelectHandler = () => openAddressSelect(true);
@@ -91,8 +97,18 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
             <SearchIcon />
           </Bar>
         )}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} onScroll={handleScroll} scrollEventThrottle={16}>
-          <Bar onPress={openAddressSelectHandler} mode={BarModes.Disabled} style={styles.searchContainer}>
+        <ScrollView
+          style={computedStyles.scrollView}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+        >
+          <Bar
+            onPress={openAddressSelectHandler}
+            mode={BarModes.Disabled}
+            style={[styles.searchContainer, computedStyles.searchContainer]}
+          >
             {rideTextBlock({
               topText: t('ride_Ride_StartRideVisible_buttonStartTrip'),
               topStyle: [styles.textSubtitle, computedStyles.textExtraColor],
@@ -119,14 +135,19 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: 25,
+    paddingBottom: 26,
     alignItems: 'flex-end',
+    marginTop: 6,
   },
   textContainer: {
     flexDirection: 'column',
+    gap: 2,
   },
   carImage: {
     resizeMode: 'contain',
+    width: '40%',
+    height: undefined,
+    aspectRatio: 3,
     flexShrink: 1,
   },
   scrollViewContainer: {
@@ -135,7 +156,8 @@ const styles = StyleSheet.create({
     marginRight: -16,
   },
   searchContainer: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -143,11 +165,12 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   extraSearchIconContainer: {
-    width: 52,
-    height: 52,
+    width: 62,
+    height: 72,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    position: 'absolute',
+    zIndex: 1,
   },
   searchIcon: {
     marginRight: 6,
@@ -155,10 +178,12 @@ const styles = StyleSheet.create({
   textTitle: {
     fontFamily: 'Inter Medium',
     fontSize: 21,
+    lineHeight: 22,
   },
   textSubtitle: {
     fontFamily: 'Inter Medium',
     fontSize: 17,
+    lineHeight: 22,
   },
   placeBar: {
     alignItems: 'center',

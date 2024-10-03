@@ -44,12 +44,13 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 17,
     fontFamily: 'Inter Medium',
+    lineHeight: 22,
     flexShrink: 1,
   },
   details: {
     fontSize: 14,
     flexShrink: 1,
-    marginTop: 4,
+    lineHeight: 22,
   },
   distanceContainer: {
     flexDirection: 'row',

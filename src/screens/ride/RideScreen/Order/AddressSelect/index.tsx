@@ -44,7 +44,7 @@ const testPlace = [
     distance: '14',
   },
   {
-    address: 'Place',
+    address: 'Place Long Long Long Long Long Long Long',
     details: 'StreetEasy: NYC Real Estate Search',
     distance: '14',
   },
@@ -62,7 +62,8 @@ const testPlace = [
 
 const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProps) => {
   const [showConfirmButton, setShowConfirmButton] = useState(false);
-  const [focusedInput, setFocusedInput] = useState<{ id: number; value: string }>({ id: 1, value: '' });
+  const [focusedInput, setFocusedInput] = useState<{ id: number | null; value: string }>({ id: null, value: '' });
+  const [isAddressSelected, setIsAddressSelected] = useState(false);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const debounceInputValue = useDebounce(focusedInput.value, 300);
 
@@ -124,17 +125,29 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
     }
   }, [address, dispatch]);
 
+  useEffect(() => {
+    if (focusedInput.id !== null && focusedInput.value.length) {
+      setIsAddressSelected(true);
+    }
+
+    if (focusedInput.id !== null && !focusedInput.value.length) {
+      setIsAddressSelected(false);
+    }
+  }, [focusedInput.id, focusedInput.value.length]);
+
   const onConfirm = () => {
     setIsAddressSelectVisible(false);
     dispatch(setOrderStatus(OrderStatus.ChoosingTariff));
   };
 
-  const onLocationSelectPress = () => navigation.navigate('MapAddressSelection', { orderPointId: focusedInput.id });
+  const onLocationSelectPress = () =>
+    navigation.navigate('MapAddressSelection', { orderPointId: focusedInput.id !== null ? focusedInput.id : 1 });
 
   const onAddressSelect = (selectedAddress: string) => () => {
+    setIsAddressSelected(false);
     dispatch(
       updateOrderPoint({
-        id: focusedInput.id,
+        id: focusedInput.id !== null ? focusedInput.id : 1,
         address: selectedAddress,
         longitude: 123123123, //TODO: replace with real coordinates
         latitude: 2132131231,
@@ -172,7 +185,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
 
   const title = (text: string) => <Text style={computedStyles.title}>{text}</Text>;
 
-  let content = (
+  let searchAddresses = (
     <View style={styles.searchPlaceBarWrapper}>
       {addresses?.length ? (
         addresses.map((item, index) => (
@@ -190,7 +203,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   );
 
   if (isLoading) {
-    content = (
+    searchAddresses = (
       <View style={styles.spinnerWrapper}>
         <TimerV1
           withCountdown={false}
@@ -214,24 +227,39 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
       </View>
       <View style={styles.scrollViewSearchContainer}>
         <ScrollViewWithCustomScroll wrapperStyle={styles.scrollViewSearchWrapper}>
-          <View>
-            {title(t('ride_Ride_AddressSelect_addressTitle_recent'))}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recentPlaceBarWrapper}>
-              {testPlace.map((item, index) => (
-                <PlaceBar
-                  key={`recent_${index}`}
-                  mode={PlaceBarModes.Save}
-                  place={item}
-                  onPress={onAddressSelect(item.address)}
-                  style={styles.recentPlaceBar}
-                />
-              ))}
-            </ScrollView>
-          </View>
-          <View style={styles.addressContainer}>
-            {title(t('ride_Ride_AddressSelect_addressTitle_lastSearch'))}
-            {content}
-          </View>
+          {isAddressSelected ? (
+            searchAddresses
+          ) : (
+            <>
+              <View>
+                {title(t('ride_Ride_AddressSelect_addressTitle_recent'))}
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recentPlaceBarWrapper}>
+                  {testPlace.map((item, index) => (
+                    <PlaceBar
+                      key={index}
+                      mode={PlaceBarModes.Save}
+                      place={item}
+                      onPress={onAddressSelect(item.address)}
+                      style={styles.recentPlaceBar}
+                    />
+                  ))}
+                </ScrollView>
+              </View>
+              <View style={styles.addressContainer}>
+                {title(t('ride_Ride_AddressSelect_addressTitle_lastSearch'))}
+                <View style={styles.searchPlaceBarWrapper}>
+                  {testPlace.map((item, index) => (
+                    <PlaceBar
+                      key={index}
+                      mode={PlaceBarModes.Search}
+                      place={{ address: item.address, details: item.details, distance: '12' }}
+                      onPress={onAddressSelect(item.address)}
+                    />
+                  ))}
+                </View>
+              </View>
+            </>
+          )}
         </ScrollViewWithCustomScroll>
         {showConfirmButton && (
           <Button onPress={onConfirm} shape={ButtonShapes.Circle} style={styles.confirmButton}>

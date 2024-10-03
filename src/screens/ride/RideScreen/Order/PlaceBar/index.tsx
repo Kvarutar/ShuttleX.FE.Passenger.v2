@@ -70,7 +70,7 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, onSave, style 
 const styles = StyleSheet.create({
   barContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 13,
   },
   container: {
     flexDirection: 'row',
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fullTitleContainer: {
-    marginTop: 15,
+    marginTop: 12,
   },
   fullDistanceText: {
     fontFamily: 'Inter Medium',

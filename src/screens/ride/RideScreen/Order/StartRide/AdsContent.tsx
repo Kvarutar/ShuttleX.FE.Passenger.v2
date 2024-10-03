@@ -3,7 +3,7 @@ import { Blur, Button } from 'shuttlex-integration';
 
 import { AdsContentProps } from './props';
 
-const AdsContent = ({ children, isNotAvailable, buttonProps }: AdsContentProps) => {
+const AdsContent = ({ children, isNotAvailable, buttonProps, style }: AdsContentProps) => {
   return (
     <>
       {isNotAvailable && (
@@ -11,7 +11,7 @@ const AdsContent = ({ children, isNotAvailable, buttonProps }: AdsContentProps) 
           <Blur iosBlurAmount={3} />
         </View>
       )}
-      <View style={styles.container}>
+      <View style={[styles.container, style]}>
         <View>{children}</View>
         {buttonProps?.text && <Button textStyle={styles.buttonText} style={styles.button} {...buttonProps} />}
       </View>

@@ -31,25 +31,24 @@ const PlanButton = ({ price, time, onPress, index, selectedPrice }: PlanButtonPr
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    height: 56,
+    flexGrow: 1,
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginTop: 20,
-    justifyContent: 'space-between',
+    paddingVertical: 6,
   },
   icon: {
     position: 'absolute',
-    right: 5,
-    top: 5,
+    right: 8,
+    top: 8,
   },
   price: {
     fontFamily: 'Inter Medium',
     fontSize: 17,
+    lineHeight: 22,
   },
   time: {
     fontFamily: 'Inter Medium',
     fontSize: 14,
+    lineHeight: 22,
   },
 });
 

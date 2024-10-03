@@ -46,7 +46,10 @@ const StartRideHidden = () => {
       ),
       firstImgUri: imageBonuses,
       secondContent: (
-        <AdsContent buttonProps={{ text: t('ride_Ride_StartRideHidden_adsSupport_button') }}>
+        <AdsContent
+          style={styles.supportUkraineBlock}
+          buttonProps={{ text: t('ride_Ride_StartRideHidden_adsSupport_button') }}
+        >
           <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
             {t('ride_Ride_StartRideHidden_adsSupport')}
           </Text>
@@ -116,12 +119,15 @@ const StartRideHidden = () => {
 const styles = StyleSheet.create({
   textLarge: {
     fontSize: 32,
+    lineHeight: 32,
   },
   textMedium: {
     fontSize: 19,
+    lineHeight: 19,
   },
   textMediumSecond: {
     fontSize: 17,
+    lineHeight: 17,
   },
   textSmall: {
     fontSize: 14,
@@ -131,6 +137,10 @@ const styles = StyleSheet.create({
   },
   achievementsContainer: {
     height: 160,
+  },
+  supportUkraineBlock: {
+    justifyContent: 'flex-start',
+    gap: 20,
   },
 });
 

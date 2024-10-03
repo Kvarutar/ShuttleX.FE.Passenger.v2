@@ -52,7 +52,7 @@ const AdsBlock = ({
 
 const styles = StyleSheet.create({
   background: {
-    padding: 12,
+    padding: 10,
     borderRadius: 12,
     overflow: 'hidden',
   },

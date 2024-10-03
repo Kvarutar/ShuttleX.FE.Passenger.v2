@@ -1,4 +1,4 @@
-import { StyleProp, TextStyle } from 'react-native';
+import { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { ButtonProps } from 'shuttlex-integration';
 
 import { PlaceType } from '../PlaceBar/props';
@@ -13,6 +13,7 @@ export type AdsContentProps = {
   children?: React.ReactNode;
   isNotAvailable?: boolean;
   buttonProps?: ButtonProps;
+  style?: StyleProp<ViewStyle>;
 };
 
 export type RideTextBlockProps = {
