@@ -18,7 +18,7 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
       paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
     },
     comfortableText: {
-      color: colors.textSecondaryColor,
+      color: colors.textTitleColor,
     },
     chooseYourTripText: {
       color: colors.textTertiaryColor,
@@ -78,17 +78,20 @@ const styles = StyleSheet.create({
   },
   titlesContainer: {
     marginBottom: 32,
-    paddingHorizontal: 16,
+    paddingHorizontal: sizes.paddingHorizontal,
   },
   comfortableText: {
     fontFamily: 'Inter Bold',
     fontSize: 17,
+    lineHeight: 17,
+    marginBottom: 14,
   },
   chooseYourTripText: {
     fontFamily: 'Inter Bold',
     fontSize: 52,
     letterSpacing: -1.53,
     width: 248,
+    lineHeight: 52,
   },
   buttonsContainer: {
     flexDirection: 'row',
