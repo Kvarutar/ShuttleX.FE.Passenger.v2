@@ -1,7 +1,8 @@
 export type Profile = {
+  fullName: string;
+  email: string;
+  phone: string;
   imageUri: string;
-  name: string;
-  surname: string;
 };
 
 export type PassengerState = {

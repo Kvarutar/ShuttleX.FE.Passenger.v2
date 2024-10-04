@@ -1,9 +1,9 @@
-import { countryDtosProps } from 'shuttlex-integration';
+import { CountryPhoneMaskDto } from 'shuttlex-integration';
 
 export type RootStackParamList = {
   Splash: undefined;
   Auth: { state: 'SignIn' | 'SignUp' };
-  Ride: undefined;
+  Ride?: { openAddressSelect?: boolean };
   SignInCode: { verificationType: 'phone' | 'email'; data: string };
   AddressSelection: { orderPointId: number };
   MapAddressSelection: { orderPointId: number };
@@ -12,7 +12,8 @@ export type RootStackParamList = {
   Wallet: undefined;
   AddPayment: undefined;
   Receipt: undefined;
-  PhoneSelect: { initialFlag: countryDtosProps; onFlagSelect: (flag: countryDtosProps) => void };
+  PhoneSelect: { initialFlag: CountryPhoneMaskDto; onFlagSelect: (flag: CountryPhoneMaskDto) => void };
   Terms: undefined;
   LockOut: undefined;
+  AccountSettings: undefined;
 };

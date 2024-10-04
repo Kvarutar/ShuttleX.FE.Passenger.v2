@@ -13,6 +13,7 @@ import {
   SafeAreaView,
   ScrollViewWithCustomScroll,
   SliderWithCustomGesture,
+  SwipeButtonModes,
   Text,
   useTheme,
 } from 'shuttlex-integration';
@@ -45,8 +46,10 @@ const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
 
   const computedStyles = StyleSheet.create({
     addPaymentText: {
-      fontSize: 14,
       color: colors.textSecondaryColor,
+    },
+    sliderContainer: {
+      backgroundColor: colors.errorColor,
     },
   });
   let paymentContent = null;
@@ -57,16 +60,17 @@ const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
       <SliderWithCustomGesture
         key={index}
         rightToLeftSwipe={true}
-        childrenStyle={styles.sliderChildren}
+        mode={SwipeButtonModes.Finish}
+        setIsLoading={() => {}}
+        text={t('menu_Wallet_delete')}
+        textStyle={styles.testStyle}
         onSwipeEnd={() => {
           dispatch(deleteAvaliablePaymentMethod(el));
           return;
         }}
-        containerStyle={[styles.sliderContainer, { backgroundColor: colors.errorColor }]}
+        containerStyle={[styles.sliderContainer, computedStyles.sliderContainer]}
         sliderElement={<PaymentItem paymentMethod={el} />}
-      >
-        <Text style={[styles.testStyle, { color: colors.textTertiaryColor }]}>{t('menu_Wallet_delete')}</Text>
-      </SliderWithCustomGesture>
+      />
     ) : (
       <PaymentItem key={index} paymentMethod={el} />
     ),
@@ -96,7 +100,9 @@ const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
             </View>
           </View>
           <View>
-            <Text style={computedStyles.addPaymentText}>{t('menu_Wallet_addPaymentText')}</Text>
+            <Text style={[styles.addPaymentText, computedStyles.addPaymentText]}>
+              {t('menu_Wallet_addPaymentText')}
+            </Text>
             <View style={styles.addCardButtons}>
               <Bar mode={BarModes.Default} style={styles.paymentMethodsItem}>
                 <View style={styles.paymentMethodsItemContent}>
@@ -104,14 +110,18 @@ const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
                   <Text style={styles.paymentMethodsTitle}>Card</Text>
                 </View>
                 <Pressable onPress={onAddCard}>
-                  <PlusRoundIcon backgroundColor="#ECEFF2" color="black" />
+                  <PlusRoundIcon
+                    backgroundColor={colors.backgroundSecondaryColor}
+                    color={colors.iconPrimaryColor}
+                    style={styles.plusIconStyle}
+                  />
                 </Pressable>
               </Bar>
             </View>
           </View>
         </ScrollViewWithCustomScroll>
       </SafeAreaView>
-      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} navigation={navigation} />}
+      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
     </>
   );
 };
@@ -170,7 +180,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   containerScroll: {
-    gap: 17,
+    gap: 20,
   },
 
   header: {
@@ -197,7 +207,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 25,
     paddingVertical: 25,
-    height: 72,
   },
   paymentMethodsItemContent: {
     flexDirection: 'row',
@@ -208,6 +217,10 @@ const styles = StyleSheet.create({
   addCardButtons: {
     marginTop: 12,
     gap: 8,
+  },
+  addPaymentText: {
+    fontSize: 14,
+    fontFamily: 'Inter Medium',
   },
   selectedIcon: {
     width: 24,
@@ -226,13 +239,16 @@ const styles = StyleSheet.create({
   testStyle: {
     fontSize: 17,
     fontFamily: 'Inter Medium',
+    right: 14,
+    alignSelf: 'stretch',
+    textAlign: 'right',
   },
   sliderContainer: {
     padding: 0,
   },
-  sliderChildren: {
-    paddingRight: 14,
-    alignItems: 'flex-end',
+  plusIconStyle: {
+    width: 24,
+    height: 24,
   },
 });
 

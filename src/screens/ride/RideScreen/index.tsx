@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
@@ -28,13 +28,15 @@ import Menu from '../Menu';
 import MapCameraModeButton from './MapCameraModeButton';
 import MapView from './MapView';
 import Order from './Order';
+import { OrderRef } from './Order/types';
 import PassengerTimer from './PassengerTimer';
 import { RideScreenProps } from './props';
 import Trip from './Trip';
 
-const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
+const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const { colors } = useThemeV1();
   const dispatch = useAppDispatch();
+  const orderRef = useRef<OrderRef>(null);
 
   const tripStatus = useSelector(tripStatusSelector);
   const tripInfo = useSelector(tripInfoSelector);
@@ -44,6 +46,13 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   const [contractorInfoTest, setContractorInfoTest] = useState(false); //for test
   const [isPassengerLate, setIsPassengerLate] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+
+  //for test
+  useEffect(() => {
+    if (route.params?.openAddressSelect) {
+      orderRef.current?.openAddressSelect();
+    }
+  }, [route.params?.openAddressSelect, route]);
 
   //for test
   useEffect(() => {
@@ -57,8 +66,9 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
   useEffect(() => {
     dispatch(
       setProfile({
-        name: 'John',
-        surname: 'Johnson',
+        fullName: 'John',
+        email: '',
+        phone: '',
         imageUri:
           'https://sun9-34.userapi.com/impg/ZGuJiFBAp-93En3yLK7LWZNPxTGmncHrrtVgbg/hd6uHaUv1zE.jpg?size=1200x752&quality=96&sign=e79799e4b75c839d0ddb1a2232fe5d60&type=album',
       }),
@@ -218,11 +228,11 @@ const RideScreen = ({ navigation }: RideScreenProps): JSX.Element => {
             <Trip />
           </>
         ) : (
-          <Order navigation={navigation} />
+          <Order navigation={navigation} ref={orderRef} />
         )}
         {orderStatus === OrderStatus.Confirmation && <Fog />}
       </SafeAreaView>
-      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} navigation={navigation} />}
+      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
     </>
   );
 };

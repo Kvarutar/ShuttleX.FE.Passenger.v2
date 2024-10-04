@@ -1,4 +1,5 @@
-import { useNavigationState } from '@react-navigation/native';
+import { useNavigation, useNavigationState } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -13,18 +14,20 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { RootStackParamList } from '../../../Navigate/props';
 import { profileSelector } from './../../../core/redux/passenger/selectors';
 import { MenuProps } from './props';
 
-const Menu = ({ onClose, navigation }: MenuProps) => {
+const Menu = ({ onClose }: MenuProps) => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const { t } = useTranslation();
   const profile = useSelector(profileSelector);
 
   const currentRoute = useNavigationState(state => state.routes[state.index].name);
 
   const onCreateRide = () => {
-    navigation.navigate('Ride');
-    //TODO Send for create ride page
+    navigation.navigate('Ride', { openAddressSelect: true });
     onClose();
   };
 
@@ -39,7 +42,7 @@ const Menu = ({ onClose, navigation }: MenuProps) => {
     },
     activity: {
       navFunc: () => {
-        navigation.navigate('Ride');
+        navigation.navigate('Wallet');
         //TODO Create activity page
         onClose();
       },
@@ -54,7 +57,7 @@ const Menu = ({ onClose, navigation }: MenuProps) => {
     },
     promocodes: {
       navFunc: () => {
-        navigation.navigate('Ride');
+        navigation.navigate('Wallet');
         //TODO Create Promocodes page
         onClose();
       },
@@ -62,7 +65,7 @@ const Menu = ({ onClose, navigation }: MenuProps) => {
     },
     becomeDriver: {
       navFunc: () => {
-        navigation.navigate('Ride');
+        navigation.navigate('Wallet');
         //TODO go to page becomeDriver
         onClose();
       },
@@ -70,15 +73,14 @@ const Menu = ({ onClose, navigation }: MenuProps) => {
     },
     settings: {
       navFunc: () => {
-        navigation.navigate('Ride');
-        //TODO Create settings page
+        navigation.navigate('AccountSettings');
         onClose();
       },
       title: t('ride_Menu_navigationSettings'),
     },
     help: {
       navFunc: () => {
-        navigation.navigate('Ride');
+        navigation.navigate('Wallet');
         //TODO Create help page
         onClose();
       },
@@ -88,9 +90,8 @@ const Menu = ({ onClose, navigation }: MenuProps) => {
   return (
     <MenuBase
       onClose={onClose}
-      userImageUri={profile?.imageUri}
-      userName={profile?.name}
-      userSurname={profile?.surname}
+      userImageUri={profile?.imageUri ?? undefined}
+      userName={profile?.fullName}
       menuNavigation={menuNavigation}
       additionalButton={<PlayGameButton />}
       style={styles.menu}
@@ -102,16 +103,21 @@ const Menu = ({ onClose, navigation }: MenuProps) => {
 const PlayGameButton = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
+
+  const onPlayGame = () => {
+    //TODO go to the game
+  };
+
   const computedStyles = StyleSheet.create({
     gameButton: {
       backgroundColor: colors.backgroundSecondaryColor,
     },
   });
   return (
-    <Pressable style={[computedStyles.gameButton, styles.gameButton]}>
+    <Pressable style={[computedStyles.gameButton, styles.gameButton]} onPress={onPlayGame}>
       <View style={styles.itemsWrapper}>
         <GameIcon />
-        <Text>{t('ride_Menu_playGameButton')}</Text>
+        <Text style={styles.playGameText}>{t('ride_Menu_playGameButton')}</Text>
       </View>
       <PlayIcon />
     </Pressable>
@@ -139,6 +145,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 12,
     justifyContent: 'space-between',
+  },
+  playGameText: {
+    fontSize: 17,
+    fontFamily: 'Inter Medium',
+    lineHeight: 20.57,
   },
 });
 

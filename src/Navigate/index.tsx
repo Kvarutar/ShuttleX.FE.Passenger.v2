@@ -9,6 +9,7 @@ import LockOutScreen from '../screens/auth/LockOutScreen';
 import SignInCodeScreen from '../screens/auth/SignInCodeScreen';
 import SplashScreen from '../screens/auth/SplashScreen';
 import TermsScreen from '../screens/auth/TermsScreen';
+import AccountSettings from '../screens/menu/AccountSettings';
 import NotificationsScreen from '../screens/menu/NotificationsScreen';
 import AddPaymentScreen from '../screens/menu/wallet/AddPaymentScreen';
 import WalletScreen from '../screens/menu/wallet/WalletScreen';
@@ -51,6 +52,7 @@ const Navigate = (): JSX.Element => {
         <Stack.Screen name="AddPayment" component={AddPaymentScreen} />
         <Stack.Screen name="Receipt" component={ReceiptScreen} />
         <Stack.Screen name="Terms" component={TermsScreen} />
+        <Stack.Screen name="AccountSettings" component={AccountSettings} />
       </Stack.Navigator>
     </NavigationContainer>
   );

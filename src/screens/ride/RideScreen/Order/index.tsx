@@ -1,5 +1,4 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -10,7 +9,6 @@ import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/al
 import { cleanOrderPoints } from '../../../../core/ride/redux/order';
 import { orderStatusSelector } from '../../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
-import { RootStackParamList } from '../../../../Navigate/props';
 import AlertInitializer from '../../../../shared/AlertInitializer';
 import PaymentPopup from '../PaymentPopup';
 import AddressSelect from './AddressSelect';
@@ -20,8 +18,9 @@ import { PlaceType } from './PlaceBar/props';
 import StartRideHidden from './StartRide/StartRideHidden';
 import StartRideVisible from './StartRide/StartRideVisible';
 import Tariffs from './Tariffs';
+import { OrderProps, OrderRef } from './types';
 
-const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined> }) => {
+const Order = forwardRef<OrderRef, OrderProps>(({ navigation }, ref) => {
   const currentOrderStatus = useSelector(orderStatusSelector);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -30,6 +29,13 @@ const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
   const [isAddressSelectVisible, setIsAddressSelectVisible] = useState(false);
   const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
   const [fastAddressSelect, setFastAddressSelect] = useState<PlaceType | null>(null);
+
+  useImperativeHandle(ref, () => ({
+    openAddressSelect: () => {
+      setIsAddressSelectVisible(true);
+      addressSelectRef.current?.openWindow();
+    },
+  }));
 
   useEffect(() => {
     if (isAddressSelectVisible) {
@@ -96,7 +102,7 @@ const Order = ({ navigation }: { navigation: NativeStackNavigationProp<RootStack
       )}
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   hiddenPartStyle: {
