@@ -1,42 +1,48 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
-import { useSelector } from 'react-redux';
+import { Platform, StyleSheet, View } from 'react-native';
+import { getLocales } from 'react-native-localize';
+import Share from 'react-native-share';
 import {
   Bar,
-  ButtonV1,
-  ButtonV1Shapes,
+  Button,
+  ButtonShapes,
+  CircleButtonModes,
   CloseIcon,
-  DropOffIcon,
+  Fog,
   getPaymentIcon,
-  PickUpIcon,
+  MapView,
+  minToMilSec,
+  PointIcon2,
   SafeAreaView,
-  ScrollViewWithCustomScroll,
-  Separator,
+  ShareIcon,
   Text,
-  useThemeV1,
+  useTheme,
 } from 'shuttlex-integration';
 
-import { selectedPaymentMethodSelector } from '../../../core/menu/redux/wallet/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { endTrip } from '../../../core/ride/redux/trip';
-import { tripInfoSelector, tripTipSelector } from '../../../core/ride/redux/trip/selectors';
 import { ReceiptScreenProps } from './props';
 
+const formatTime = (time: Date): string =>
+  time.toLocaleTimeString(getLocales()[0].languageTag, { hour: '2-digit', minute: '2-digit', hour12: false });
+
 const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
-  const { colors } = useThemeV1();
+  const { colors } = useTheme();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const tripInfo = useSelector(tripInfoSelector);
-  const tip = useSelector(tripTipSelector);
-  const selectedPaymentMethod = useSelector(selectedPaymentMethodSelector);
-
   const computedStyles = StyleSheet.create({
-    addressDescription: {
+    textSecondaryColor: {
       color: colors.textSecondaryColor,
     },
-    map: {
-      backgroundColor: colors.iconSecondaryColor,
+    textTitleColor: {
+      color: colors.textTitleColor,
+    },
+    timeContainer: {
+      backgroundColor: colors.backgroundPrimaryColor,
+    },
+    bottomContainer: {
+      marginBottom: Platform.OS === 'ios' ? 0 : -16,
     },
   });
 
@@ -45,160 +51,274 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
     dispatch(endTrip());
   };
 
-  if (!tripInfo) {
-    return <></>;
-  }
+  const shareFile = async () => {
+    const options = {
+      title: 'Share File',
+      url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf ',
+      message: 'Check out this file!',
+    };
+
+    try {
+      await Share.open(options);
+    } catch (error) {
+      console.log('Error while sharing the file:', error);
+    }
+  };
+
+  const formatTimeDuration = (time: number) => {
+    const totalMinutes = Math.floor(time / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours > 0 && minutes > 0) {
+      return `${t('ride_Receipt_hours', { count: hours })} ${t('ride_Receipt_minutes', { count: minutes })}`;
+    }
+
+    if (hours > 0) {
+      return t('ride_Receipt_hours', { count: hours });
+    }
+
+    return t('ride_Receipt_minutes', { count: minutes });
+  };
+
+  const formatDistance = (distanceInMeters: number) => {
+    if (distanceInMeters > 1000) {
+      const distanceInKm = (distanceInMeters / 1000).toFixed(1);
+      return t('ride_Receipt_kilometers', { count: Number(distanceInKm) });
+    }
+
+    return t('ride_Receipt_meters', { count: distanceInMeters });
+  };
+
+  const placeData = [
+    {
+      address: 'Home',
+      details: 'StreetEasy: NYC Real Estate Search',
+    },
+    {
+      address: 'Work',
+      details: 'StreetEasy: NYC Real Estate Search',
+    },
+  ];
+
+  const roadTimeData = [
+    {
+      title: t('ride_Receipt_start'),
+      value: formatTime(new Date()),
+    },
+    {
+      title: t('ride_Receipt_finish'),
+      value: formatTime(new Date(Date.now() + minToMilSec(78))),
+    },
+    {
+      title: t('ride_Receipt_time'),
+      value: formatTimeDuration(minToMilSec(78)),
+    },
+  ];
+
+  const header = (
+    <View style={styles.topButtonsContainer}>
+      <Button onPress={onEndTrip} shape={ButtonShapes.Circle} mode={CircleButtonModes.Mode2}>
+        <CloseIcon />
+      </Button>
+      <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_check')}</Text>
+      <Button onPress={shareFile} shape={ButtonShapes.Circle} mode={CircleButtonModes.Mode2}>
+        <ShareIcon />
+      </Button>
+    </View>
+  );
+
+  const roadSeparator = (
+    <View style={styles.roadSeparatorContainer}>
+      <View style={styles.separatorCircleContainer}>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <View key={`left_circle_${index}`} style={styles.separatorCircle} />
+        ))}
+      </View>
+      <View style={styles.timeContainer}>
+        <Text style={styles.separatorTimeText}>{formatDistance(3525)}</Text>
+      </View>
+      <View style={styles.separatorCircleContainer}>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <View key={`right_circle_${index}`} style={styles.separatorCircle} />
+        ))}
+      </View>
+    </View>
+  );
+
+  const roadTimeBlock = (
+    <View style={styles.roadTimeWrapper}>
+      {roadTimeData.map(time => (
+        <View key={time.title} style={styles.roadTimeContainer}>
+          <Text style={[styles.roadTimeTitleText, computedStyles.textTitleColor]}>{time.title}</Text>
+          <Text style={styles.roadTimeValueText}>{time.value}</Text>
+        </View>
+      ))}
+    </View>
+  );
 
   return (
     <SafeAreaView containerStyle={styles.container}>
-      <ScrollViewWithCustomScroll contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={onEndTrip}>
-            <CloseIcon />
-          </ButtonV1>
-        </View>
-        <View style={styles.order}>
-          <View style={styles.mapWrapper}>
-            <View style={[styles.map, computedStyles.map]} />
+      <MapView style={StyleSheet.absoluteFill} />
+      <Fog />
+      <View>
+        {header}
+        <View style={styles.roadPointContainer}>
+          <View style={styles.pointContainer}>
+            <PointIcon2 outerColor={colors.iconPrimaryColor} innerColor={colors.primaryColor} />
+            <Text style={[styles.pointText, computedStyles.textSecondaryColor]}>{t('ride_Receipt_pickUp')}</Text>
           </View>
-          <Bar style={styles.addresses}>
-            <View style={styles.address}>
-              <View style={styles.addressIcons}>
-                <PickUpIcon />
-                <Separator mode="vertical" />
-              </View>
-              <View style={styles.addressText}>
-                <Text style={[styles.addressDescription, computedStyles.addressDescription]}>
-                  {t('ride_Receipt_pickUp')}
-                </Text>
-                <Text numberOfLines={1} style={styles.addressContent}>
-                  {tripInfo.route.startPoint.address}
-                </Text>
-                <Separator style={styles.separator} />
-              </View>
-            </View>
-            <View style={styles.address}>
-              <View>
-                <DropOffIcon />
-              </View>
-              <View>
-                <Text style={[styles.addressDescription, computedStyles.addressDescription]}>
-                  {t('ride_Receipt_dropOff')}
-                </Text>
-                <Text>{tripInfo.route.endPoints[tripInfo.route.endPoints.length - 1].address}</Text>
-              </View>
-            </View>
-          </Bar>
+          {roadSeparator}
+          <View style={styles.pointContainer}>
+            <Text style={[styles.pointText, computedStyles.textSecondaryColor]}>{t('ride_Receipt_dropOff')}</Text>
+            <PointIcon2 outerColor={colors.iconTertiaryColor} innerColor={colors.errorColor} />
+          </View>
         </View>
-        {selectedPaymentMethod && (
+        <View style={styles.addressContainer}>
+          {placeData.map((place, index) => (
+            <View style={styles.placeContainer} key={place.address}>
+              <Text numberOfLines={1} style={[styles.addressText, index === 1 ? styles.placeTextRight : null]}>
+                {place.address.toUpperCase()}
+              </Text>
+              <Text
+                numberOfLines={2}
+                style={[
+                  styles.addressDetailsText,
+                  computedStyles.textTitleColor,
+                  index === 1 ? styles.placeTextRight : null,
+                ]}
+              >
+                {place.details}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+      <View style={computedStyles.bottomContainer}>
+        {roadTimeBlock}
+        <Bar style={styles.paymentBarContainer}>
+          {getPaymentIcon('cash')}
           <View>
-            <Text style={styles.paymentTitle}>{t('ride_Receipt_paymentTitle')}</Text>
-            <View style={styles.payment}>
-              <View style={styles.paymentWrapper}>
-                {getPaymentIcon(selectedPaymentMethod.method)}
-                <Text style={styles.paymentMethod}>
-                  {selectedPaymentMethod.method === 'cash'
-                    ? t('ride_Receipt_cash')
-                    : `**** ${selectedPaymentMethod.details}`}
-                </Text>
-              </View>
-              <Text style={styles.total}>${tripInfo.total}</Text>
+            <Text style={[styles.paymentTitleText, computedStyles.textSecondaryColor]}>
+              {t('ride_Receipt_paymentTitle')}
+            </Text>
+            <View style={styles.priceContainer}>
+              <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
+              <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>$12,7</Text>
             </View>
-
-            {tip && (
-              <>
-                <Separator style={styles.paymentSeparator} />
-                <View style={styles.payment}>
-                  <View style={styles.paymentWrapper}>
-                    <Text style={styles.paymentMethod}>{t('ride_Receipt_tips')}</Text>
-                  </View>
-                  <Text style={styles.total}>${tip}</Text>
-                </View>
-              </>
-            )}
           </View>
-        )}
-      </ScrollViewWithCustomScroll>
-      <ButtonV1 text={t('ride_Receipt_continueButton')} onPress={onEndTrip} />
+        </Bar>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: 'space-between',
   },
-  content: {
-    gap: 40,
-  },
-  header: {
+  topButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 24,
   },
-  address: {
+  pointContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    gap: 8,
+  },
+  roadPointContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  separatorCircleContainer: {
     gap: 6,
+    flexDirection: 'row',
   },
-  addressIcons: {
+  separatorCircle: {
+    width: 4,
+    height: 4,
+    borderRadius: 100,
+    backgroundColor: 'black',
+  },
+  roadSeparatorContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  addressDescription: {
-    fontFamily: 'Inter Medium',
-    fontSize: 12,
-    marginBottom: 2,
-    flexShrink: 1,
+  timeContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingVertical: 1,
+    borderRadius: 14,
+    marginHorizontal: 6,
   },
-  addressContent: {
-    marginBottom: 14,
-    flexShrink: 1,
+  addressContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
   },
-  addressText: {
-    flexShrink: 1,
+  placeContainer: {
+    flex: 1,
+    gap: 4,
+    marginTop: 2,
   },
-  separator: {
+  placeTextRight: {
+    textAlign: 'right',
+  },
+  roadTimeWrapper: {
+    flexDirection: 'row',
+    gap: 18,
+  },
+  roadTimeContainer: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 6,
     marginBottom: 10,
   },
-  paymentSeparator: {
-    marginVertical: 20,
+  paymentBarContainer: {
+    padding: 16,
+    borderWidth: 0,
   },
-  addresses: {
-    position: 'relative',
-  },
-  mapWrapper: {
-    position: 'relative',
-    paddingHorizontal: 5,
-    height: 206,
-    marginTop: -20,
-  },
-  map: {
-    flex: 1,
-    backgroundColor: 'red',
-    borderRadius: 16,
-  },
-  order: {
-    flexDirection: 'column-reverse',
-  },
-  paymentTitle: {
-    fontSize: 18,
-    fontFamily: 'Inter Medium',
-    marginBottom: 20,
-  },
-  payment: {
+  priceContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
   },
-  paymentMethod: {
+  paymentTitleText: {
+    marginTop: 29,
+    marginBottom: 2,
     fontFamily: 'Inter Medium',
+    fontSize: 14,
+    lineHeight: 22,
   },
-  paymentWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
+  headerAndPaymentText: {
+    fontFamily: 'Inter Medium',
+    fontSize: 17,
+    lineHeight: 22,
   },
-  total: {
+  pointText: {
+    fontFamily: 'Inter Medium',
+    fontSize: 14,
+    lineHeight: 22,
+  },
+  separatorTimeText: {
+    fontFamily: 'Inter Medium',
+    fontSize: 12,
+    lineHeight: 22,
+  },
+  addressText: {
+    fontFamily: 'Inter Medium',
+    fontSize: 32,
+  },
+  addressDetailsText: {
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  roadTimeTitleText: {
+    fontSize: 14,
+    lineHeight: 16,
+  },
+  roadTimeValueText: {
     fontFamily: 'Inter Medium',
     fontSize: 18,
   },

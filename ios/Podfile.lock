@@ -574,6 +574,9 @@ PODS:
     - React-Core
   - RNSensors (7.3.6):
     - React-Core
+  - RNShare (11.0.3):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
   - RNSVG (13.14.0):
     - React-Core
   - SocketRocket (0.6.1)
@@ -641,6 +644,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSensors (from `../node_modules/react-native-sensors`)
+  - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -781,6 +785,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSensors:
     :path: "../node_modules/react-native-sensors"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   Yoga:
@@ -860,6 +866,7 @@ SPEC CHECKSUMS:
   RNReanimated: 068e508188021cbe24ae25c6cb2827d0abf6054e
   RNScreens: 5280f062ab6aee9e7c27fa1f43480b977b922974
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
+  RNShare: cc904a0d9305649d0fe7897fc6de938f958c3a40
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 87e59f6d458e5061d2421086c5de994b3f7cd151

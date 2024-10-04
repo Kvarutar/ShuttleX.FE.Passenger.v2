@@ -89,10 +89,16 @@
   "menu_Wallet_crypto": "Crypto",
   "menu_Wallet_delete": "Delete",
   "menu_Wallet_expired": "Expired",
-  "ride_Receipt_pickUp": "Pick up",
+  "ride_Receipt_check": "Check",
+  "ride_Receipt_pickUp": "Pick Up",
   "ride_Receipt_dropOff": "Drop off",
-  "ride_Receipt_tips": "Tips",
   "ride_Receipt_cash": "Cash",
   "ride_Receipt_paymentTitle": "Payment",
-  "ride_Receipt_continueButton": "Continue"
+  "ride_Receipt_start": "Start",
+  "ride_Receipt_finish": "Finish",
+  "ride_Receipt_time": "Time",
+  "ride_Receipt_hours": "{{count}}h",
+  "ride_Receipt_minutes": "{{count}}min",
+  "ride_Receipt_meters": "{{count}}m",
+  "ride_Receipt_kilometers": "{{count}}km"
 }

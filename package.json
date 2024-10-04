@@ -55,6 +55,7 @@
     "react-native-screens": "^3.27.0",
     "react-native-sensors": "^7.3.6",
     "react-native-shadow-2": "^7.0.8",
+    "react-native-share": "^11.0.3",
     "react-native-svg": "^13.14.0",
     "react-native-svg-transformer": "^1.1.0",
     "react-native-url-polyfill": "^2.0.0",
