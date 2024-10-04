@@ -39,7 +39,11 @@ const TariffGroup = ({
   });
 
   return (
-    <Bar mode={mode} onPress={onPress} style={[styles.container, computedStyles.container, style]}>
+    <Bar
+      mode={mode}
+      onPress={isAvailableTariffGroup ? onPress : undefined}
+      style={[styles.container, computedStyles.container, style]}
+    >
       <Text style={[styles.title, computedStyles.title]}>{title}</Text>
       <Text style={[styles.price, computedStyles.price]}>
         {isAvailableTariffGroup ? `~$${price}` : t('ride_Ride_TariffGroup_notAvailable')}
