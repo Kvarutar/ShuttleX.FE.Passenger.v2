@@ -1,159 +1,129 @@
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, StyleSheet, View } from 'react-native';
-import { useSelector } from 'react-redux';
-import {
-  Bar,
-  ButtonV1,
-  ButtonV1Modes,
-  ChatIcon,
-  EmergencyServiceIcon,
-  PassengerIcon,
-  PhoneIcon,
-  ReportIcon,
-  sizes,
-  Text,
-  useThemeV1,
-} from 'shuttlex-integration';
+import { Image, Linking, StyleSheet, View } from 'react-native';
+import { Bar, BarModes, EmergencyServiceIcon, ReportIcon, Text, useTheme } from 'shuttlex-integration';
 
-import { tripInfoSelector } from '../../../../core/ride/redux/trip/selectors';
-import { TripInfo } from '../../../../core/ride/redux/trip/types';
+import imageBossEarth from '../../../../../assets/images/imageBossEarth';
+import imageCapybara from '../../../../../assets/images/imageCapybara';
+import { SquareBarProps } from './props';
 
-const HiddenPart = () => {
-  const { t } = useTranslation();
-  const trip = useSelector(tripInfoSelector);
-
-  if (!trip) {
-    return <></>;
-  }
-
-  return (
-    <>
-      <ContactInfo trip={trip} />
-      <Bar style={styles.hiddenTripType}>
-        <Text style={styles.hiddenTripTypeTitle}>{t('ride_Ride_Trip_totalForRide')}</Text>
-        <Text style={styles.hiddenTripTypeContent}>{trip.tripType}</Text>
-      </Bar>
-      <Bar style={styles.hiddenTotal}>
-        <Text style={styles.hiddenTotalTitle}>{t('ride_Ride_Trip_totalForRide')}</Text>
-        <Text style={styles.hiddenTotalContent}>{trip.total}</Text>
-      </Bar>
-      <View style={styles.hiddenSafety}>
-        <Pressable style={styles.hiddenSafetyItem} onPress={() => Linking.openURL('tel:911')}>
-          <Bar style={styles.hiddenSafetyItemIcon}>
-            <EmergencyServiceIcon />
-          </Bar>
-          <Text style={styles.hiddenSafetyItemText}>{t('ride_Ride_Trip_contactEmergency')}</Text>
-        </Pressable>
-        <Pressable style={styles.hiddenSafetyItem}>
-          <Bar style={styles.hiddenSafetyItemIcon}>
-            <ReportIcon />
-          </Bar>
-          <Text style={styles.hiddenSafetyItemText}>{t('ride_Ride_Trip_reportIssue')}</Text>
-        </Pressable>
-      </View>
-    </>
-  );
+const contractorInfoTest = {
+  tripType: 'Basic',
+  total: 20,
 };
 
-const ContactInfo = ({ trip }: { trip: TripInfo }) => {
-  const { colors } = useThemeV1();
+const SquareBar = ({ icon, text, onPress, mode }: SquareBarProps) => {
+  const { colors } = useTheme();
+
+  const computedStyles = StyleSheet.create({
+    text: {
+      color: colors.textSecondaryColor,
+    },
+  });
 
   return (
-    <Bar>
-      <View style={styles.hiddenPassengerInfo}>
-        <PassengerIcon style={styles.passengerBigIcon} color={colors.iconPrimaryColor} />
-        <Text style={styles.hiddenPassengerInfoName}>{trip.contractor.name}</Text>
-      </View>
-      <View style={styles.hiddenContactButtons}>
-        <ButtonV1 style={styles.hiddenContactButton} containerStyle={styles.hiddenContactButtonContainer}>
-          <ChatIcon />
-        </ButtonV1>
-        <ButtonV1
-          style={styles.hiddenContactButton}
-          containerStyle={styles.hiddenContactButtonContainer}
-          mode={ButtonV1Modes.Mode3}
-          onPress={() => Linking.openURL(`tel:${trip.contractor.phone}`)}
-        >
-          <PhoneIcon />
-        </ButtonV1>
-      </View>
+    <Bar onPress={onPress} mode={mode} style={styles.squareBarContainer}>
+      {icon}
+      <Text style={[styles.squareBarText, computedStyles.text]}>{text}</Text>
     </Bar>
   );
 };
 
+const HiddenPart = ({ extraSum }: { extraSum: number }) => {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+
+  const computedStyles = StyleSheet.create({
+    text: {
+      color: colors.textSecondaryColor,
+    },
+  });
+
+  const tripInfo = [
+    {
+      text: t('ride_Ride_Trip_tripType'),
+      value: contractorInfoTest.tripType,
+    },
+    {
+      text: t('ride_Ride_Trip_totalForRide'),
+      value: `$${contractorInfoTest.total + extraSum}`,
+    },
+  ];
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.squareBarWrapper}>
+        <SquareBar
+          icon={<Image source={imageBossEarth} style={styles.image} />}
+          text={t('ride_Ride_Trip_playGame')}
+          //TODO: navigate to game
+          onPress={() => true}
+        />
+        <SquareBar
+          icon={<Image source={imageCapybara} style={styles.image} />}
+          text={t('ride_Ride_Trip_Achievements')}
+          //TODO: navigate to achievements
+          onPress={() => true}
+        />
+      </View>
+      {tripInfo.map(info => (
+        <Bar key={info.text} mode={BarModes.Disabled} style={styles.tripInfoBar}>
+          <Text style={[styles.tripInfoBarText, computedStyles.text]}>{info.text}</Text>
+          <Text style={styles.tripInfoBarText}>{info.value}</Text>
+        </Bar>
+      ))}
+      <View style={styles.squareBarWrapper}>
+        <SquareBar
+          mode={BarModes.Default}
+          icon={<EmergencyServiceIcon />}
+          text={t('ride_Ride_Trip_contactEmergency')}
+          onPress={() => Linking.openURL('tel:911')}
+        />
+        <SquareBar
+          mode={BarModes.Default}
+          icon={<ReportIcon />}
+          text={t('ride_Ride_Trip_reportIssue')}
+          //TODO: navigate to report
+          onPress={() => true}
+        />
+      </View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  hiddenPassengerInfo: {
+  container: {
+    gap: 8,
+    marginBottom: 16,
+  },
+  squareBarWrapper: {
     flexDirection: 'row',
-    marginBottom: 20,
-    justifyContent: 'center',
-    gap: 4,
+    gap: 8,
   },
-  hiddenPassengerInfoName: {
-    fontFamily: 'Inter Medium',
-    fontSize: 17,
-  },
-  hiddenContactButtons: {
-    flexDirection: 'row',
-    gap: 18,
-  },
-  hiddenContactButtonContainer: {
+  squareBarContainer: {
     flex: 1,
-  },
-  hiddenTripType: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingHorizontal: 16,
+    paddingVertical: 10,
   },
-  hiddenTripTypeTitle: {
+  squareBarText: {
     fontFamily: 'Inter Medium',
+    fontSize: 14,
+    lineHeight: 22,
+    marginTop: 9,
   },
-  hiddenTripTypeContent: {
-    fontFamily: 'Inter Medium',
-    fontSize: 18,
-  },
-  hiddenTotal: {
+  tripInfoBar: {
     flexDirection: 'row',
+    padding: 16,
     justifyContent: 'space-between',
   },
-  hiddenTotalTitle: {
+  tripInfoBarText: {
     fontFamily: 'Inter Medium',
+    fontSize: 14,
+    lineHeight: 22,
   },
-  hiddenTotalContent: {
-    fontFamily: 'Inter Medium',
-    fontSize: 18,
-  },
-  hiddenSafety: {
-    flexDirection: 'row',
-    gap: 14,
-  },
-  hiddenSafetyItem: {
-    flex: 1,
-  },
-  hiddenSafetyItemIcon: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  hiddenSafetyItemText: {
-    textAlign: 'center',
-    fontFamily: 'Inter Medium',
-    fontSize: 12,
-    marginTop: 6,
-  },
-  hiddenContactButton: {
-    height: 48,
-  },
-  passengerBigIcon: {
-    width: sizes.iconSize,
-    height: sizes.iconSize,
-  },
-  smallPhoneButton: {
-    paddingHorizontal: 0,
-    width: 34,
-    height: 34,
-  },
-  smallPhoneButtonIcon: {
-    width: 16,
-    height: 16,
+  image: {
+    height: 33,
+    width: 43,
+    objectFit: 'contain',
   },
 });
 

@@ -10,7 +10,6 @@ import {
   NotificationIcon,
   NotificationType,
   sizes,
-  StopWatch,
   Text,
   useThemeV1,
 } from 'shuttlex-integration';
@@ -22,7 +21,7 @@ import { setProfile } from '../../../core/redux/passenger';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
-import { contractorInfoSelector, tripInfoSelector, tripStatusSelector } from '../../../core/ride/redux/trip/selectors';
+import { tripInfoSelector, tripStatusSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
 import MapCameraModeButton from './MapCameraModeButton';
@@ -42,7 +41,6 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const tripInfo = useSelector(tripInfoSelector);
   const orderStatus = useSelector(orderStatusSelector);
   const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
-  const contractorInfo = useSelector(contractorInfoSelector);
   const [contractorInfoTest, setContractorInfoTest] = useState(false); //for test
   const [isPassengerLate, setIsPassengerLate] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -165,18 +163,6 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
     );
   }
 
-  let stopWatch = null;
-
-  if (contractorInfo && tripStatus === TripStatus.Idle) {
-    stopWatch = (
-      <StopWatch
-        initialDate={new Date(contractorInfo.approximateArrival)}
-        mask="{m}m"
-        onAfterCountdownEnds={() => {}}
-      />
-    );
-  }
-
   const topFullButtons = (
     <>
       <Button
@@ -187,7 +173,6 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
       >
         <MenuIcon />
       </Button>
-      {stopWatch}
       {orderStatus !== OrderStatus.Confirmation && (
         <View style={styles.topRightButtonContainer}>
           <Button
