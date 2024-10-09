@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
-import { Bar, BarModes, CloseIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { Platform, StyleSheet, View } from 'react-native';
+import { Bar, BarModes, CloseIcon, sizes, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { setOrderStatus } from '../../../../core/ride/redux/order';
@@ -23,6 +23,9 @@ const Confirming = () => {
     },
     buttonText: {
       color: colors.textSecondaryColor,
+    },
+    closeButtonContainer: {
+      marginBottom: Platform.OS === 'android' ? sizes.paddingVertical : 0,
     },
   });
 
@@ -47,7 +50,7 @@ const Confirming = () => {
         <TariffImage style={styles.image} />
         <Text style={styles.topText}>{t('ride_Ride_Confirming_searchDrivers', { dots: '.'.repeat(dotsCounter) })}</Text>
       </View>
-      <View>
+      <View style={computedStyles.closeButtonContainer}>
         <Bar
           mode={BarModes.Disabled}
           style={[styles.button, computedStyles.button]}
