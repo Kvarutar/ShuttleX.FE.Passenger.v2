@@ -17,7 +17,7 @@ import {
   Text,
   TimerV1,
   TimerV1Modes,
-  useThemeV1,
+  useTheme,
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../core/redux/hooks';
@@ -28,7 +28,7 @@ import { MapAddressSelectionScreenProps } from './props';
 const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScreenProps): JSX.Element => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { colors } = useThemeV1();
+  const { colors } = useTheme();
 
   const geolocationCoordinates = useSelector(geolocationCoordinatesSelector);
   const initialCoordinates: LatLng | undefined = geolocationCoordinates ?? undefined;
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   mapPinIcon: {
-    width: 48,
-    height: 48,
+    width: 37,
+    height: 54,
     marginBottom: 40, // to center icon
   },
   bottomBar: {
