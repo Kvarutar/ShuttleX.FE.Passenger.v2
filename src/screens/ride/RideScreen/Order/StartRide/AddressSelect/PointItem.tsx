@@ -6,9 +6,9 @@ import { Shadow } from 'react-native-shadow-2';
 import { useSelector } from 'react-redux';
 import { CloseIcon, PointIcon, PointIcon2, TextInput, TextInputInputMode, useTheme } from 'shuttlex-integration';
 
-import { useAppDispatch } from '../../../../../core/redux/hooks';
-import { updateOrderPoint } from '../../../../../core/ride/redux/order';
-import { orderPointsSelector } from '../../../../../core/ride/redux/order/selectors';
+import { useAppDispatch } from '../../../../../../core/redux/hooks';
+import { updateOrderPoint } from '../../../../../../core/ride/redux/order';
+import { orderPointsSelector } from '../../../../../../core/ride/redux/order/selectors';
 import { PointItemProps } from './props';
 
 const fadeAnimationDuration = 100;

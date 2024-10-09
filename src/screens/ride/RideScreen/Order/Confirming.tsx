@@ -51,7 +51,7 @@ const Confirming = () => {
         <Bar
           mode={BarModes.Disabled}
           style={[styles.button, computedStyles.button]}
-          onPress={() => dispatch(setOrderStatus(OrderStatus.Confirming))}
+          onPress={() => dispatch(setOrderStatus(OrderStatus.Payment))}
         >
           <CloseIcon style={styles.closeIcon} />
         </Bar>

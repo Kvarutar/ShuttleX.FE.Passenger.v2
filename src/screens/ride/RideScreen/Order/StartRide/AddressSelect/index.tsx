@@ -19,44 +19,68 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
-import { useAppDispatch } from '../../../../../core/redux/hooks';
-import { geolocationCoordinatesSelector } from '../../../../../core/ride/redux/geolocation/selectors';
-import { setOrderStatus, updateOrderPoint } from '../../../../../core/ride/redux/order';
-import { isOrderLoadingSelector, orderPointsSelector } from '../../../../../core/ride/redux/order/selectors';
-import { fetchAddresses } from '../../../../../core/ride/redux/order/thunks';
-import { Address, OrderStatus } from '../../../../../core/ride/redux/order/types';
-import { RootStackParamList } from '../../../../../Navigate/props';
-import PlaceBar from '../PlaceBar';
-import { PlaceBarModes } from '../PlaceBar/props';
+import { useAppDispatch } from '../../../../../../core/redux/hooks';
+import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
+import { setOrderStatus, updateOrderPoint } from '../../../../../../core/ride/redux/order';
+import { isOrderLoadingSelector, orderPointsSelector } from '../../../../../../core/ride/redux/order/selectors';
+import { OrderStatus } from '../../../../../../core/ride/redux/order/types';
+import { RootStackParamList } from '../../../../../../Navigate/props';
+import PlaceBar from '../../PlaceBar';
+import { PlaceBarModes, PlaceType } from '../../PlaceBar/props';
 import AddressButton from './AddressButton';
 import PointItem from './PointItem';
 import { AddressSelectProps, PointMode } from './props';
 
 const testPlace = [
   {
-    address: 'Restaurant',
-    details: 'StreetEasy: NYC Real Estate Search',
-    distance: '14',
+    address: 'Joe`s Pizza',
+    details: '7 Carmine St, New York, NY 10014',
+    distance: '1.5',
   },
   {
-    address: 'Test',
-    details: 'StreetEasy: NYC Real Estate Search',
-    distance: '14',
+    address: 'Katz`s Delicatessen',
+    details: '205 E Houston St, New York, NY 10002',
+    distance: '3.2',
   },
   {
-    address: 'Place Long Long Long Long Long Long Long',
-    details: 'StreetEasy: NYC Real Estate Search',
-    distance: '14',
+    address: 'Shake Shack',
+    details: 'Madison Square Park, New York, NY 10010',
+    distance: '2.0',
   },
   {
-    address: 'Restaurant',
-    details: 'StreetEasy: NYC Real Estate Search',
-    distance: '14',
+    address: 'Levain Bakery',
+    details: '167 W 74th St, New York, NY 10023',
+    distance: '4.1',
   },
   {
-    address: 'Kryptobara',
-    details: 'StreetEasy: NYC Real Estate Search',
-    distance: '14',
+    address: 'Russ & Daughters',
+    details: '179 E Houston St, New York, NY 10002',
+    distance: '3.0',
+  },
+  {
+    address: 'Peter Luger Steak House',
+    details: '178 Broadway, Brooklyn, NY 11211',
+    distance: '5.3',
+  },
+  {
+    address: 'The Spotted Pig',
+    details: '314 W 11th St, New York, NY 10014',
+    distance: '2.4',
+  },
+  {
+    address: "Lombardi's Pizza",
+    details: '32 Spring St, New York, NY 10012',
+    distance: '2.8',
+  },
+  {
+    address: 'Carbone',
+    details: '181 Thompson St, New York, NY 10012',
+    distance: '2.9',
+  },
+  {
+    address: 'Balthazar',
+    details: '80 Spring St, New York, NY 10012',
+    distance: '3.1',
   },
 ];
 
@@ -64,7 +88,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [focusedInput, setFocusedInput] = useState<{ id: number | null; value: string }>({ id: null, value: '' });
   const [isAddressSelected, setIsAddressSelected] = useState(false);
-  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [addresses, setAddresses] = useState<PlaceType[]>([]);
   const debounceInputValue = useDebounce(focusedInput.value, 300);
 
   const isLoading = useSelector(isOrderLoadingSelector);
@@ -78,7 +102,12 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
 
   useEffect(() => {
     const fetchData = async (text: string) => {
-      const fetchedAddresses = await dispatch(fetchAddresses(text)).unwrap();
+      // const fetchedAddresses = await dispatch(fetchAddresses(text)).unwrap();
+      const fetchedAddresses = testPlace.filter(
+        item =>
+          item.address.toLowerCase().includes(text.toLowerCase()) ||
+          item.details.toLowerCase().includes(text.toLowerCase()),
+      );
       setAddresses(fetchedAddresses);
     };
 
@@ -261,7 +290,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
             </>
           )}
         </ScrollViewWithCustomScroll>
-        {showConfirmButton && (
+        {showConfirmButton && !isAddressSelected && (
           <Button onPress={onConfirm} shape={ButtonShapes.Circle} style={styles.confirmButton}>
             <ArrowIcon />
           </Button>
@@ -311,7 +340,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 44,
     height: 44,
-    borderWidth: 0,
     right: 0,
     bottom: 5,
   },

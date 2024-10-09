@@ -7,11 +7,12 @@ import {
   CircleButtonModes,
   Fog,
   MenuIcon,
+  minToMilSec,
   NotificationIcon,
   NotificationType,
   sizes,
   Text,
-  useThemeV1,
+  useTheme,
 } from 'shuttlex-integration';
 
 import { setNotificationList } from '../../../core/menu/redux/notifications';
@@ -19,30 +20,28 @@ import { numberOfUnreadNotificationsSelector } from '../../../core/menu/redux/no
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { setProfile } from '../../../core/redux/passenger';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
+import { setOrderStatus } from '../../../core/ride/redux/order';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
-import { tripInfoSelector, tripStatusSelector } from '../../../core/ride/redux/trip/selectors';
-import { TripStatus } from '../../../core/ride/redux/trip/types';
+import { setTripInfo } from '../../../core/ride/redux/trip';
+import { contractorInfoSelector } from '../../../core/ride/redux/trip/selectors';
 import Menu from '../Menu';
 import MapCameraModeButton from './MapCameraModeButton';
 import MapView from './MapView';
 import Order from './Order';
 import { OrderRef } from './Order/types';
-import PassengerTimer from './PassengerTimer';
 import { RideScreenProps } from './props';
 import Trip from './Trip';
 
 const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
-  const { colors } = useThemeV1();
+  const { colors } = useTheme();
   const dispatch = useAppDispatch();
   const orderRef = useRef<OrderRef>(null);
 
-  const tripStatus = useSelector(tripStatusSelector);
-  const tripInfo = useSelector(tripInfoSelector);
   const orderStatus = useSelector(orderStatusSelector);
   const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
-  const [contractorInfoTest, setContractorInfoTest] = useState(false); //for test
-  const [isPassengerLate, setIsPassengerLate] = useState(false);
+  const contractorInfo = useSelector(contractorInfoSelector);
+
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   //for test
@@ -54,12 +53,49 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
 
   //for test
   useEffect(() => {
-    if (orderStatus === OrderStatus.Confirmation) {
+    if (orderStatus === OrderStatus.Confirming) {
       setTimeout(() => {
-        setContractorInfoTest(true);
+        dispatch(
+          setTripInfo({
+            contractor: {
+              name: 'Slava',
+              car: {
+                model: 'Toyota Cruiser',
+                plateNumber: 'BH 4426 AO',
+              },
+              phone: '+380635009999',
+              approximateArrival: minToMilSec(10),
+            },
+            tripType: 'Basic',
+            total: '35',
+            route: {
+              startPoint: { id: 0, address: 'Test', latitude: 0, longitude: 0 },
+              endPoints: [{ id: 1, address: 'Test2', latitude: 0, longitude: 0 }],
+              info: {
+                duration: 3600,
+                distance: 5000,
+                legs: [
+                  {
+                    steps: [
+                      {
+                        maneuver: {
+                          type: '',
+                          instruction: '',
+                          location: { latitude: 0, longitude: 0 },
+                        },
+                        geometry: '',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          }),
+        );
+        dispatch(setOrderStatus(OrderStatus.StartRide));
       }, 10000);
     }
-  }, [orderStatus]);
+  }, [dispatch, orderStatus]);
 
   useEffect(() => {
     dispatch(
@@ -136,17 +172,18 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const computedStyles = StyleSheet.create({
     topButtonsContainer: {
       paddingTop: Platform.OS === 'android' ? sizes.paddingVertical : 0,
-      zIndex: orderStatus === OrderStatus.Confirmation ? 1 : 0,
+      zIndex: orderStatus === OrderStatus.Confirming ? 1 : 0,
     },
     unreadNotificationsMarker: {
       backgroundColor: colors.primaryColor,
     },
     unreadNotificationsText: {
-      color: colors.backgroundPrimaryColor,
+      color: colors.textSecondaryColor,
     },
   });
 
-  let unreadNotificationsMarker = null;
+  let unreadNotificationsMarker: ReactNode = null;
+
   if (unreadNotifications > 0) {
     unreadNotificationsMarker = (
       <View style={[styles.unreadNotificationsMarker, computedStyles.unreadNotificationsMarker]}>
@@ -163,20 +200,20 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
     );
   }
 
-  const topFullButtons = (
+  const topFullButtons = ({ withNotifications = true }: { withNotifications?: boolean } = {}) => (
     <>
       <Button
-        circleSubContainerStyle={styles.buttonContainer}
+        withBorder={false}
         shape={ButtonShapes.Circle}
         mode={CircleButtonModes.Mode2}
         onPress={() => setIsMenuVisible(true)}
       >
         <MenuIcon />
       </Button>
-      {orderStatus !== OrderStatus.Confirmation && (
+      {withNotifications && (
         <View style={styles.topRightButtonContainer}>
           <Button
-            circleSubContainerStyle={styles.buttonContainer}
+            withBorder={false}
             style={styles.button}
             shape={ButtonShapes.Circle}
             mode={CircleButtonModes.Mode2}
@@ -185,21 +222,18 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
             <NotificationIcon />
             {unreadNotificationsMarker}
           </Button>
-          {tripInfo && tripStatus === TripStatus.Arrived && (
-            <PassengerTimer isPassengerLate={isPassengerLate} setIsPassengerLate={() => setIsPassengerLate(true)} />
-          )}
         </View>
       )}
     </>
   );
 
   const topButtons: Record<OrderStatus, ReactNode | null> = {
-    startRide: topFullButtons,
-    rideUnavaliable: topFullButtons,
-    noDrivers: topFullButtons,
-    choosingTariff: topFullButtons,
-    confirming: null,
-    confirmation: null,
+    startRide: topFullButtons(),
+    choosingTariff: topFullButtons(),
+    payment: topFullButtons(),
+    confirming: topFullButtons({ withNotifications: false }),
+    noDrivers: null,
+    rideUnavailable: null,
   };
 
   return (
@@ -207,15 +241,15 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
       <SafeAreaView style={styles.wrapper}>
         <MapView />
         <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>{topButtons[orderStatus]}</View>
-        {contractorInfoTest ? (
+        {contractorInfo ? (
           <>
             <MapCameraModeButton />
             <Trip />
           </>
         ) : (
-          <Order navigation={navigation} ref={orderRef} />
+          <Order ref={orderRef} />
         )}
-        {orderStatus === OrderStatus.Confirmation && <Fog />}
+        {orderStatus === OrderStatus.Confirming && <Fog />}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
     </>
@@ -250,9 +284,6 @@ const styles = StyleSheet.create({
   },
   button: {
     overflow: 'visible',
-  },
-  buttonContainer: {
-    borderWidth: 0,
   },
 });
 

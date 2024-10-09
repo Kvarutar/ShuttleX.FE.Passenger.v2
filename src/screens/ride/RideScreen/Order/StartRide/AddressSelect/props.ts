@@ -1,8 +1,6 @@
 import { StyleProp, ViewStyle } from 'react-native';
 
-import { PlaceType } from '../PlaceBar/props';
-
-export type AddressSelectMode = 'now' | 'delayed';
+import { PlaceType } from '../../PlaceBar/props';
 
 export type PointMode = 'pickUp' | 'default' | 'dropOff';
 

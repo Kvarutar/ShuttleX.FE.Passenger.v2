@@ -1,119 +1,43 @@
-import { forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { forwardRef, ReactNode, useImperativeHandle, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { BottomWindowWithGesture, BottomWindowWithGestureRef } from 'shuttlex-integration';
 
-import { useAppDispatch } from '../../../../core/redux/hooks';
-import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
-import { cleanOrderPoints } from '../../../../core/ride/redux/order';
 import { orderStatusSelector } from '../../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
-import AlertInitializer from '../../../../shared/AlertInitializer';
-import PaymentPopup from '../PaymentPopup';
-import AddressSelect from './AddressSelect';
 import Confirming from './Confirming';
-import OrderCreationError from './OrderCreationError';
-import { PlaceType } from './PlaceBar/props';
-import StartRideHidden from './StartRide/StartRideHidden';
-import StartRideVisible from './StartRide/StartRideVisible';
+import PaymentPopup from './PaymentPopup';
+import StartRide from './StartRide';
+import { StartRideRef } from './StartRide/props';
 import Tariffs from './Tariffs';
-import { OrderProps, OrderRef } from './types';
+import { OrderRef } from './types';
 
-const Order = forwardRef<OrderRef, OrderProps>(({ navigation }, ref) => {
+const Order = forwardRef<OrderRef>(({}, ref) => {
+  const startRideRef = useRef<StartRideRef>(null);
+
   const currentOrderStatus = useSelector(orderStatusSelector);
-  const { t } = useTranslation();
-  const dispatch = useAppDispatch();
-  const addressSelectRef = useRef<BottomWindowWithGestureRef>(null);
-
   const [isAddressSelectVisible, setIsAddressSelectVisible] = useState(false);
-  const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
-  const [fastAddressSelect, setFastAddressSelect] = useState<PlaceType | null>(null);
 
   useImperativeHandle(ref, () => ({
     openAddressSelect: () => {
-      setIsAddressSelectVisible(true);
-      addressSelectRef.current?.openWindow();
+      startRideRef.current?.openAddressSelect();
     },
   }));
 
-  useEffect(() => {
-    if (isAddressSelectVisible) {
-      addressSelectRef.current?.openWindow();
-    } else {
-      dispatch(cleanOrderPoints());
-      setFastAddressSelect(null);
-    }
-  }, [dispatch, isAddressSelectVisible]);
-
   const OrderStatusComponents: Record<OrderStatus, ReactNode | null> = {
     startRide: (
-      <StartRideVisible
-        openAddressSelect={setIsAddressSelectVisible}
-        isBottomWindowOpen={isBottomWindowOpen}
-        setFastAddressSelect={setFastAddressSelect}
+      <StartRide
+        ref={startRideRef}
+        isAddressSelectVisible={isAddressSelectVisible}
+        setIsAddressSelectVisible={setIsAddressSelectVisible}
       />
     ),
-    choosingTariff: null,
-    confirming: null,
-    confirmation: <Confirming />,
-    noDrivers: <OrderCreationError error={t('ride_Ride_Order_noDriversAvaliable')} />,
-    rideUnavaliable: <OrderCreationError error={t('ride_Ride_Order_rideIsUnavaliable')} />,
+    choosingTariff: <Tariffs setIsAddressSelectVisible={setIsAddressSelectVisible} />,
+    payment: <PaymentPopup />,
+    confirming: <Confirming />,
+    noDrivers: null,
+    rideUnavailable: null,
   };
 
-  const alerts = useSelector(twoHighestPriorityAlertsSelector);
-
-  if (currentOrderStatus === OrderStatus.ChoosingTariff) {
-    return <Tariffs setIsAddressSelectVisible={setIsAddressSelectVisible} />;
-  }
-
-  if (currentOrderStatus === OrderStatus.Confirming) {
-    return <PaymentPopup navigation={navigation} />;
-  }
-
-  return (
-    <>
-      <BottomWindowWithGesture
-        visiblePart={OrderStatusComponents[currentOrderStatus]}
-        setIsOpened={setIsBottomWindowOpen}
-        hiddenPart={<StartRideHidden />}
-        hiddenPartStyle={styles.hiddenPartStyle}
-        hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
-        alerts={alerts.map(alertData => (
-          <AlertInitializer
-            key={alertData.id}
-            id={alertData.id}
-            priority={alertData.priority}
-            type={alertData.type}
-            options={'options' in alertData ? alertData.options : undefined}
-          />
-        ))}
-      />
-      {isAddressSelectVisible && (
-        <BottomWindowWithGesture
-          hiddenPart={
-            <AddressSelect setIsAddressSelectVisible={setIsAddressSelectVisible} address={fastAddressSelect} />
-          }
-          setIsOpened={setIsAddressSelectVisible}
-          ref={addressSelectRef}
-          hiddenPartStyle={styles.hiddenPartStyleAddressSelect}
-          withHiddenPartScroll={false}
-        />
-      )}
-    </>
-  );
-});
-
-const styles = StyleSheet.create({
-  hiddenPartStyle: {
-    marginTop: 0,
-  },
-  hiddenPartContainerStyle: {
-    paddingTop: 0,
-  },
-  hiddenPartStyleAddressSelect: {
-    height: '100%',
-  },
+  return OrderStatusComponents[currentOrderStatus];
 });
 
 export default Order;

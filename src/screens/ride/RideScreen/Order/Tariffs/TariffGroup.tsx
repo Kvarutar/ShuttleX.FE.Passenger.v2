@@ -72,11 +72,11 @@ const styles = StyleSheet.create({
   },
   img: {
     position: 'absolute',
-    width: undefined,
-    height: 49,
-    aspectRatio: 3.3,
+    width: '170%',
+    height: undefined,
+    aspectRatio: 3.15,
     bottom: 16,
-    left: 16,
+    left: 20,
   },
 });
 

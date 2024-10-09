@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { BaggageIcon, Bar, ProfileIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
-import PlanButton from './PlanButton';
+import PlanButton, { planPriceCounting } from '../../PlanButton/PlanButton';
 import { TariffBarProps } from './props';
 
 const TariffBar = ({
@@ -21,9 +21,10 @@ const TariffBar = ({
   const { t } = useTranslation();
   const tariffsCarData = useTariffsIcons();
 
-  const defaultPlanIndex = plans.length > 1 ? 1 : 0;
   const TariffImage = tariffsCarData[tariff].icon;
   const tariffTitle = tariffsCarData[tariff].text;
+  const availablePlans = plans.filter(item => item.DurationSec !== null);
+  const defaultPlanIndex = availablePlans.length > 1 ? 1 : 0;
 
   const computedStyles = StyleSheet.create({
     capacityColor: {
@@ -71,12 +72,18 @@ const TariffBar = ({
     };
   });
 
+  const formatTime = (time: number) => {
+    const totalMinutes = Math.floor(time / 60);
+
+    return `${t('ride_Ride_Tariffs_minutes', { count: totalMinutes })}`;
+  };
+
   const capacityBlock = (
     <View style={styles.capacityContainer}>
-      {plans.length === 1 && (
+      {availablePlans.length === 1 && (
         <>
           <Text style={[styles.capacityText, computedStyles.capacityColor]}>
-            {t('ride_Ride_Tariffs_minutes', { count: Number(plans[defaultPlanIndex].time) })}
+            {formatTime(Number(availablePlans[defaultPlanIndex].DurationSec))}
           </Text>
           <View style={[styles.separateCircle, computedStyles.separateCircle]} />
         </>
@@ -91,8 +98,8 @@ const TariffBar = ({
 
   const tariffPrice = () => {
     if (isAvailableTariff) {
-      if (!isPlanSelected || plans.length === 1) {
-        return `$${plans[defaultPlanIndex].price}`;
+      if (!isPlanSelected || availablePlans.length === 1) {
+        return `$${planPriceCounting(Number(availablePlans[defaultPlanIndex].DurationSec), availablePlans[defaultPlanIndex].AlgorythmType)}`;
       }
     } else {
       return t('ride_Ride_TariffBar_notAvailable');
@@ -127,17 +134,15 @@ const TariffBar = ({
           {tariffPrice()}
         </Text>
       </Animated.View>
-      {plans.length !== 1 && (
+      {availablePlans.length !== 1 && (
         <Animated.View style={animatedButtonWrapper}>
           <View style={styles.buttonContainer}>
-            {plans.map((button, index) => (
+            {availablePlans.map((plan, index) => (
               <PlanButton
                 key={index}
                 onPress={() => setSelectedPrice(index)}
-                selectedPrice={selectedPrice === index}
-                time={button.time}
-                price={button.price}
-                index={index}
+                isSelected={selectedPrice === index}
+                plan={plan}
               />
             ))}
           </View>
@@ -196,6 +201,9 @@ const styles = StyleSheet.create({
   isNotSelectedPrice: {
     position: 'absolute',
     bottom: 0,
+  },
+  planButton: {
+    marginTop: 20,
   },
 });
 

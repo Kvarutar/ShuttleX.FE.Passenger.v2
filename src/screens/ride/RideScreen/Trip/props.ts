@@ -1,4 +1,5 @@
-import { BarModes } from 'shuttlex-integration';
+import { ReactNode } from 'react';
+import { BarModes, TimerColorModes } from 'shuttlex-integration';
 
 export type SquareBarProps = {
   icon: React.ReactNode;
@@ -10,4 +11,11 @@ export type SquareBarProps = {
 export type VisiblePartProps = {
   extraSum: number;
   setExtraSum: (value: number | ((prev: number) => number)) => void;
+};
+
+export type TimerStateDataType = {
+  timerTime: number;
+  mode: TimerColorModes;
+  title: ReactNode;
+  timerLabel?: string;
 };

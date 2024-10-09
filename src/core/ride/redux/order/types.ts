@@ -4,10 +4,10 @@ import { TariffType } from 'shuttlex-integration';
 export enum OrderStatus {
   StartRide = 'startRide',
   ChoosingTariff = 'choosingTariff',
+  Payment = 'payment',
   Confirming = 'confirming',
-  Confirmation = 'confirmation',
   NoDrivers = 'noDrivers',
-  RideUnavaliable = 'rideUnavaliable',
+  RideUnavailable = 'rideUnavailable',
 }
 
 export type AddressPoint = { id: number; address: string } & LatLng;

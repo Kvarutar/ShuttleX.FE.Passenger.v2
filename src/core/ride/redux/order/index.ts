@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { TariffType } from 'shuttlex-integration';
 
 import { fetchTripInfo } from '../trip/thunks';
-import { createOrder, fetchAddresses } from './thunks';
+import { fetchAddresses } from './thunks';
 import { AddressPoint, OrderState, OrderStatus } from './types';
 
 const initialState: OrderState = {
@@ -47,9 +47,11 @@ const slice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(createOrder.rejected, state => {
-        state.status = OrderStatus.RideUnavaliable;
-      })
+      //TODO: remove comment
+
+      // .addCase(createOrder.rejected, state => {
+      //   state.status = OrderStatus.RideUnavailable;
+      // })
       .addCase(fetchAddresses.pending, state => {
         state.isLoading = true;
       })
@@ -66,7 +68,7 @@ const slice = createSlice({
         if (action.payload === 'noDrivers') {
           state.status = OrderStatus.NoDrivers;
         } else {
-          state.status = OrderStatus.RideUnavaliable;
+          state.status = OrderStatus.RideUnavailable;
         }
       });
   },

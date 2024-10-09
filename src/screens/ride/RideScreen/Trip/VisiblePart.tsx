@@ -10,6 +10,7 @@ import {
   CircleButtonModes,
   ClockIcon,
   CrownIcon,
+  minToMilSec,
   PhoneIcon,
   StatsBlock,
   TariffType,
@@ -26,7 +27,7 @@ import { setTripStatus } from '../../../../core/ride/redux/trip';
 import { tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../../core/ride/redux/trip/types';
 import { formatTime } from './index';
-import { VisiblePartProps } from './props';
+import { TimerStateDataType, VisiblePartProps } from './props';
 
 //TODO: swap contractorInfoTest to contractorInfo
 const contractorInfoTest = {
@@ -87,7 +88,6 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
       color: extraWaiting ? colors.errorColor : colors.textTertiaryColor,
     },
     nameTimeContainer: {
-      marginBottom: tripStatus === TripStatus.Idle ? 10 : 46,
       marginTop: tripStatus === TripStatus.Idle ? 0 : 20,
     },
     lvlText: {
@@ -95,20 +95,28 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
     },
   });
 
-  const timerStateData: Record<string, { timerTime: number; mode: TimerColorModes; title?: string }> = {
+  const timerStateData: Record<string, TimerStateDataType> = {
     idle: {
-      timerTime: Date.now() + 10000,
+      timerTime: Date.now() + minToMilSec(0.5),
       mode: TimerColorModes.Mode1,
+      title: (
+        <>
+          <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>{t('ride_Ride_Trip_beIn')} </Text>
+          <Text style={styles.nameTimeText}>{formatTime(new Date(Date.now() + minToMilSec(0.5)))}</Text>
+        </>
+      ),
     },
     arrived: {
       timerTime: Date.now(),
       mode: TimerColorModes.Mode2,
-      title: 'Arrived',
+      timerLabel: t('ride_Ride_Trip_timerLabelArrived'),
+      title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleArrived')}</Text>,
     },
     waiting: {
-      timerTime: Date.now() + 10000,
+      timerTime: Date.now() + minToMilSec(0.5),
       mode: extraWaiting ? TimerColorModes.Mode5 : TimerColorModes.Mode2,
-      title: 'Waiting',
+      timerLabel: t('ride_Ride_Trip_timerLabelWaiting'),
+      title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleWaiting')}</Text>,
     },
   };
 
@@ -132,12 +140,6 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
   }, [extraWaiting, setExtraSum]);
 
   const timerState = timerStateData[isWaiting ? 'waiting' : tripStatus];
-
-  const nameTimeTextInfo = [
-    contractorInfoTest.contractor.name,
-    ` ${t('ride_Ride_Trip_beIn')} `,
-    formatTime(new Date(timerState.timerTime)),
-  ];
 
   const onAfterCountdownEndsHandler = () => {
     if (tripStatus === TripStatus.Idle) {
@@ -177,24 +179,16 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
           </View>
         )}
         <View style={[styles.nameTimeContainer, computedStyles.nameTimeContainer]}>
-          {nameTimeTextInfo.map((text, index) => (
-            <Text
-              key={`text_${index}`}
-              style={[styles.nameTimeText, index === 1 && computedStyles.beInAndLvlAmountText]}
-            >
-              {text}
-            </Text>
-          ))}
+          <Text style={styles.nameTimeText}>{contractorInfoTest.contractor.name} </Text>
+          {timerState.title}
         </View>
-        {tripStatus === TripStatus.Idle && (
-          <StatsBlock
-            style={styles.statsContainer}
-            amountLikes={325}
-            textLikes={t('ride_Ride_Trip_likes')}
-            amountRides={53153}
-            textRides={t('ride_Ride_Trip_rides')}
-          />
-        )}
+        <StatsBlock
+          style={styles.statsContainer}
+          amountLikes={325}
+          textLikes={t('ride_Ride_Trip_likes')}
+          amountRides={53153}
+          textRides={t('ride_Ride_Trip_rides')}
+        />
         <View style={styles.carInfoContainer}>
           <Bar style={styles.carInfoBar}>
             <Text style={styles.carInfoText}>{contractorInfoTest.contractor.car.model}</Text>
@@ -224,10 +218,10 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
             colorMode={timerState.mode}
             onAfterCountdownEnds={onAfterCountdownEndsHandler}
           />
-          {timerState?.title && (
+          {timerState?.timerLabel && (
             <View style={[styles.timerLabelContainer, computedStyles.timerLabelContainer]}>
               <Text style={[styles.timerLabelText, computedStyles.timerLabelText]}>
-                {extraWaiting ? `-$${extraSum}` : timerState.title}
+                {extraWaiting ? `-$${extraSum}` : timerState.timerLabel}
               </Text>
             </View>
           )}
@@ -277,6 +271,7 @@ const styles = StyleSheet.create({
   },
   nameTimeContainer: {
     flexDirection: 'row',
+    marginBottom: 10,
   },
   nameTimeText: {
     fontSize: 21,

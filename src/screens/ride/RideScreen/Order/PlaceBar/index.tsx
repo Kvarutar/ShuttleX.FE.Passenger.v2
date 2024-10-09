@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Bar, BarModes, BookMarkIcon, ClockIcon, LocationIcon, Text, useTheme } from 'shuttlex-integration';
+import { Bar, BarModes, ClockIcon, LocationIcon, Text, useTheme } from 'shuttlex-integration';
 
 import PlaceTitle from './PlaceTitle';
 import { PlaceBarModes, PlaceBarProps } from './props';
 
-const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, onSave, style }: PlaceBarProps) => {
+const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: PlaceBarProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
@@ -47,9 +47,6 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, onSave, style 
                 </Text>
               </Bar>
             </View>
-            <Pressable onPress={onSave}>
-              <BookMarkIcon />
-            </Pressable>
           </View>
           <PlaceTitle place={place} style={styles.fullTitleContainer} />
         </Bar>

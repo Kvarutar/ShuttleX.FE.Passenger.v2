@@ -27,7 +27,6 @@ import imageFriendlyDriver from '../../../../assets/images/likeFeedback/imageFri
 import imageGoodDriving from '../../../../assets/images/likeFeedback/imageGoodDriving';
 import imageNiceAtmosphere from '../../../../assets/images/likeFeedback/imageNiceAtmosphere';
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { endTrip } from '../../../core/ride/redux/trip';
 import { sendFeedback } from '../../../core/ride/redux/trip/thunks';
 import { RatingScreenProps } from './props';
 
@@ -132,7 +131,6 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
 
   const onEndTrip = () => {
     navigation.navigate('Receipt');
-    dispatch(endTrip());
   };
 
   const toggleIndex = (index: number) => () => {

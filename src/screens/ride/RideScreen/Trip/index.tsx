@@ -41,7 +41,7 @@ const contractorInfoTest = {
       plateNumber: 'BB 4177 CH',
     },
   },
-  approximateArrival: minToMilSec(0.2), //travel time
+  approximateArrival: minToMilSec(0.5), //travel time
   tripType: 'Basic',
   total: 20,
 };

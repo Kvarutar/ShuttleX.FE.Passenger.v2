@@ -11,19 +11,54 @@ import { RideTextBlockProps, StartRideVisibleProps } from './props';
 
 const testPlaces = [
   {
-    address: 'Restaurant',
-    details: 'StreetEasy: NYC Real',
-    distance: '2',
+    address: 'Joe`s Pizza',
+    details: '7 Carmine St, New York, NY 10014',
+    distance: '1.5',
   },
   {
-    address: 'Restaurant',
-    details: 'StreetEasy: NYC Real',
-    distance: '2',
+    address: 'Katz`s Delicatessen',
+    details: '205 E Houston St, New York, NY 10002',
+    distance: '3.2',
   },
   {
-    address: 'Restaurant',
-    details: 'StreetEasy: NYC Real',
-    distance: '2',
+    address: 'Shake Shack',
+    details: 'Madison Square Park, New York, NY 10010',
+    distance: '2.0',
+  },
+  {
+    address: 'Levain Bakery',
+    details: '167 W 74th St, New York, NY 10023',
+    distance: '4.1',
+  },
+  {
+    address: 'Russ & Daughters',
+    details: '179 E Houston St, New York, NY 10002',
+    distance: '3.0',
+  },
+  {
+    address: 'Peter Luger Steak House',
+    details: '178 Broadway, Brooklyn, NY 11211',
+    distance: '5.3',
+  },
+  {
+    address: 'The Spotted Pig',
+    details: '314 W 11th St, New York, NY 10014',
+    distance: '2.4',
+  },
+  {
+    address: "Lombardi's Pizza",
+    details: '32 Spring St, New York, NY 10012',
+    distance: '2.8',
+  },
+  {
+    address: 'Carbone',
+    details: '181 Thompson St, New York, NY 10012',
+    distance: '2.9',
+  },
+  {
+    address: 'Balthazar',
+    details: '80 Spring St, New York, NY 10012',
+    distance: '3.1',
   },
 ];
 
@@ -40,7 +75,7 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
       color: colors.textPrimaryColor,
     },
     textExtraColor: {
-      color: colors.textSecondaryColor,
+      color: colors.textTitleColor,
     },
     container: {
       marginBottom: isBottomWindowOpen ? 0 : 27,
@@ -53,6 +88,7 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
     },
     searchContainer: {
       marginLeft: isSearchBarVisible ? 0 : -62,
+      marginRight: isSearchBarVisible ? 8 : 0,
     },
   });
 
@@ -162,7 +198,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: windowWidth * 0.75,
-    marginRight: 8,
   },
   extraSearchIconContainer: {
     width: 62,

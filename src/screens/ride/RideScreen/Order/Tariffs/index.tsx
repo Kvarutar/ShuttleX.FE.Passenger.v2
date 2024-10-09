@@ -7,6 +7,7 @@ import {
   BarModes,
   BottomWindowWithGesture,
   Button,
+  ButtonShadows,
   ButtonShapes,
   ButtonSizes,
   CircleButtonModes,
@@ -35,16 +36,19 @@ const testTariffsGroup: TariffGroupType[] = [
         },
         plans: [
           {
-            time: '2',
-            price: '12',
+            Tariffid: 0,
+            AlgorythmType: 'Eager Fast',
+            DurationSec: 100,
           },
           {
-            time: '4',
-            price: '10',
+            Tariffid: 1,
+            AlgorythmType: 'Hungarian',
+            DurationSec: 200,
           },
           {
-            time: '10',
-            price: '2',
+            Tariffid: 2,
+            AlgorythmType: 'Eager Cheap',
+            DurationSec: 300,
           },
         ],
       },
@@ -57,12 +61,19 @@ const testTariffsGroup: TariffGroupType[] = [
         },
         plans: [
           {
-            time: '2',
-            price: '12',
+            Tariffid: 0,
+            AlgorythmType: 'Eager Fast',
+            DurationSec: 100,
           },
           {
-            time: '4',
-            price: '10',
+            Tariffid: 1,
+            AlgorythmType: 'Hungarian',
+            DurationSec: 200,
+          },
+          {
+            Tariffid: 2,
+            AlgorythmType: 'Eager Cheap',
+            DurationSec: null,
           },
         ],
       },
@@ -75,8 +86,19 @@ const testTariffsGroup: TariffGroupType[] = [
         },
         plans: [
           {
-            time: '5',
-            price: '12',
+            Tariffid: 0,
+            AlgorythmType: 'Eager Fast',
+            DurationSec: null,
+          },
+          {
+            Tariffid: 1,
+            AlgorythmType: 'Hungarian',
+            DurationSec: null,
+          },
+          {
+            Tariffid: 2,
+            AlgorythmType: 'Eager Cheap',
+            DurationSec: 300,
           },
         ],
       },
@@ -94,16 +116,19 @@ const testTariffsGroup: TariffGroupType[] = [
         },
         plans: [
           {
-            time: '2',
-            price: '12',
+            Tariffid: 0,
+            AlgorythmType: 'Eager Fast',
+            DurationSec: 100,
           },
           {
-            time: '4',
-            price: '10',
+            Tariffid: 1,
+            AlgorythmType: 'Hungarian',
+            DurationSec: null,
           },
           {
-            time: '10',
-            price: '2',
+            Tariffid: 2,
+            AlgorythmType: 'Eager Cheap',
+            DurationSec: 300,
           },
         ],
       },
@@ -121,12 +146,19 @@ const testTariffsGroup: TariffGroupType[] = [
         },
         plans: [
           {
-            time: '2',
-            price: '12',
+            Tariffid: 0,
+            AlgorythmType: 'Eager Fast',
+            DurationSec: null,
           },
           {
-            time: '4',
-            price: '10',
+            Tariffid: 1,
+            AlgorythmType: 'Hungarian',
+            DurationSec: 200,
+          },
+          {
+            Tariffid: 2,
+            AlgorythmType: 'Eager Cheap',
+            DurationSec: null,
           },
         ],
       },
@@ -152,7 +184,6 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   const computedStyles = StyleSheet.create({
     confirmButton: {
       bottom: windowIsOpened ? 38 : 70,
-      backgroundColor: colors.backgroundPrimaryColor,
     },
     scrollView: {
       marginBottom: windowIsOpened ? 20 : 50,
@@ -209,7 +240,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 
   const onTariffSelect = () => {
     dispatch(setTripTariff(tariff));
-    dispatch(setOrderStatus(OrderStatus.Confirming));
+    dispatch(setOrderStatus(OrderStatus.Payment));
   };
 
   const onBackPress = () => {
@@ -255,18 +286,19 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
           </View>
         </ScrollView>
       </View>
-      <View style={[styles.confirmButton, computedStyles.confirmButton]}>
-        <Button
-          shape={ButtonShapes.Circle}
-          size={ButtonSizes.L}
-          innerSpacing={8}
-          onPress={onTariffSelect}
-          text={t('ride_Ride_Tariffs_nextButton')}
-          textStyle={[styles.confirmText, computedStyles.confirmText]}
-          mode={isAvailableSelectedTariffGroup ? SquareButtonModes.Mode1 : SquareButtonModes.Mode4}
-          disabled={!isAvailableSelectedTariffGroup}
-        />
-      </View>
+      <Button
+        containerStyle={[styles.confirmButton, computedStyles.confirmButton]}
+        withCircleModeBorder
+        shadow={ButtonShadows.Strong}
+        shape={ButtonShapes.Circle}
+        size={ButtonSizes.L}
+        innerSpacing={8}
+        onPress={onTariffSelect}
+        text={t('ride_Ride_Tariffs_nextButton')}
+        textStyle={[styles.confirmText, computedStyles.confirmText]}
+        mode={isAvailableSelectedTariffGroup ? SquareButtonModes.Mode1 : SquareButtonModes.Mode4}
+        disabled={!isAvailableSelectedTariffGroup}
+      />
     </>
   );
 
@@ -275,12 +307,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
       setIsOpened={setWindowIsOpened}
       maxHeight={windowIsOpened ? 0.93 : 0.6}
       alerts={
-        <Button
-          onPress={onBackPress}
-          mode={CircleButtonModes.Mode2}
-          shape={ButtonShapes.Circle}
-          circleSubContainerStyle={styles.backButton}
-        >
+        <Button onPress={onBackPress} mode={CircleButtonModes.Mode2} shape={ButtonShapes.Circle} withBorder={false}>
           <ArrowIcon style={styles.backIcon} />
         </Button>
       }
@@ -293,9 +320,6 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 const styles = StyleSheet.create({
   visiblePartStyle: {
     flexShrink: 1,
-  },
-  backButton: {
-    borderWidth: 0,
   },
   backIcon: {
     transform: [{ rotate: '180deg' }],
@@ -317,11 +341,6 @@ const styles = StyleSheet.create({
   confirmButton: {
     position: 'absolute',
     alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 98,
-    height: 98,
-    borderRadius: 100,
   },
   confirmText: {
     fontFamily: 'Inter Bold',

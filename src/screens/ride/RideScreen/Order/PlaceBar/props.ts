@@ -16,7 +16,6 @@ export type PlaceBarProps = {
   mode?: PlaceBarModes;
   place: PlaceType;
   onPress: () => void;
-  onSave?: () => void;
   style?: StyleProp<ViewStyle>;
 };
 

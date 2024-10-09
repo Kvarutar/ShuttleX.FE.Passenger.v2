@@ -1,11 +1,6 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-import { RootStackParamList } from '../../../../Navigate/props';
-
-export type OrderProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>;
-};
-
 export type OrderRef = {
   openAddressSelect: () => void;
 };
+
+//TODO: swap DefaultPaymentMethodsType to paymentMethods from BE
+export type DefaultPaymentMethodsType = 'cash' | 'applepay' | 'paypal' | 'crypto' | 'card';
