@@ -71,6 +71,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
             setIsOpened={setIsAddressSelectVisible}
             ref={addressSelectRef}
             hiddenPartStyle={styles.hiddenPartStyleAddressSelect}
+            hiddenPartWrapperStyle={styles.hiddenPartWrapperAddressSelect}
             withHiddenPartScroll={false}
           />
         )}
@@ -88,6 +89,9 @@ const styles = StyleSheet.create({
   },
   hiddenPartStyleAddressSelect: {
     height: '100%',
+  },
+  hiddenPartWrapperAddressSelect: {
+    paddingBottom: 0,
   },
 });
 

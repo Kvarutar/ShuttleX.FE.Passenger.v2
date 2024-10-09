@@ -12,6 +12,7 @@ import {
   ButtonShapes,
   ScrollViewWithCustomScroll,
   SelectOnMapIcon,
+  sizes,
   Text,
   TimerV1,
   TimerV1Modes,
@@ -125,6 +126,12 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
     },
     title: {
       color: colors.textSecondaryColor,
+    },
+    confirmButton: {
+      bottom: sizes.paddingVertical + 5,
+    },
+    scrollViewSearchContentContainer: {
+      paddingBottom: sizes.paddingVertical,
     },
   });
 
@@ -255,7 +262,10 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
         />
       </View>
       <View style={styles.scrollViewSearchContainer}>
-        <ScrollViewWithCustomScroll wrapperStyle={styles.scrollViewSearchWrapper}>
+        <ScrollViewWithCustomScroll
+          wrapperStyle={styles.scrollViewSearchWrapper}
+          contentContainerStyle={computedStyles.scrollViewSearchContentContainer}
+        >
           {isAddressSelected ? (
             searchAddresses
           ) : (
@@ -291,7 +301,11 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
           )}
         </ScrollViewWithCustomScroll>
         {showConfirmButton && !isAddressSelected && (
-          <Button onPress={onConfirm} shape={ButtonShapes.Circle} style={styles.confirmButton}>
+          <Button
+            onPress={onConfirm}
+            shape={ButtonShapes.Circle}
+            style={[styles.confirmButton, computedStyles.confirmButton]}
+          >
             <ArrowIcon />
           </Button>
         )}
@@ -341,7 +355,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     right: 0,
-    bottom: 5,
   },
 });
 
