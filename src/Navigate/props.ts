@@ -16,4 +16,5 @@ export type RootStackParamList = {
   Terms: undefined;
   LockOut: undefined;
   AccountSettings: undefined;
+  Activity: undefined;
 };

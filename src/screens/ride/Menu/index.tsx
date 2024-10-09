@@ -42,8 +42,7 @@ const Menu = ({ onClose }: MenuProps) => {
     },
     activity: {
       navFunc: () => {
-        navigation.navigate('Wallet');
-        //TODO Create activity page
+        navigation.navigate('Activity');
         onClose();
       },
       title: t('ride_Menu_navigationActivity'),
