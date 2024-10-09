@@ -100,9 +100,9 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   useEffect(() => {
     dispatch(
       setProfile({
-        fullName: 'John',
-        email: '',
-        phone: '',
+        fullName: 'John Smith',
+        email: 'mail@mail.ua',
+        phone: '+380(50)924-50-61',
         imageUri:
           'https://sun9-34.userapi.com/impg/ZGuJiFBAp-93En3yLK7LWZNPxTGmncHrrtVgbg/hd6uHaUv1zE.jpg?size=1200x752&quality=96&sign=e79799e4b75c839d0ddb1a2232fe5d60&type=album',
       }),

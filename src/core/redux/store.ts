@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import reactotron from '../../../ReactotronConfig';
 import lockoutReducer from '../auth/redux/lockout';
+import accountSettingsReducer from '../menu/redux/accountSettings';
 import notificationsReducer from '../menu/redux/notifications';
 import walletRedicer from '../menu/redux/wallet';
 import alertsReducer from '../ride/redux/alerts';
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   trip: tripReducer,
   passenger: passengerReducer,
   signalR: signalRReducer,
+  settingsVerification: accountSettingsReducer,
 });
 
 export const store = configureStore({

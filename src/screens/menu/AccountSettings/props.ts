@@ -1,5 +1,9 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+export type PhotoBlockProps = {
+  onUploadPhoto: () => void;
+};
 
-import { RootStackParamList } from '../../../Navigate/props';
-
-export type AccountSettingsScreenProps = NativeStackScreenProps<RootStackParamList, 'AccountSettings'>;
+export type AccountProfileDataProps = {
+  fullName: string;
+  email: string;
+  phone: string;
+};

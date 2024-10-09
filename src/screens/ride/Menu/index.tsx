@@ -70,12 +70,12 @@ const Menu = ({ onClose }: MenuProps) => {
       },
       title: t('ride_Menu_navigationBecomeDriver'),
     },
-    settings: {
+    accountSettings: {
       navFunc: () => {
         navigation.navigate('AccountSettings');
         onClose();
       },
-      title: t('ride_Menu_navigationSettings'),
+      title: t('ride_Menu_navigationAccountSettings'),
     },
     help: {
       navFunc: () => {
