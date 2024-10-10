@@ -1,19 +1,21 @@
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
-  GameIcon,
+  // TODO Uncomment all code whe we need it
+  // GameIcon,
   MenuBase,
   MenuNavigation,
-  PlayIcon,
+  // PlayIcon,
   PlusRoundIcon,
   sizes,
-  Text,
-  useTheme,
+  // Text,
+  // useTheme,
 } from 'shuttlex-integration';
 
+// import { View } from 'react-native';
 import { RootStackParamList } from '../../../Navigate/props';
 import { profileSelector } from './../../../core/redux/passenger/selectors';
 import { MenuProps } from './props';
@@ -54,14 +56,15 @@ const Menu = ({ onClose }: MenuProps) => {
       },
       title: t('ride_Menu_navigationWallet'),
     },
-    promocodes: {
-      navFunc: () => {
-        navigation.navigate('Wallet');
-        //TODO Create Promocodes page
-        onClose();
-      },
-      title: t('ride_Menu_navigationPromocodes'),
-    },
+    // TODO Uncomment all code whe we need it
+    // promocodes: {
+    //   navFunc: () => {
+    //     navigation.navigate('Wallet');
+    //     //TODO Create Promocodes page
+    //     onClose();
+    //   },
+    //   title: t('ride_Menu_navigationPromocodes'),
+    // },
     becomeDriver: {
       navFunc: () => {
         navigation.navigate('Wallet');
@@ -92,36 +95,40 @@ const Menu = ({ onClose }: MenuProps) => {
       userImageUri={profile?.imageUri ?? undefined}
       userName={profile?.fullName}
       menuNavigation={menuNavigation}
-      additionalButton={<PlayGameButton />}
+      // TODO Uncomment all code whe we need it
+      // additionalButton={<PlayGameButton />}
       style={styles.menu}
       currentRoute={currentRoute}
     />
   );
 };
 
-const PlayGameButton = () => {
-  const { t } = useTranslation();
-  const { colors } = useTheme();
+// TODO Uncomment all code whe we need it
 
-  const onPlayGame = () => {
-    //TODO go to the game
-  };
+// const PlayGameButton = () => {
+//   const { t } = useTranslation();
+//   const { colors } = useTheme();
 
-  const computedStyles = StyleSheet.create({
-    gameButton: {
-      backgroundColor: colors.backgroundSecondaryColor,
-    },
-  });
-  return (
-    <Pressable style={[computedStyles.gameButton, styles.gameButton]} onPress={onPlayGame}>
-      <View style={styles.itemsWrapper}>
-        <GameIcon />
-        <Text style={styles.playGameText}>{t('ride_Menu_playGameButton')}</Text>
-      </View>
-      <PlayIcon />
-    </Pressable>
-  );
-};
+//   const onPlayGame = () => {
+//     //TODO go to the game
+//   };
+
+//   const computedStyles = StyleSheet.create({
+//     gameButton: {
+//       backgroundColor: colors.backgroundSecondaryColor,
+//     },
+//   });
+//   return (
+//     <Pressable style={[computedStyles.gameButton, styles.gameButton]} onPress={onPlayGame}>
+//       <View style={styles.itemsWrapper}>
+//         <GameIcon />
+//         <Text style={styles.playGameText}>{t('ride_Menu_playGameButton')}</Text>
+//       </View>
+//       <PlayIcon />
+//     </Pressable>
+//   );
+// };
+
 const CreateRide = ({ onClick }: { onClick: () => void }) => (
   <Pressable onPress={onClick}>
     <PlusRoundIcon />
