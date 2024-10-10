@@ -416,12 +416,18 @@ const PaymentPopup = () => {
             text={t('ride_Ride_PaymentPopup_confirmButton')}
             onPress={() => dispatch(setOrderStatus(OrderStatus.Confirming))}
           />
-          <Bar style={[styles.button, computedStyles.dateTimeButton]} onPress={() => setIsDatePickerVisible(true)}>
+
+          {/*TODO: remove comments when we will need a planed trip */}
+          <Bar
+            style={[styles.button, computedStyles.dateTimeButton]}
+            // onPress={() => setIsDatePickerVisible(true)}
+          >
             <ClockIcon2
               color={
-                dateTimeTitle === t('ride_Ride_PaymentPopup_defaultTime')
-                  ? colors.iconPrimaryColor
-                  : colors.iconSuccessColor
+                // dateTimeTitle === t('ride_Ride_PaymentPopup_defaultTime')
+                //   ? colors.iconPrimaryColor
+                //   : colors.iconSuccessColor
+                colors.borderColor
               }
             />
             {dateTimeTitle !== t('ride_Ride_PaymentPopup_defaultTime') && <View style={styles.dateSelectedCircle} />}

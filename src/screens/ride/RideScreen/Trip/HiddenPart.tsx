@@ -1,9 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Image, Linking, StyleSheet, View } from 'react-native';
+import { Linking, StyleSheet, View } from 'react-native';
 import { Bar, BarModes, EmergencyServiceIcon, ReportIcon, Text, useTheme } from 'shuttlex-integration';
 
-import imageBossEarth from '../../../../../assets/images/imageBossEarth';
-import imageCapybara from '../../../../../assets/images/imageCapybara';
 import { SquareBarProps } from './props';
 
 const contractorInfoTest = {
@@ -51,20 +49,21 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.squareBarWrapper}>
-        <SquareBar
-          icon={<Image source={imageBossEarth} style={styles.image} />}
-          text={t('ride_Ride_Trip_playGame')}
-          //TODO: navigate to game
-          onPress={() => true}
-        />
-        <SquareBar
-          icon={<Image source={imageCapybara} style={styles.image} />}
-          text={t('ride_Ride_Trip_Achievements')}
-          //TODO: navigate to achievements
-          onPress={() => true}
-        />
-      </View>
+      {/*TODO: remove comments when we will have game and achievements screens*/}
+      {/*<View style={styles.squareBarWrapper}>*/}
+      {/*  <SquareBar*/}
+      {/*    icon={<Image source={imageBossEarth} style={styles.image} />}*/}
+      {/*    text={t('ride_Ride_Trip_playGame')}*/}
+      {/*    //TODO: navigate to game*/}
+      {/*    onPress={() => true}*/}
+      {/*  />*/}
+      {/*  <SquareBar*/}
+      {/*    icon={<Image source={imageCapybara} style={styles.image} />}*/}
+      {/*    text={t('ride_Ride_Trip_Achievements')}*/}
+      {/*    //TODO: navigate to achievements*/}
+      {/*    onPress={() => true}*/}
+      {/*  />*/}
+      {/*</View>*/}
       {tripInfo.map(info => (
         <Bar key={info.text} mode={BarModes.Disabled} style={styles.tripInfoBar}>
           <Text style={[styles.tripInfoBarText, computedStyles.text]}>{info.text}</Text>

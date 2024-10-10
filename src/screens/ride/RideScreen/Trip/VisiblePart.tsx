@@ -9,7 +9,6 @@ import {
   ButtonSizes,
   CircleButtonModes,
   ClockIcon,
-  CrownIcon,
   minToMilSec,
   PhoneIcon,
   StatsBlock,
@@ -87,9 +86,11 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
     timerLabelText: {
       color: extraWaiting ? colors.errorColor : colors.textTertiaryColor,
     },
-    nameTimeContainer: {
-      marginTop: tripStatus === TripStatus.Idle ? 0 : 20,
-    },
+    //TODO: remove comments when we will show a contractor lvl
+
+    // nameTimeContainer: {
+    // marginTop: tripStatus === TripStatus.Idle ? 0 : 20,
+    // },
     lvlText: {
       color: colors.textTitleColor,
     },
@@ -171,14 +172,15 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
         </View>
       </View>
       <View style={styles.contractorInfoContainer}>
-        {tripStatus === TripStatus.Idle && (
-          <View style={styles.lvlContainer}>
-            <CrownIcon />
-            <Text style={[styles.lvlText, computedStyles.beInAndLvlAmountText]}> 45 </Text>
-            <Text style={[styles.lvlText, computedStyles.lvlText]}>{t('ride_Ride_Trip_lvl')}</Text>
-          </View>
-        )}
-        <View style={[styles.nameTimeContainer, computedStyles.nameTimeContainer]}>
+        {/*TODO: remove comments when we will show a contractor lvl */}
+        {/*{tripStatus === TripStatus.Idle && (*/}
+        {/*  <View style={styles.lvlContainer}>*/}
+        {/*    <CrownIcon />*/}
+        {/*    <Text style={[styles.lvlText, computedStyles.beInAndLvlAmountText]}> 45 </Text>*/}
+        {/*    <Text style={[styles.lvlText, computedStyles.lvlText]}>{t('ride_Ride_Trip_lvl')}</Text>*/}
+        {/*  </View>*/}
+        {/*)}*/}
+        <View style={styles.nameTimeContainer}>
           <Text style={styles.nameTimeText}>{contractorInfoTest.contractor.name} </Text>
           {timerState.title}
         </View>
@@ -272,6 +274,7 @@ const styles = StyleSheet.create({
   nameTimeContainer: {
     flexDirection: 'row',
     marginBottom: 10,
+    marginTop: 20,
   },
   nameTimeText: {
     fontSize: 21,
