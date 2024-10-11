@@ -46,6 +46,12 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
     bottomContainer: {
       marginBottom: Platform.OS === 'ios' ? 0 : -16,
     },
+    separatorCircle: {
+      backgroundColor: colors.iconSecondaryColor,
+    },
+    separatorDistanceText: {
+      color: colors.textSecondaryColor,
+    },
   });
 
   const onEndTrip = () => {
@@ -86,11 +92,13 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
   const formatDistance = (distanceInMeters: number) => {
     if (distanceInMeters > 1000) {
       const distanceInKm = (distanceInMeters / 1000).toFixed(1);
-      return t('ride_Receipt_kilometers', { count: Number(distanceInKm) });
+      return { amount: distanceInKm, title: t('ride_Receipt_kilometers') };
     }
 
-    return t('ride_Receipt_meters', { count: distanceInMeters });
+    return { amount: distanceInMeters, title: t('ride_Receipt_meters') };
   };
+
+  const distance = formatDistance(3300);
 
   const placeData = [
     {
@@ -134,15 +142,16 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
     <View style={styles.roadSeparatorContainer}>
       <View style={styles.separatorCircleContainer}>
         {Array.from({ length: 3 }).map((_, index) => (
-          <View key={`left_circle_${index}`} style={styles.separatorCircle} />
+          <View key={`left_circle_${index}`} style={[styles.separatorCircle, computedStyles.separatorCircle]} />
         ))}
       </View>
-      <View style={styles.timeContainer}>
-        <Text style={styles.separatorTimeText}>{formatDistance(3525)}</Text>
+      <View style={[styles.timeContainer, computedStyles.timeContainer]}>
+        <Text style={styles.separatorDistanceText}>{distance.amount}</Text>
+        <Text style={[styles.separatorDistanceText, computedStyles.separatorDistanceText]}>{distance.title}</Text>
       </View>
       <View style={styles.separatorCircleContainer}>
         {Array.from({ length: 3 }).map((_, index) => (
-          <View key={`right_circle_${index}`} style={styles.separatorCircle} />
+          <View key={`right_circle_${index}`} style={[styles.separatorCircle, computedStyles.separatorCircle]} />
         ))}
       </View>
     </View>
@@ -181,7 +190,7 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
             {placeData.map((place, index) => (
               <View style={styles.placeContainer} key={place.address}>
                 <Text numberOfLines={1} style={[styles.addressText, index === 1 ? styles.placeTextRight : null]}>
-                  {place.address.toUpperCase()}
+                  {place.address}
                 </Text>
                 <Text
                   numberOfLines={2}
@@ -305,7 +314,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
   },
-  separatorTimeText: {
+  separatorDistanceText: {
     fontFamily: 'Inter Medium',
     fontSize: 12,
     lineHeight: 22,

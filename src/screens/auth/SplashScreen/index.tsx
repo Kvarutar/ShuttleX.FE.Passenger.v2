@@ -56,12 +56,13 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
         </Text>
       </View>
       <View style={styles.buttonsContainer}>
-        <Button text={t('auth_Splash_signIn')} onPress={navigationToSignIn} containerStyle={styles.button} />
+        <Button text={t('auth_Splash_signIn')} onPress={navigationToSignIn} containerStyle={styles.buttonContainer} />
         <Button
           text={t('auth_Splash_signUp')}
           onPress={navigationToSignUp}
           mode={SquareButtonModes.Mode3}
-          containerStyle={styles.button}
+          containerStyle={styles.buttonContainer}
+          style={styles.button}
         />
       </View>
     </SafeAreaView>
@@ -90,7 +91,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter Bold',
     fontSize: 52,
     letterSpacing: -1.53,
-    width: 248,
     lineHeight: 52,
   },
   buttonsContainer: {
@@ -98,8 +98,11 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 16,
   },
-  button: {
+  buttonContainer: {
     flex: 1,
+  },
+  button: {
+    paddingHorizontal: 8,
   },
 });
 

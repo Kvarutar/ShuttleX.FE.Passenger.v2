@@ -11,7 +11,7 @@ i18next
     compatibilityJSON: 'v3',
     lng: getLocales()[0].languageCode,
     resources,
-    supportedLngs: ['en'],
+    supportedLngs: ['en', 'uk'],
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,

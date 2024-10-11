@@ -94,7 +94,7 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
           onBlur={isFocusedHandler(false)}
         />
         {inputValue && isFocused && (
-          <Pressable onPress={clearInputValue} style={styles.cleanInputIcon}>
+          <Pressable onPress={clearInputValue} style={styles.cleanInputIcon} hitSlop={20}>
             <CloseIcon color={colors.textSecondaryColor} />
           </Pressable>
         )}
