@@ -86,9 +86,15 @@ const testPlace = [
 ];
 
 const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProps) => {
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride'>>();
+
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [focusedInput, setFocusedInput] = useState<{ id: number | null; value: string }>({ id: null, value: '' });
   const [isAddressSelected, setIsAddressSelected] = useState(false);
+  const [updateDefaultLocation, setUpdateDefaultLocation] = useState(true);
   const [addresses, setAddresses] = useState<PlaceType[]>([]);
   const debounceInputValue = useDebounce(focusedInput.value, 300);
 
@@ -96,10 +102,20 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   const points = useSelector(orderPointsSelector);
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
 
-  const dispatch = useAppDispatch();
-  const { t } = useTranslation();
-  const { colors } = useTheme();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride'>>();
+  const computedStyles = StyleSheet.create({
+    noAddress: {
+      color: colors.textTitleColor,
+    },
+    title: {
+      color: colors.textSecondaryColor,
+    },
+    confirmButton: {
+      bottom: sizes.paddingVertical + 5,
+    },
+    scrollViewSearchContentContainer: {
+      paddingBottom: sizes.paddingVertical,
+    },
+  });
 
   useEffect(() => {
     const fetchData = async (text: string) => {
@@ -120,23 +136,14 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
     setShowConfirmButton(isAllAddressesFilled);
   }, [points]);
 
-  const computedStyles = StyleSheet.create({
-    noAddress: {
-      color: colors.textTitleColor,
-    },
-    title: {
-      color: colors.textSecondaryColor,
-    },
-    confirmButton: {
-      bottom: sizes.paddingVertical + 5,
-    },
-    scrollViewSearchContentContainer: {
-      paddingBottom: sizes.paddingVertical,
-    },
-  });
+  useEffect(() => {
+    if (focusedInput.id === 0) {
+      setUpdateDefaultLocation(false);
+    }
+  }, [focusedInput.id]);
 
   useEffect(() => {
-    if (defaultLocation) {
+    if (defaultLocation && updateDefaultLocation) {
       dispatch(
         updateOrderPoint({
           id: 0,
@@ -146,7 +153,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
         }),
       );
     }
-  }, [defaultLocation, dispatch, t]);
+  }, [defaultLocation, dispatch, t, updateDefaultLocation]);
 
   useEffect(() => {
     if (address) {
