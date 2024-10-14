@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Platform, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { getLocales } from 'react-native-localize';
 import Share from 'react-native-share';
 import {
@@ -8,6 +8,7 @@ import {
   ButtonShapes,
   CircleButtonModes,
   CloseIcon,
+  CoinIcon,
   Fog,
   getPaymentIcon,
   minToMilSec,
@@ -20,6 +21,7 @@ import {
 
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { endTrip } from '../../../core/ride/redux/trip';
+import passengerColors from '../../../shared/colors/colors';
 import MapView from '../RideScreen/MapView';
 import { ReceiptScreenProps } from './props';
 
@@ -43,14 +45,20 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
     timeContainer: {
       backgroundColor: colors.backgroundPrimaryColor,
     },
-    bottomContainer: {
-      marginBottom: Platform.OS === 'ios' ? 0 : -16,
-    },
     separatorCircle: {
       backgroundColor: colors.iconSecondaryColor,
     },
     separatorDistanceText: {
       color: colors.textSecondaryColor,
+    },
+    ticketLotteryContainer: {
+      backgroundColor: passengerColors.lotteryColors.background,
+    },
+    ticketLotteryText: {
+      color: colors.textTertiaryColor,
+    },
+    ticketLotteryTitleText: {
+      color: passengerColors.lotteryColors.text,
     },
   });
 
@@ -206,20 +214,33 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
             ))}
           </View>
         </View>
-        <View style={computedStyles.bottomContainer}>
+        <View>
           {roadTimeBlock}
-          <Bar style={styles.paymentBarContainer}>
-            {getPaymentIcon('cash')}
-            <View>
-              <Text style={[styles.paymentTitleText, computedStyles.textSecondaryColor]}>
-                {t('ride_Receipt_paymentTitle')}
-              </Text>
-              <View style={styles.priceContainer}>
-                <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
-                <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>$12,7</Text>
+          <View style={styles.bottomBarsContainer}>
+            <Bar style={styles.paymentBarContainer}>
+              {getPaymentIcon('cash', { color: colors.textSecondaryColor, style: styles.barIcon })}
+              <View>
+                <Text style={[styles.paymentTitleText, computedStyles.textSecondaryColor]}>
+                  {t('ride_Receipt_paymentTitle')}
+                </Text>
+                <View style={styles.priceContainer}>
+                  <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
+                  <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>$12,7</Text>
+                </View>
               </View>
-            </View>
-          </Bar>
+            </Bar>
+            <Bar style={[styles.paymentBarContainer, computedStyles.ticketLotteryContainer]}>
+              <CoinIcon style={styles.barIcon} />
+              <View>
+                <Text style={[styles.paymentTitleText, computedStyles.ticketLotteryTitleText]}>938475992</Text>
+                <View style={styles.priceContainer}>
+                  <Text style={[styles.headerAndPaymentText, computedStyles.ticketLotteryText]}>
+                    {t('ride_Receipt_ticketToLottery')}
+                  </Text>
+                </View>
+              </View>
+            </Bar>
+          </View>
         </View>
       </SafeAreaView>
     </>
@@ -292,13 +313,14 @@ const styles = StyleSheet.create({
   paymentBarContainer: {
     padding: 16,
     borderWidth: 0,
+    flex: 1,
   },
   priceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   paymentTitleText: {
-    marginTop: 29,
+    marginTop: 44,
     marginBottom: 2,
     fontFamily: 'Inter Medium',
     fontSize: 14,
@@ -334,6 +356,15 @@ const styles = StyleSheet.create({
   roadTimeValueText: {
     fontFamily: 'Inter Medium',
     fontSize: 18,
+  },
+  bottomBarsContainer: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  barIcon: {
+    position: 'absolute',
+    top: 16,
+    left: 16,
   },
 });
 
