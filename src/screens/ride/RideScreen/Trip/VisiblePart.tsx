@@ -184,13 +184,7 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
           <Text style={styles.nameTimeText}>{contractorInfoTest.contractor.name} </Text>
           {timerState.title}
         </View>
-        <StatsBlock
-          style={styles.statsContainer}
-          amountLikes={325}
-          textLikes={t('ride_Ride_Trip_likes')}
-          amountRides={53153}
-          textRides={t('ride_Ride_Trip_rides')}
-        />
+        <StatsBlock style={styles.statsContainer} amountLikes={325} amountRides={53153} />
         <View style={styles.carInfoContainer}>
           <Bar style={styles.carInfoBar}>
             <Text style={styles.carInfoText}>{contractorInfoTest.contractor.car.model}</Text>

@@ -108,7 +108,7 @@ const Trip = () => {
             />
             <View>
               <Text style={styles.text}>{contractorInfoTest.contractor.name}</Text>
-              <StatsBlock amountLikes={contractorInfoTest.contractor.likes} textLikes={t('ride_Ride_Trip_likes')} />
+              <StatsBlock amountLikes={contractorInfoTest.contractor.likes} />
             </View>
           </View>
           <View style={[styles.plateNumberContainer, computedStyles.plateNumberContainer]}>

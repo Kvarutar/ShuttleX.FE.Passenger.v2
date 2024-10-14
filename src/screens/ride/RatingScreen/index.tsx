@@ -3,15 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { Image, ImageSourcePropType, Platform, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 import {
   Button,
+  ButtonShadows,
   ButtonShapes,
   ButtonSizes,
-  CheckIcon2,
   CircleButtonModes,
   CloseIcon,
   CustomKeyboardAvoidingView,
   DislikeIcon,
   LikeIcon,
   sizes,
+  SquareButtonModes,
   StatsBlock,
   Text,
   useTheme,
@@ -62,6 +63,9 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
     },
     subMarkIsNotSelected: {
       backgroundColor: colors.backgroundPrimaryColor,
+    },
+    confirmText: {
+      color: mark ? colors.textPrimaryColor : colors.textQuadraticColor,
     },
   });
 
@@ -143,22 +147,6 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
     });
   };
 
-  const topButtons = (
-    <View style={styles.topButtonsContainer}>
-      <Button shape={ButtonShapes.Circle} mode={CircleButtonModes.Mode2} onPress={onEndTrip}>
-        <CloseIcon />
-      </Button>
-      <Button
-        shape={ButtonShapes.Circle}
-        size={ButtonSizes.S}
-        circleSubContainerStyle={styles.confirmButton}
-        onPress={onSendFeedback}
-      >
-        <CheckIcon2 />
-      </Button>
-    </View>
-  );
-
   const markBlock = (
     <View style={styles.markWrapper}>
       {isMarkSelected && mark ? (
@@ -222,25 +210,35 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
     <CustomKeyboardAvoidingView>
       <SafeAreaView style={[styles.container, computedStyles.container]}>
         <View style={styles.feedback}>
-          {topButtons}
-          <View style={styles.riderInfoContainer}>
-            {/*TODO swap to contractor name*/}
-            <Text style={styles.text}>{contractorTestInfo.name}</Text>
-            <StatsBlock
-              style={styles.stats}
-              textLikes={t('ride_Rating_likes')}
-              amountLikes={contractorTestInfo.likes}
-              textRides={t('ride_Rating_rides')}
-              amountRides={contractorTestInfo.rides}
-            />
-            <Image
-              style={styles.avatar}
-              source={{
-                uri: contractorTestInfo.img,
-              }}
-            />
+          <Button shape={ButtonShapes.Circle} mode={CircleButtonModes.Mode2} onPress={onEndTrip}>
+            <CloseIcon />
+          </Button>
+          <View style={styles.contentWrapper}>
+            <View style={styles.riderInfoContainer}>
+              {/*TODO swap to contractor name*/}
+              <Text style={styles.text}>{contractorTestInfo.name}</Text>
+              <StatsBlock
+                style={styles.stats}
+                amountLikes={contractorTestInfo.likes}
+                amountRides={contractorTestInfo.rides}
+              />
+              <Image style={styles.avatar} source={{ uri: contractorTestInfo.img }} />
+            </View>
+            {markBlock}
           </View>
-          {markBlock}
+          <Button
+            containerStyle={styles.confirmButtonContainer}
+            withCircleModeBorder
+            shadow={ButtonShadows.Strong}
+            shape={ButtonShapes.Circle}
+            size={ButtonSizes.L}
+            innerSpacing={8}
+            onPress={onSendFeedback}
+            text={t('ride_Rating_nextButton')}
+            textStyle={[styles.confirmText, computedStyles.confirmText]}
+            mode={mark ? SquareButtonModes.Mode1 : SquareButtonModes.Mode4}
+            disabled={!mark}
+          />
         </View>
       </SafeAreaView>
     </CustomKeyboardAvoidingView>
@@ -254,12 +252,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
+  contentWrapper: {
+    flex: 1,
+    marginTop: 32,
+    gap: 80,
+  },
   container: {
     flex: 1,
-  },
-  topButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   confirmButton: {
     borderWidth: 0,
@@ -324,6 +323,13 @@ const styles = StyleSheet.create({
     height: 70,
     alignSelf: 'center',
     position: 'absolute',
+  },
+  confirmText: {
+    fontFamily: 'Inter Bold',
+    fontSize: 17,
+  },
+  confirmButtonContainer: {
+    alignSelf: 'center',
   },
 });
 
