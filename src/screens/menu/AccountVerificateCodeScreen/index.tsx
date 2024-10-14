@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
 import { CodeVerificationScreen, minToMilSec, SafeAreaView } from 'shuttlex-integration';
 
 import { setIsVerificationDone } from '../../../core/menu/redux/accountSettings';
@@ -34,14 +33,14 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
   };
 
   return (
-    <SafeAreaView containerStyle={styles.wrapper}>
+    <SafeAreaView>
       <CodeVerificationScreen
-        headerFirstText={t('ride_Menu_Verification_firstHeader')}
-        headerSecondText={t('ride_Menu_Verification_secondHeader')}
+        headerFirstText={t('menu_AccountVerificateCode_firstHeader')}
+        headerSecondText={t('menu_AccountVerificateCode_secondHeader')}
         onBackButtonPress={onRequestAgain}
         onAgainButtonPress={onRequestAgain}
         onCodeChange={handleCodeChange}
-        titleText={t('ride_Menu_Verification_change')}
+        titleText={t('menu_AccountVerificateCode_change')}
         isBlocked={false}
         isError={isCorrectCode}
         lockOutTime={minToMilSec(3)}
@@ -57,9 +56,4 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
   );
 };
 
-const styles = StyleSheet.create({
-  wrapper: {
-    paddingVertical: 24,
-  },
-});
 export default AccountVerificateCodeScreen;

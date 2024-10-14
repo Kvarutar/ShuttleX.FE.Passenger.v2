@@ -25,7 +25,7 @@ const rootReducer = combineReducers({
   trip: tripReducer,
   passenger: passengerReducer,
   signalR: signalRReducer,
-  settingsVerification: accountSettingsReducer,
+  accountSettings: accountSettingsReducer,
 });
 
 export const store = configureStore({

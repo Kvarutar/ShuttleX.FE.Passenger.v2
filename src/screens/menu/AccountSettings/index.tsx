@@ -25,7 +25,7 @@ import { updateProfile } from '../../../core/redux/passenger';
 import { profileSelector } from '../../../core/redux/passenger/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
-import { AccountProfileDataProps, PhotoBlockProps } from './props';
+import { AccountProfileDataProps, PhotoBlockProps } from './types';
 
 const windowSizes = Dimensions.get('window');
 const isPhoneSmall = windowSizes.height < 700;
@@ -35,7 +35,6 @@ const AccountSettings = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const [isVerificationOpen, setIsVerificationOpen] = useState(false);
 
   const dispatch = useAppDispatch();
   const profile = useSelector(profileSelector);
@@ -55,19 +54,13 @@ const AccountSettings = (): JSX.Element => {
   );
 
   useEffect(() => {
-    if (isVerificationDone) {
-      setIsVerificationOpen(false);
-    }
-  }, [isVerificationDone]);
-
-  useEffect(() => {
     dispatch(updateProfile({ imageUri: profile?.imageUri }));
     //TODO Change when we'll know more about uploading photo
+  }, [dispatch, navigation, profile?.imageUri]);
 
-    if (isVerificationOpen) {
-      navigation.navigate('AccountVerificateCode');
-    }
-  }, [isVerificationOpen, dispatch, navigation, profile?.imageUri]);
+  const handleOpenVerification = () => {
+    navigation.navigate('AccountVerificateCode');
+  };
 
   const handleProfileDataSave = (profileData: AccountProfileDataProps) => {
     dispatch(updateProfile(profileData));
@@ -91,7 +84,7 @@ const AccountSettings = (): JSX.Element => {
         </View>
 
         <AccountSettingsScreen
-          setIsVerificationVisible={setIsVerificationOpen}
+          handleOpenVerification={handleOpenVerification}
           isVerificationDone={isVerificationDone}
           onProfileDataSave={handleProfileDataSave}
           profile={{
@@ -149,7 +142,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    right: 16,
+    right: sizes.paddingHorizontal,
   },
   profilePhotoBox: {
     flexDirection: 'row',

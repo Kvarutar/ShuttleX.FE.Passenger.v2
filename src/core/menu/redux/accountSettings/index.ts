@@ -5,7 +5,7 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: 'settingsVerification',
+  name: 'accountSettings',
   initialState,
   reducers: {
     setIsVerificationDone(state, action) {
