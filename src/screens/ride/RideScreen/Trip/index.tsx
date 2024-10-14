@@ -16,6 +16,8 @@ import {
   Timer,
   TimerColorModes,
   TimerSizesModes,
+  TrafficIndicator,
+  TrafficLevel,
   useTheme,
 } from 'shuttlex-integration';
 
@@ -98,6 +100,17 @@ const Trip = () => {
           <Text style={styles.topText}>{formatTime(new Date(arrivedTime))}</Text>
         </View>
         <Text style={[styles.text, styles.carNameText]}>{contractorInfoTest.contractor.car.model}</Text>
+        {/*TODO: delete mock data*/}
+        <TrafficIndicator
+          containerStyle={styles.trafficIndicatorContainer}
+          currentPercent={`${70}%`}
+          segments={[
+            { percent: '15%', level: TrafficLevel.Low },
+            { percent: '15%', level: TrafficLevel.Average },
+            { percent: '30%', level: TrafficLevel.High },
+            { percent: '40%', level: TrafficLevel.Low },
+          ]}
+        />
         <View style={styles.driverInfoWrapper}>
           <View style={styles.driverInfoContainer}>
             <Image
@@ -181,7 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 44,
+    marginTop: 20,
     marginBottom: 10,
   },
   driverInfoContainer: {
@@ -199,6 +212,9 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 100,
+  },
+  trafficIndicatorContainer: {
+    marginTop: 16,
   },
 });
 

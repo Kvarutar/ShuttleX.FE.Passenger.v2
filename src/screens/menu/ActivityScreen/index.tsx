@@ -1,10 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Bar, MenuHeader, SafeAreaView, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import {
+  Bar,
+  MenuHeader,
+  SafeAreaView,
+  TariffType,
+  Text,
+  TrafficIndicator,
+  TrafficLevel,
+  useTariffsIcons,
+  useTheme,
+} from 'shuttlex-integration';
 
 import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
@@ -78,6 +88,20 @@ const ActivityScreen = () => {
     },
   });
 
+  //TODO: For test, delete after connect with back
+  const [currentDistance, setCurrentDistance] = useState(0);
+  const totalDistance = 100;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDistance(prevDistance => {
+        const newDistance = prevDistance + 10;
+        return Math.min(newDistance, totalDistance);
+      });
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       <SafeAreaView>
@@ -98,6 +122,19 @@ const ActivityScreen = () => {
               <Text style={styles.nameText}>{testTripData.contractor.name}</Text>
               <Text style={[styles.carModelText, computedStyles.text]}>{testTripData.contractor.car.model}</Text>
             </View>
+            {/*TODO: delete mock data*/}
+            <TrafficIndicator
+              containerStyle={styles.trafficIndicatorContainer}
+              currentPercent={`${currentDistance}%`}
+              segments={[
+                { percent: '15%', level: TrafficLevel.Low },
+                { percent: '15%', level: TrafficLevel.Average },
+                { percent: '30%', level: TrafficLevel.High },
+                { percent: '40%', level: TrafficLevel.Low },
+              ]}
+              startTime={43200}
+              endTime={45000}
+            />
           </Bar>
         )}
         <View style={styles.recentAddressesWrapper}>
@@ -177,6 +214,9 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginTop: 16,
     marginBottom: 12,
+  },
+  trafficIndicatorContainer: {
+    marginTop: 20,
   },
 });
 
