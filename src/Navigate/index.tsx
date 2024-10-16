@@ -13,6 +13,7 @@ import AccountSettings from '../screens/menu/AccountSettings';
 import AccountVerificateCodeScreen from '../screens/menu/AccountVerificateCodeScreen';
 import ActivityScreen from '../screens/menu/ActivityScreen';
 import NotificationsScreen from '../screens/menu/NotificationsScreen';
+import PromocodesScreen from '../screens/menu/PromocodesScreen';
 import AddPaymentScreen from '../screens/menu/wallet/AddPaymentScreen';
 import WalletScreen from '../screens/menu/wallet/WalletScreen';
 import MapAddressSelectionScreen from '../screens/ride/MapAddressSelectionScreen';
@@ -55,6 +56,7 @@ const Navigate = (): JSX.Element => {
         <Stack.Screen name="Receipt" component={ReceiptScreen} />
         <Stack.Screen name="Terms" component={TermsScreen} />
         <Stack.Screen name="AccountSettings" component={AccountSettings} />
+        <Stack.Screen name="PromocodesScreen" component={PromocodesScreen} />
         <Stack.Screen name="AccountVerificateCode" component={AccountVerificateCodeScreen} />
         <Stack.Screen name="Activity" component={ActivityScreen} />
       </Stack.Navigator>
