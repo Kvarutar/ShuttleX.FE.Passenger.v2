@@ -49,13 +49,16 @@ const Menu = ({ onClose }: MenuProps) => {
       },
       title: t('ride_Menu_navigationActivity'),
     },
-    wallet: {
-      navFunc: () => {
-        navigation.navigate('Wallet');
-        onClose();
-      },
-      title: t('ride_Menu_navigationWallet'),
-    },
+
+    //We dont need this for now
+    // wallet: {
+    //   navFunc: () => {
+    //     navigation.navigate('Wallet');
+    //     onClose();
+    //   },
+    //   title: t('ride_Menu_navigationWallet'),
+    // },
+
     // TODO Uncomment all code whe we need it
     // promocodes: {
     //   navFunc: () => {

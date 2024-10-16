@@ -1,8 +1,10 @@
+//TODO uncoment code when we'll need other payment methods and wallet
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getLocales } from 'react-native-localize';
+import WebView from 'react-native-webview';
 import {
   ArrowIcon,
   Bar,
@@ -17,7 +19,7 @@ import {
   DatePicker,
   DatePickerV1,
   PaymentBar,
-  PaymentMethod,
+  // PaymentMethod,
   sizes,
   Text,
   TimePicker,
@@ -31,6 +33,7 @@ import { setOrderStatus } from '../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
 import PlanButton, { planPriceCounting } from '../PlanButton/PlanButton';
 import { Plan } from '../PlanButton/props';
+import { checkPaymentStatus, handleBinancePayment, handleMonoPayment } from './handlePayments';
 import { DefaultPaymentMethodsType } from './types';
 
 const testPaymentMethods = [
@@ -40,20 +43,25 @@ const testPaymentMethods = [
     expiresAt: '',
   },
   {
-    method: 'visa',
-    details: '2131',
-    expiresAt: '',
-  },
-  {
-    method: 'applepay',
+    method: 'card',
     details: '',
     expiresAt: '',
   },
-  {
-    method: 'paypal',
-    details: '',
-    expiresAt: '',
-  },
+  // {
+  //   method: 'visa',
+  //   details: '2131',
+  //   expiresAt: '',
+  // },
+  // {
+  //   method: 'applepay',
+  //   details: '',
+  //   expiresAt: '',
+  // },
+  // {
+  //   method: 'paypal',
+  //   details: '',
+  //   expiresAt: '',
+  // },
   {
     method: 'crypto',
     details: '',
@@ -79,13 +87,13 @@ const testPlans: Plan[] = [
   },
 ];
 
-const testAddPaymentMethods: PaymentMethod[] = [
-  {
-    method: 'card',
-    details: '',
-    expiresAt: '',
-  },
-];
+// const testAddPaymentMethods: PaymentMethod[] = [
+//   {
+//     method: 'card',
+//     details: '',
+//     expiresAt: '',
+//   },
+// ];
 
 const formatDate = (date: Date): string =>
   date
@@ -103,7 +111,8 @@ const formatTime = (time: Date): string =>
     hour12: false,
   });
 
-const defaultPaymentMethods = ['cash', 'applepay', 'paypal', 'crypto'];
+// const defaultPaymentMethods = ['cash', 'applepay', 'paypal', 'crypto'];
+const defaultPaymentMethods = ['cash', 'card', 'crypto'];
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -126,6 +135,7 @@ const PaymentPopup = () => {
   const [selectedPayment, setSelectedPayment] = useState<DefaultPaymentMethodsType>('cash');
   const [dateTimeTitle, setDateTimeTitle] = useState(t('ride_Ride_PaymentPopup_defaultTime'));
   const [confirmDateChecker, setConfirmDateChecker] = useState(false);
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
   const computedStyles = StyleSheet.create({
     wrapper: {
@@ -217,6 +227,43 @@ const PaymentPopup = () => {
     }
   };
 
+  const onConfirmPress = async () => {
+    const paymentId = '3456677'; //TODO: get to know from where I can get it?
+    let status = 'pending';
+    const price = planPriceCounting(
+      Number(availableTestPlans[selectedPlan].DurationSec),
+      availableTestPlans[selectedPlan].AlgorythmType,
+    );
+
+    switch (selectedPayment) {
+      case 'cash':
+        status = 'success';
+        break;
+      case 'card':
+        await handleMonoPayment({ amount: price, setPaymentUrl });
+        break;
+      case 'crypto':
+        await handleBinancePayment({ amount: price, setPaymentUrl });
+        break;
+      default:
+        console.error('Unknown payment method');
+        return;
+    }
+
+    if (selectedPayment !== 'cash') {
+      try {
+        status = await checkPaymentStatus(paymentId);
+      } catch (error) {
+        console.error('Error while checking status', error);
+        status = 'failed';
+      }
+    }
+
+    if (status === 'success') {
+      dispatch(setOrderStatus(OrderStatus.Confirming));
+    }
+  };
+
   const reorderPaymentMethods = (selectedMethod: string) => {
     const updatedMethods = testPaymentMethods.filter(method => method.method !== selectedMethod);
     const selectedPaymentMethod = testPaymentMethods.find(method => method.method === selectedMethod);
@@ -230,8 +277,8 @@ const PaymentPopup = () => {
 
   const paymentTitle: Record<DefaultPaymentMethodsType, string> = {
     cash: t('ride_Ride_PaymentPopup_cash'),
-    applepay: t('ride_Ride_PaymentPopup_applepay'),
-    paypal: t('ride_Ride_PaymentPopup_paypal'),
+    // applepay: t('ride_Ride_PaymentPopup_applepay'),
+    // paypal: t('ride_Ride_PaymentPopup_paypal'),
     crypto: t('ride_Ride_PaymentPopup_crypto'),
     card: t('ride_Ride_PaymentPopup_card'),
   };
@@ -385,7 +432,7 @@ const PaymentPopup = () => {
                 selected={method.method === selectedPayment}
               />
             ))}
-            {windowIsOpened && (
+            {/* {windowIsOpened && (
               <View>
                 <Text style={[styles.addMethodLabel, computedStyles.addMethodLabel]}>
                   {t('ride_Ride_PaymentPopup_addPaymentMethod')}
@@ -400,7 +447,7 @@ const PaymentPopup = () => {
                   />
                 ))}
               </View>
-            )}
+            )} */}
           </>
         </ScrollView>
       </View>
@@ -414,7 +461,7 @@ const PaymentPopup = () => {
             size={ButtonSizes.L}
             innerSpacing={8}
             text={t('ride_Ride_PaymentPopup_confirmButton')}
-            onPress={() => dispatch(setOrderStatus(OrderStatus.Confirming))}
+            onPress={onConfirmPress}
           />
 
           {/*TODO: remove comments when we will need a planed trip */}
@@ -442,12 +489,20 @@ const PaymentPopup = () => {
 
   return (
     <>
-      <BottomWindowWithGesture
-        maxHeight={0.82}
-        setIsOpened={setWindowIsOpened}
-        visiblePart={content}
-        bottomWindowStyle={styles.bottomWindowStyle}
-      />
+      {paymentUrl ? (
+        <WebView
+          source={{ uri: paymentUrl }}
+          startInLoadingState={true}
+          renderLoading={() => <ActivityIndicator size="large" color={colors.primaryColor} />}
+        />
+      ) : (
+        <BottomWindowWithGesture
+          maxHeight={0.82}
+          setIsOpened={setWindowIsOpened}
+          visiblePart={content}
+          bottomWindowStyle={styles.bottomWindowStyle}
+        />
+      )}
       {Platform.OS === 'ios' && isDatePickerVisible ? (
         <BottomWindowWithGesture
           withShade
