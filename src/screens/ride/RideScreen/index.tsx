@@ -29,6 +29,7 @@ import Menu from '../Menu';
 import MapView from './MapView';
 import Order from './Order';
 import { OrderRef } from './Order/types';
+import MysteryBoxPopup from './popups/MysteryBoxPopup';
 import { RideScreenProps } from './props';
 import Trip from './Trip';
 
@@ -42,6 +43,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const contractorInfo = useSelector(contractorInfoSelector);
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isMysteryBoxPopupVisible, setIsMysteryBoxPopupVisible] = useState(false);
 
   //for test
   useEffect(() => {
@@ -165,6 +167,14 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
     );
   }, [dispatch]);
 
+  useEffect(() => {
+    if (contractorInfo) {
+      setTimeout(() => {
+        setIsMysteryBoxPopupVisible(true);
+      }, 2000);
+    }
+  }, [contractorInfo]);
+
   useGeolocationStartWatch();
   useNetworkConnectionStartWatch();
 
@@ -244,6 +254,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
         {orderStatus === OrderStatus.Confirming && <Fog />}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
+      {isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}
     </>
   );
 };

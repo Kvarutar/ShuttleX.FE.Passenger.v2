@@ -42,3 +42,19 @@ export const sendFeedback = createAppAsyncThunk<FeedbackType, FeedbackType>(
     }
   },
 );
+
+export const sendMysteryBoxPopupResponse = createAppAsyncThunk<void, { passengerId: string; res: boolean }>(
+  'trip/sendMysteryBoxPopupResponse',
+  async () => {
+    //TODO: Add networking
+    // try {
+    //   // const response = await shuttlexPassengerInstance.post<TripInfo>(`/passenger/trip/mystery-box/${passengerId}`);
+    // } catch (error) {
+    //   const { code, message } = getAxiosErrorInfo(error);
+    //   return rejectWithValue({
+    //     code,
+    //     message,
+    //   });
+    // }
+  },
+);
