@@ -33,7 +33,7 @@ const contractorInfoTest = {
   contractor: {
     name: 'Slava',
     image:
-      'https://s3-alpha-sig.figma.com/img/028a/c7cf/ffc04a0ea0a94b8d318c4823c0a5f045?Expires=1728864000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=G2Mbt~~yDOf9urlJIaDzrYHzQ1xg08MujQN9yLngZUK7LDoYaARfj8R0ls-TPxmCuU8uVIy7hwLAOatN6X-3PrqEKFWmVF3DM313W9MmDpHiXTmpSsiTPiNVXOga2gBczexzHVhnQwQItCelonWrryBVYP57W~P1-dQhxxqlXCnZ3upUk9KWPu0CN4xfo-dQnAOn18sGB2nSnT-r1xTd5N3TEfNB~bzFuEB7JTQiBtR8v8cI2B6fA-VMdeAhFTOFEvYs~TFZaGY1FKlIrOVYQMeduj1YFjz9UfKLdzX7VaUFFYaXp0nA9OIlcDaMNuo9BDh6F38OEuVOzu7qi9uBXw__',
+      'https://s3-alpha-sig.figma.com/img/a077/4174/e90e7da558343949a212b72e0498120b?Expires=1730073600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qK4OdlwMzlcgqwjJbjVHCLWtIZxc6mK1QoOJuGD90uBLnuE~i5E5M6rK4TXKSYgOQg84OJzaGezQZlnf08wr3kPKOm-9LEql~LwzsDIoRi7dPIrx54jQ-58pcoJn8iossxaMahEKJKyAlvCbXY50-h-9Vw7J-m0lbq9kStIc19UsjcyagEZEwqGvhgDo-HMHPy2t0XY87zNUrLlOOs6xkj~DnsxUeSf8wG-cON2vHw3khDJ4W6IYYq2mocnWY~MlivnsxZmYo5wNhdubaw7yarsi-OxaOL5RqiFXNw9Ce66YsR9NMRyI7vN9hpGJeH2S6IEK2apoYnoLKXIq3P-vgg__',
     car: {
       model: 'Toyota Land Cruiser',
       plateNumber: 'BB 4177 CH',

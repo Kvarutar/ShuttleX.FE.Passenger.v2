@@ -26,7 +26,6 @@ import { OrderStatus } from '../../../core/ride/redux/order/types';
 import { setTripInfo } from '../../../core/ride/redux/trip';
 import { contractorInfoSelector } from '../../../core/ride/redux/trip/selectors';
 import Menu from '../Menu';
-import MapCameraModeButton from './MapCameraModeButton';
 import MapView from './MapView';
 import Order from './Order';
 import { OrderRef } from './Order/types';
@@ -241,14 +240,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
       <SafeAreaView style={styles.wrapper}>
         <MapView />
         <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>{topButtons[orderStatus]}</View>
-        {contractorInfo ? (
-          <>
-            <MapCameraModeButton />
-            <Trip />
-          </>
-        ) : (
-          <Order ref={orderRef} />
-        )}
+        {contractorInfo ? <Trip /> : <Order ref={orderRef} />}
         {orderStatus === OrderStatus.Confirming && <Fog />}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
