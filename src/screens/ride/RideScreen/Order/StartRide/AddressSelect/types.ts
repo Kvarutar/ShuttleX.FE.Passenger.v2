@@ -1,6 +1,6 @@
 import { StyleProp, ViewStyle } from 'react-native';
 
-import { PlaceType } from '../../PlaceBar/props';
+import { PlaceType } from '../../PlaceBar/types';
 
 export type PointMode = 'pickUp' | 'default' | 'dropOff';
 
@@ -9,7 +9,7 @@ export type PointItemProps = {
   pointMode: PointMode;
   onRemovePoint?: () => void;
   currentPointId: number;
-  setFocusedInput: (input: { id: number | null; value: string }) => void;
+  setFocusedInput: (input: { id: number; value: string; focus: boolean }) => void;
 };
 
 export type AddressButtonProps = {

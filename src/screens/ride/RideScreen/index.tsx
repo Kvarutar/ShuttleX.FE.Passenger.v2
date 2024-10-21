@@ -30,8 +30,8 @@ import MapView from './MapView';
 import Order from './Order';
 import { OrderRef } from './Order/types';
 import MysteryBoxPopup from './popups/MysteryBoxPopup';
-import { RideScreenProps } from './props';
 import Trip from './Trip';
+import { RideScreenProps } from './types';
 
 const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();

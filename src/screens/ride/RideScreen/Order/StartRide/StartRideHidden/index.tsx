@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { Button, ButtonProps, Text, useTheme } from 'shuttlex-integration';
 
-import imageBonuses from '../../../../../../assets/images/imageBonuses';
-import imageCollectCapybara from '../../../../../../assets/images/imageCollectCapybara';
-import imageFirstSeasonCollect from '../../../../../../assets/images/imageFirstSeasonCollect';
-import imagePrizes from '../../../../../../assets/images/imagePrizes';
-import imageSupportUkraine from '../../../../../../assets/images/imageSupportUkraine';
-import passengerColors from '../../../../../shared/colors/colors';
+import imageBonuses from '../../../../../../../assets/images/imageBonuses';
+import imageCollectCapybara from '../../../../../../../assets/images/imageCollectCapybara';
+import imageFirstSeasonCollect from '../../../../../../../assets/images/imageFirstSeasonCollect';
+import imagePrizes from '../../../../../../../assets/images/imagePrizes';
+import imageSupportUkraine from '../../../../../../../assets/images/imageSupportUkraine';
+import passengerColors from '../../../../../../shared/colors/colors';
+import usePrizeTimer from '../utils/usePrizeTimer';
 import AdsBlock from './AdsBlock';
 import { AdsBlockProps } from './AdsBlock/types';
 import AdsContent from './AdsContent';
@@ -25,8 +25,7 @@ const AdsButton = (props: ButtonProps) => {
 const StartRideHidden = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-
-  const [remainingTime, setRemainingTime] = useState<string | null>(null);
+  const { hours, minutes, seconds } = usePrizeTimer(testData.endTime);
 
   const collectedCapiArr = Array.from({ length: Math.min(testData.capiAmount - 1, 4) });
 
@@ -56,30 +55,6 @@ const StartRideHidden = () => {
       opacity: testData.capiAmount ? 1 : 0.2,
     },
   });
-
-  useEffect(() => {
-    const updateTimer = () => {
-      const now = new Date().getTime();
-      const targetTime = testData.endTime.getTime();
-      const difference = targetTime - now;
-
-      if (difference > 0) {
-        const hours = Math.floor(difference / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-        setRemainingTime(
-          `${hours}${t('ride_Ride_StartRideHidden_hours')}:${minutes}${t('ride_Ride_StartRideHidden_minutes')}:${seconds}${t('ride_Ride_StartRideHidden_seconds')}`,
-        );
-      } else {
-        setRemainingTime('Time is up!');
-      }
-    };
-
-    const timerId = setInterval(updateTimer, 1000);
-
-    return () => clearInterval(timerId);
-  }, [t]);
 
   const collectedCapiContent = collectedCapiArr.map((_, index) => {
     const collectedCapiBlockComputedStyles = StyleSheet.create({
@@ -119,7 +94,9 @@ const StartRideHidden = () => {
           <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
             {t('ride_Ride_StartRideHidden_adsPrizes')}
           </Text>
-          <Text style={[styles.timeText, computedStyles.lotteryText]}>{remainingTime}</Text>
+          <Text style={[styles.timeText, computedStyles.lotteryText]}>
+            {`${hours}${t('ride_Ride_StartRide_hours')}:${minutes}${t('ride_Ride_StartRide_minutes')}:${seconds}${t('ride_Ride_StartRide_seconds')}`}
+          </Text>
           <View style={styles.prizesButtonContainer}>
             <AdsButton text={t('ride_Ride_StartRideHidden_adsPrizesButtonStart')} />
             <View style={[styles.prizeBlock, computedStyles.prizeBlock]}>

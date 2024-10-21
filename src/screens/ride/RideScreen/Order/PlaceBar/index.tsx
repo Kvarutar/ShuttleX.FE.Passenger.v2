@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Bar, BarModes, ClockIcon, LocationIcon, Text, useTheme } from 'shuttlex-integration';
 
 import PlaceTitle from './PlaceTitle';
-import { PlaceBarModes, PlaceBarProps } from './props';
+import { PlaceBarModes, PlaceBarProps } from './types';
 
 const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: PlaceBarProps) => {
   const { colors } = useTheme();

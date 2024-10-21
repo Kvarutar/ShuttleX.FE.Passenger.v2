@@ -23,7 +23,7 @@ import { useAppDispatch } from '../../../core/redux/hooks';
 import { endTrip } from '../../../core/ride/redux/trip';
 import passengerColors from '../../../shared/colors/colors';
 import MapView from '../RideScreen/MapView';
-import { ReceiptScreenProps } from './props';
+import { ReceiptScreenProps } from './types';
 
 const windowHeight = Dimensions.get('window').height;
 

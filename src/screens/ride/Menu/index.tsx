@@ -18,7 +18,7 @@ import {
 // import { View } from 'react-native';
 import { RootStackParamList } from '../../../Navigate/props';
 import { profileSelector } from './../../../core/redux/passenger/selectors';
-import { MenuProps } from './props';
+import { MenuProps } from './types';
 
 const Menu = ({ onClose }: MenuProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();

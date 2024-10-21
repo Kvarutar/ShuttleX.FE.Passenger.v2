@@ -32,7 +32,7 @@ import { useAppDispatch } from '../../../../core/redux/hooks';
 import { setOrderStatus } from '../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
 import PlanButton, { planPriceCounting } from '../PlanButton/PlanButton';
-import { Plan } from '../PlanButton/props';
+import { Plan } from '../PlanButton/types';
 import { checkPaymentStatus, handleBinancePayment, handleMonoPayment } from './handlePayments';
 import { DefaultPaymentMethodsType } from './types';
 

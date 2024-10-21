@@ -23,7 +23,7 @@ import {
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../core/ride/redux/geolocation/selectors';
 import { updateOrderPoint } from '../../../core/ride/redux/order';
-import { MapAddressSelectionScreenProps } from './props';
+import { MapAddressSelectionScreenProps } from './types';
 
 const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScreenProps): JSX.Element => {
   const { t } = useTranslation();

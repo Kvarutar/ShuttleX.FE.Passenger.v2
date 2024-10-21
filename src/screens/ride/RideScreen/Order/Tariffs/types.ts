@@ -1,7 +1,7 @@
 import { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native';
 import { BarModes, TariffType } from 'shuttlex-integration';
 
-import { Plan } from '../../PlanButton/props';
+import { Plan } from '../../PlanButton/types';
 
 export type TariffGroupName = 'Economy' | 'Exclusive' | 'Business';
 

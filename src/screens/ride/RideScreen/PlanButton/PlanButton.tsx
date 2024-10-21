@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Bar, BarModes, LightningIcon, Text, useTheme } from 'shuttlex-integration';
 
-import { PlanButtonProps } from './props';
+import { PlanButtonProps } from './types';
 
 // for test
 export const planPriceCounting = (time: number, tariff: 'Eager Fast' | 'Hungarian' | 'Eager Cheap') => {

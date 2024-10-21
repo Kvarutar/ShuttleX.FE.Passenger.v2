@@ -9,7 +9,7 @@ import { CloseIcon, PointIcon, PointIcon2, TextInput, TextInputInputMode, useThe
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { updateOrderPoint } from '../../../../../../core/ride/redux/order';
 import { orderPointsSelector } from '../../../../../../core/ride/redux/order/selectors';
-import { PointItemProps } from './props';
+import { PointItemProps } from './types';
 
 const fadeAnimationDuration = 100;
 
@@ -19,9 +19,11 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
   const { t } = useTranslation();
 
   const points = useSelector(orderPointsSelector);
+  const currentPoint = points.find(point => point.id === currentPointId);
 
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [isInputTouched, setIsInputTouched] = useState(false);
 
   const shadowOptions = {
     distance: isFocused ? 8 : 0,
@@ -30,16 +32,27 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
 
   useEffect(() => {
     if (isFocused) {
-      setFocusedInput({ id: currentPointId, value: inputValue });
+      setIsInputTouched(true);
     }
-  }, [currentPointId, inputValue, isFocused, setFocusedInput]);
+  }, [setIsInputTouched, isFocused]);
 
   useEffect(() => {
-    const currentPoint = points.find(point => point.id === currentPointId);
-    if (currentPoint) {
+    if (isInputTouched) {
+      setFocusedInput({ id: currentPointId, value: inputValue, focus: isFocused });
+    }
+  }, [currentPointId, inputValue, isFocused, isInputTouched, setFocusedInput]);
+
+  useEffect(() => {
+    if (currentPoint?.address && !isFocused) {
       setInputValue(currentPoint.address);
     }
-  }, [currentPointId, points]);
+  }, [currentPoint?.address, isFocused]);
+
+  useEffect(() => {
+    if (!inputValue.length) {
+      dispatch(updateOrderPoint({ id: currentPointId, address: '', longitude: 0, latitude: 0 }));
+    }
+  }, [currentPointId, dispatch, inputValue]);
 
   const computedStyles = StyleSheet.create({
     inputContent: {
@@ -59,8 +72,10 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
   };
 
   const isFocusedHandler = (state: boolean) => () => setIsFocused(state);
-  const clearInputValue = () =>
+  const clearInputValue = () => {
     dispatch(updateOrderPoint({ id: currentPointId, address: '', longitude: 0, latitude: 0 }));
+    setInputValue('');
+  };
 
   return (
     <Animated.View

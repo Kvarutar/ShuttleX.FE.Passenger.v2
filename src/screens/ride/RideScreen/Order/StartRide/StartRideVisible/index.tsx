@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { Bar, BarModes, PassengerDefaultCarImage, SearchIcon, Text, useTheme } from 'shuttlex-integration';
+import { Bar, BarModes, SearchIcon, sizes, Text, useTheme } from 'shuttlex-integration';
 
-import PlaceBar from '../PlaceBar';
-import { PlaceType } from '../PlaceBar/props';
-import { RideTextBlockProps, StartRideVisibleProps } from './props';
+import PlaceBar from '../../PlaceBar';
+import { PlaceType } from '../../PlaceBar/types';
+import HeaderCarousel from './HeaderCarousel';
+import { StartRideVisibleProps } from './types';
 
 const testPlaces = [
   {
@@ -71,17 +72,14 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(true);
 
   const computedStyles = StyleSheet.create({
-    textMainColor: {
+    textTitle: {
       color: colors.textPrimaryColor,
     },
-    textExtraColor: {
+    textSubtitle: {
       color: colors.textTitleColor,
     },
     container: {
       marginBottom: isBottomWindowOpen ? 0 : 27,
-    },
-    headerContainer: {
-      display: isBottomWindowOpen ? 'none' : 'flex',
     },
     scrollView: {
       marginLeft: isSearchBarVisible ? 0 : 70,
@@ -89,6 +87,9 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
     searchContainer: {
       marginLeft: isSearchBarVisible ? 0 : -62,
       marginRight: isSearchBarVisible ? 8 : 0,
+    },
+    scrollViewContainer: {
+      marginRight: -sizes.paddingHorizontal,
     },
   });
 
@@ -104,30 +105,14 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
     openAddressSelect(true);
   };
 
-  const rideTextBlock = ({
-    topText: topText,
-    bottomText: bottomText,
-    topStyle: topStyle,
-    bottomStyle: bottomStyle,
-  }: RideTextBlockProps) => (
-    <View style={styles.textContainer}>
-      <Text style={topStyle}>{topText}</Text>
-      <Text style={bottomStyle}>{bottomText}</Text>
-    </View>
-  );
-
   return (
     <Animated.View entering={FadeIn} exiting={FadeOut} style={computedStyles.container}>
-      <View style={[styles.headerContainer, computedStyles.headerContainer]}>
-        {rideTextBlock({
-          topText: t('ride_Ride_StartRideVisible_timeGoodTimeToGo'),
-          topStyle: [styles.textTitle, computedStyles.textMainColor],
-          bottomText: t('ride_Ride_StartRideVisible_timeButtonNow'),
-          bottomStyle: [styles.textTitle, computedStyles.textExtraColor],
-        })}
-        <PassengerDefaultCarImage style={styles.carImage} />
-      </View>
-      <View style={styles.scrollViewContainer}>
+      {!isBottomWindowOpen && (
+        <View style={styles.headerContainer}>
+          <HeaderCarousel />
+        </View>
+      )}
+      <View style={[styles.scrollViewContainer, computedStyles.scrollViewContainer]}>
         {!isSearchBarVisible && (
           <Bar onPress={openAddressSelectHandler} mode={BarModes.Disabled} style={styles.extraSearchIconContainer}>
             <SearchIcon />
@@ -145,12 +130,14 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
             mode={BarModes.Disabled}
             style={[styles.searchContainer, computedStyles.searchContainer]}
           >
-            {rideTextBlock({
-              topText: t('ride_Ride_StartRideVisible_buttonStartTrip'),
-              topStyle: [styles.textSubtitle, computedStyles.textExtraColor],
-              bottomText: t('ride_Ride_StartRideVisible_buttonWhereToGo'),
-              bottomStyle: [styles.textTitle, computedStyles.textMainColor],
-            })}
+            <View style={styles.textContainer}>
+              <Text style={[styles.textSubtitle, computedStyles.textSubtitle]}>
+                {t('ride_Ride_StartRideVisible_buttonStartTrip')}
+              </Text>
+              <Text style={[styles.textTitle, computedStyles.textTitle]}>
+                {t('ride_Ride_StartRideVisible_buttonWhereToGo')}
+              </Text>
+            </View>
             <SearchIcon style={styles.searchIcon} />
           </Bar>
           {testPlaces.map((place, index) => (
@@ -169,11 +156,11 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
 
 const styles = StyleSheet.create({
   headerContainer: {
+    height: 82,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingBottom: 26,
     alignItems: 'flex-end',
-    marginTop: 6,
+    marginBottom: 18,
+    marginTop: -6,
   },
   textContainer: {
     flexDirection: 'column',
@@ -189,7 +176,6 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: -16,
   },
   searchContainer: {
     paddingHorizontal: 16,

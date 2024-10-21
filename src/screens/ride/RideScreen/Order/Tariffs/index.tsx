@@ -19,9 +19,9 @@ import {
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { setOrderStatus, setTripTariff } from '../../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../../core/ride/redux/order/types';
-import { TariffGroupType, TariffsProps } from './props';
 import TariffBar from './TariffBar';
 import TariffGroup from './TariffGroup';
+import { TariffGroupType, TariffsProps } from './types';
 
 const testTariffsGroup: TariffGroupType[] = [
   {

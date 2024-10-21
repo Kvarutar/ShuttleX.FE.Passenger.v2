@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Keyboard, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import {
@@ -10,7 +10,6 @@ import {
   Bar,
   Button,
   ButtonShapes,
-  ScrollViewWithCustomScroll,
   SelectOnMapIcon,
   sizes,
   Text,
@@ -27,10 +26,10 @@ import { isOrderLoadingSelector, orderPointsSelector } from '../../../../../../c
 import { OrderStatus } from '../../../../../../core/ride/redux/order/types';
 import { RootStackParamList } from '../../../../../../Navigate/props';
 import PlaceBar from '../../PlaceBar';
-import { PlaceBarModes, PlaceType } from '../../PlaceBar/props';
+import { PlaceBarModes, PlaceType } from '../../PlaceBar/types';
 import AddressButton from './AddressButton';
 import PointItem from './PointItem';
-import { AddressSelectProps, PointMode } from './props';
+import { AddressSelectProps, PointMode } from './types';
 
 const testPlace = [
   {
@@ -91,16 +90,17 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   const { colors } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride'>>();
 
+  const isLoading = useSelector(isOrderLoadingSelector);
+  const points = useSelector(orderPointsSelector);
+  const defaultLocation = useSelector(geolocationCoordinatesSelector);
+  const initialFocusedInput = defaultLocation ? { id: 1, value: '', focus: false } : { id: 0, value: '', focus: false };
+
   const [showConfirmButton, setShowConfirmButton] = useState(false);
-  const [focusedInput, setFocusedInput] = useState<{ id: number | null; value: string }>({ id: null, value: '' });
+  const [focusedInput, setFocusedInput] = useState<{ id: number; value: string; focus: boolean }>(initialFocusedInput);
   const [isAddressSelected, setIsAddressSelected] = useState(false);
   const [updateDefaultLocation, setUpdateDefaultLocation] = useState(true);
   const [addresses, setAddresses] = useState<PlaceType[]>([]);
   const debounceInputValue = useDebounce(focusedInput.value, 300);
-
-  const isLoading = useSelector(isOrderLoadingSelector);
-  const points = useSelector(orderPointsSelector);
-  const defaultLocation = useSelector(geolocationCoordinatesSelector);
 
   const computedStyles = StyleSheet.create({
     noAddress: {
@@ -114,6 +114,12 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
     },
     scrollViewSearchContentContainer: {
       paddingBottom: sizes.paddingVertical,
+    },
+    scrollViewSearchWrapper: {
+      marginRight: -sizes.paddingHorizontal,
+    },
+    searchPlaceBarWrapper: {
+      marginRight: sizes.paddingHorizontal,
     },
   });
 
@@ -169,33 +175,33 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   }, [address, dispatch]);
 
   useEffect(() => {
-    if (focusedInput.id !== null && focusedInput.value.length) {
+    if (focusedInput.value && focusedInput.focus) {
       setIsAddressSelected(true);
     }
 
-    if (focusedInput.id !== null && !focusedInput.value.length) {
+    if (!focusedInput.value) {
       setIsAddressSelected(false);
     }
-  }, [focusedInput.id, focusedInput.value.length]);
+  }, [focusedInput.focus, focusedInput.value]);
 
   const onConfirm = () => {
     setIsAddressSelectVisible(false);
     dispatch(setOrderStatus(OrderStatus.ChoosingTariff));
   };
 
-  const onLocationSelectPress = () =>
-    navigation.navigate('MapAddressSelection', { orderPointId: focusedInput.id !== null ? focusedInput.id : 1 });
+  const onLocationSelectPress = () => navigation.navigate('MapAddressSelection', { orderPointId: focusedInput.id });
 
   const onAddressSelect = (selectedAddress: string) => () => {
-    setIsAddressSelected(false);
     dispatch(
       updateOrderPoint({
-        id: focusedInput.id !== null ? focusedInput.id : 1,
+        id: focusedInput.id,
         address: selectedAddress,
         longitude: 123123123, //TODO: replace with real coordinates
         latitude: 2132131231,
       }),
     );
+    Keyboard.dismiss();
+    setIsAddressSelected(false);
   };
 
   const pointsContent = points.map((point, index) => {
@@ -229,7 +235,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   const title = (text: string) => <Text style={computedStyles.title}>{text}</Text>;
 
   let searchAddresses = (
-    <View style={styles.searchPlaceBarWrapper}>
+    <View style={[styles.searchPlaceBarWrapper, computedStyles.searchPlaceBarWrapper]}>
       {addresses?.length ? (
         addresses.map((item, index) => (
           <PlaceBar
@@ -269,8 +275,10 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
         />
       </View>
       <View style={styles.scrollViewSearchContainer}>
-        <ScrollViewWithCustomScroll
-          wrapperStyle={styles.scrollViewSearchWrapper}
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          style={[styles.scrollViewSearchWrapper, computedStyles.scrollViewSearchWrapper]}
           contentContainerStyle={computedStyles.scrollViewSearchContentContainer}
         >
           {isAddressSelected ? (
@@ -279,7 +287,12 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
             <>
               <View>
                 {title(t('ride_Ride_AddressSelect_addressTitle_recent'))}
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recentPlaceBarWrapper}>
+                <ScrollView
+                  keyboardShouldPersistTaps="handled"
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  style={styles.recentPlaceBarWrapper}
+                >
                   {testPlace.map((item, index) => (
                     <PlaceBar
                       key={index}
@@ -293,7 +306,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
               </View>
               <View style={styles.addressContainer}>
                 {title(t('ride_Ride_AddressSelect_addressTitle_lastSearch'))}
-                <View style={styles.searchPlaceBarWrapper}>
+                <View style={[styles.searchPlaceBarWrapper, computedStyles.searchPlaceBarWrapper]}>
                   {testPlace.map((item, index) => (
                     <PlaceBar
                       key={index}
@@ -306,7 +319,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
               </View>
             </>
           )}
-        </ScrollViewWithCustomScroll>
+        </ScrollView>
         {showConfirmButton && !isAddressSelected && (
           <Button
             onPress={onConfirm}
@@ -340,7 +353,6 @@ const styles = StyleSheet.create({
   },
   recentPlaceBarWrapper: {
     marginTop: 12,
-    marginRight: -16,
   },
   recentPlaceBar: {
     marginRight: 8,

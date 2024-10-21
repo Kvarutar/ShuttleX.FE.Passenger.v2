@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { PickUpIcon, Text, useTheme } from 'shuttlex-integration';
 
-import { PlaceTitleProps } from './props';
+import { PlaceTitleProps } from './types';
 
 const PlaceTitle = ({ withDistance, place, style }: PlaceTitleProps) => {
   const { colors } = useTheme();

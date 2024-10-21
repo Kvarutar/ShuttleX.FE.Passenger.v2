@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { Bar, BarModes, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
-import { TariffGroupName, TariffGroupProps } from './props';
+import { TariffGroupName, TariffGroupProps } from './types';
 
 const tariffsGroupImagesNames: Record<TariffGroupName, TariffType> = {
   Economy: 'Eco',

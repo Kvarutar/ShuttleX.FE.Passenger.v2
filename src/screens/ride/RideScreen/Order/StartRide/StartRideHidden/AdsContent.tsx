@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { Blur, Button } from 'shuttlex-integration';
 
-import { AdsContentProps } from './props';
+import { AdsContentProps } from './types';
 
 const AdsContent = ({ children, isNotAvailable, buttonProps, style }: AdsContentProps) => {
   return (

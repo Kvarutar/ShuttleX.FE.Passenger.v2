@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Bar, Text } from 'shuttlex-integration';
 
-import { AddressButtonProps } from './props';
+import { AddressButtonProps } from './types';
 
 const AddressButton = ({ icon, text, onPress, style }: AddressButtonProps) => {
   return (

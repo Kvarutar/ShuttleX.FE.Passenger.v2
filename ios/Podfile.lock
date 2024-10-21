@@ -431,6 +431,9 @@ PODS:
   - react-native-video/Video (6.3.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
+  - react-native-webview (13.12.3):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
   - React-NativeModulesApple (0.72.12):
     - hermes-engine
     - React-callinvoker
@@ -618,6 +621,7 @@ DEPENDENCIES:
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -732,6 +736,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-video:
     :path: "../node_modules/react-native-video"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-perflogger:
@@ -843,6 +849,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: bdb108d340cdb41875c9ced535977cac6d2ff321
   react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
   react-native-video: db6a0c988e5d122ddf7ca02c68e8a5927db2779b
+  react-native-webview: 494c6db04116a474b677d9d29bfe7d2559c47b54
   React-NativeModulesApple: 30a72273f7fcf81d47742c1edc998ea88d34739a
   React-perflogger: 63606aeab27683112e1bd4ef25bd099ec1cb03f8
   React-RCTActionSheet: 5b39fc2b479d47325e5ac95193c482044bfebbc6

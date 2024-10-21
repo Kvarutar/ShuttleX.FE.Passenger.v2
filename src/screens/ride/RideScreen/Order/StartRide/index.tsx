@@ -7,11 +7,11 @@ import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
 import { cleanOrderPoints } from '../../../../../core/ride/redux/order';
 import AlertInitializer from '../../../../../shared/AlertInitializer';
-import { PlaceType } from '../PlaceBar/props';
+import { PlaceType } from '../PlaceBar/types';
 import AddressSelect from './AddressSelect';
-import { StartRideProps, StartRideRef } from './props';
 import StartRideHidden from './StartRideHidden';
 import StartRideVisible from './StartRideVisible';
+import { StartRideProps, StartRideRef } from './types';
 
 const StartRide = forwardRef<StartRideRef, StartRideProps>(
   ({ isAddressSelectVisible, setIsAddressSelectVisible }, ref) => {

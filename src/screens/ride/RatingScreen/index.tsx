@@ -29,7 +29,7 @@ import imageGoodDriving from '../../../../assets/images/likeFeedback/imageGoodDr
 import imageNiceAtmosphere from '../../../../assets/images/likeFeedback/imageNiceAtmosphere';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { sendFeedback } from '../../../core/ride/redux/trip/thunks';
-import { RatingScreenProps } from './props';
+import { RatingScreenProps } from './types';
 
 const contractorTestInfo = {
   name: 'Slava',

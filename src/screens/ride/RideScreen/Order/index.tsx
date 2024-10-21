@@ -6,7 +6,7 @@ import { OrderStatus } from '../../../../core/ride/redux/order/types';
 import Confirming from './Confirming';
 import PaymentPopup from './PaymentPopup';
 import StartRide from './StartRide';
-import { StartRideRef } from './StartRide/props';
+import { StartRideRef } from './StartRide/types';
 import Tariffs from './Tariffs';
 import { OrderRef } from './types';
 

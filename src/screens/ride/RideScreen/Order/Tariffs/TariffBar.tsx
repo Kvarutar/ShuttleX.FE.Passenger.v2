@@ -4,7 +4,7 @@ import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { BaggageIcon, Bar, ProfileIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import PlanButton, { planPriceCounting } from '../../PlanButton/PlanButton';
-import { TariffBarProps } from './props';
+import { TariffBarProps } from './types';
 
 const TariffBar = ({
   isPlanSelected,
