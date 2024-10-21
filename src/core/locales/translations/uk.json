@@ -3,5 +3,16 @@
   "auth_Splash_signIn": "Увійти",
   "auth_Splash_signUp": "Зареєструватись",
   "auth_SignInCode_phonePrompt": "Введіть код,\nотриманий в SMS на\nномер",
-  "auth_SignInCode_emailPrompt": "Введіть код,\nотриманий з"
+  "auth_SignInCode_emailPrompt": "Введіть код,\nотриманий з",
+  "ride_Menu_navigationMyRide": "Моя поїздка",
+  "ride_Menu_navigationActivity": "Активність",
+  "ride_Menu_navigationAccountSettings": "Налаштування",
+  "ride_Menu_navigationHelp": "Допомога",
+  "ride_Menu_navigationBecomeDriver": "Стати водієм",
+  "menu_Activity_title": "Активність",
+  "menu_Activity_activeOrder": "Поточне замовлення",
+  "menu_Activity_recentAddresses": "Нещодавні",
+  "menu_Activity_canceled": "Скасоване",
+  "menu_AccountVerificateCode_firstHeader": "Введіть код, отриманий",
+  "menu_AccountVerificateCode_secondHeader": "в SMS"
 }
