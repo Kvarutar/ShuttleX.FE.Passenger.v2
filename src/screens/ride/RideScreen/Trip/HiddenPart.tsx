@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Linking, StyleSheet, View } from 'react-native';
-import { Bar, BarModes, EmergencyServiceIcon, ReportIcon, Text, useTheme } from 'shuttlex-integration';
+import { Bar, BarModes, EmergencyServiceIcon, getCurrencySign, ReportIcon, Text, useTheme } from 'shuttlex-integration';
 
 import { SquareBarProps } from './props';
 
@@ -30,6 +30,8 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
+  const currencySign = getCurrencySign('UAH'); // for test
+
   const computedStyles = StyleSheet.create({
     text: {
       color: colors.textSecondaryColor,
@@ -43,7 +45,7 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
     },
     {
       text: t('ride_Ride_Trip_totalForRide'),
-      value: `$${contractorInfoTest.total + extraSum}`,
+      value: `${currencySign}${contractorInfoTest.total + extraSum}`,
     },
   ];
 

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
-import { Bar, BarModes, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { Bar, BarModes, getCurrencySign, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import { TariffGroupName, TariffGroupProps } from './types';
 
@@ -21,8 +21,10 @@ const TariffGroup = ({
   const { t } = useTranslation();
   const { colors } = useTheme();
   const iconsData = useTariffsIcons();
+
   const groupImageName = tariffsGroupImagesNames[title];
   const IconComponent = iconsData[groupImageName].icon;
+  const currencySign = getCurrencySign('UAH'); //for test
 
   const computedStyles = StyleSheet.create({
     title: {
@@ -46,7 +48,7 @@ const TariffGroup = ({
     >
       <Text style={[styles.title, computedStyles.title]}>{title}</Text>
       <Text style={[styles.price, computedStyles.price]}>
-        {isAvailableTariffGroup ? `~$${price}` : t('ride_Ride_TariffGroup_notAvailable')}
+        {isAvailableTariffGroup ? `~${currencySign}${price}` : t('ride_Ride_TariffGroup_notAvailable')}
       </Text>
       <IconComponent style={styles.img} />
     </Bar>

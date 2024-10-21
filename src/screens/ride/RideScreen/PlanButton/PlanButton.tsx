@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
-import { Bar, BarModes, LightningIcon, Text, useTheme } from 'shuttlex-integration';
+import { Bar, BarModes, getCurrencySign, LightningIcon, Text, useTheme } from 'shuttlex-integration';
 
 import { PlanButtonProps } from './types';
 
@@ -18,6 +18,8 @@ export const planPriceCounting = (time: number, tariff: 'Eager Fast' | 'Hungaria
 const PlanButton = ({ plan, onPress, isSelected, style, withTimeShow = true }: PlanButtonProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
+
+  const currencySign = getCurrencySign('UAH'); //for test
 
   const tariffModes = {
     'Eager Fast': t('ride_Ride_PlanButton_fast'),
@@ -49,7 +51,8 @@ const PlanButton = ({ plan, onPress, isSelected, style, withTimeShow = true }: P
         {withTimeShow ? formatTime(Number(plan.DurationSec)) : tariffModes[plan.AlgorythmType]}
       </Text>
       <Text style={[styles.price, computedStyles.price]}>
-        ${planPriceCounting(Number(plan.DurationSec), plan.AlgorythmType)}
+        {currencySign}
+        {planPriceCounting(Number(plan.DurationSec), plan.AlgorythmType)}
       </Text>
       {plan.AlgorythmType === 'Eager Fast' && <LightningIcon style={styles.icon} />}
     </Bar>

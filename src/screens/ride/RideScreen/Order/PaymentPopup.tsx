@@ -18,6 +18,7 @@ import {
   CloseIcon,
   DatePicker,
   DatePickerV1,
+  getCurrencySign,
   PaymentBar,
   // PaymentMethod,
   sizes,
@@ -125,6 +126,7 @@ const PaymentPopup = () => {
 
   const TariffIcon = tariffIconsData.Basic.icon;
   const availableTestPlans = testPlans.filter(item => item.DurationSec !== null);
+  const currencySign = getCurrencySign('UAH'); //for test
 
   const [windowIsOpened, setWindowIsOpened] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
@@ -382,7 +384,7 @@ const PaymentPopup = () => {
     <View key={`info_text_${topText}`} style={styles.infoTextContainer}>
       <Text style={[styles.infoTopText, computedStyles.infoTopText]}>{topText}</Text>
       <Text numberOfLines={1} style={styles.infoBottomText}>
-        {topText === t('ride_Ride_PaymentPopup_priceTitle') ? `$${bottomText}` : bottomText}
+        {topText === t('ride_Ride_PaymentPopup_priceTitle') ? `${currencySign}${bottomText}` : bottomText}
       </Text>
     </View>
   );

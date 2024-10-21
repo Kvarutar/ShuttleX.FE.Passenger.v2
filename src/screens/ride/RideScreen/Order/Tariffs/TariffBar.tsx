@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { BaggageIcon, Bar, ProfileIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { BaggageIcon, Bar, getCurrencySign, ProfileIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import PlanButton, { planPriceCounting } from '../../PlanButton/PlanButton';
 import { TariffBarProps } from './types';
@@ -25,6 +25,8 @@ const TariffBar = ({
   const tariffTitle = tariffsCarData[tariff].text;
   const availablePlans = plans.filter(item => item.DurationSec !== null);
   const defaultPlanIndex = availablePlans.length > 1 ? 1 : 0;
+  const showPriceAndTime = !isPlanSelected || availablePlans.length === 1;
+  const currencySign = getCurrencySign('UAH'); //for test
 
   const computedStyles = StyleSheet.create({
     capacityColor: {
@@ -78,61 +80,86 @@ const TariffBar = ({
     return `${t('ride_Ride_Tariffs_minutes', { count: totalMinutes })}`;
   };
 
+  const formatCapacityAmount = (value: number) => {
+    if (value === 1) {
+      return '1';
+    }
+    return `1-${value}`;
+  };
+
   const capacityBlock = (
     <View style={styles.capacityContainer}>
-      {availablePlans.length === 1 && (
+      <ProfileIcon />
+      <Text style={[styles.capacityText, computedStyles.capacityColor]}>
+        {formatCapacityAmount(Number(info.capacity))}
+      </Text>
+      {(windowIsOpened || isAvailableTariff) && (
         <>
-          <Text style={[styles.capacityText, computedStyles.capacityColor]}>
-            {formatTime(Number(availablePlans[defaultPlanIndex].DurationSec))}
-          </Text>
           <View style={[styles.separateCircle, computedStyles.separateCircle]} />
+          <BaggageIcon />
+          <Text style={[styles.capacityText, computedStyles.capacityColor]}>{info.baggage}</Text>
         </>
       )}
-      <ProfileIcon />
-      <Text style={[styles.capacityText, computedStyles.capacityColor]}>1-{info.capacity}</Text>
-      <View style={[styles.separateCircle, computedStyles.separateCircle]} />
-      <BaggageIcon />
-      <Text style={[styles.capacityText, computedStyles.capacityColor]}>{info.baggage}</Text>
+    </View>
+  );
+
+  const tariffTitleBlock = (
+    <View style={styles.tariffTitleContainer}>
+      <Text style={styles.title}>{tariffTitle}</Text>
+      {showPriceAndTime && isAvailableTariff && (
+        <Text style={[styles.capacityText, computedStyles.capacityColor]}>
+          {formatTime(Number(availablePlans[defaultPlanIndex].DurationSec))}
+        </Text>
+      )}
     </View>
   );
 
   const tariffPrice = () => {
     if (isAvailableTariff) {
-      if (!isPlanSelected || availablePlans.length === 1) {
-        return `$${planPriceCounting(Number(availablePlans[defaultPlanIndex].DurationSec), availablePlans[defaultPlanIndex].AlgorythmType)}`;
+      if (showPriceAndTime) {
+        return `${currencySign}${planPriceCounting(Number(availablePlans[defaultPlanIndex].DurationSec), availablePlans[defaultPlanIndex].AlgorythmType)}`;
       }
     } else {
       return t('ride_Ride_TariffBar_notAvailable');
     }
   };
 
-  return (
-    <Bar
-      style={[styles.container, computedStyles.container]}
-      onPress={event => {
-        if (isAvailableTariff) {
-          onPress(event);
-        }
-      }}
-    >
-      <Animated.View style={[styles.tariffContainer, computedStyles.tariffContainer, animatedTariffContainer]}>
-        {windowIsOpened && <Text style={styles.title}>{tariffTitle}</Text>}
+  let tariffContent = (
+    <>
+      <View style={computedStyles.imageContainer}>
+        <TariffImage style={computedStyles.image} />
+      </View>
+      <View style={styles.infoContainer}>
+        {tariffTitleBlock}
+        {capacityBlock}
+      </View>
+      <Text style={[styles.isNotSelectedPrice, computedStyles.isNotSelectedPrice, styles.price, computedStyles.price]}>
+        {tariffPrice()}
+      </Text>
+    </>
+  );
+
+  if (windowIsOpened) {
+    tariffContent = (
+      <>
+        {tariffTitleBlock}
         <View style={computedStyles.imageContainer}>
           <TariffImage style={computedStyles.image} />
         </View>
-        {windowIsOpened ? (
-          capacityBlock
-        ) : (
-          <View style={styles.infoContainer}>
-            <Text style={styles.title}>{tariffTitle}</Text>
-            {capacityBlock}
-          </View>
-        )}
+        {capacityBlock}
         <Text
           style={[styles.isNotSelectedPrice, computedStyles.isNotSelectedPrice, styles.price, computedStyles.price]}
         >
           {tariffPrice()}
         </Text>
+      </>
+    );
+  }
+
+  return (
+    <Bar style={[styles.container, computedStyles.container]} onPress={event => isAvailableTariff && onPress(event)}>
+      <Animated.View style={[styles.tariffContainer, computedStyles.tariffContainer, animatedTariffContainer]}>
+        {tariffContent}
       </Animated.View>
       {availablePlans.length !== 1 && (
         <Animated.View style={animatedButtonWrapper}>
@@ -175,6 +202,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'space-between',
     marginLeft: 28,
+    flex: 1,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -204,6 +232,12 @@ const styles = StyleSheet.create({
   },
   planButton: {
     marginTop: 20,
+  },
+  tariffTitleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexShrink: 1,
+    alignSelf: 'stretch',
   },
 });
 

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { getLocales } from 'react-native-localize';
-import { Bar, BarModes, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { Bar, BarModes, getCurrencySign, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import { RecentAddressesProps } from './props';
 
@@ -26,6 +26,8 @@ const RecentAddressesBar = ({ trip }: RecentAddressesProps) => {
   const tariffIconsData = useTariffsIcons();
   const { t } = useTranslation();
 
+  const currencySign = getCurrencySign('UAH'); //for test
+
   const computedStyles = StyleSheet.create({
     statusText: {
       color: trip.status === null ? colors.errorColor : colors.textPrimaryColor,
@@ -46,7 +48,7 @@ const RecentAddressesBar = ({ trip }: RecentAddressesProps) => {
         <TariffImage style={styles.image} />
         <View style={[styles.statusContainer, computedStyles.statusContainer]}>
           <Text style={[styles.statusText, computedStyles.statusText]}>
-            {trip.status === null ? t('menu_Activity_canceled') : `$${trip.status}`}
+            {trip.status === null ? t('menu_Activity_canceled') : `${currencySign}${trip.status}`}
           </Text>
         </View>
       </View>

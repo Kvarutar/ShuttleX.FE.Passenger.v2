@@ -57,7 +57,7 @@ const testTariffsGroup: TariffGroupType[] = [
         info: {
           capacity: '6',
           baggage: '3',
-          isAvailable: true,
+          isAvailable: false,
         },
         plans: [
           {
@@ -68,7 +68,7 @@ const testTariffsGroup: TariffGroupType[] = [
           {
             Tariffid: 1,
             AlgorythmType: 'Hungarian',
-            DurationSec: 200,
+            DurationSec: null,
           },
           {
             Tariffid: 2,

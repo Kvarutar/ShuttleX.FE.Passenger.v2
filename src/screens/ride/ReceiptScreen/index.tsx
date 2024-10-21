@@ -10,6 +10,7 @@ import {
   CloseIcon,
   CoinIcon,
   Fog,
+  getCurrencySign,
   getPaymentIcon,
   minToMilSec,
   PointIcon2,
@@ -34,6 +35,8 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+
+  const currencySign = getCurrencySign('UAH'); //for test
 
   const computedStyles = StyleSheet.create({
     textSecondaryColor: {
@@ -225,7 +228,9 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
                 </Text>
                 <View style={styles.priceContainer}>
                   <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
-                  <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>$12,7</Text>
+                  <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
+                    {currencySign}12,7
+                  </Text>
                 </View>
               </View>
             </Bar>
