@@ -72,10 +72,7 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
   };
 
   const isFocusedHandler = (state: boolean) => () => setIsFocused(state);
-  const clearInputValue = () => {
-    dispatch(updateOrderPoint({ id: currentPointId, address: '', longitude: 0, latitude: 0 }));
-    setInputValue('');
-  };
+  const clearInputValue = () => setInputValue('');
 
   return (
     <Animated.View

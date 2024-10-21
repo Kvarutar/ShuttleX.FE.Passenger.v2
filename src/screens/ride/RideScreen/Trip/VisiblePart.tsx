@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     width: '65%',
     height: undefined,
-    aspectRatio: 3,
+    aspectRatio: 3.15,
   },
   contractorInfoContainer: {
     alignItems: 'center',

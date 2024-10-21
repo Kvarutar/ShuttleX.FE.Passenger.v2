@@ -24,7 +24,6 @@ const TariffGroup = ({
 
   const groupImageName = tariffsGroupImagesNames[title];
   const IconComponent = iconsData[groupImageName].icon;
-  const currencySign = getCurrencySign('UAH'); //for test
 
   const computedStyles = StyleSheet.create({
     title: {
@@ -48,7 +47,8 @@ const TariffGroup = ({
     >
       <Text style={[styles.title, computedStyles.title]}>{title}</Text>
       <Text style={[styles.price, computedStyles.price]}>
-        {isAvailableTariffGroup ? `~${currencySign}${price}` : t('ride_Ride_TariffGroup_notAvailable')}
+        {/*TODO: swap currencyCode to correct value*/}
+        {isAvailableTariffGroup ? `~${getCurrencySign('UAH')}${price}` : t('ride_Ride_TariffGroup_notAvailable')}
       </Text>
       <IconComponent style={styles.img} />
     </Bar>

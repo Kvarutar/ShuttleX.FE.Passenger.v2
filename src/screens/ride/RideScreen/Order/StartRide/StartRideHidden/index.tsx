@@ -2,11 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { Button, ButtonProps, Text, useTheme } from 'shuttlex-integration';
 
-import imageBonuses from '../../../../../../../assets/images/imageBonuses';
-import imageCollectCapybara from '../../../../../../../assets/images/imageCollectCapybara';
-import imageFirstSeasonCollect from '../../../../../../../assets/images/imageFirstSeasonCollect';
-import imagePrizes from '../../../../../../../assets/images/imagePrizes';
-import imageSupportUkraine from '../../../../../../../assets/images/imageSupportUkraine';
+import imageBonuses from '../../../../../../../assets/images/startRide/imageBonuses';
+import imageCollectCapybara from '../../../../../../../assets/images/startRide/imageCollectCapybara';
+import imageFirstSeasonCollect from '../../../../../../../assets/images/startRide/imageFirstSeasonCollect';
+import imagePrizes from '../../../../../../../assets/images/startRide/imagePrizes';
+import imageSupportUkraine from '../../../../../../../assets/images/startRide/imageSupportUkraine';
 import passengerColors from '../../../../../../shared/colors/colors';
 import usePrizeTimer from '../utils/usePrizeTimer';
 import AdsBlock from './AdsBlock';

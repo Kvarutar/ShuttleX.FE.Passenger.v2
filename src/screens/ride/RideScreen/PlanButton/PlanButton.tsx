@@ -19,8 +19,6 @@ const PlanButton = ({ plan, onPress, isSelected, style, withTimeShow = true }: P
   const { colors } = useTheme();
   const { t } = useTranslation();
 
-  const currencySign = getCurrencySign('UAH'); //for test
-
   const tariffModes = {
     'Eager Fast': t('ride_Ride_PlanButton_fast'),
     Hungarian: t('ride_Ride_PlanButton_average'),
@@ -51,7 +49,8 @@ const PlanButton = ({ plan, onPress, isSelected, style, withTimeShow = true }: P
         {withTimeShow ? formatTime(Number(plan.DurationSec)) : tariffModes[plan.AlgorythmType]}
       </Text>
       <Text style={[styles.price, computedStyles.price]}>
-        {currencySign}
+        {/*TODO: swap currencyCode to correct value*/}
+        {getCurrencySign('UAH')}
         {planPriceCounting(Number(plan.DurationSec), plan.AlgorythmType)}
       </Text>
       {plan.AlgorythmType === 'Eager Fast' && <LightningIcon style={styles.icon} />}

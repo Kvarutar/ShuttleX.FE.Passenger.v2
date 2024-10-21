@@ -134,7 +134,7 @@ const Trip = () => {
 
   return (
     <BottomWindowWithGesture
-      maxHeight={0.9}
+      maxHeight={0.88}
       alerts={alerts.map(alertData => (
         <AlertInitializer
           key={alertData.id}

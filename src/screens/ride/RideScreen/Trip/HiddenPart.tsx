@@ -1,12 +1,19 @@
 import { useTranslation } from 'react-i18next';
-import { Linking, StyleSheet, View } from 'react-native';
+import { ImageBackground, Linking, StyleSheet, View } from 'react-native';
 import { Bar, BarModes, EmergencyServiceIcon, getCurrencySign, ReportIcon, Text, useTheme } from 'shuttlex-integration';
 
+//TODO: take image from BE
+import imageCapybaraBackground from '../../../../../assets/images/trip/imageCapybaraBackground';
+import imagePrizeBackground from '../../../../../assets/images/trip/imagePrizeBackground';
+import passengerColors from '../../../../shared/colors/colors';
 import { SquareBarProps } from './props';
 
+//TODO: swap to contractorInfo from BE
 const contractorInfoTest = {
   tripType: 'Basic',
   total: 20,
+  capiAmount: 14,
+  mysteryBoxNumber: 123,
 };
 
 const SquareBar = ({ icon, text, onPress, mode }: SquareBarProps) => {
@@ -26,26 +33,56 @@ const SquareBar = ({ icon, text, onPress, mode }: SquareBarProps) => {
   );
 };
 
+const TripInfoBar = ({ info }: { info: { text: string; value: string; barMode?: BarModes } }) => {
+  const { colors } = useTheme();
+
+  const computedStyles = StyleSheet.create({
+    text: {
+      color: info.barMode ? colors.textPrimaryColor : colors.textSecondaryColor,
+    },
+  });
+
+  return (
+    <Bar key={info.text} mode={info.barMode ? info.barMode : BarModes.Disabled} style={styles.tripInfoBar}>
+      <Text style={[styles.tripInfoBarText, computedStyles.text]}>{info.text}</Text>
+      <Text style={styles.tripInfoBarText}>{info.value}</Text>
+    </Bar>
+  );
+};
+
 const HiddenPart = ({ extraSum }: { extraSum: number }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
-  const currencySign = getCurrencySign('UAH'); // for test
-
   const computedStyles = StyleSheet.create({
-    text: {
-      color: colors.textSecondaryColor,
+    firstSeasonTitleText: {
+      color: colors.textTertiaryColor,
+    },
+    capiText: {
+      color: passengerColors.adsBackgroundColor.strong,
+    },
+    capiAmountContainer: {
+      backgroundColor: contractorInfoTest.capiAmount ? colors.primaryColor : passengerColors.adsBackgroundColor.light,
+    },
+    capiAmountText: {
+      color: contractorInfoTest.capiAmount ? colors.textPrimaryColor : colors.textTertiaryColor,
     },
   });
 
   const tripInfo = [
+    {
+      text: t('ride_Ride_Trip_mysteryBoxTitle'),
+      value: t('ride_Ride_Trip_mysteryBoxNo', { count: contractorInfoTest.mysteryBoxNumber }),
+      barMode: BarModes.Default,
+    },
     {
       text: t('ride_Ride_Trip_tripType'),
       value: contractorInfoTest.tripType,
     },
     {
       text: t('ride_Ride_Trip_totalForRide'),
-      value: `${currencySign}${contractorInfoTest.total + extraSum}`,
+      //TODO: swap currencyCode to correct value
+      value: `${getCurrencySign('UAH')}${contractorInfoTest.total + extraSum}`,
     },
   ];
 
@@ -66,11 +103,26 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
       {/*    onPress={() => true}*/}
       {/*  />*/}
       {/*</View>*/}
-      {tripInfo.map(info => (
-        <Bar key={info.text} mode={BarModes.Disabled} style={styles.tripInfoBar}>
-          <Text style={[styles.tripInfoBarText, computedStyles.text]}>{info.text}</Text>
-          <Text style={styles.tripInfoBarText}>{info.value}</Text>
+      <View style={styles.squareBarWrapper}>
+        <Bar style={styles.firstSeasonBarContainer}>
+          <ImageBackground style={StyleSheet.absoluteFill} source={imagePrizeBackground} resizeMode="cover" />
+          <Text style={[styles.firstSeasonTitleText, computedStyles.firstSeasonTitleText]}>
+            {t('ride_Ride_Trip_prize')}
+          </Text>
         </Bar>
+        <Bar style={styles.firstSeasonBarContainer}>
+          <ImageBackground style={StyleSheet.absoluteFill} source={imageCapybaraBackground} resizeMode="cover" />
+          <Text style={[styles.firstSeasonTitleText, computedStyles.firstSeasonTitleText]}>
+            {t('ride_Ride_Trip_firstSeason')}
+          </Text>
+          <Text style={[styles.capiText, computedStyles.capiText]}>{contractorInfoTest.capiAmount}/20</Text>
+          <View style={[styles.capiAmountContainer, computedStyles.capiAmountContainer]}>
+            <Text style={[styles.capiAmountText, computedStyles.capiAmountText]}>{contractorInfoTest.capiAmount}</Text>
+          </View>
+        </Bar>
+      </View>
+      {tripInfo.map((info, index) => (
+        <TripInfoBar info={info} key={index} />
       ))}
       <View style={styles.squareBarWrapper}>
         <SquareBar
@@ -125,6 +177,34 @@ const styles = StyleSheet.create({
     height: 33,
     width: 43,
     objectFit: 'contain',
+  },
+  firstSeasonBarContainer: {
+    flex: 1,
+    padding: 16,
+  },
+  firstSeasonTitleText: {
+    fontFamily: 'Inter Bold',
+    fontSize: 14,
+    lineHeight: 16,
+  },
+  capiText: {
+    fontFamily: 'Inter Medium',
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  capiAmountContainer: {
+    width: 30,
+    height: 30,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 8,
+    right: 8,
+  },
+  capiAmountText: {
+    fontFamily: 'Inter Bold',
+    fontSize: 11,
   },
 });
 

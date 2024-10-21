@@ -26,7 +26,6 @@ const TariffBar = ({
   const availablePlans = plans.filter(item => item.DurationSec !== null);
   const defaultPlanIndex = availablePlans.length > 1 ? 1 : 0;
   const showPriceAndTime = !isPlanSelected || availablePlans.length === 1;
-  const currencySign = getCurrencySign('UAH'); //for test
 
   const computedStyles = StyleSheet.create({
     capacityColor: {
@@ -117,7 +116,8 @@ const TariffBar = ({
   const tariffPrice = () => {
     if (isAvailableTariff) {
       if (showPriceAndTime) {
-        return `${currencySign}${planPriceCounting(Number(availablePlans[defaultPlanIndex].DurationSec), availablePlans[defaultPlanIndex].AlgorythmType)}`;
+        //TODO: swap currencyCode to correct value
+        return `${getCurrencySign('UAH')}${planPriceCounting(Number(availablePlans[defaultPlanIndex].DurationSec), availablePlans[defaultPlanIndex].AlgorythmType)}`;
       }
     } else {
       return t('ride_Ride_TariffBar_notAvailable');

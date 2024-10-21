@@ -4,8 +4,8 @@ import { Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { PassengerDefaultCarImage, sizes, Text, useTheme } from 'shuttlex-integration';
 
-import imageStartRideCarouselCapybara from '../../../../../../../assets/images/imageStartRideCarouselCapybara';
-import ImageStartRideCarouselPrize from '../../../../../../../assets/images/imageStartRideCarouselPrize';
+import imageStartRideCarouselCapybara from '../../../../../../../assets/images/startRide/imageStartRideCarouselCapybara';
+import ImageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
 import usePrizeTimer from '../utils/usePrizeTimer';
 import { SliderItemProps } from './types';
 
