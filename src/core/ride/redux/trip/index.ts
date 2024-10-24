@@ -1,12 +1,13 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { fetchTripInfo, sendFeedback } from './thunks';
+import { cancelTrip, fetchTripInfo, sendFeedback } from './thunks';
 import { TripInfo, TripState, TripStatus } from './types';
 
 const initialState: TripState = {
   tripInfo: null,
   status: TripStatus.Idle,
   tip: null,
+  finishedTrips: 0,
 };
 
 const slice = createSlice({
@@ -27,6 +28,14 @@ const slice = createSlice({
     endTrip(state) {
       state.tripInfo = null;
       state.status = initialState.status;
+    },
+    //TODO call it when notifications page will be done (call dispatch in tripEnded notification)
+    addFinishedTrips(state) {
+      state.finishedTrips++;
+    },
+    //TODO use it when lottery is done
+    resetFinishedTrips(state) {
+      state.finishedTrips = initialState.finishedTrips;
     },
   },
   extraReducers: builder => {
@@ -56,6 +65,9 @@ const slice = createSlice({
       })
       .addCase(sendFeedback.fulfilled, (state, action) => {
         slice.caseReducers.setTip(state, { payload: action.payload.tip ?? null, type: setTip.type });
+      })
+      .addCase(cancelTrip.fulfilled, state => {
+        slice.caseReducers.endTrip(state);
       });
   },
 });

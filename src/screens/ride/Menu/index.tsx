@@ -1,9 +1,10 @@
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
+  LotteryIcon,
   // TODO Uncomment all code whe we need it
   // GameIcon,
   MenuBase,
@@ -11,11 +12,11 @@ import {
   // PlayIcon,
   PlusRoundIcon,
   sizes,
-  // Text,
-  // useTheme,
+  Text,
+  useTheme,
 } from 'shuttlex-integration';
 
-// import { View } from 'react-native';
+import { finishedTripsSelector } from '../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import { profileSelector } from './../../../core/redux/passenger/selectors';
 import { MenuProps } from './types';
@@ -98,11 +99,35 @@ const Menu = ({ onClose }: MenuProps) => {
       userImageUri={profile?.imageUri ?? undefined}
       userName={profile?.fullName}
       menuNavigation={menuNavigation}
-      // TODO Uncomment all code whe we need it
-      // additionalButton={<PlayGameButton />}
+      additionalButton={<PlayLotteryButton />}
       style={styles.menu}
       currentRoute={currentRoute}
     />
+  );
+};
+
+const PlayLotteryButton = () => {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const trips = useSelector(finishedTripsSelector);
+
+  const onPlayLottery = () => {
+    //TODO go to the lottery page
+  };
+
+  const computedStyles = StyleSheet.create({
+    additionalButton: {
+      backgroundColor: colors.backgroundSecondaryColor,
+    },
+  });
+  return (
+    <Pressable style={[computedStyles.additionalButton, styles.additionalButton]} onPress={onPlayLottery}>
+      <View style={styles.itemsWrapper}>
+        <LotteryIcon />
+        <Text style={styles.additionalText}>{t('ride_Menu_ticketWallet')}</Text>
+      </View>
+      <Text style={styles.numberStyle}>{trips}</Text>
+    </Pressable>
   );
 };
 
@@ -147,7 +172,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
   },
-  gameButton: {
+  additionalButton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: sizes.paddingHorizontal,
@@ -155,10 +180,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'space-between',
   },
-  playGameText: {
+  additionalText: {
     fontSize: 17,
     fontFamily: 'Inter Medium',
     lineHeight: 20.57,
+  },
+  numberStyle: {
+    fontSize: 17,
+    fontFamily: 'Inter Medium',
+    opacity: 0.4,
+    lineHeight: 20.57,
+    letterSpacing: -0.4,
   },
 });
 

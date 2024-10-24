@@ -49,4 +49,5 @@ export type TripState = {
   tripInfo: TripInfo | null;
   status: TripStatus;
   tip: number | null;
+  finishedTrips: number;
 };

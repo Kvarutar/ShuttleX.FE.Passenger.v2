@@ -23,8 +23,8 @@ import {
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
-import { endTrip } from '../../../../core/ride/redux/trip';
 import { tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
+import { cancelTrip } from '../../../../core/ride/redux/trip/thunks';
 import { TripStatus } from '../../../../core/ride/redux/trip/types';
 import { RootStackParamList } from '../../../../Navigate/props';
 import AlertInitializer from '../../../../shared/AlertInitializer';
@@ -151,7 +151,7 @@ const Trip = () => {
       hiddenPartButton={
         <SwipeButton
           mode={SwipeButtonModes.Decline}
-          onSwipeEnd={() => dispatch(endTrip())}
+          onSwipeEnd={() => dispatch(cancelTrip())}
           text={t('ride_Ride_Trip_cancelRideButton')}
         />
       }

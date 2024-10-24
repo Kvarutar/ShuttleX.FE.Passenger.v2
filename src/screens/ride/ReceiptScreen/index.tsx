@@ -65,9 +65,9 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
     },
   });
 
-  const onEndTrip = () => {
-    navigation.navigate('Ride');
+  const onEndTrip = async () => {
     dispatch(endTrip());
+    navigation.navigate('Ride');
   };
 
   const shareFile = async () => {

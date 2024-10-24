@@ -43,6 +43,19 @@ export const sendFeedback = createAppAsyncThunk<FeedbackType, FeedbackType>(
   },
 );
 
+// async thunk for canceling ride by passenger
+//TODO make a real post request to back
+export const cancelTrip = createAppAsyncThunk('trip/cancelTrip', async (_, { rejectWithValue }) => {
+  try {
+    const response = await shuttlexPassengerInstance.post('/api/trips/cancel', {
+      message: 'Passenger cancelled the trip',
+    });
+
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
 export const sendMysteryBoxPopupResponse = createAppAsyncThunk<void, { passengerId: string; res: boolean }>(
   'trip/sendMysteryBoxPopupResponse',
   async () => {
