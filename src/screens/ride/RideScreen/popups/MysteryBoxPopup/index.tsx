@@ -2,13 +2,12 @@ import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import {
+  BigHeader,
   BottomWindowWithGesture,
   BottomWindowWithGestureRef,
   Button,
   MysteryBoxIcon,
   SquareButtonModes,
-  Text,
-  useTheme,
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
@@ -17,28 +16,12 @@ import { MysteryBoxPopupProps } from './types';
 
 const MysteryBoxPopup = ({ setIsMysteryBoxPopupVisible }: MysteryBoxPopupProps) => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
 
   const dispatch = useAppDispatch();
 
   const bottomWindowRef = useRef<BottomWindowWithGestureRef>(null);
 
   const closeWindow = bottomWindowRef.current?.closeWindow;
-
-  const computedStyles = StyleSheet.create({
-    subTitle: {
-      color: colors.textTitleColor,
-    },
-    firstTitle: {
-      color: colors.textPrimaryColor,
-    },
-    secondTitle: {
-      color: colors.textQuadraticColor,
-    },
-    description: {
-      color: colors.textSecondaryColor,
-    },
-  });
 
   //TODO: Add sending answer to back-end
   const onPressGreat = async () => {
@@ -56,23 +39,19 @@ const MysteryBoxPopup = ({ setIsMysteryBoxPopupVisible }: MysteryBoxPopupProps) 
   return (
     <BottomWindowWithGesture
       ref={bottomWindowRef}
+      withShade
       setIsOpened={setIsMysteryBoxPopupVisible}
       opened={true}
       hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
       hiddenPart={
         <View>
-          <Text style={[styles.subTitle, computedStyles.subTitle]}>{t('ride_Ride_MysteryBoxPopup_subTitle')}</Text>
-          <View style={styles.firstSecontTitlesContainer}>
-            <Text style={[styles.firstTitle, computedStyles.firstTitle]}>
-              {t('ride_Ride_MysteryBoxPopup_firstTitle')}{' '}
-              <Text style={[styles.secondTitle, computedStyles.secondTitle]}>
-                {t('ride_Ride_MysteryBoxPopup_secondTitle')}
-              </Text>
-            </Text>
-          </View>
-          <Text style={[styles.description, computedStyles.description]}>
-            {t('ride_Ride_MysteryBoxPopup_description')}
-          </Text>
+          <BigHeader
+            windowTitle={t('ride_Ride_MysteryBoxPopup_subTitle')}
+            firstHeaderTitle={t('ride_Ride_MysteryBoxPopup_firstTitle')}
+            secondHeaderTitle={t('ride_Ride_MysteryBoxPopup_secondTitle')}
+            description={t('ride_Ride_MysteryBoxPopup_description')}
+            headerInOneLine
+          />
           <MysteryBoxIcon style={styles.mysteryBoxIcon} />
           <View style={styles.buttonsContainer}>
             <Button
@@ -96,30 +75,6 @@ const MysteryBoxPopup = ({ setIsMysteryBoxPopupVisible }: MysteryBoxPopupProps) 
 const styles = StyleSheet.create({
   hiddenPartContainerStyle: {
     paddingTop: 24,
-  },
-  subTitle: {
-    fontFamily: 'Inter Bold',
-    fontSize: 14,
-    marginBottom: 14,
-  },
-  firstSecontTitlesContainer: {
-    flexDirection: 'row',
-    marginBottom: 9,
-  },
-  firstTitle: {
-    fontFamily: 'Inter Bold',
-    fontSize: 34,
-    letterSpacing: -1.53,
-    lineHeight: 34,
-  },
-  secondTitle: {
-    fontFamily: 'Inter Bold',
-    fontSize: 34,
-    letterSpacing: -1.53,
-    lineHeight: 34,
-  },
-  description: {
-    fontSize: 14,
   },
   mysteryBoxIcon: {
     alignSelf: 'center',

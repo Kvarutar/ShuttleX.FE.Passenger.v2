@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     gap: 6,
-    marginBottom: 10,
+    marginBottom: 16,
   },
   paymentBarContainer: {
     padding: 16,

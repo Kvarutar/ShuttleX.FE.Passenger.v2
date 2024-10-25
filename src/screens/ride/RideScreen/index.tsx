@@ -29,6 +29,7 @@ import MapView from './MapView';
 import Order from './Order';
 import { OrderRef } from './Order/types';
 import MysteryBoxPopup from './popups/MysteryBoxPopup';
+import WinningPopup from './popups/WinningPopup';
 import Trip from './Trip';
 import { RideScreenProps } from './types';
 
@@ -43,6 +44,14 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isMysteryBoxPopupVisible, setIsMysteryBoxPopupVisible] = useState(false);
+  const [isWinningPopupVisible, setIsWinningPopupVisible] = useState(false);
+
+  //for test
+  useEffect(() => {
+    setTimeout(() => {
+      setIsWinningPopupVisible(true);
+    }, 2000);
+  }, []);
 
   //for test
   useEffect(() => {
@@ -261,6 +270,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
       {isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}
+      {isWinningPopupVisible && <WinningPopup setIsWinningPopupVisible={setIsWinningPopupVisible} />}
     </>
   );
 };

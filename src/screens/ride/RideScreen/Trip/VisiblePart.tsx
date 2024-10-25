@@ -9,6 +9,7 @@ import {
   ButtonSizes,
   CircleButtonModes,
   ClockIcon,
+  getCurrencySign,
   minToMilSec,
   PhoneIcon,
   StatsBlock,
@@ -217,7 +218,7 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
           {timerState?.timerLabel && (
             <View style={[styles.timerLabelContainer, computedStyles.timerLabelContainer]}>
               <Text style={[styles.timerLabelText, computedStyles.timerLabelText]}>
-                {extraWaiting ? `-$${extraSum}` : timerState.timerLabel}
+                {extraWaiting ? `-${getCurrencySign('UAH')}${extraSum}` : timerState.timerLabel}
               </Text>
             </View>
           )}

@@ -216,13 +216,9 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
           <View style={styles.contentWrapper}>
             <View style={styles.riderInfoContainer}>
               {/*TODO swap to contractor name*/}
-              <Text style={styles.text}>{contractorTestInfo.name}</Text>
-              <StatsBlock
-                style={styles.stats}
-                amountLikes={contractorTestInfo.likes}
-                amountRides={contractorTestInfo.rides}
-              />
               <Image style={styles.avatar} source={{ uri: contractorTestInfo.img }} />
+              <Text style={[styles.text, styles.textName]}>{contractorTestInfo.name}</Text>
+              <StatsBlock amountLikes={contractorTestInfo.likes} amountRides={contractorTestInfo.rides} />
             </View>
             {markBlock}
           </View>
@@ -289,8 +285,9 @@ const styles = StyleSheet.create({
     fontSize: 21,
     lineHeight: 22,
   },
-  stats: {
-    marginVertical: 16,
+  textName: {
+    marginTop: 26,
+    marginBottom: 8,
   },
   subMarkWrapper: {
     flexDirection: 'row',
