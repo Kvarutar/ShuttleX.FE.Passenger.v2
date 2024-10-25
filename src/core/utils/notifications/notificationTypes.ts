@@ -1,8 +1,10 @@
-import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-
-export interface RemoteMessage extends FirebaseMessagingTypes.RemoteMessage {
+export interface RemoteMessage {
+  notification: {
+    title: string;
+    body: string;
+  };
   data: {
-    title?: string;
-    body?: string;
+    key: string;
+    payload: { OrderId: string };
   };
 }

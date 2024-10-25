@@ -7,7 +7,6 @@ import {
   CircleButtonModes,
   Fog,
   MenuIcon,
-  minToMilSec,
   NotificationIcon,
   NotificationType,
   sizes,
@@ -23,7 +22,7 @@ import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../
 import { setOrderStatus } from '../../../core/ride/redux/order';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
-import { setTripInfo } from '../../../core/ride/redux/trip';
+import { setContractorInfo, setTripInfo } from '../../../core/ride/redux/trip';
 import { contractorInfoSelector } from '../../../core/ride/redux/trip/selectors';
 import Menu from '../Menu';
 import MapView from './MapView';
@@ -57,16 +56,23 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
     if (orderStatus === OrderStatus.Confirming) {
       setTimeout(() => {
         dispatch(
+          setContractorInfo({
+            firstName: 'Slava',
+            carModel: '6',
+            carNumber: 'BH 4426 AO',
+            // phone: '+380635009999',
+            //TODO get to know how can we get the number
+            arrivalTime: '2024-10-22T10:28:47.612Z',
+            carBrand: 'Mazda',
+            totalLikesCount: 2,
+            totalRidesCount: 10,
+            level: 5,
+            avatarId: 'string',
+            currencyCode: 'string',
+          }),
+        );
+        dispatch(
           setTripInfo({
-            contractor: {
-              name: 'Slava',
-              car: {
-                model: 'Toyota Cruiser',
-                plateNumber: 'BH 4426 AO',
-              },
-              phone: '+380635009999',
-              approximateArrival: minToMilSec(10),
-            },
             tripType: 'Basic',
             total: '35',
             route: {

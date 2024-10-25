@@ -4,13 +4,17 @@ import { TariffType } from 'shuttlex-integration';
 import { AddressPoint } from '../order/types';
 
 export type ContractorInfo = {
-  name: string;
-  car: {
-    model: string;
-    plateNumber: string;
-  };
-  phone: string;
-  approximateArrival: number;
+  firstName: string;
+  arrivalTime: string;
+  carBrand: string;
+  carModel: string;
+  carNumber: string;
+  totalLikesCount: number;
+  //TODO add phone number when back will add it
+  totalRidesCount: number;
+  level: number;
+  avatarId: string;
+  currencyCode: string;
 };
 
 export enum TripStatus {
@@ -35,7 +39,6 @@ type RouteInfo = {
 };
 
 export type TripInfo = {
-  contractor: ContractorInfo;
   tripType: TariffType;
   total: string;
   route: {
@@ -46,6 +49,7 @@ export type TripInfo = {
 };
 
 export type TripState = {
+  contractorInfo: ContractorInfo | null;
   tripInfo: TripInfo | null;
   status: TripStatus;
   tip: number | null;

@@ -1,13 +1,14 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { cancelTrip, fetchTripInfo, sendFeedback } from './thunks';
-import { TripInfo, TripState, TripStatus } from './types';
+import { cancelTrip, fetchContractorInfo, fetchTripInfo, sendFeedback } from './thunks';
+import { ContractorInfo, TripInfo, TripState, TripStatus } from './types';
 
 const initialState: TripState = {
   tripInfo: null,
   status: TripStatus.Idle,
   tip: null,
   finishedTrips: 0,
+  contractorInfo: null,
 };
 
 const slice = createSlice({
@@ -16,6 +17,9 @@ const slice = createSlice({
   reducers: {
     setTripInfo(state, action: PayloadAction<TripInfo>) {
       state.tripInfo = action.payload;
+    },
+    setContractorInfo(state, action: PayloadAction<ContractorInfo>) {
+      state.contractorInfo = action.payload;
     },
     setTripStatus(state, action: PayloadAction<TripStatus>) {
       state.status = action.payload;
@@ -40,18 +44,15 @@ const slice = createSlice({
   },
   extraReducers: builder => {
     builder
+      .addCase(fetchContractorInfo.fulfilled, (state, action) => {
+        slice.caseReducers.setContractorInfo(state, {
+          payload: action.payload,
+          type: setTripInfo.type,
+        });
+      })
       .addCase(fetchTripInfo.fulfilled, (state, action) => {
         slice.caseReducers.setTripInfo(state, {
           payload: {
-            contractor: {
-              name: action.payload.contractor.name,
-              car: {
-                model: action.payload.contractor.car.model,
-                plateNumber: action.payload.contractor.car.plateNumber,
-              },
-              phone: action.payload.contractor.phone,
-              approximateArrival: new Date().getTime() + 180000, //for test
-            },
             tripType: action.payload.tripType,
             total: action.payload.total,
             route: {
@@ -72,6 +73,7 @@ const slice = createSlice({
   },
 });
 
-export const { setTripInfo, setTripStatus, setTip, endTrip } = slice.actions;
+export const { setTripInfo, setTripStatus, setContractorInfo, setTip, endTrip, addFinishedTrips, resetFinishedTrips } =
+  slice.actions;
 
 export default slice.reducer;

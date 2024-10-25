@@ -2,7 +2,7 @@ import { FeedbackType, getAxiosErrorInfo } from 'shuttlex-integration';
 
 import shuttlexPassengerInstance from '../../../client';
 import { createAppAsyncThunk } from '../../../redux/hooks';
-import { TripInfo } from './types';
+import { ContractorInfo, TripInfo } from './types';
 
 export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(
   'trip/fetchTripInfo',
@@ -11,6 +11,22 @@ export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(
       //TODO: replace passengerID with actual one
       const response = await shuttlexPassengerInstance.get<TripInfo>('/passenger/order/get?passengerId=1');
 
+      return response.data;
+    } catch (error) {
+      const { code, message } = getAxiosErrorInfo(error);
+      return rejectWithValue({
+        code,
+        message,
+      });
+    }
+  },
+);
+
+export const fetchContractorInfo = createAppAsyncThunk<ContractorInfo, string>(
+  'trip/fetchContractorInfo',
+  async (orderId, { rejectWithValue }) => {
+    try {
+      const response = await shuttlexPassengerInstance.get<ContractorInfo>(`/api/v1/order/${orderId}`);
       return response.data;
     } catch (error) {
       const { code, message } = getAxiosErrorInfo(error);
