@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
   },
   firstSecontTitlesContainer: {
     flexDirection: 'row',
-    maxWidth: '90%',
     marginBottom: 9,
   },
   firstTitle: {
@@ -121,7 +120,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    maxWidth: '70%',
   },
   mysteryBoxIcon: {
     alignSelf: 'center',

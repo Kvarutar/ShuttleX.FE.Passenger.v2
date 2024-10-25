@@ -1,16 +1,25 @@
 import { useTranslation } from 'react-i18next';
 import { ImageBackground, Linking, StyleSheet, View } from 'react-native';
-import { Bar, BarModes, EmergencyServiceIcon, getCurrencySign, ReportIcon, Text, useTheme } from 'shuttlex-integration';
+import {
+  Bar,
+  BarModes,
+  EmergencyServiceIcon,
+  getCurrencySign,
+  ReportIcon,
+  Text,
+  useTariffsIcons,
+  useTheme,
+} from 'shuttlex-integration';
 
 //TODO: take image from BE
 import imageCapybaraBackground from '../../../../../assets/images/trip/imageCapybaraBackground';
 import imagePrizeBackground from '../../../../../assets/images/trip/imagePrizeBackground';
 import passengerColors from '../../../../shared/colors/colors';
-import { SquareBarProps } from './props';
+import { ContractorInfoTestType, SquareBarProps } from './types';
 
 //TODO: swap to contractorInfo from BE
-const contractorInfoTest = {
-  tripType: 'Basic',
+const contractorInfoTest: ContractorInfoTestType = {
+  tariffType: 'Basic',
   total: 20,
   capiAmount: 14,
   mysteryBoxNumber: 123,
@@ -53,6 +62,7 @@ const TripInfoBar = ({ info }: { info: { text: string; value: string; barMode?: 
 const HiddenPart = ({ extraSum }: { extraSum: number }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  const tariffIconsData = useTariffsIcons();
 
   const computedStyles = StyleSheet.create({
     firstSeasonTitleText: {
@@ -77,7 +87,7 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
     },
     {
       text: t('ride_Ride_Trip_tripType'),
-      value: contractorInfoTest.tripType,
+      value: tariffIconsData[contractorInfoTest.tariffType].text,
     },
     {
       text: t('ride_Ride_Trip_totalForRide'),

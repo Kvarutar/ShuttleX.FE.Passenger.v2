@@ -26,7 +26,7 @@ import { setTripStatus } from '../../../../core/ride/redux/trip';
 import { tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../../core/ride/redux/trip/types';
 import { formatTime } from './index';
-import { TimerStateDataType, VisiblePartProps } from './props';
+import { TimerStateDataType, VisiblePartProps } from './types';
 
 //TODO: swap contractorInfoTest to contractorInfo
 const contractorInfoTest = {

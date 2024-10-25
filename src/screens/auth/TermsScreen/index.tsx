@@ -36,7 +36,7 @@ const TermsScreen = ({ navigation }: TermsScreenProps): JSX.Element => {
             <ShortArrowIcon />
           </ButtonV1>
 
-          <Text> {t('auth_Terms_Title')} </Text>
+          <Text> {t('auth_Terms_title')} </Text>
         </View>
         <ScrollViewWithCustomScroll>
           <Text style={[styles.termsText, computedStyles.termsText]}>{t('auth_Terms_firstArticle')}</Text>

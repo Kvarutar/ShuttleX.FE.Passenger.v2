@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { BarModes, TimerColorModes } from 'shuttlex-integration';
+import { BarModes, TariffType, TimerColorModes } from 'shuttlex-integration';
 
 export type SquareBarProps = {
   icon: React.ReactNode;
@@ -18,4 +18,11 @@ export type TimerStateDataType = {
   mode: TimerColorModes;
   title: ReactNode;
   timerLabel?: string;
+};
+
+export type ContractorInfoTestType = {
+  tariffType: TariffType;
+  total: number;
+  capiAmount: number;
+  mysteryBoxNumber: number;
 };

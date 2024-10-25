@@ -4,12 +4,6 @@ import { Bar, BarModes, getCurrencySign, TariffType, Text, useTariffsIcons, useT
 
 import { TariffGroupName, TariffGroupProps } from './types';
 
-const tariffsGroupImagesNames: Record<TariffGroupName, TariffType> = {
-  Economy: 'Eco',
-  Exclusive: 'ComfortPlus',
-  Business: 'Business',
-};
-
 const TariffGroup = ({
   price,
   title,
@@ -22,8 +16,22 @@ const TariffGroup = ({
   const { colors } = useTheme();
   const iconsData = useTariffsIcons();
 
-  const groupImageName = tariffsGroupImagesNames[title];
-  const IconComponent = iconsData[groupImageName].icon;
+  const tariffsGroupImagesNames: Record<TariffGroupName, { title: TariffGroupName; image: TariffType }> = {
+    Economy: {
+      title: t('ride_Ride_TariffGroup_economy'),
+      image: 'Eco',
+    },
+    Exclusive: {
+      title: t('ride_Ride_TariffGroup_exclusive'),
+      image: 'ComfortPlus',
+    },
+    Business: {
+      title: t('ride_Ride_TariffGroup_business'),
+      image: 'Business',
+    },
+  };
+
+  const IconComponent = iconsData[tariffsGroupImagesNames[title].image].icon;
 
   const computedStyles = StyleSheet.create({
     title: {
@@ -45,7 +53,7 @@ const TariffGroup = ({
       onPress={isAvailableTariffGroup ? onPress : undefined}
       style={[styles.container, computedStyles.container, style]}
     >
-      <Text style={[styles.title, computedStyles.title]}>{title}</Text>
+      <Text style={[styles.title, computedStyles.title]}>{tariffsGroupImagesNames[title].title}</Text>
       <Text style={[styles.price, computedStyles.price]}>
         {/*TODO: swap currencyCode to correct value*/}
         {isAvailableTariffGroup ? `~${getCurrencySign('UAH')}${price}` : t('ride_Ride_TariffGroup_notAvailable')}
