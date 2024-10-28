@@ -12,12 +12,14 @@ import {
   StatsBlock,
   SwipeButton,
   SwipeButtonModes,
+  TariffType,
   Text,
   Timer,
   TimerColorModes,
   TimerSizesModes,
   TrafficIndicator,
   TrafficLevel,
+  useTariffsIcons,
   useTheme,
 } from 'shuttlex-integration';
 
@@ -61,6 +63,8 @@ const Trip = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
+  const tariffIconsData = useTariffsIcons();
+
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>>();
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
@@ -70,7 +74,12 @@ const Trip = () => {
 
   const arrivedTime = Date.now() + contractorInfoTest.approximateArrival;
 
+  const TariffIcon = tariffIconsData[contractorInfoTest.tripType as TariffType].icon;
+
   const computedStyles = StyleSheet.create({
+    avatarWrapper: {
+      backgroundColor: colors.backgroundPrimaryColor,
+    },
     topText: {
       color: colors.textSecondaryColor,
     },
@@ -135,6 +144,21 @@ const Trip = () => {
   return (
     <BottomWindowWithGesture
       maxHeight={0.88}
+      headerElement={
+        <View style={styles.imageContainer}>
+          <TariffIcon style={styles.carImage} />
+          <View style={[styles.avatarWrapper, computedStyles.avatarWrapper]}>
+            <Image
+              style={styles.avatar}
+              source={{
+                uri: contractorInfoTest.contractor.image,
+              }}
+            />
+          </View>
+        </View>
+      }
+      withAllPartsScroll
+      withHiddenPartScroll={false}
       alerts={alerts.map(alertData => (
         <AlertInitializer
           key={alertData.id}
@@ -170,6 +194,33 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     top: -45,
+  },
+  imageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: -45,
+  },
+  avatarWrapper: {
+    padding: 3,
+    borderRadius: 100,
+    position: 'absolute',
+    right: 25,
+    width: 72,
+    height: 72,
+  },
+  avatar: {
+    flex: 1,
+    objectFit: 'contain',
+    borderRadius: 100,
+  },
+  carImage: {
+    resizeMode: 'cover',
+    width: '65%',
+    height: undefined,
+    aspectRatio: 3.15,
   },
   topText: {
     fontFamily: 'Inter Medium',

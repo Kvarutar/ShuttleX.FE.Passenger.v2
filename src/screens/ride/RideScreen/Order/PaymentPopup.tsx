@@ -1,9 +1,10 @@
 //TODO uncoment code when we'll need other payment methods and wallet
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Dimensions, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getLocales } from 'react-native-localize';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import WebView from 'react-native-webview';
 import {
   ArrowIcon,
@@ -115,7 +116,7 @@ const formatTime = (time: Date): string =>
 // const defaultPaymentMethods = ['cash', 'applepay', 'paypal', 'crypto'];
 const defaultPaymentMethods = ['cash', 'card', 'crypto'];
 
-const windowHeight = Dimensions.get('window').height;
+const animationDuration = 200;
 
 const PaymentPopup = () => {
   const { colors } = useTheme();
@@ -140,7 +141,7 @@ const PaymentPopup = () => {
 
   const computedStyles = StyleSheet.create({
     wrapper: {
-      marginBottom: windowIsOpened ? 0 : 26,
+      marginBottom: 26,
     },
     pickUpPointText: {
       color: colors.textTitleColor,
@@ -161,13 +162,16 @@ const PaymentPopup = () => {
           ? colors.backgroundPrimaryColor
           : colors.primaryColorWithOpacity,
     },
+    scrollViewWrapper: {
+      height: windowIsOpened ? '100%' : 'auto', //TODO: think of clever way(problem is: i can't calculate visible part height in opened state before it's opened. This problem occure because of we don't use hidden part in this component and in opened state height of visible part lesser then 93% of widow height)
+    },
     scrollView: {
       marginRight: windowIsOpened ? 0 : -sizes.paddingHorizontal,
-      marginBottom: windowIsOpened ? 0 : 12,
+      marginBottom: 0,
     },
     paymentBar: {
       marginRight: windowIsOpened ? 0 : 8,
-      marginBottom: windowIsOpened ? 8 : 0,
+      marginBottom: 8,
     },
     addMethodLabel: {
       color: colors.textSecondaryColor,
@@ -390,8 +394,7 @@ const PaymentPopup = () => {
   );
 
   const content = (
-    <View style={computedStyles.wrapper}>
-      <TariffIcon style={styles.image} />
+    <View style={[computedStyles.wrapper, styles.wrapper]}>
       <View>
         <View style={styles.addressTitleContainer}>
           <Text style={[styles.pickUpPointText, computedStyles.pickUpPointText]}>
@@ -402,10 +405,13 @@ const PaymentPopup = () => {
           </Text>
         </View>
       </View>
-      <View style={styles.plansContainer}>
-        {!windowIsOpened &&
-          availableTestPlans.length !== 1 &&
-          availableTestPlans.map((plan, index) => (
+      {!windowIsOpened && availableTestPlans.length !== 1 && (
+        <Animated.View
+          style={styles.plansContainer}
+          entering={FadeIn.duration(animationDuration)}
+          exiting={FadeOut.duration(animationDuration)}
+        >
+          {availableTestPlans.map((plan, index) => (
             <PlanButton
               plan={plan}
               key={index}
@@ -414,13 +420,15 @@ const PaymentPopup = () => {
               isSelected={selectedPlan === index}
             />
           ))}
-      </View>
-      <View style={styles.scrollViewWrapper}>
+        </Animated.View>
+      )}
+
+      <Animated.View style={[styles.scrollViewWrapper, computedStyles.scrollViewWrapper]} layout={FadeIn}>
         <ScrollView
           horizontal={!windowIsOpened}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
-          style={[computedStyles.scrollView]}
+          style={computedStyles.scrollView}
         >
           <>
             {reorderPaymentMethods(selectedPayment).map((method, index) => (
@@ -452,7 +460,7 @@ const PaymentPopup = () => {
             )} */}
           </>
         </ScrollView>
-      </View>
+      </Animated.View>
       <View style={styles.infoWrapper}>
         <View style={styles.buttonContainer}>
           <Bar style={styles.button} onPress={() => dispatch(setOrderStatus(OrderStatus.ChoosingTariff))}>
@@ -499,19 +507,23 @@ const PaymentPopup = () => {
         />
       ) : (
         <BottomWindowWithGesture
+          withDraggable={false}
           maxHeight={0.82}
           setIsOpened={setWindowIsOpened}
           visiblePart={content}
-          bottomWindowStyle={styles.bottomWindowStyle}
+          visiblePartStyle={styles.visiblePartStyles}
+          headerElement={<TariffIcon style={styles.image} />}
         />
       )}
       {Platform.OS === 'ios' && isDatePickerVisible ? (
         <BottomWindowWithGesture
+          withDraggable={false}
           withShade
           setIsOpened={setIsDatePickerVisible}
           ref={datePickerRef}
           withHiddenPartScroll={false}
           hiddenPart={dateTimeBlock}
+          headerElement={<TariffIcon style={styles.image} />}
         />
       ) : (
         isDatePickerVisible && (
@@ -521,6 +533,7 @@ const PaymentPopup = () => {
             ref={datePickerRef}
             withHiddenPartScroll={false}
             hiddenPart={androidDateTimePicker}
+            headerElement={<TariffIcon style={styles.image} />}
           />
         )
       )}
@@ -529,17 +542,20 @@ const PaymentPopup = () => {
 };
 
 const styles = StyleSheet.create({
-  bottomWindowStyle: {
-    paddingTop: 20,
+  wrapper: {
+    flexShrink: 1,
+  },
+  visiblePartStyles: {
+    flexShrink: 1,
   },
   image: {
-    width: '95%',
+    width: '80%',
     alignSelf: 'center',
     height: undefined,
     aspectRatio: 3,
     resizeMode: 'contain',
     position: 'absolute',
-    top: -118,
+    top: -72,
   },
   addressTitleContainer: {
     paddingHorizontal: 20,
@@ -627,7 +643,7 @@ const styles = StyleSheet.create({
     height: 17,
   },
   scrollViewWrapper: {
-    maxHeight: windowHeight * 0.42,
+    flexShrink: 1,
   },
   addMethodLabel: {
     fontSize: 14,

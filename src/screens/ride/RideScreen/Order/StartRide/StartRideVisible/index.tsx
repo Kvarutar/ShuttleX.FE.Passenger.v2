@@ -106,7 +106,12 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
   };
 
   return (
-    <Animated.View entering={FadeIn} exiting={FadeOut} style={computedStyles.container}>
+    <Animated.View
+      entering={FadeIn}
+      exiting={FadeOut}
+      style={[styles.container, computedStyles.container]}
+      layout={FadeIn.duration(500)}
+    >
       {!isBottomWindowOpen && (
         <View style={styles.headerContainer}>
           <HeaderCarousel />
@@ -155,6 +160,9 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: 15,
+  },
   headerContainer: {
     height: 82,
     flexDirection: 'row',

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import {
   ArrowIcon,
   BarModes,
@@ -183,10 +184,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 
   const computedStyles = StyleSheet.create({
     confirmButton: {
-      bottom: windowIsOpened ? 38 : 70,
-    },
-    scrollView: {
-      marginBottom: windowIsOpened ? 20 : 50,
+      bottom: 38,
     },
     confirmText: {
       color: isAvailableSelectedTariffGroup ? colors.textPrimaryColor : colors.textQuadraticColor,
@@ -263,12 +261,8 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
             />
           ))}
         </View>
-        <ScrollView
-          nestedScrollEnabled
-          showsVerticalScrollIndicator={false}
-          style={[styles.scrollView, computedStyles.scrollView]}
-        >
-          <View>
+        <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false} style={styles.scrollView}>
+          <Animated.View layout={FadeIn}>
             {selectedTariffGroup?.tariffs.map((tariffBar, index) => (
               <TariffBar
                 key={`tariff_${index}`}
@@ -283,7 +277,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
                 windowIsOpened={windowIsOpened}
               />
             ))}
-          </View>
+          </Animated.View>
         </ScrollView>
       </View>
       <Button
@@ -305,7 +299,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   return (
     <BottomWindowWithGesture
       setIsOpened={setWindowIsOpened}
-      maxHeight={windowIsOpened ? 0.93 : 0.6}
+      minHeight={0.6}
       alerts={
         <Button onPress={onBackPress} mode={CircleButtonModes.Mode2} shape={ButtonShapes.Circle} withBorder={false}>
           <ArrowIcon style={styles.backIcon} />
@@ -320,12 +314,14 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 const styles = StyleSheet.create({
   visiblePartStyle: {
     flexShrink: 1,
+    marginTop: 20,
   },
   backIcon: {
     transform: [{ rotate: '180deg' }],
   },
   container: {
     marginHorizontal: -8,
+    flexShrink: 1,
     height: '100%',
     position: 'relative',
   },

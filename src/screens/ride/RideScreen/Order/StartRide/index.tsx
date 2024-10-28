@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { BottomWindowWithGesture, BottomWindowWithGestureRef } from 'shuttlex-integration';
+import { BottomWindowWithGesture, BottomWindowWithGestureRef, sizes } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
@@ -53,6 +53,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
           hiddenPart={<StartRideHidden />}
           hiddenPartStyle={styles.hiddenPartStyle}
           hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
+          hiddenPartWrapperStyle={styles.hiddenPartWrapperStyle}
           alerts={alerts.map(alertData => (
             <AlertInitializer
               key={alertData.id}
@@ -86,11 +87,16 @@ const styles = StyleSheet.create({
   },
   hiddenPartContainerStyle: {
     paddingTop: 0,
+    paddingBottom: sizes.paddingVertical,
   },
   hiddenPartStyleAddressSelect: {
     height: '100%',
+    marginTop: 10,
   },
   hiddenPartWrapperAddressSelect: {
+    paddingBottom: 0,
+  },
+  hiddenPartWrapperStyle: {
     paddingBottom: 0,
   },
 });

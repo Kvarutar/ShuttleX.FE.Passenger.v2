@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Linking, StyleSheet, View } from 'react-native';
+import { Linking, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   Bar,
@@ -13,12 +13,10 @@ import {
   minToMilSec,
   PhoneIcon,
   StatsBlock,
-  TariffType,
   Text,
   Timer,
   TimerColorModes,
   TimerSizesModes,
-  useTariffsIcons,
   useTheme,
 } from 'shuttlex-integration';
 
@@ -50,22 +48,16 @@ const testExtraSum = 0.5;
 const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  const dispatch = useAppDispatch();
   const { colors } = useTheme();
   const { t } = useTranslation();
-  const tariffIconsData = useTariffsIcons();
 
   const tripStatus = useSelector(tripStatusSelector);
-  const dispatch = useAppDispatch();
 
   const [isWaiting, setIsWaiting] = useState(false);
   const [extraWaiting, setExtraWaiting] = useState(false);
 
-  const TariffIcon = tariffIconsData[contractorInfoTest.tripType as TariffType].icon;
-
   const computedStyles = StyleSheet.create({
-    avatarWrapper: {
-      backgroundColor: colors.backgroundPrimaryColor,
-    },
     beInAndLvlAmountText: {
       color: colors.textSecondaryColor,
     },
@@ -161,17 +153,6 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
 
   return (
     <View>
-      <View style={styles.imageContainer}>
-        <TariffIcon style={styles.carImage} />
-        <View style={[styles.avatarWrapper, computedStyles.avatarWrapper]}>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: contractorInfoTest.contractor.image,
-            }}
-          />
-        </View>
-      </View>
       <View style={styles.contractorInfoContainer}>
         {/*TODO: remove comments when we will show a contractor lvl */}
         {/*{tripStatus === TripStatus.Idle && (*/}
@@ -235,33 +216,6 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
 };
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    top: -75,
-  },
-  avatarWrapper: {
-    padding: 3,
-    borderRadius: 100,
-    position: 'absolute',
-    right: 25,
-    width: 72,
-    height: 72,
-  },
-  avatar: {
-    flex: 1,
-    objectFit: 'contain',
-    borderRadius: 100,
-  },
-  carImage: {
-    resizeMode: 'cover',
-    width: '65%',
-    height: undefined,
-    aspectRatio: 3.15,
-  },
   contractorInfoContainer: {
     alignItems: 'center',
     marginBottom: 16,
