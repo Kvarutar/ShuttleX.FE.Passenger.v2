@@ -1,7 +1,15 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Video from 'react-native-video';
-import { Button, GroupedBrandIconMini, sizes, SquareButtonModes, Text, useTheme } from 'shuttlex-integration';
+import {
+  Button,
+  GroupedBrandIconMini,
+  SafeAreaView,
+  sizes,
+  SquareButtonModes,
+  Text,
+  useTheme,
+} from 'shuttlex-integration';
 
 import { SplashScreenProps } from './props';
 
@@ -14,9 +22,6 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
   const navigationToSignUp = () => navigation.replace('Auth', { state: 'SignUp' });
 
   const computedStyles = StyleSheet.create({
-    container: {
-      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
-    },
     comfortableText: {
       color: colors.textTitleColor,
     },
@@ -35,37 +40,39 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
   });
 
   return (
-    <SafeAreaView style={[computedStyles.container, styles.container]}>
+    <>
       <Video
         source={require('../../../../assets/videos/background_video.mp4')}
         repeat
         style={StyleSheet.absoluteFill}
         resizeMode="cover"
       />
-      <View style={styles.groupedBrandIconContainer}>
-        <GroupedBrandIconMini
-          favIconColor={computedStyles.favIconStyle.color}
-          favIconInnerColor={computedStyles.favIconInnerStyle.color}
-          textIconColor={computedStyles.textIconStyle.color}
-        />
-      </View>
-      <View style={styles.titlesContainer}>
-        <Text style={[styles.comfortableText, computedStyles.comfortableText]}>{t('auth_Splash_comfortable')}</Text>
-        <Text style={[styles.chooseYourTripText, computedStyles.chooseYourTripText]}>
-          {t('auth_Splash_chooseYourTrip')}
-        </Text>
-      </View>
-      <View style={styles.buttonsContainer}>
-        <Button text={t('auth_Splash_signIn')} onPress={navigationToSignIn} containerStyle={styles.buttonContainer} />
-        <Button
-          text={t('auth_Splash_signUp')}
-          onPress={navigationToSignUp}
-          mode={SquareButtonModes.Mode3}
-          containerStyle={styles.buttonContainer}
-          style={styles.button}
-        />
-      </View>
-    </SafeAreaView>
+      <SafeAreaView withTransparentBackground containerStyle={styles.container}>
+        <View style={styles.groupedBrandIconContainer}>
+          <GroupedBrandIconMini
+            favIconColor={computedStyles.favIconStyle.color}
+            favIconInnerColor={computedStyles.favIconInnerStyle.color}
+            textIconColor={computedStyles.textIconStyle.color}
+          />
+        </View>
+        <View style={styles.titlesContainer}>
+          <Text style={[styles.comfortableText, computedStyles.comfortableText]}>{t('auth_Splash_comfortable')}</Text>
+          <Text style={[styles.chooseYourTripText, computedStyles.chooseYourTripText]}>
+            {t('auth_Splash_chooseYourTrip')}
+          </Text>
+        </View>
+        <View style={styles.buttonsContainer}>
+          <Button text={t('auth_Splash_signIn')} onPress={navigationToSignIn} containerStyle={styles.buttonContainer} />
+          <Button
+            text={t('auth_Splash_signUp')}
+            onPress={navigationToSignUp}
+            mode={SquareButtonModes.Mode3}
+            containerStyle={styles.buttonContainer}
+            style={styles.button}
+          />
+        </View>
+      </SafeAreaView>
+    </>
   );
 };
 
@@ -102,7 +109,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   button: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 4,
   },
 });
 

@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'baseline',
-    height: '100%',
+    zIndex: 1,
+    flex: 1,
   },
   button: {
     minWidth: 72,

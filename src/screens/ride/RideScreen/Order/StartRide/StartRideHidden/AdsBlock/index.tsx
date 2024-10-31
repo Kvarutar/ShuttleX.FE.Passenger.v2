@@ -20,15 +20,28 @@ const AdsBlock = ({
     },
   });
 
-  const getImageSource = (image: UriType): ImageSourcePropType => {
-    return typeof image === 'string' ? { uri: image } : image;
+  const isColor = (value: string) => /^#[0-9A-F]{3,8}$/i.test(value);
+
+  const getImageSource = (image: UriType): ImageSourcePropType | string => {
+    if (typeof image === 'string') {
+      return isColor(image) ? image : { uri: image };
+    }
+    return image;
   };
 
-  const renderBlock = ({ uri, content, style }: renderBlockProps) => (
-    <ImageBackground source={getImageSource(uri)} style={[styles.background, style]} resizeMode="cover">
-      {content}
-    </ImageBackground>
-  );
+  const renderBlock = ({ uri, content, style }: renderBlockProps) => {
+    const imageSource = getImageSource(uri);
+
+    if (typeof imageSource === 'string') {
+      return <View style={[styles.background, style, { backgroundColor: imageSource }]}>{content}</View>;
+    }
+
+    return (
+      <ImageBackground source={imageSource} style={[styles.background, style]} resizeMode="cover">
+        {content}
+      </ImageBackground>
+    );
+  };
 
   if (bigImagePlace === 'none') {
     return renderBlock({

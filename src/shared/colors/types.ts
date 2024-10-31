@@ -4,7 +4,10 @@ export type PassengerColors = {
     text: string;
   };
   adsBackgroundColor: {
-    light: string;
-    strong: string;
+    whiteOpacityLight: string;
+    whiteOpacityStrong: string;
+    prize: string;
+    firstSeason: string;
+    helpUkraine: string;
   };
 };

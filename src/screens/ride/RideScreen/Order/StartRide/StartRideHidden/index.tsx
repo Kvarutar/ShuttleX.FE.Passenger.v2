@@ -2,11 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { Button, ButtonProps, Text, useTheme } from 'shuttlex-integration';
 
-import imageBonuses from '../../../../../../../assets/images/startRide/imageBonuses';
+import imageBonuses from '../../../../../../../assets/images/startRide/imageBonusesBackground';
 import imageCollectCapybara from '../../../../../../../assets/images/startRide/imageCollectCapybara';
-import imageFirstSeasonCollect from '../../../../../../../assets/images/startRide/imageFirstSeasonCollect';
-import imagePrizes from '../../../../../../../assets/images/startRide/imagePrizes';
-import imageSupportUkraine from '../../../../../../../assets/images/startRide/imageSupportUkraine';
+import imageStartRideCarouselCapybara from '../../../../../../../assets/images/startRide/imageStartRideCarouselCapybara';
+import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
+import imageUkraineHeart from '../../../../../../../assets/images/startRide/imageUkraineHeart';
 import passengerColors from '../../../../../../shared/colors/colors';
 import usePrizeTimer from '../utils/usePrizeTimer';
 import AdsBlock from './AdsBlock';
@@ -40,13 +40,13 @@ const StartRideHidden = () => {
       color: passengerColors.lotteryColors.text,
     },
     prizeBlock: {
-      backgroundColor: passengerColors.adsBackgroundColor.strong,
+      backgroundColor: passengerColors.adsBackgroundColor.whiteOpacityStrong,
     },
     prizeBlockText: {
       color: colors.textTertiaryColor,
     },
     capiAmountContainer: {
-      backgroundColor: testData.capiAmount ? colors.primaryColor : passengerColors.adsBackgroundColor.light,
+      backgroundColor: testData.capiAmount ? colors.primaryColor : passengerColors.adsBackgroundColor.whiteOpacityLight,
     },
     capiAmountText: {
       color: testData.capiAmount ? colors.textPrimaryColor : colors.textTertiaryColor,
@@ -85,53 +85,59 @@ const StartRideHidden = () => {
     //       </Text>
     //     </AdsContent>
     //   ),
-    //   firstImgUri: imagePlayGame,
+    //   firstImgUri: imagePlayGameBackground,
     // },
     //TODO: add logic for navigation
     {
       firstContent: (
-        <AdsContent>
-          <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
-            {t('ride_Ride_StartRideHidden_adsPrizes')}
-          </Text>
-          <Text style={[styles.timeText, computedStyles.lotteryText]}>
-            {`${hours}${t('ride_Ride_StartRide_hours')}:${minutes}${t('ride_Ride_StartRide_minutes')}:${seconds}${t('ride_Ride_StartRide_seconds')}`}
-          </Text>
-          <View style={styles.prizesButtonContainer}>
-            <AdsButton text={t('ride_Ride_StartRideHidden_adsPrizesButtonStart')} />
-            <View style={[styles.prizeBlock, computedStyles.prizeBlock]}>
-              <Text style={[styles.buttonText, computedStyles.prizeBlockText]}>
-                {t('ride_Ride_StartRideHidden_adsPrizesButtonWin')}
-              </Text>
+        <>
+          <AdsContent>
+            <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
+              {t('ride_Ride_StartRideHidden_adsPrizes')}
+            </Text>
+            <Text style={[styles.timeText, computedStyles.lotteryText]}>
+              {`${hours}${t('ride_Ride_StartRide_hours')}:${minutes}${t('ride_Ride_StartRide_minutes')}:${seconds}${t('ride_Ride_StartRide_seconds')}`}
+            </Text>
+            <View style={styles.prizesButtonContainer}>
+              <AdsButton text={t('ride_Ride_StartRideHidden_adsPrizesButtonStart')} />
+              <View style={[styles.prizeBlock, computedStyles.prizeBlock]}>
+                <Text style={[styles.buttonText, computedStyles.prizeBlockText]}>
+                  {t('ride_Ride_StartRideHidden_adsPrizesButtonWin')}
+                </Text>
+              </View>
             </View>
-          </View>
-        </AdsContent>
+          </AdsContent>
+          <Image source={imageStartRideCarouselPrize} style={styles.prizeImage} />
+        </>
       ),
-      firstImgUri: imagePrizes,
+      firstImgUri: passengerColors.adsBackgroundColor.prize,
     },
     //TODO: add logic for navigation
     {
       firstContent: (
-        <AdsContent>
-          <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
-            {t('ride_Ride_StartRideHidden_adsFirstSeason')}
-          </Text>
-          <View style={styles.capiCollectWrapper}>
-            <View style={styles.capiImageContainer}>
-              <Image source={imageCollectCapybara} style={[styles.capiImage, computedStyles.capiImage]} />
-              {collectedCapiContent}
+        <>
+          <AdsContent>
+            <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
+              {t('ride_Ride_StartRideHidden_adsFirstSeason')}
+            </Text>
+            <View style={styles.capiCollectWrapper}>
+              <View style={styles.capiImageContainer}>
+                <Image source={imageCollectCapybara} style={[styles.capiImage, computedStyles.capiImage]} />
+                {collectedCapiContent}
+              </View>
+              <View style={[styles.capiAmountContainer, computedStyles.capiAmountContainer]}>
+                <Text style={[styles.capiAmountText, computedStyles.capiAmountText]}>{testData.capiAmount}</Text>
+              </View>
             </View>
-            <View style={[styles.capiAmountContainer, computedStyles.capiAmountContainer]}>
-              <Text style={[styles.capiAmountText, computedStyles.capiAmountText]}>{testData.capiAmount}</Text>
-            </View>
-          </View>
-          <Text style={[styles.collectText, computedStyles.lotteryText]}>
-            {t('ride_Ride_StartRideHidden_adsFirstSeasonText')}
-          </Text>
-          <AdsButton text={t('ride_Ride_StartRideHidden_adsFirstSeasonButton')} />
-        </AdsContent>
+            <Text style={[styles.collectText, computedStyles.lotteryText]}>
+              {t('ride_Ride_StartRideHidden_adsFirstSeasonText')}
+            </Text>
+            <AdsButton text={t('ride_Ride_StartRideHidden_adsFirstSeasonButton')} />
+          </AdsContent>
+          <Image source={imageStartRideCarouselCapybara} style={styles.firstSeasonCapybaraImage} />
+        </>
       ),
-      firstImgUri: imageFirstSeasonCollect,
+      firstImgUri: passengerColors.adsBackgroundColor.firstSeason,
     },
     {
       bigImagePlace: 'right',
@@ -144,16 +150,19 @@ const StartRideHidden = () => {
       ),
       firstImgUri: imageBonuses,
       secondContent: (
-        <AdsContent
-          style={styles.supportUkraineBlock}
-          buttonProps={{ text: t('ride_Ride_StartRideHidden_adsSupportButton') }}
-        >
-          <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
-            {t('ride_Ride_StartRideHidden_adsSupport')}
-          </Text>
-        </AdsContent>
+        <>
+          <AdsContent
+            style={styles.supportUkraineBlock}
+            buttonProps={{ text: t('ride_Ride_StartRideHidden_adsSupportButton') }}
+          >
+            <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
+              {t('ride_Ride_StartRideHidden_adsSupport')}
+            </Text>
+          </AdsContent>
+          <Image source={imageUkraineHeart} style={styles.ukraineHeartImage} />
+        </>
       ),
-      secondImgUri: imageSupportUkraine,
+      secondImgUri: passengerColors.adsBackgroundColor.helpUkraine,
     },
     // {
     //   bigImagePlace: 'left',
@@ -164,7 +173,7 @@ const StartRideHidden = () => {
     //       </Text>
     //     </AdsContent>
     //   ),
-    //   firstImgUri: imageKryptobaraToken,
+    //   firstImgUri: imageKryptobaraTokenBackground,
     //   secondContent: (
     //     <AdsContent>
     //       <View>
@@ -177,7 +186,7 @@ const StartRideHidden = () => {
     //       </View>
     //     </AdsContent>
     //   ),
-    //   secondImgUri: imagePreferredCrypto,
+    //   secondImgUri: imagePreferredCryptoBackground,
     // },
     // {
     //   firstContent: (
@@ -190,7 +199,7 @@ const StartRideHidden = () => {
     //       </Text>
     //     </AdsContent>
     //   ),
-    //   firstImgUri: imageAchievements,
+    //   firstImgUri: imageAchievementsBackground,
     //   containerStyle: styles.achievementsContainer,
     // },
   ];
@@ -300,6 +309,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 10,
     justifyContent: 'center',
+  },
+  prizeImage: {
+    width: '85%',
+    height: undefined,
+    aspectRatio: 3.15,
+    position: 'absolute',
+    bottom: 0,
+    alignSelf: 'center',
+  },
+  firstSeasonCapybaraImage: {
+    width: undefined,
+    height: 190,
+    aspectRatio: 0.8,
+    position: 'absolute',
+    right: 10,
+    top: 30,
+  },
+  ukraineHeartImage: {
+    width: undefined,
+    height: 160,
+    aspectRatio: 1,
+    position: 'absolute',
+    bottom: 10,
+    right: 0,
   },
 });
 

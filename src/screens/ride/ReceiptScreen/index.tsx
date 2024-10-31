@@ -36,8 +36,6 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const currencySign = getCurrencySign('UAH'); //for test
-
   const computedStyles = StyleSheet.create({
     textSecondaryColor: {
       color: colors.textSecondaryColor,
@@ -229,7 +227,8 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
                 <View style={styles.priceContainer}>
                   <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
                   <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
-                    {currencySign}12,7
+                    {/*TODO: swap currencyCode to correct value*/}
+                    {getCurrencySign('UAH')}12,7
                   </Text>
                 </View>
               </View>

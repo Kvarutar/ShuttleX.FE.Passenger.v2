@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, ImageSourcePropType, Platform, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Image, ImageSourcePropType, Pressable, StyleSheet, View } from 'react-native';
 import {
   Button,
   ButtonShadows,
@@ -8,10 +8,9 @@ import {
   ButtonSizes,
   CircleButtonModes,
   CloseIcon,
-  CustomKeyboardAvoidingView,
   DislikeIcon,
   LikeIcon,
-  sizes,
+  SafeAreaView,
   SquareButtonModes,
   StatsBlock,
   Text,
@@ -48,10 +47,6 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   const [selectedSubMarks, setSelectedSubMarks] = useState<number[]>([]);
 
   const computedStyles = StyleSheet.create({
-    container: {
-      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
-      backgroundColor: colors.backgroundPrimaryColor,
-    },
     text: {
       color: colors.textSecondaryColor,
     },
@@ -184,18 +179,18 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
           <View style={styles.markContainer}>
             <Button
               shape={ButtonShapes.Circle}
-              size={ButtonSizes.L}
+              style={styles.markContainerStyle}
               mode={mark === 'dislike' ? CircleButtonModes.Mode3 : CircleButtonModes.Mode4}
-              circleSubContainerStyle={styles.markButton}
+              circleSubContainerStyle={styles.markCircleSubContainerStyle}
               onPress={() => setMark('dislike')}
             >
               <DislikeIcon color={mark === 'dislike' ? colors.iconTertiaryColor : undefined} />
             </Button>
             <Button
               shape={ButtonShapes.Circle}
-              size={ButtonSizes.L}
+              style={styles.markContainerStyle}
               mode={mark === 'like' ? CircleButtonModes.Mode5 : CircleButtonModes.Mode4}
-              circleSubContainerStyle={styles.markButton}
+              circleSubContainerStyle={styles.markCircleSubContainerStyle}
               onPress={() => setMark('like')}
             >
               <LikeIcon color={mark === 'like' ? colors.iconTertiaryColor : undefined} />
@@ -207,51 +202,47 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   );
 
   return (
-    <CustomKeyboardAvoidingView>
-      <SafeAreaView style={[styles.container, computedStyles.container]}>
-        <View style={styles.feedback}>
-          <Button shape={ButtonShapes.Circle} mode={CircleButtonModes.Mode2} onPress={onEndTrip}>
-            <CloseIcon />
-          </Button>
-          <View style={styles.contentWrapper}>
-            <View style={styles.riderInfoContainer}>
-              {/*TODO swap to contractor name*/}
-              <Image style={styles.avatar} source={{ uri: contractorTestInfo.img }} />
-              <Text style={[styles.text, styles.textName]}>{contractorTestInfo.name}</Text>
-              <StatsBlock amountLikes={contractorTestInfo.likes} amountRides={contractorTestInfo.rides} />
-            </View>
-            {markBlock}
+    <SafeAreaView containerStyle={styles.container}>
+      <View style={styles.feedback}>
+        <Button shape={ButtonShapes.Circle} mode={CircleButtonModes.Mode2} onPress={onEndTrip}>
+          <CloseIcon />
+        </Button>
+        <View style={styles.contentWrapper}>
+          <View style={styles.riderInfoContainer}>
+            {/*TODO swap to contractor name*/}
+            <Image style={styles.avatar} source={{ uri: contractorTestInfo.img }} />
+            <Text style={[styles.text, styles.textName]}>{contractorTestInfo.name}</Text>
+            <StatsBlock amountLikes={contractorTestInfo.likes} amountRides={contractorTestInfo.rides} />
           </View>
-          <Button
-            containerStyle={styles.confirmButtonContainer}
-            withCircleModeBorder
-            shadow={ButtonShadows.Strong}
-            shape={ButtonShapes.Circle}
-            size={ButtonSizes.L}
-            innerSpacing={8}
-            onPress={onSendFeedback}
-            text={t('ride_Rating_nextButton')}
-            textStyle={[styles.confirmText, computedStyles.confirmText]}
-            mode={mark ? SquareButtonModes.Mode1 : SquareButtonModes.Mode4}
-            disabled={!mark}
-          />
+          {markBlock}
         </View>
-      </SafeAreaView>
-    </CustomKeyboardAvoidingView>
+        <Button
+          containerStyle={styles.confirmButtonContainer}
+          withCircleModeBorder
+          shadow={ButtonShadows.Strong}
+          shape={ButtonShapes.Circle}
+          size={ButtonSizes.L}
+          innerSpacing={8}
+          onPress={onSendFeedback}
+          text={t('ride_Rating_nextButton')}
+          textStyle={[styles.confirmText, computedStyles.confirmText]}
+          mode={mark ? SquareButtonModes.Mode1 : SquareButtonModes.Mode4}
+          disabled={!mark}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   feedback: {
     flex: 1,
-    paddingHorizontal: sizes.paddingHorizontal,
     justifyContent: 'space-between',
-    marginBottom: 10,
   },
   contentWrapper: {
     flex: 1,
-    marginTop: 32,
-    gap: 80,
+    justifyContent: 'space-around',
+    marginBottom: 32,
   },
   container: {
     flex: 1,
@@ -277,7 +268,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     marginTop: 38,
   },
-  markButton: {
+  markContainerStyle: {
+    width: 116,
+    height: 116,
+  },
+  markCircleSubContainerStyle: {
     borderWidth: 0,
   },
   text: {
@@ -299,8 +294,8 @@ const styles = StyleSheet.create({
   },
   subMarkImage: {
     objectFit: 'contain',
-    width: 70,
-    height: 70,
+    width: 73,
+    height: 73,
     borderRadius: 100,
     borderWidth: 2.5,
   },
@@ -316,8 +311,8 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderWidth: 2.5,
     zIndex: 1,
-    width: 70,
-    height: 70,
+    width: 73,
+    height: 73,
     alignSelf: 'center',
     position: 'absolute',
   },

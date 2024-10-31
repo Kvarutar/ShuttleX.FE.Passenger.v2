@@ -1,11 +1,11 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonShapes,
   CircleButtonModes,
-  Fog,
   MenuIcon,
   NotificationIcon,
   NotificationType,
@@ -37,6 +37,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
   const orderRef = useRef<OrderRef>(null);
+  const insets = useSafeAreaInsets();
 
   const orderStatus = useSelector(orderStatusSelector);
   const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
@@ -52,6 +53,8 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
       setIsWinningPopupVisible(true);
     }, 2000);
   }, []);
+
+  const iosPaddingVertical = insets.bottom ? 0 : sizes.paddingVertical / 2;
 
   //for test
   useEffect(() => {
@@ -195,7 +198,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
 
   const computedStyles = StyleSheet.create({
     topButtonsContainer: {
-      paddingTop: Platform.OS === 'android' ? sizes.paddingVertical : 0,
+      paddingTop: Platform.OS === 'android' ? sizes.paddingVertical : iosPaddingVertical,
       zIndex: orderStatus === OrderStatus.Confirming ? 1 : 0,
     },
     unreadNotificationsMarker: {
@@ -266,7 +269,6 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
         <MapView />
         <View style={[styles.topButtonsContainer, computedStyles.topButtonsContainer]}>{topButtons[orderStatus]}</View>
         {contractorInfo ? <Trip /> : <Order ref={orderRef} />}
-        {orderStatus === OrderStatus.Confirming && <Fog />}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
       {isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}

@@ -69,10 +69,12 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
       color: colors.textTertiaryColor,
     },
     capiText: {
-      color: passengerColors.adsBackgroundColor.strong,
+      color: passengerColors.adsBackgroundColor.whiteOpacityStrong,
     },
     capiAmountContainer: {
-      backgroundColor: contractorInfoTest.capiAmount ? colors.primaryColor : passengerColors.adsBackgroundColor.light,
+      backgroundColor: contractorInfoTest.capiAmount
+        ? colors.primaryColor
+        : passengerColors.adsBackgroundColor.whiteOpacityLight,
     },
     capiAmountText: {
       color: contractorInfoTest.capiAmount ? colors.textPrimaryColor : colors.textTertiaryColor,

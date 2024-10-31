@@ -172,6 +172,7 @@ const Trip = () => {
       hiddenPart={<HiddenPart extraSum={extraSum} />}
       visiblePartStyle={styles.visiblePartStyle}
       bottomWindowStyle={styles.bottomWindowStyle}
+      hiddenPartStyle={styles.hiddenPartStyle}
       hiddenPartButton={
         <SwipeButton
           mode={SwipeButtonModes.Decline}
@@ -184,6 +185,9 @@ const Trip = () => {
 };
 
 const styles = StyleSheet.create({
+  hiddenPartStyle: {
+    marginTop: 0,
+  },
   visiblePartStyle: {
     marginBottom: 26,
   },

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, View } from 'react-native';
-import { Bar, BarModes, CloseIcon, sizes, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { StyleSheet, View } from 'react-native';
+import { Bar, BarModes, CloseIcon, Fog, sizes, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { setOrderStatus } from '../../../../core/ride/redux/order';
@@ -25,7 +25,7 @@ const Confirming = () => {
       color: colors.textSecondaryColor,
     },
     closeButtonContainer: {
-      marginBottom: Platform.OS === 'android' ? sizes.paddingVertical : 0,
+      marginBottom: sizes.paddingVertical / 2,
     },
   });
 
@@ -45,22 +45,27 @@ const Confirming = () => {
   }, [dispatch]);
 
   return (
-    <View style={styles.wrapper}>
-      <View style={styles.imageContainer}>
-        <TariffImage style={styles.image} />
-        <Text style={styles.topText}>{t('ride_Ride_Confirming_searchDrivers', { dots: '.'.repeat(dotsCounter) })}</Text>
+    <>
+      <Fog />
+      <View style={styles.wrapper}>
+        <View style={styles.imageContainer}>
+          <TariffImage style={styles.image} />
+          <Text style={styles.topText}>
+            {t('ride_Ride_Confirming_searchDrivers', { dots: '.'.repeat(dotsCounter) })}
+          </Text>
+        </View>
+        <View style={computedStyles.closeButtonContainer}>
+          <Bar
+            mode={BarModes.Disabled}
+            style={[styles.button, computedStyles.button]}
+            onPress={() => dispatch(setOrderStatus(OrderStatus.Payment))}
+          >
+            <CloseIcon style={styles.closeIcon} />
+          </Bar>
+          <Text style={[styles.buttonText, computedStyles.buttonText]}>{t('ride_Ride_Confirming_cancelButton')}</Text>
+        </View>
       </View>
-      <View style={computedStyles.closeButtonContainer}>
-        <Bar
-          mode={BarModes.Disabled}
-          style={[styles.button, computedStyles.button]}
-          onPress={() => dispatch(setOrderStatus(OrderStatus.Payment))}
-        >
-          <CloseIcon style={styles.closeIcon} />
-        </Bar>
-        <Text style={[styles.buttonText, computedStyles.buttonText]}>{t('ride_Ride_Confirming_cancelButton')}</Text>
-      </View>
-    </View>
+    </>
   );
 };
 

@@ -6,8 +6,11 @@ const passengerColors: PassengerColors = {
     text: '#FFFFFF99',
   },
   adsBackgroundColor: {
-    light: '#FFFFFF1A',
-    strong: '#FFFFFF33',
+    whiteOpacityLight: '#FFFFFF1A',
+    whiteOpacityStrong: '#FFFFFF33',
+    prize: '#0033FF',
+    firstSeason: '#916B56',
+    helpUkraine: '#1C549E',
   },
 };
 
