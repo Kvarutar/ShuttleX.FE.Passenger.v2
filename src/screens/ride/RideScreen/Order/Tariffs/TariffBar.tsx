@@ -6,6 +6,8 @@ import { BaggageIcon, Bar, getCurrencySign, ProfileIcon, Text, useTariffsIcons, 
 import PlanButton, { planPriceCounting } from '../../PlanButton/PlanButton';
 import { TariffBarProps } from './types';
 
+const animationDuration = 300;
+
 const TariffBar = ({
   isPlanSelected,
   selectedPrice,
@@ -61,17 +63,14 @@ const TariffBar = ({
     },
   });
 
-  const animatedButtonWrapper = useAnimatedStyle(() => {
-    return {
-      height: withTiming(isPlanSelected ? 76 : 0, { duration: 200 }),
-    };
-  });
-
-  const animatedTariffContainer = useAnimatedStyle(() => {
-    return {
-      height: withTiming(windowIsOpened ? 200 : 52, { duration: 300 }),
-    };
-  });
+  const animatedStyles = {
+    buttonWrapper: useAnimatedStyle(() => ({
+      height: withTiming(isPlanSelected ? 76 : 0, { duration: animationDuration }),
+    })),
+    tariffContainer: useAnimatedStyle(() => ({
+      height: withTiming(windowIsOpened ? 200 : 52, { duration: animationDuration }),
+    })),
+  };
 
   const formatTime = (time: number) => {
     const totalMinutes = Math.floor(time / 60);
@@ -158,11 +157,11 @@ const TariffBar = ({
 
   return (
     <Bar style={[styles.container, computedStyles.container]} onPress={event => isAvailableTariff && onPress(event)}>
-      <Animated.View style={[styles.tariffContainer, computedStyles.tariffContainer, animatedTariffContainer]}>
+      <Animated.View style={[styles.tariffContainer, computedStyles.tariffContainer, animatedStyles.tariffContainer]}>
         {tariffContent}
       </Animated.View>
       {availablePlans.length !== 1 && (
-        <Animated.View style={animatedButtonWrapper}>
+        <Animated.View style={animatedStyles.buttonWrapper}>
           <View style={styles.buttonContainer}>
             {availablePlans.map((plan, index) => (
               <PlanButton

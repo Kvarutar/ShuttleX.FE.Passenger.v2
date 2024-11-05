@@ -76,7 +76,7 @@ const WinningPopup = ({ setIsWinningPopupVisible }: WinningPopupProps) => {
 
 const styles = StyleSheet.create({
   hiddenPartContainerStyle: {
-    paddingTop: 24,
+    marginTop: 6,
   },
   confettiContainer: {
     zIndex: 1,

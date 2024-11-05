@@ -34,7 +34,7 @@ const contractorTestInfo = {
   name: 'Slava',
   likes: 51353,
   rides: 3222,
-  img: 'https://s3-alpha-sig.figma.com/img/a077/4174/e90e7da558343949a212b72e0498120b?Expires=1730073600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qK4OdlwMzlcgqwjJbjVHCLWtIZxc6mK1QoOJuGD90uBLnuE~i5E5M6rK4TXKSYgOQg84OJzaGezQZlnf08wr3kPKOm-9LEql~LwzsDIoRi7dPIrx54jQ-58pcoJn8iossxaMahEKJKyAlvCbXY50-h-9Vw7J-m0lbq9kStIc19UsjcyagEZEwqGvhgDo-HMHPy2t0XY87zNUrLlOOs6xkj~DnsxUeSf8wG-cON2vHw3khDJ4W6IYYq2mocnWY~MlivnsxZmYo5wNhdubaw7yarsi-OxaOL5RqiFXNw9Ce66YsR9NMRyI7vN9hpGJeH2S6IEK2apoYnoLKXIq3P-vgg__',
+  img: 'https://s3-alpha-sig.figma.com/img/a077/4174/e90e7da558343949a212b72e0498120b?Expires=1731283200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=ji8~5irXi2j4kUsLQCdTMMzNoh4LCHNfCFs7nv9~erH15T1vg7kzZrm6ljKLeWGSiSuiWvyGQMowXUDRBdsYJsfwnhJchYI8zFk8LFrKqURYqC43-UUwWb~HFlcv7tO6TSe5EZEBsuIdTYDPp-9-7KOT1TWNg8chgfWEZVNbb-Bcn1QHU0sv3JB5aWZuIepHoI5VKJA8iIeB45mnK7RLhLQLl9hIm99JflOOtrexzMi9a4-1Z79Sns0bXjPo3~DZafbIsYoScx1I-Nxi~eq6taRgnr4cGMpYy9sCr0MDAHyiTarDZ~iPHWDdLDGjRpzkZzBCL5kGohRvuNh92HlfZQ__',
 };
 
 const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {

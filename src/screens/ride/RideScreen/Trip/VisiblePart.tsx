@@ -31,8 +31,6 @@ import { TimerStateDataType, VisiblePartProps } from './types';
 const contractorInfoTest = {
   contractor: {
     name: 'Slava',
-    image:
-      'https://s3-alpha-sig.figma.com/img/a077/4174/e90e7da558343949a212b72e0498120b?Expires=1730073600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qK4OdlwMzlcgqwjJbjVHCLWtIZxc6mK1QoOJuGD90uBLnuE~i5E5M6rK4TXKSYgOQg84OJzaGezQZlnf08wr3kPKOm-9LEql~LwzsDIoRi7dPIrx54jQ-58pcoJn8iossxaMahEKJKyAlvCbXY50-h-9Vw7J-m0lbq9kStIc19UsjcyagEZEwqGvhgDo-HMHPy2t0XY87zNUrLlOOs6xkj~DnsxUeSf8wG-cON2vHw3khDJ4W6IYYq2mocnWY~MlivnsxZmYo5wNhdubaw7yarsi-OxaOL5RqiFXNw9Ce66YsR9NMRyI7vN9hpGJeH2S6IEK2apoYnoLKXIq3P-vgg__',
     car: {
       model: 'Toyota Land Cruiser',
       plateNumber: 'BB 4177 CH',

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getLocales } from 'react-native-localize';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { Easing, FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import WebView from 'react-native-webview';
 import {
   ArrowIcon,
@@ -169,10 +169,6 @@ const PaymentPopup = () => {
       marginRight: windowIsOpened ? 0 : -sizes.paddingHorizontal,
       marginBottom: 0,
     },
-    paymentBar: {
-      marginRight: windowIsOpened ? 0 : 8,
-      marginBottom: 8,
-    },
     addMethodLabel: {
       color: colors.textSecondaryColor,
     },
@@ -272,7 +268,6 @@ const PaymentPopup = () => {
   const reorderPaymentMethods = (selectedMethod: string) => {
     const updatedMethods = testPaymentMethods.filter(method => method.method !== selectedMethod);
     const selectedPaymentMethod = testPaymentMethods.find(method => method.method === selectedMethod);
-
     if (selectedPaymentMethod) {
       updatedMethods.unshift(selectedPaymentMethod);
     }
@@ -297,10 +292,11 @@ const PaymentPopup = () => {
     },
     {
       title: t('ride_Ride_PaymentPopup_priceTitle'),
-      value: planPriceCounting(
+      // TODO: swap currencyCode to correct value
+      value: `${getCurrencySign('UAH')}${planPriceCounting(
         Number(availableTestPlans[selectedPlan].DurationSec),
         availableTestPlans[selectedPlan].AlgorythmType,
-      ),
+      )}`,
     },
     {
       title: t('ride_Ride_PaymentPopup_timeTitle'),
@@ -386,10 +382,9 @@ const PaymentPopup = () => {
   const infoTextBlock = ({ topText, bottomText }: { topText: string; bottomText: string }) => (
     <View key={`info_text_${topText}`} style={styles.infoTextContainer}>
       <Text style={[styles.infoTopText, computedStyles.infoTopText]}>{topText}</Text>
-      <Text numberOfLines={1} style={styles.infoBottomText}>
-        {/*TODO: swap currencyCode to correct value*/}
-        {topText === t('ride_Ride_PaymentPopup_priceTitle') ? `${getCurrencySign('UAH')}${bottomText}` : bottomText}
-      </Text>
+      <Animated.Text layout={FadeIn.duration(500)} numberOfLines={1} style={styles.infoBottomText}>
+        {bottomText}
+      </Animated.Text>
     </View>
   );
 
@@ -429,18 +424,23 @@ const PaymentPopup = () => {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           style={computedStyles.scrollView}
+          contentContainerStyle={styles.scrollViewContainerStyle}
         >
           <>
-            {reorderPaymentMethods(selectedPayment).map((method, index) => (
-              <PaymentBar
-                key={index}
-                method={method}
-                title={paymentTitle[method.method as DefaultPaymentMethodsType]}
-                style={computedStyles.paymentBar}
-                squareShape={!windowIsOpened}
-                onPress={() => setSelectedPayment(method.method as DefaultPaymentMethodsType)}
-                selected={method.method === selectedPayment}
-              />
+            {reorderPaymentMethods(selectedPayment).map(method => (
+              //TODO: change method.details in key to card number
+              <Animated.View
+                key={`${method.method}_${method.details}`}
+                layout={LinearTransition.easing(Easing.ease).duration(200)}
+              >
+                <PaymentBar
+                  method={method}
+                  title={paymentTitle[method.method as DefaultPaymentMethodsType]}
+                  squareShape={!windowIsOpened}
+                  onPress={() => setSelectedPayment(method.method as DefaultPaymentMethodsType)}
+                  selected={method.method === selectedPayment}
+                />
+              </Animated.View>
             ))}
             {/* {windowIsOpened && (
               <View>
@@ -644,6 +644,9 @@ const styles = StyleSheet.create({
   },
   scrollViewWrapper: {
     flexShrink: 1,
+  },
+  scrollViewContainerStyle: {
+    gap: 8,
   },
   addMethodLabel: {
     fontSize: 14,

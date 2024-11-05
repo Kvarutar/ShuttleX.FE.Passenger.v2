@@ -32,6 +32,7 @@ const slice = createSlice({
     endTrip(state) {
       state.tripInfo = null;
       state.status = initialState.status;
+      state.contractorInfo = initialState.contractorInfo;
     },
     //TODO call it when notifications page will be done (call dispatch in tripEnded notification)
     addFinishedTrips(state) {

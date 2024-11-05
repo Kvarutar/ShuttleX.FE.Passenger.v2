@@ -74,7 +74,7 @@ const MysteryBoxPopup = ({ setIsMysteryBoxPopupVisible }: MysteryBoxPopupProps) 
 
 const styles = StyleSheet.create({
   hiddenPartContainerStyle: {
-    paddingTop: 24,
+    marginTop: 6,
   },
   mysteryBoxIcon: {
     alignSelf: 'center',

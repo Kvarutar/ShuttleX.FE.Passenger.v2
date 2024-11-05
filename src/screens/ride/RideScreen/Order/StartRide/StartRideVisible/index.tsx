@@ -161,14 +161,13 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
+    marginTop: 6,
   },
   headerContainer: {
     height: 82,
     flexDirection: 'row',
     alignItems: 'flex-end',
     marginBottom: 18,
-    marginTop: -6,
   },
   textContainer: {
     flexDirection: 'column',

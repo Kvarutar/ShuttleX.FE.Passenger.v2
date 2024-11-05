@@ -1,5 +1,5 @@
 import { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native';
-import { BarModes, TariffType } from 'shuttlex-integration';
+import { TariffType } from 'shuttlex-integration';
 
 import { Plan } from '../../PlanButton/types';
 
@@ -8,7 +8,7 @@ export type TariffGroupName = 'Economy' | 'Exclusive' | 'Business';
 export type TariffGroupProps = {
   price: string;
   title: TariffGroupName;
-  mode?: BarModes;
+  isSelected?: boolean;
   style?: StyleProp<ViewStyle>;
   onPress: () => void;
   isAvailableTariffGroup: boolean;

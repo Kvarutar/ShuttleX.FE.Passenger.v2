@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { BottomWindowWithGesture, BottomWindowWithGestureRef, sizes } from 'shuttlex-integration';
+import { BottomWindowWithGesture, BottomWindowWithGestureRef } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
@@ -52,8 +52,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
           setIsOpened={setIsBottomWindowOpen}
           hiddenPart={<StartRideHidden />}
           hiddenPartStyle={styles.hiddenPartStyle}
-          hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
-          hiddenPartWrapperStyle={styles.hiddenPartWrapperStyle}
+          hiddenPartWrapperStyle={styles.hiddenPartWrapper}
           alerts={alerts.map(alertData => (
             <AlertInitializer
               key={alertData.id}
@@ -72,7 +71,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
             setIsOpened={setIsAddressSelectVisible}
             ref={addressSelectRef}
             hiddenPartStyle={styles.hiddenPartStyleAddressSelect}
-            hiddenPartWrapperStyle={styles.hiddenPartWrapperAddressSelect}
+            hiddenPartWrapperStyle={styles.hiddenPartWrapper}
             withHiddenPartScroll={false}
           />
         )}
@@ -82,22 +81,15 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
 );
 
 const styles = StyleSheet.create({
-  hiddenPartStyle: {
-    marginTop: 0,
-  },
-  hiddenPartContainerStyle: {
-    paddingTop: 0,
-    paddingBottom: sizes.paddingVertical,
-  },
   hiddenPartStyleAddressSelect: {
     height: '100%',
-    marginTop: 10,
+    marginTop: 6,
   },
-  hiddenPartWrapperAddressSelect: {
+  hiddenPartWrapper: {
     paddingBottom: 0,
   },
-  hiddenPartWrapperStyle: {
-    paddingBottom: 0,
+  hiddenPartStyle: {
+    marginTop: 0,
   },
 });
 

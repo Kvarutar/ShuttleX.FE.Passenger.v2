@@ -2,10 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import {
   ArrowIcon,
-  BarModes,
   BottomWindowWithGesture,
   Button,
   ButtonShadows,
@@ -183,9 +182,6 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs.some(trf => trf.info.isAvailable);
 
   const computedStyles = StyleSheet.create({
-    confirmButton: {
-      bottom: 38,
-    },
     confirmText: {
       color: isAvailableSelectedTariffGroup ? colors.textPrimaryColor : colors.textQuadraticColor,
     },
@@ -256,32 +252,33 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
               price="12"
               title={group.name}
               onPress={() => setSelectedTariffGroup(group)}
-              mode={group.name === selectedTariffGroup?.name ? BarModes.Active : BarModes.Disabled}
+              isSelected={group.name === selectedTariffGroup?.name}
               isAvailableTariffGroup={group.tariffs.some(trf => trf.info.isAvailable)}
             />
           ))}
         </View>
-        <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false} style={styles.scrollView}>
-          <Animated.View layout={FadeIn}>
+        <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false} style={styles.scrollViewWrapper}>
+          <View style={styles.scrollViewContainer}>
             {selectedTariffGroup?.tariffs.map((tariffBar, index) => (
-              <TariffBar
-                key={`tariff_${index}`}
-                onPress={() => setSelectedPlanIndex(index)}
-                isPlanSelected={selectedPlanIndex === index}
-                selectedPrice={selectedPriceIdx}
-                setSelectedPrice={setSelectedPriceIdx}
-                tariff={tariffBar.tariff}
-                info={tariffBar.info}
-                plans={tariffBar.plans}
-                isAvailableTariff={tariffBar.info.isAvailable}
-                windowIsOpened={windowIsOpened}
-              />
+              <Animated.View key={`${selectedTariffGroup?.name}_${index}`} entering={FadeIn} exiting={FadeOut}>
+                <TariffBar
+                  onPress={() => setSelectedPlanIndex(index)}
+                  isPlanSelected={selectedPlanIndex === index}
+                  selectedPrice={selectedPriceIdx}
+                  setSelectedPrice={setSelectedPriceIdx}
+                  tariff={tariffBar.tariff}
+                  info={tariffBar.info}
+                  plans={tariffBar.plans}
+                  isAvailableTariff={tariffBar.info.isAvailable}
+                  windowIsOpened={windowIsOpened}
+                />
+              </Animated.View>
             ))}
-          </Animated.View>
+          </View>
         </ScrollView>
       </View>
       <Button
-        containerStyle={[styles.confirmButton, computedStyles.confirmButton]}
+        containerStyle={styles.confirmButton}
         withCircleModeBorder
         shadow={ButtonShadows.Strong}
         shape={ButtonShapes.Circle}
@@ -315,6 +312,7 @@ const styles = StyleSheet.create({
   visiblePartStyle: {
     flexShrink: 1,
     marginTop: 20,
+    paddingBottom: 0,
   },
   backIcon: {
     transform: [{ rotate: '180deg' }],
@@ -329,14 +327,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 6,
   },
-  scrollView: {
+  scrollViewWrapper: {
     flex: 0,
     flexShrink: 1,
     marginTop: 8,
   },
+  scrollViewContainer: {
+    paddingBottom: 8,
+  },
   confirmButton: {
     position: 'absolute',
     alignSelf: 'center',
+    bottom: 38,
   },
   confirmText: {
     fontFamily: 'Inter Bold',

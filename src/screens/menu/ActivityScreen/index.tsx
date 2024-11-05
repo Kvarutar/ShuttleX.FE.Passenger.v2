@@ -25,7 +25,7 @@ import RecentAddressesBar from './RecentAddressesBar';
 const testTripData = {
   contractor: {
     image:
-      'https://s3-alpha-sig.figma.com/img/9446/d564/bd2ec06179682d62415780b8d0976216?Expires=1729468800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=G3inQsZfGmT-sasyhZFIjzq5DqM9DjtpwryK~aVrkWsI5Tn1o23HB2rc0DlCkthc80ho6aLY1YZQjRzufSDobarb~054nk~3rxKnBGiKDWnj3bMziQXyIFt7jU13R8TKSpAB2PDM82OayfZhHePbM16G~aL5WAL5nHCUAc1Fb6hKqPB3NJhYKYc0irwkLtdrDFDLOeu4lpo5ecV8tXFYLunxZdtrZvxfghNp8A23xn5YL3-q-lTE-rCAYwmEAVxgNWa7af5sRy0rZmJVPdJHr-GCsvVtRfZM718CNggQ4h2jC77SVZHo9qQ5lJA6wVrWW536en2CNGsyUlcLQubsow__',
+      'https://s3-alpha-sig.figma.com/img/a077/4174/e90e7da558343949a212b72e0498120b?Expires=1731283200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=ji8~5irXi2j4kUsLQCdTMMzNoh4LCHNfCFs7nv9~erH15T1vg7kzZrm6ljKLeWGSiSuiWvyGQMowXUDRBdsYJsfwnhJchYI8zFk8LFrKqURYqC43-UUwWb~HFlcv7tO6TSe5EZEBsuIdTYDPp-9-7KOT1TWNg8chgfWEZVNbb-Bcn1QHU0sv3JB5aWZuIepHoI5VKJA8iIeB45mnK7RLhLQLl9hIm99JflOOtrexzMi9a4-1Z79Sns0bXjPo3~DZafbIsYoScx1I-Nxi~eq6taRgnr4cGMpYy9sCr0MDAHyiTarDZ~iPHWDdLDGjRpzkZzBCL5kGohRvuNh92HlfZQ__',
     name: 'Slava Kornilov',
     car: {
       model: 'Land Cruiser',

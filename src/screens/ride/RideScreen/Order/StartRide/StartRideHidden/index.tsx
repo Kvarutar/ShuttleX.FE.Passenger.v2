@@ -205,7 +205,7 @@ const StartRideHidden = () => {
   ];
 
   return (
-    <View>
+    <View style={styles.wrapper}>
       {adsInfoArray.map((item: AdsBlockProps, index: number) => (
         <AdsBlock
           key={`ads_${index}`}
@@ -222,6 +222,9 @@ const StartRideHidden = () => {
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    paddingBottom: 16,
+  },
   textLarge: {
     fontSize: 32,
     lineHeight: 32,
