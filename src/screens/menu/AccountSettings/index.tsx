@@ -73,13 +73,13 @@ const AccountSettings = (): JSX.Element => {
 
   return (
     <>
-      <SafeAreaView containerStyle={[styles.wrapper, computedStyles.wrapper]}>
+      <SafeAreaView containerStyle={computedStyles.wrapper}>
         <View style={styles.headerStyle}>
           <MenuHeader
             onMenuPress={() => setIsMenuVisible(true)}
             onNotificationPress={() => navigation.navigate('Notifications')}
           >
-            <Text>{t('ride_Menu_navigationAccountSettings')}</Text>
+            <Text style={styles.textTitle}>{t('ride_Menu_navigationAccountSettings')}</Text>
           </MenuHeader>
         </View>
 
@@ -134,11 +134,13 @@ const PhotoBlock = ({ onUploadPhoto }: PhotoBlockProps) => {
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    paddingHorizontal: 0,
-  },
   headerStyle: {
     paddingHorizontal: sizes.paddingHorizontal,
+  },
+  textTitle: {
+    fontFamily: 'Inter Medium',
+    fontSize: 17,
+    lineHeight: 22,
   },
   icon: {
     position: 'absolute',

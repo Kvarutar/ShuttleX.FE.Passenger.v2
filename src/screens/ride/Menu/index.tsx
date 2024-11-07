@@ -99,21 +99,18 @@ const Menu = ({ onClose }: MenuProps) => {
       userImageUri={profile?.imageUri ?? undefined}
       userName={profile?.fullName}
       menuNavigation={menuNavigation}
-      additionalButton={<PlayLotteryButton />}
+      additionalButton={<TicketWalletButton />}
       style={styles.menu}
       currentRoute={currentRoute}
     />
   );
 };
 
-const PlayLotteryButton = () => {
+const TicketWalletButton = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const trips = useSelector(finishedTripsSelector);
-
-  const onPlayLottery = () => {
-    //TODO go to the lottery page
-  };
 
   const computedStyles = StyleSheet.create({
     additionalButton: {
@@ -121,7 +118,10 @@ const PlayLotteryButton = () => {
     },
   });
   return (
-    <Pressable style={[computedStyles.additionalButton, styles.additionalButton]} onPress={onPlayLottery}>
+    <Pressable
+      style={[computedStyles.additionalButton, styles.additionalButton]}
+      onPress={() => navigation.navigate('TicketWallet')}
+    >
       <View style={styles.itemsWrapper}>
         <LotteryIcon />
         <Text style={styles.additionalText}>{t('ride_Menu_ticketWallet')}</Text>

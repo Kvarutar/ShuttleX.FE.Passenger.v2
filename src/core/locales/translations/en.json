@@ -166,5 +166,7 @@
   "menu_Activity_canceled": "Canceled",
   "menu_AccountVerificateCode_firstHeader": "Enter the Four-digit Code You Received",
   "menu_AccountVerificateCode_secondHeader": "in Message",
-  "menu_AccountVerificateCode_change": "Change"
+  "menu_AccountVerificateCode_change": "Change",
+  "menu_TicketWallet_title": "Ticket Wallet",
+  "menu_TicketWallet_numberTitle": "Ticket Number"
 }

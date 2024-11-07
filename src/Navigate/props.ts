@@ -19,4 +19,5 @@ export type RootStackParamList = {
   PromocodesScreen: undefined;
   AccountVerificateCode: undefined;
   Activity: undefined;
+  TicketWallet: undefined;
 };
