@@ -13,7 +13,6 @@ import orderReducer from '../ride/redux/order';
 import tripReducer from '../ride/redux/trip';
 import passengerReducer from './passenger';
 import signalRReducer from './signalr';
-import { signalRMiddleware } from './signalr/middleware';
 
 const rootReducer = combineReducers({
   notifications: notificationsReducer,
@@ -25,14 +24,13 @@ const rootReducer = combineReducers({
   order: orderReducer,
   trip: tripReducer,
   passenger: passengerReducer,
-  signalR: signalRReducer,
+  signalr: signalRReducer,
   accountSettings: accountSettingsReducer,
   ticketWallet: ticketWalletReducer,
 });
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(signalRMiddleware()),
   enhancers: __DEV__ ? [reactotron.createEnhancer!()] : [],
 });
 
