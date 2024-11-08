@@ -1,53 +1,81 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { CodeVerificationScreen, SafeAreaView } from 'shuttlex-integration';
+import { CodeVerificationScreen, milSecToTime, SafeAreaView } from 'shuttlex-integration';
 
-import { calculateLockoutTime, incrementAttempts, setLockoutEndTimestamp } from '../../../core/auth/redux/lockout';
-import { selectLockoutAttempts, selectLockoutEndTimestamp } from '../../../core/auth/redux/lockout/selectors';
+import { isLockedError } from '../../../core/auth/redux/errors/errors';
+import { authErrorSelector, isAuthLoadingSelector, isLoggedInSelector } from '../../../core/auth/redux/selectors';
+import { signIn, verifyCode } from '../../../core/auth/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { SignInCodeScreenProps } from './props';
 
 const SignInCodeScreen = ({ navigation, route }: SignInCodeScreenProps): JSX.Element => {
-  const { verificationType, data } = route.params;
+  const { data, verificationType } = route.params;
   const { t } = useTranslation();
 
   const dispatch = useAppDispatch();
-  const lockoutAttempts = useSelector(selectLockoutAttempts);
-  const lockoutEndTimestamp = useSelector(selectLockoutEndTimestamp);
 
-  const [lockOutTime, setLockOutTime] = useState<number>(0);
+  const isLoading = useSelector(isAuthLoadingSelector);
+  const isLoggedIn = useSelector(isLoggedInSelector);
+  const signError = useSelector(authErrorSelector);
+
   const [isIncorrectCode, setIsIncorrectCode] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const [lockoutEndTimestamp, setLockoutEndTimestamp] = useState(0);
+
+  const [lockoutMinutes, setLockoutMinutes] = useState('');
+
+  const [verificationCode, setVerificationCode] = useState<string | null>(null);
 
   const getHeaderText = (type: string) => ({
     firstPart: type === 'phone' ? t('auth_SignInCode_phonePrompt') : t('auth_SignInCode_emailPrompt'),
     secondPart: data,
   });
 
-  //TODO Add logic to send data on backend
-  const handleCodeChange = (newCode: string) => {
-    setIsIncorrectCode(false);
+  const handleCodeChange = async (newCode: string) => {
+    //TODO: fix inputs: this function triggers when error state changes
+    if (!signError) {
+      setIsIncorrectCode(false);
+    }
+
     if (newCode.length === 4) {
-      if (newCode === '4444') {
-        navigation.replace('Ride');
-      } else {
-        setIsIncorrectCode(true);
-      }
+      setVerificationCode(newCode);
+    } else {
+      setVerificationCode(null);
     }
   };
 
-  //TODO Replace it after add logic from backend
-  const handleRequestAgain = () => {
-    dispatch(incrementAttempts());
-
-    const newLockoutTime = calculateLockoutTime(lockoutAttempts + 1);
-    setLockOutTime(newLockoutTime);
-
-    if (newLockoutTime > 0 && newLockoutTime !== lockoutEndTimestamp) {
-      dispatch(setLockoutEndTimestamp(newLockoutTime));
-      setIsBlocked(true);
+  useEffect(() => {
+    if (verificationCode) {
+      dispatch(verifyCode({ method: verificationType, code: verificationCode, body: data })); //TODO: move logic to handle code change after bug with wron function trigger will be solved
     }
+  }, [verificationCode, data, dispatch, verificationType]);
+
+  useEffect(() => {
+    if (isLoggedIn && !isLoading && !signError) {
+      navigation.replace('Ride');
+    }
+
+    if (signError) {
+      setIsIncorrectCode(true);
+      if (isLockedError(signError)) {
+        setIsIncorrectCode(true);
+        const lockoutEndDate = new Date(signError.body.lockOutEndTime).getTime() - Date.now();
+
+        setLockoutMinutes(Math.round(milSecToTime(lockoutEndDate)).toString());
+        setLockoutEndTimestamp(lockoutEndDate);
+        setIsBlocked(true);
+      }
+    }
+  }, [isLoggedIn, isLoading, signError, navigation, dispatch]);
+
+  const handleRequestAgain = () => {
+    dispatch(signIn({ method: verificationType, data }));
+  };
+
+  const onBannedAgainPress = () => {
+    handleRequestAgain();
+    setIsBlocked(false);
   };
 
   const { firstPart, secondPart } = getHeaderText(verificationType);
@@ -62,11 +90,11 @@ const SignInCodeScreen = ({ navigation, route }: SignInCodeScreenProps): JSX.Ele
         onCodeChange={handleCodeChange}
         isError={isIncorrectCode}
         isBlocked={isBlocked}
-        lockOutTime={lockOutTime}
-        lockOutTimeForText={'5'}
-        onBannedAgainButtonPress={() => setIsBlocked(false)}
+        lockOutTime={lockoutEndTimestamp}
+        lockOutTimeForText={lockoutMinutes}
+        onBannedAgainButtonPress={onBannedAgainPress}
         onSupportButtonPress={() => {
-          console.log('TODO: onSupportPress');
+          console.log('TODO: onSupportPress'); //TODO: add function
         }}
       />
     </SafeAreaView>

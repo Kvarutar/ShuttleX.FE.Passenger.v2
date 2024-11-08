@@ -1,9 +1,9 @@
-import { Config } from 'react-native-config';
-import { createAxiosInstance, defaultAxiosRetryConfig } from 'shuttlex-integration';
+import shuttlexAuthInstanceInitializer from './authClient';
+import shuttlexPassengerInstanceInitializer from './passengerClient';
 
-const shuttlexPassengerInstance = createAxiosInstance({
-  url: `${Config.API_URL_HTTPS}`,
-  retryConfig: defaultAxiosRetryConfig,
-});
+const axiosInitilizers = {
+  shuttlexAuthAxios: shuttlexAuthInstanceInitializer,
+  shuttlexPassengerAxios: shuttlexPassengerInstanceInitializer,
+};
 
-export default shuttlexPassengerInstance;
+export default axiosInitilizers;

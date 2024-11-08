@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import reactotron from '../../../ReactotronConfig';
-import lockoutReducer from '../auth/redux/lockout';
+import authReducer from '../auth/redux';
 import accountSettingsReducer from '../menu/redux/accountSettings';
 import notificationsReducer from '../menu/redux/notifications';
 import ticketWalletReducer from '../menu/redux/ticketWallet';
@@ -15,9 +15,9 @@ import passengerReducer from './passenger';
 import signalRReducer from './signalr';
 
 const rootReducer = combineReducers({
+  auth: authReducer,
   notifications: notificationsReducer,
   wallet: walletRedicer,
-  lockout: lockoutReducer,
   alerts: alertsReducer,
   geolocation: geolocationReducer,
   map: mapReducer,

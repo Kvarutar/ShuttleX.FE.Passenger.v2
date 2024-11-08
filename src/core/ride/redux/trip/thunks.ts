@@ -1,22 +1,22 @@
-import { FeedbackType, getAxiosErrorInfo } from 'shuttlex-integration';
+import { FeedbackType, getNetworkErrorInfo } from 'shuttlex-integration';
 
-import shuttlexPassengerInstance from '../../../client';
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import { ContractorInfo, TripInfo } from './types';
 
 export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(
   'trip/fetchTripInfo',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, shuttlexPassengerAxios }) => {
     try {
       //TODO: replace passengerID with actual one
-      const response = await shuttlexPassengerInstance.get<TripInfo>('/passenger/order/get?passengerId=1');
+      const response = await shuttlexPassengerAxios.get<TripInfo>('/passenger/order/get?passengerId=1');
 
       return response.data;
     } catch (error) {
-      const { code, message } = getAxiosErrorInfo(error);
+      const { code, body, status } = getNetworkErrorInfo(error);
       return rejectWithValue({
         code,
-        message,
+        body,
+        status,
       });
     }
   },
@@ -24,15 +24,16 @@ export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(
 
 export const fetchContractorInfo = createAppAsyncThunk<ContractorInfo, string>(
   'trip/fetchContractorInfo',
-  async (orderId, { rejectWithValue }) => {
+  async (orderId, { rejectWithValue, shuttlexPassengerAxios }) => {
     try {
-      const response = await shuttlexPassengerInstance.get<ContractorInfo>(`/api/v1/order/${orderId}`);
+      const response = await shuttlexPassengerAxios.get<ContractorInfo>(`/api/v1/order/${orderId}`);
       return response.data;
     } catch (error) {
-      const { code, message } = getAxiosErrorInfo(error);
+      const { code, body, status } = getNetworkErrorInfo(error);
       return rejectWithValue({
         code,
-        message,
+        body,
+        status,
       });
     }
   },
@@ -40,9 +41,9 @@ export const fetchContractorInfo = createAppAsyncThunk<ContractorInfo, string>(
 
 export const sendFeedback = createAppAsyncThunk<FeedbackType, FeedbackType>(
   'trip/sendFeedback',
-  async (payload, { rejectWithValue }) => {
+  async (payload, { rejectWithValue, shuttlexPassengerAxios }) => {
     try {
-      await shuttlexPassengerInstance.post('/passenger/feedback', {
+      await shuttlexPassengerAxios.post('/passenger/feedback', {
         //TODO: add tripId: tripId,
         rating: payload.rating,
         tip: payload.tip,
@@ -50,10 +51,11 @@ export const sendFeedback = createAppAsyncThunk<FeedbackType, FeedbackType>(
 
       return payload;
     } catch (error) {
-      const { code, message } = getAxiosErrorInfo(error);
+      const { code, body, status } = getNetworkErrorInfo(error);
       return rejectWithValue({
         code,
-        message,
+        body,
+        status,
       });
     }
   },
@@ -61,17 +63,20 @@ export const sendFeedback = createAppAsyncThunk<FeedbackType, FeedbackType>(
 
 // async thunk for canceling ride by passenger
 //TODO make a real post request to back
-export const cancelTrip = createAppAsyncThunk('trip/cancelTrip', async (_, { rejectWithValue }) => {
-  try {
-    const response = await shuttlexPassengerInstance.post('/api/trips/cancel', {
-      message: 'Passenger cancelled the trip',
-    });
+export const cancelTrip = createAppAsyncThunk<void, void>(
+  'trip/cancelTrip',
+  async (_, { rejectWithValue, shuttlexPassengerAxios }) => {
+    try {
+      const response = await shuttlexPassengerAxios.post('/api/trips/cancel', {
+        message: 'Passenger cancelled the trip',
+      });
 
-    return response.data;
-  } catch (error) {
-    return rejectWithValue(error);
-  }
-});
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 export const sendMysteryBoxPopupResponse = createAppAsyncThunk<void, { passengerId: string; res: boolean }>(
   'trip/sendMysteryBoxPopupResponse',
   async () => {

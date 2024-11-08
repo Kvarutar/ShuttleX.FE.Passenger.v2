@@ -1,6 +1,5 @@
-import { getAxiosErrorInfo } from 'shuttlex-integration';
+import { getNetworkErrorInfo } from 'shuttlex-integration';
 
-import shuttlexPassengerInstance from '../../../client';
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import { fetchTripInfo } from '../trip/thunks';
 import { orderPointsSelector, orderTariffSelector } from './selectors';
@@ -8,13 +7,13 @@ import { Address } from './types';
 
 export const createOrder = createAppAsyncThunk<void, void>(
   'order/createOrder',
-  async (_, { getState, rejectWithValue, dispatch }) => {
+  async (_, { getState, rejectWithValue, dispatch, shuttlexPassengerAxios }) => {
     const state = getState();
     const orderPoints = orderPointsSelector(state);
     const orderTariff = orderTariffSelector(state);
 
     try {
-      await shuttlexPassengerInstance.post('/passenger/offer/create', {
+      await shuttlexPassengerAxios.post('/passenger/offer/create', {
         //TODO: add passengerId: string,
         geoPickUp: orderPoints[0],
         geoStopPoints: orderPoints.slice(1),
@@ -23,10 +22,11 @@ export const createOrder = createAppAsyncThunk<void, void>(
 
       dispatch(fetchTripInfo());
     } catch (error) {
-      const { code, message } = getAxiosErrorInfo(error);
+      const { code, body, status } = getNetworkErrorInfo(error);
       return rejectWithValue({
         code,
-        message,
+        body,
+        status,
       });
     }
   },
@@ -34,16 +34,17 @@ export const createOrder = createAppAsyncThunk<void, void>(
 
 export const fetchAddresses = createAppAsyncThunk<Address[], string>(
   'order/fetchAddresses',
-  async (payload, { rejectWithValue }) => {
+  async (payload, { rejectWithValue, shuttlexPassengerAxios }) => {
     try {
-      const result = await shuttlexPassengerInstance.get<Address[]>(`/passenger/map/addresses?addressPart=${payload}`);
+      const result = await shuttlexPassengerAxios.get<Address[]>(`/passenger/map/addresses?addressPart=${payload}`);
 
       return result.data;
     } catch (error) {
-      const { code, message } = getAxiosErrorInfo(error);
+      const { code, body, status } = getNetworkErrorInfo(error);
       return rejectWithValue({
         code,
-        message,
+        body,
+        status,
       });
     }
   },
