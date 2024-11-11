@@ -1,9 +1,9 @@
-import shuttlexAuthInstanceInitializer from './authClient';
-import shuttlexPassengerInstanceInitializer from './passengerClient';
+import authInstanceInitializer from './authClient';
+import passengerInstanceInitializer from './passengerClient';
 
 const axiosInitilizers = {
-  shuttlexAuthAxios: shuttlexAuthInstanceInitializer,
-  shuttlexPassengerAxios: shuttlexPassengerInstanceInitializer,
+  authAxios: authInstanceInitializer,
+  passengerAxios: passengerInstanceInitializer,
 };
 
 export default axiosInitilizers;

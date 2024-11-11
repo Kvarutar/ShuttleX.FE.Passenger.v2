@@ -6,9 +6,9 @@ import { TicketApiResponse } from './types';
 //TODO change for real data
 export const getTicketWalletTickets = createAppAsyncThunk<TicketApiResponse, void>(
   'tickets/getTicketWalletTickets',
-  async (_, { rejectWithValue, shuttlexPassengerAxios }) => {
+  async (_, { rejectWithValue, passengerAxios }) => {
     try {
-      const response = await shuttlexPassengerAxios.get<TicketApiResponse>('/passenger/ticket/get?passengerId=1');
+      const response = await passengerAxios.get<TicketApiResponse>('/passenger/ticket/get?passengerId=1');
 
       return response.data;
     } catch (error) {

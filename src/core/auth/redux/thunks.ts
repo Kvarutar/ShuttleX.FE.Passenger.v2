@@ -21,7 +21,7 @@ const formatePhone = (phone: string) => {
 
 export const signIn = createAppAsyncThunk<void, SignInPayload>(
   'auth/signIn',
-  async (payload, { rejectWithValue, shuttlexAuthAxios }) => {
+  async (payload, { rejectWithValue, authAxios }) => {
     const { method, data } = payload;
 
     const requestData = method === 'phone' ? { phone: formatePhone(data) } : { email: data };
@@ -32,7 +32,7 @@ export const signIn = createAppAsyncThunk<void, SignInPayload>(
       //const deviceId = await getNotificationToken();
       const deviceId = 'string';
 
-      await shuttlexAuthAxios.post<SignInAPIRequest, void>(`/sign-in/${methodUrlPart}`, {
+      await authAxios.post<SignInAPIRequest, void>(`/sign-in/${methodUrlPart}`, {
         ...requestData,
         deviceId,
       });
@@ -49,9 +49,9 @@ export const signIn = createAppAsyncThunk<void, SignInPayload>(
 
 export const signUp = createAppAsyncThunk<void, SignUpPayload>(
   'auth/signUp',
-  async (payload, { rejectWithValue, dispatch, shuttlexAuthAxios }) => {
+  async (payload, { rejectWithValue, dispatch, authAxios }) => {
     try {
-      await shuttlexAuthAxios.post<SignUpAPIRequest, void>('/sign-up', {
+      await authAxios.post<SignUpAPIRequest, void>('/sign-up', {
         ...payload,
         phone: formatePhone(payload.phone),
       });
@@ -72,14 +72,14 @@ export const signUp = createAppAsyncThunk<void, SignUpPayload>(
 
 export const signOut = createAppAsyncThunk<void, SignOutPayload>(
   'auth/signOut',
-  async (payload, { rejectWithValue, shuttlexAuthAxios }) => {
+  async (payload, { rejectWithValue, authAxios }) => {
     //TODO: do firebase init
     //const deviceId = await getNotificationToken();
     const deviceId = 'string';
 
     try {
       if (payload.refreshToken !== null) {
-        await shuttlexAuthAxios.post<SignOutAPIRequest>('/sign-out', {
+        await authAxios.post<SignOutAPIRequest>('/sign-out', {
           ...payload,
           deviceId,
           allOpenSessions: false,
@@ -98,7 +98,7 @@ export const signOut = createAppAsyncThunk<void, SignOutPayload>(
 
 export const verifyCode = createAppAsyncThunk<void, VerifyCodePayload>(
   'auth/verifyCode',
-  async (payload, { rejectWithValue, shuttlexAuthAxios }) => {
+  async (payload, { rejectWithValue, authAxios }) => {
     //TODO: do firebase init
     //const deviceId = await getNotificationToken();
     const deviceId = 'string';
@@ -114,7 +114,7 @@ export const verifyCode = createAppAsyncThunk<void, VerifyCodePayload>(
     const methodUrlPart = payload.method === 'phone' ? 'sms' : 'email';
 
     try {
-      const response = await shuttlexAuthAxios.post<VerifyCodeAPIRequest, AxiosResponse<VerifyCodeAPIResponse>>(
+      const response = await authAxios.post<VerifyCodeAPIRequest, AxiosResponse<VerifyCodeAPIResponse>>(
         `/verify-code/${methodUrlPart}`,
         {
           ...bodyPart,

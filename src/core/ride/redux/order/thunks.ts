@@ -7,13 +7,13 @@ import { Address } from './types';
 
 export const createOrder = createAppAsyncThunk<void, void>(
   'order/createOrder',
-  async (_, { getState, rejectWithValue, dispatch, shuttlexPassengerAxios }) => {
+  async (_, { getState, rejectWithValue, dispatch, passengerAxios }) => {
     const state = getState();
     const orderPoints = orderPointsSelector(state);
     const orderTariff = orderTariffSelector(state);
 
     try {
-      await shuttlexPassengerAxios.post('/passenger/offer/create', {
+      await passengerAxios.post('/passenger/offer/create', {
         //TODO: add passengerId: string,
         geoPickUp: orderPoints[0],
         geoStopPoints: orderPoints.slice(1),
@@ -34,9 +34,9 @@ export const createOrder = createAppAsyncThunk<void, void>(
 
 export const fetchAddresses = createAppAsyncThunk<Address[], string>(
   'order/fetchAddresses',
-  async (payload, { rejectWithValue, shuttlexPassengerAxios }) => {
+  async (payload, { rejectWithValue, passengerAxios }) => {
     try {
-      const result = await shuttlexPassengerAxios.get<Address[]>(`/passenger/map/addresses?addressPart=${payload}`);
+      const result = await passengerAxios.get<Address[]>(`/passenger/map/addresses?addressPart=${payload}`);
 
       return result.data;
     } catch (error) {

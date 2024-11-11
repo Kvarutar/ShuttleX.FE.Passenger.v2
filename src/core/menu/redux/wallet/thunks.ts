@@ -5,9 +5,9 @@ import { TripInfo } from '../../../ride/redux/trip/types';
 
 export const fetchAvaliablePaymentMethods = createAppAsyncThunk<TripInfo, void>(
   'wallet/fetchAvaliablePaymentMethods',
-  async (_, { rejectWithValue, shuttlexPassengerAxios }) => {
+  async (_, { rejectWithValue, passengerAxios }) => {
     try {
-      const response = await shuttlexPassengerAxios.get<TripInfo>('/passenger/order/get?passengerId=1');
+      const response = await passengerAxios.get<TripInfo>('/passenger/order/get?passengerId=1');
 
       return response.data;
     } catch (error) {
