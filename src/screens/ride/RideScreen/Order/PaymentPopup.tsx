@@ -141,7 +141,7 @@ const PaymentPopup = () => {
 
   const computedStyles = StyleSheet.create({
     wrapper: {
-      marginBottom: 26,
+      marginBottom: 56,
     },
     pickUpPointText: {
       color: colors.textTitleColor,
@@ -507,11 +507,11 @@ const PaymentPopup = () => {
         />
       ) : (
         <BottomWindowWithGesture
-          withDraggable={false}
           maxHeight={0.82}
           setIsOpened={setWindowIsOpened}
           visiblePart={content}
           visiblePartStyle={styles.visiblePartStyles}
+          headerWrapperStyle={styles.headerWrapperStyle}
           headerElement={<TariffIcon style={styles.image} />}
         />
       )}
@@ -523,6 +523,7 @@ const PaymentPopup = () => {
           ref={datePickerRef}
           withHiddenPartScroll={false}
           hiddenPart={dateTimeBlock}
+          headerWrapperStyle={styles.headerWrapperStyle}
           headerElement={<TariffIcon style={styles.image} />}
         />
       ) : (
@@ -533,6 +534,7 @@ const PaymentPopup = () => {
             ref={datePickerRef}
             withHiddenPartScroll={false}
             hiddenPart={androidDateTimePicker}
+            headerWrapperStyle={styles.headerWrapperStyle}
             headerElement={<TariffIcon style={styles.image} />}
           />
         )
@@ -547,6 +549,10 @@ const styles = StyleSheet.create({
   },
   visiblePartStyles: {
     flexShrink: 1,
+  },
+  headerWrapperStyle: {
+    height: 40,
+    justifyContent: 'flex-end',
   },
   image: {
     width: '80%',

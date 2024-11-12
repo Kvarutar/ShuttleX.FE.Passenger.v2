@@ -144,6 +144,7 @@ const Trip = () => {
   return (
     <BottomWindowWithGesture
       maxHeight={0.88}
+      headerWrapperStyle={styles.headerWrapperStyle}
       headerElement={
         <View style={styles.imageContainer}>
           <TariffIcon style={styles.carImage} />
@@ -186,6 +187,10 @@ const styles = StyleSheet.create({
   visiblePartStyle: {
     marginBottom: 16,
     paddingTop: 5,
+  },
+  headerWrapperStyle: {
+    height: 40,
+    justifyContent: 'flex-end',
   },
   timerWrapper: {
     position: 'absolute',
