@@ -5,7 +5,6 @@ import { createAxiosInstance } from 'shuttlex-integration';
 const authInstanceInitializer = (): AxiosInstance => {
   return createAxiosInstance({
     url: `${Config.API_AUTH_URL_HTTPS}`,
-    withAuth: false,
   });
 };
 

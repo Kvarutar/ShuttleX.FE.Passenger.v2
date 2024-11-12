@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 import { saveTokens } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../redux/hooks';
+import { setIsLoggedIn } from '.';
 import { getAuthNetworkErrorInfo } from './errors/errors';
 import {
   SignInAPIRequest,
@@ -72,7 +73,7 @@ export const signUp = createAppAsyncThunk<void, SignUpPayload>(
 
 export const signOut = createAppAsyncThunk<void, SignOutPayload>(
   'auth/signOut',
-  async (payload, { rejectWithValue, authAxios }) => {
+  async (payload, { rejectWithValue, authAxios, dispatch }) => {
     //TODO: do firebase init
     //const deviceId = await getNotificationToken();
     const deviceId = 'string';
@@ -85,6 +86,8 @@ export const signOut = createAppAsyncThunk<void, SignOutPayload>(
           allOpenSessions: false,
         });
       }
+
+      dispatch(setIsLoggedIn(false));
     } catch (error) {
       const { code, body, status } = getAuthNetworkErrorInfo(error);
       return rejectWithValue({
