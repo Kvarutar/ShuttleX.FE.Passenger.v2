@@ -14,7 +14,7 @@ import { AdsBlockProps } from './AdsBlock/types';
 import AdsContent from './AdsContent';
 
 const testData = {
-  endTime: new Date(2024, 10, 1),
+  endTime: new Date(2024, 11, 1),
   capiAmount: 16,
 };
 

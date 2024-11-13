@@ -93,7 +93,7 @@
   "ride_Ride_MysteryBoxPopup_moreInfoButton": "More Info",
   "ride_Ride_WinningPopup_subTitle": "Winning",
   "ride_Ride_WinningPopup_firstTitle": "Congratulations\nYou Have Winning",
-  "ride_Ride_WinningPopup_secondTitle": "Ticket",
+  "ride_Ride_WinningPopup_secondTitle": "Ticket {{ticketNumber}}",
   "ride_Ride_WinningPopup_description": "You won the the 1st place prize!",
   "ride_Ride_WinningPopup_greatButton": "Great",
   "ride_Ride_WinningPopup_moreInfoButton": "More Info",

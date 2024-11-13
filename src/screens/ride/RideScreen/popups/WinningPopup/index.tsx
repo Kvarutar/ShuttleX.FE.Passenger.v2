@@ -16,6 +16,9 @@ import { WinningPopupProps } from './types';
 
 const windowHeight = Dimensions.get('window').height;
 
+//TODO: replace to correct winTicket number
+const winTicket = 12345678;
+
 const WinningPopup = ({ setIsWinningPopupVisible }: WinningPopupProps) => {
   const { t } = useTranslation();
 
@@ -39,7 +42,7 @@ const WinningPopup = ({ setIsWinningPopupVisible }: WinningPopupProps) => {
       <BigHeader
         windowTitle={t('ride_Ride_WinningPopup_subTitle')}
         firstHeaderTitle={t('ride_Ride_WinningPopup_firstTitle')}
-        secondHeaderTitle={t('ride_Ride_WinningPopup_secondTitle')}
+        secondHeaderTitle={t('ride_Ride_WinningPopup_secondTitle', { ticketNumber: winTicket })}
         description={t('ride_Ride_WinningPopup_description')}
       />
       <View style={styles.imageContainer}>

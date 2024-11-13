@@ -12,7 +12,7 @@ import { SliderItemProps } from './types';
 const windowWidth = Dimensions.get('window').width;
 const carouselAnimationDurations = 300;
 
-const testEndLotteryTime = new Date(2024, 10, 1);
+const testEndLotteryTime = new Date(2024, 11, 1);
 
 const SliderItem = ({ topText, bottomText, image }: SliderItemProps) => {
   const { colors } = useTheme();
