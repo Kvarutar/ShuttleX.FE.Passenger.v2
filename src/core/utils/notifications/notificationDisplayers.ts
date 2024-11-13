@@ -12,34 +12,62 @@ type NotificationTitle =
   | 'trip_started'
   | 'trip_ended'
   | 'driver_arrived'
-  | 'driver_rejected';
+  | 'driver_rejected'
+  | 'winner_founded';
 
-function isNotificationTitle(key: string): key is NotificationTitle {
-  return [
+const isNotificationTitle = (key: string): key is NotificationTitle =>
+  [
     'driver_accepted',
     'no_availible_drivers',
     'trip_started',
     'trip_ended',
     'driver_arrived',
     'driver_rejected',
+    'winner_founded',
   ].includes(key);
-}
 
 export const displayNotificationForAll = async (remoteMessage: RemoteMessage) => {
   const { key, payload } = remoteMessage.data;
+  let payloadData;
 
-  const { OrderId } = JSON.parse(payload.OrderId);
+  if (payload) {
+    payloadData = JSON.parse(payload);
+  }
+
+  const orderId = payloadData.OrderId;
+  const prizeId = payloadData.PrizeIds;
 
   if (isNotificationTitle(key)) {
-    store.dispatch(fetchContractorInfo(OrderId));
-  }
-  if (key === 'trip_ended') {
-    store.dispatch(addFinishedTrips());
+    switch (key) {
+      case 'driver_accepted':
+        store.dispatch(fetchContractorInfo(orderId));
+        break;
+      case 'trip_ended':
+        store.dispatch(addFinishedTrips());
+        break;
+      case 'winner_founded':
+        console.log(prizeId);
+        break;
+      case 'no_availible_drivers':
+        // console.log(prizeId);
+        break;
+      case 'driver_arrived':
+        //TODO add case
+        break;
+      case 'driver_rejected':
+        //TODO add case
+        break;
+      case 'trip_started':
+        //TODO add case
+        break;
+      //TODO add to redux prizeId
+    }
+    //TODO change ride status setTripStatus
   }
 
   await notifee.displayNotification({
-    title: remoteMessage.notification.title,
-    body: remoteMessage.notification.body,
+    title: remoteMessage.data.title,
+    body: remoteMessage.data.body,
 
     android: {
       channelId: 'general-channel',

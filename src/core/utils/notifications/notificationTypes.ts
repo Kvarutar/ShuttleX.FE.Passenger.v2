@@ -1,10 +1,8 @@
 export interface RemoteMessage {
-  notification: {
+  data: {
     title: string;
     body: string;
-  };
-  data: {
     key: string;
-    payload: { OrderId: string };
+    payload: string;
   };
 }

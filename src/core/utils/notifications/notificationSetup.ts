@@ -1,7 +1,8 @@
 import notifee, { AndroidImportance, AndroidVisibility } from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
-import { getNotificationToken } from 'shuttlex-integration';
 
+import { sendFirebaseToken } from '../../notificator/thunks';
+import { store } from '../../redux/store';
 import { requestNotificationsPermission } from '../permissions';
 import { handleMessage } from './notificationHandlers';
 
@@ -9,7 +10,6 @@ import { handleMessage } from './notificationHandlers';
 export const setupNotifications = async () => {
   await requestNotificationsPermission();
   await createChannels();
-  getNotificationToken();
   setupTokenRefresh();
   subscribeToMessages();
 };
@@ -30,9 +30,21 @@ const subscribeToMessages = () => {
   messaging().onMessage(handleMessage);
 };
 
-const setupTokenRefresh = () => {
+export const getDeviceToken = async () => {
+  try {
+    const token = await messaging().getToken();
+    //TODO delete console after all tests
+    console.log('token:', token);
+
+    store.dispatch(sendFirebaseToken(token));
+  } catch (error) {
+    console.error('Cant get token:', error);
+  }
+};
+
+// Refresh token
+const setupTokenRefresh = async () => {
   messaging().onTokenRefresh(async newToken => {
-    console.log('Refreshed token:', newToken);
-    //TODO Send refreshed token to backend
+    store.dispatch(sendFirebaseToken(newToken));
   });
 };

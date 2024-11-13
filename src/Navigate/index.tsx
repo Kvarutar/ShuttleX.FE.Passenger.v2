@@ -1,13 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useEffect } from 'react';
 import BootSplash from 'react-native-bootsplash';
 import { useSelector } from 'react-redux';
-import { getTokens } from 'shuttlex-integration';
 
-import { setIsLoggedIn } from '../core/auth/redux';
 import { isLoggedInSelector } from '../core/auth/redux/selectors';
-import { useAppDispatch } from '../core/redux/hooks';
 import AuthScreen from '../screens/auth/AuthScreen';
 import SignInCodeScreen from '../screens/auth/SignInCodeScreen';
 import SplashScreen from '../screens/auth/SplashScreen';
@@ -30,19 +26,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Navigate = (): JSX.Element => {
   const isLoggedIn = useSelector(isLoggedInSelector);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    (async () => {
-      const { accessToken } = await getTokens();
-
-      if (accessToken) {
-        dispatch(setIsLoggedIn(true));
-      } else {
-        dispatch(setIsLoggedIn(false));
-      }
-    })();
-  }, [dispatch]);
 
   return (
     <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
