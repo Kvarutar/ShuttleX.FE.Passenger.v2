@@ -4,6 +4,8 @@ import { calculateExtendedHeading, getAngleBetweenPoints } from 'shuttlex-integr
 
 import { GeolocationState } from './types';
 
+export const geolocationSliceName = 'geolocation';
+
 const initialState: GeolocationState = {
   coordinates: null,
   isPermissionGranted: true,
@@ -18,7 +20,7 @@ const initialState: GeolocationState = {
 };
 
 const slice = createSlice({
-  name: 'geolocation',
+  name: geolocationSliceName,
   initialState,
   reducers: {
     setGeolocationCoordinates(state, action: PayloadAction<LatLng & { heading: number }>) {

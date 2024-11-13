@@ -22,6 +22,7 @@ import {
 
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../core/ride/redux/geolocation/selectors';
+import { convertGeoToAddress } from '../../../core/ride/redux/geolocation/thunks';
 import { updateOrderPoint } from '../../../core/ride/redux/order';
 import { MapAddressSelectionScreenProps } from './types';
 
@@ -37,21 +38,27 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
   const [address, setAddress] = useState('');
   const [addressCoordinates, setAddressCoordinates] = useState<LatLng>({ latitude: 0, longitude: 0 });
 
-  const onDragComplete = async (latlng: LatLng) => {
-    console.log('coordinates:', latlng);
-    setIsLoading(true);
-    // TODO: make request to server
-    await new Promise(resolve => setTimeout(resolve, 500));
-    setAddress('Test address from backend');
-    setAddressCoordinates({ latitude: 123, longitude: 123 });
-    setIsLoading(false);
+  const onDragComplete = async (coordinates: LatLng) => {
+    // If the new coordinates differ from the previous ones
+    if (JSON.stringify(coordinates) !== JSON.stringify(addressCoordinates)) {
+      setIsLoading(true);
+      let convertedAddress = '';
+      try {
+        convertedAddress = await dispatch(convertGeoToAddress(coordinates)).unwrap();
+      } catch (error) {
+        convertedAddress = `${coordinates.latitude.toFixed(4)}, ${coordinates.longitude.toFixed(4)}`;
+      }
+      setAddress(convertedAddress);
+      setAddressCoordinates(coordinates);
+      setIsLoading(false);
+    }
   };
 
   const onConfirm = () => {
     dispatch(
       updateOrderPoint({
         id: route.params.orderPointId,
-        address,
+        address: address,
         latitude: addressCoordinates.latitude,
         longitude: addressCoordinates.longitude,
       }),

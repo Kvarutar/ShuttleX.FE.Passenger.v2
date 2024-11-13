@@ -1,6 +1,7 @@
 import Geolocation from 'react-native-geolocation-service';
 import { LatLng } from 'react-native-maps';
 import { LocationAccuracy } from 'react-native-permissions';
+import { Nullable } from 'shuttlex-integration';
 
 export type GeolocationState = {
   coordinates: LatLng | null;
@@ -15,3 +16,15 @@ export type GeolocationState = {
   };
   error?: Geolocation.GeoError;
 };
+
+export type ConvertGeoToAddressPayload = LatLng;
+
+export type ConvertGeoToAddressAPIResponse = {
+  fullAddress: string;
+  place: string;
+  geo: LatLng;
+  country: Nullable<string>;
+  countryCode: Nullable<string>;
+  region: Nullable<string>;
+  cityOrLocality: Nullable<string>;
+}[];
