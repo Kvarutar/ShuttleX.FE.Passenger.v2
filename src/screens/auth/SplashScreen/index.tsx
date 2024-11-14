@@ -79,6 +79,7 @@ const SplashScreen = ({ navigation }: SplashScreenProps): JSX.Element => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 0,
   },
   groupedBrandIconContainer: {
     flex: 1,

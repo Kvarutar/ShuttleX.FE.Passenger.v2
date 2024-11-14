@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { CodeVerificationScreen, milSecToTime, SafeAreaView } from 'shuttlex-integration';
+import { CodeVerificationScreen, milSecToTime } from 'shuttlex-integration';
 
 import { isLockedError } from '../../../core/auth/redux/errors/errors';
 import { authErrorSelector, isAuthLoadingSelector, isLoggedInSelector } from '../../../core/auth/redux/selectors';
@@ -81,23 +81,21 @@ const SignInCodeScreen = ({ navigation, route }: SignInCodeScreenProps): JSX.Ele
   const { firstPart, secondPart } = getHeaderText(verificationType);
 
   return (
-    <SafeAreaView>
-      <CodeVerificationScreen
-        headerFirstText={firstPart}
-        headerSecondText={secondPart}
-        onBackButtonPress={navigation.goBack}
-        onAgainButtonPress={handleRequestAgain}
-        onCodeChange={handleCodeChange}
-        isError={isIncorrectCode}
-        isBlocked={isBlocked}
-        lockOutTime={lockoutEndTimestamp}
-        lockOutTimeForText={lockoutMinutes}
-        onBannedAgainButtonPress={onBannedAgainPress}
-        onSupportButtonPress={() => {
-          console.log('TODO: onSupportPress'); //TODO: add function
-        }}
-      />
-    </SafeAreaView>
+    <CodeVerificationScreen
+      headerFirstText={firstPart}
+      headerSecondText={secondPart}
+      onBackButtonPress={navigation.goBack}
+      onAgainButtonPress={handleRequestAgain}
+      onCodeChange={handleCodeChange}
+      isError={isIncorrectCode}
+      isBlocked={isBlocked}
+      lockOutTime={lockoutEndTimestamp}
+      lockOutTimeForText={lockoutMinutes}
+      onBannedAgainButtonPress={onBannedAgainPress}
+      onSupportButtonPress={() => {
+        console.log('TODO: onSupportPress'); //TODO: add function
+      }}
+    />
   );
 };
 

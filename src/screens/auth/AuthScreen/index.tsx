@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import {
+  CustomKeyboardAvoidingView,
   SafeAreaView,
   SignInMethod,
   SignInScreen,
@@ -57,27 +58,31 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
   };
 
   return (
-    <SafeAreaView>
-      <TitleWithCloseButton
-        title={isSignIn ? t('auth_Auth_signInTitle') : t('auth_Auth_signUpTitle')}
-        onBackButtonPress={() => navigation.replace('Splash')}
-      />
-      {isSignIn ? (
-        <SignInScreen
-          navigateToSignUp={() => setIsisSignIn(false)}
-          onSubmit={handleSendingSignInData}
-          signMethod={signMethod}
-          setSignMethod={setSignMethod}
+    <CustomKeyboardAvoidingView>
+      <SafeAreaView>
+        <TitleWithCloseButton
+          title={isSignIn ? t('auth_Auth_signInTitle') : t('auth_Auth_signUpTitle')}
+          onBackButtonPress={() => navigation.replace('Splash')}
         />
-      ) : (
-        <SignUpScreen
-          ref={signUpRef}
-          navigateToSignIn={() => setIsisSignIn(true)}
-          navigateToTerms={() => navigation.navigate('Terms')}
-          onSubmit={handleSendingSignUpData}
-        />
-      )}
-    </SafeAreaView>
+        {isSignIn ? (
+          <SignInScreen
+            navigateToSignUp={() => setIsisSignIn(false)}
+            onSubmit={handleSendingSignInData}
+            isLoading={isLoading}
+            signMethod={signMethod}
+            setSignMethod={setSignMethod}
+          />
+        ) : (
+          <SignUpScreen
+            ref={signUpRef}
+            navigateToSignIn={() => setIsisSignIn(true)}
+            navigateToTerms={() => navigation.navigate('Terms')}
+            onSubmit={handleSendingSignUpData}
+            isLoading={isLoading}
+          />
+        )}
+      </SafeAreaView>
+    </CustomKeyboardAvoidingView>
   );
 };
 
