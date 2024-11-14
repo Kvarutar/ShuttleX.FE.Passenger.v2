@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     gap: 13,
+    paddingBottom: 0,
   },
   cardsWrapper: {
     flex: 1,

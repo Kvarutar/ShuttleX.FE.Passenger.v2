@@ -2,7 +2,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   AccountSettingsScreen,
@@ -22,13 +22,10 @@ import { resetVerification } from '../../../core/menu/redux/accountSettings';
 import { isVerificationDoneSelector } from '../../../core/menu/redux/accountSettings/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { updateProfile } from '../../../core/redux/passenger';
-import { profileSelector } from '../../../core/redux/passenger/selectors';
+import { profilePhotoSelector, profileSelector } from '../../../core/redux/passenger/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
 import { AccountProfileDataProps, PhotoBlockProps } from './types';
-
-const windowSizes = Dimensions.get('window');
-const isPhoneSmall = windowSizes.height < 700;
 
 const AccountSettings = (): JSX.Element => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -39,13 +36,6 @@ const AccountSettings = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const profile = useSelector(profileSelector);
   const isVerificationDone = useSelector(isVerificationDoneSelector);
-
-  const computedStyles = StyleSheet.create({
-    wrapper: {
-      gap: isPhoneSmall ? 0 : 24,
-      paddingTop: isPhoneSmall ? 0 : 8,
-    },
-  });
 
   useFocusEffect(
     useCallback(() => {
@@ -73,16 +63,13 @@ const AccountSettings = (): JSX.Element => {
 
   return (
     <>
-      <SafeAreaView containerStyle={computedStyles.wrapper}>
-        <View style={styles.headerStyle}>
-          <MenuHeader
-            onMenuPress={() => setIsMenuVisible(true)}
-            onNotificationPress={() => navigation.navigate('Notifications')}
-          >
-            <Text style={styles.textTitle}>{t('ride_Menu_navigationAccountSettings')}</Text>
-          </MenuHeader>
-        </View>
-
+      <SafeAreaView containerStyle={styles.wrapper}>
+        <MenuHeader
+          onMenuPress={() => setIsMenuVisible(true)}
+          onNotificationPress={() => navigation.navigate('Notifications')}
+        >
+          <Text style={styles.textTitle}>{t('ride_Menu_navigationAccountSettings')}</Text>
+        </MenuHeader>
         <AccountSettingsScreen
           handleOpenVerification={handleOpenVerification}
           isVerificationDone={isVerificationDone}
@@ -101,7 +88,7 @@ const AccountSettings = (): JSX.Element => {
 };
 
 const PhotoBlock = ({ onUploadPhoto }: PhotoBlockProps) => {
-  const profile = useSelector(profileSelector);
+  const profilePhoto = useSelector(profilePhotoSelector);
 
   const [imageHeight, setImageHeight] = useState(0);
 
@@ -127,15 +114,16 @@ const PhotoBlock = ({ onUploadPhoto }: PhotoBlockProps) => {
         <UploadPhotoIcon />
       </Button>
       <View onLayout={handleImageLayout}>
-        <MenuUserImage2 url={profile?.imageUri} />
+        <MenuUserImage2 url={profilePhoto} />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  headerStyle: {
-    paddingHorizontal: sizes.paddingHorizontal,
+  wrapper: {
+    gap: 24,
+    paddingTop: 8,
   },
   textTitle: {
     fontFamily: 'Inter Medium',

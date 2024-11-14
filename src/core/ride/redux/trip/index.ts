@@ -48,7 +48,7 @@ const slice = createSlice({
       .addCase(fetchContractorInfo.fulfilled, (state, action) => {
         slice.caseReducers.setContractorInfo(state, {
           payload: action.payload,
-          type: setTripInfo.type,
+          type: setContractorInfo.type,
         });
       })
       .addCase(fetchTripInfo.fulfilled, (state, action) => {
