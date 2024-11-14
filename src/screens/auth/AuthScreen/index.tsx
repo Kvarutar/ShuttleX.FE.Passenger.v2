@@ -19,21 +19,16 @@ import { useAppDispatch } from '../../../core/redux/hooks';
 import { AuthScreenProps } from './props';
 
 const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
-  const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const signUpRef = useRef<SignUpScreenRef>(null);
 
+  const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const isLoading = useSelector(isAuthLoadingSelector);
   const signError = useSelector(authErrorSelector);
 
   const [isSignIn, setIsisSignIn] = useState<boolean>(route.params.state === 'SignIn');
   const [data, setData] = useState<string | null>();
   const [signMethod, setSignMethod] = useState<SignInMethod>(SignInMethod.Phone);
-
-  const handleSendingSignUpData = (dataForm: SignUpForm) => {
-    setData(dataForm.phone);
-    dispatch(signUp({ email: dataForm.email, firstName: dataForm.firstName, phone: dataForm.phone, method: 'phone' }));
-  };
 
   useEffect(() => {
     if (!isLoading && !signError && data) {
@@ -51,9 +46,13 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
     }
   }, [isLoading, signError, navigation, data, signMethod]);
 
+  const handleSendingSignUpData = (dataForm: SignUpForm) => {
+    setData(dataForm.phone);
+    dispatch(signUp({ email: dataForm.email, firstName: dataForm.firstName, phone: dataForm.phone, method: 'phone' }));
+  };
+
   const handleSendingSignInData = (body: string) => {
     setData(body);
-
     dispatch(signIn({ method: signMethod, data: body }));
   };
 

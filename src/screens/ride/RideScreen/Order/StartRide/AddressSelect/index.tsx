@@ -10,11 +10,10 @@ import {
   Bar,
   Button,
   ButtonShapes,
+  LoadingSpinner,
   SelectOnMapIcon,
   sizes,
   Text,
-  TimerV1,
-  TimerV1Modes,
   useDebounce,
   useTheme,
 } from 'shuttlex-integration';
@@ -254,12 +253,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   if (isLoading) {
     searchAddresses = (
       <View style={styles.spinnerWrapper}>
-        <TimerV1
-          withCountdown={false}
-          startColor={colors.primaryGradientStartColor}
-          endColor={colors.primaryColor}
-          mode={TimerV1Modes.Mini}
-        />
+        <LoadingSpinner />
       </View>
     );
   }
