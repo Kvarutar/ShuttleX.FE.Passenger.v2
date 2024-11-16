@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import {
   CustomKeyboardAvoidingView,
+  isIncorrectFieldsError,
   SafeAreaView,
   SignInMethod,
   SignInScreen,
@@ -12,7 +13,6 @@ import {
   TitleWithCloseButton,
 } from 'shuttlex-integration';
 
-import { isIncorrectFieldsError } from '../../../core/auth/redux/errors/errors';
 import { authErrorSelector, isAuthLoadingSelector } from '../../../core/auth/redux/selectors';
 import { signIn, signUp } from '../../../core/auth/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';

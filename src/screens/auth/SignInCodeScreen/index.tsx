@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { CodeVerificationScreen, milSecToTime } from 'shuttlex-integration';
+import { CodeVerificationScreen, isLockedError, milSecToTime } from 'shuttlex-integration';
 
-import { isLockedError } from '../../../core/auth/redux/errors/errors';
 import { authErrorSelector, isAuthLoadingSelector, isLoggedInSelector } from '../../../core/auth/redux/selectors';
 import { signIn, verifyCode } from '../../../core/auth/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';

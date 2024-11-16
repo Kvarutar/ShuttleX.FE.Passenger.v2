@@ -1,4 +1,5 @@
-import { getAuthNetworkErrorInfo } from '../auth/redux/errors/errors';
+import { getNetworkErrorInfo } from 'shuttlex-integration';
+
 import { createAppAsyncThunk } from '../redux/hooks';
 import { sendFirebaseTokenAPIRequest } from './types';
 
@@ -11,7 +12,7 @@ export const sendFirebaseToken = createAppAsyncThunk<void, string>(
         userType: 'Passenger',
       } as sendFirebaseTokenAPIRequest);
     } catch (error) {
-      const { code, body, status } = getAuthNetworkErrorInfo(error);
+      const { code, body, status } = getNetworkErrorInfo(error);
       return rejectWithValue({
         code,
         body,

@@ -1,9 +1,8 @@
 import { AxiosResponse } from 'axios';
-import { saveTokens } from 'shuttlex-integration';
+import { getNetworkErrorInfo, saveTokens } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../redux/hooks';
 import { setIsLoggedIn } from '.';
-import { getAuthNetworkErrorInfo } from './errors/errors';
 import {
   SignInAPIRequest,
   SignInPayload,
@@ -38,7 +37,7 @@ export const signIn = createAppAsyncThunk<void, SignInPayload>(
         deviceId,
       });
     } catch (error) {
-      const { code, body, status } = getAuthNetworkErrorInfo(error);
+      const { code, body, status } = getNetworkErrorInfo(error);
       return rejectWithValue({
         code,
         body,
@@ -61,7 +60,7 @@ export const signUp = createAppAsyncThunk<void, SignUpPayload>(
         signIn({ method: payload.method, data: payload.method === 'phone' ? payload.phone : payload.email }),
       );
     } catch (error) {
-      const { code, body, status } = getAuthNetworkErrorInfo(error);
+      const { code, body, status } = getNetworkErrorInfo(error);
       return rejectWithValue({
         code,
         body,
@@ -89,7 +88,7 @@ export const signOut = createAppAsyncThunk<void, SignOutPayload>(
 
       dispatch(setIsLoggedIn(false));
     } catch (error) {
-      const { code, body, status } = getAuthNetworkErrorInfo(error);
+      const { code, body, status } = getNetworkErrorInfo(error);
       return rejectWithValue({
         code,
         body,
@@ -131,7 +130,7 @@ export const verifyCode = createAppAsyncThunk<void, VerifyCodePayload>(
         refreshToken: response.data.refreshToken,
       });
     } catch (error) {
-      const { code, body, status } = getAuthNetworkErrorInfo(error);
+      const { code, body, status } = getNetworkErrorInfo(error);
       return rejectWithValue({
         code,
         body,
