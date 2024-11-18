@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { getNetworkErrorInfo, saveTokens } from 'shuttlex-integration';
+import { formatPhone, getNetworkErrorInfo, saveTokens } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../redux/hooks';
 import { setIsLoggedIn } from '.';
@@ -15,16 +15,12 @@ import {
   VerifyCodePayload,
 } from './types';
 
-const formatePhone = (phone: string) => {
-  return phone.replace(/[^+\d]/g, '');
-};
-
 export const signIn = createAppAsyncThunk<void, SignInPayload>(
   'auth/signIn',
   async (payload, { rejectWithValue, authAxios }) => {
     const { method, data } = payload;
 
-    const requestData = method === 'phone' ? { phone: formatePhone(data) } : { email: data };
+    const requestData = method === 'phone' ? { phone: formatPhone(data) } : { email: data };
     const methodUrlPart = method === 'phone' ? 'sms' : 'email';
 
     try {
@@ -53,7 +49,7 @@ export const signUp = createAppAsyncThunk<void, SignUpPayload>(
     try {
       await authAxios.post<SignUpAPIRequest, void>('/sign-up', {
         ...payload,
-        phone: formatePhone(payload.phone),
+        phone: formatPhone(payload.phone),
       });
 
       await dispatch(
@@ -108,7 +104,7 @@ export const verifyCode = createAppAsyncThunk<void, VerifyCodePayload>(
     let bodyPart;
 
     if (payload.method === 'phone') {
-      bodyPart = { phone: formatePhone(payload.body) };
+      bodyPart = { phone: formatPhone(payload.body) };
     } else if (payload.method === 'email') {
       bodyPart = { email: payload.body };
     }

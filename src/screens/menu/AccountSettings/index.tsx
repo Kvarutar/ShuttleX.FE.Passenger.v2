@@ -18,8 +18,13 @@ import {
   UploadPhotoIcon,
 } from 'shuttlex-integration';
 
-import { resetVerification } from '../../../core/menu/redux/accountSettings';
-import { isVerificationDoneSelector } from '../../../core/menu/redux/accountSettings/selectors';
+import { resetAccountSettingsVerification } from '../../../core/menu/redux/accountSettings';
+import {
+  accountSettingsErrorSelector,
+  isAccountSettingsLoadingSelector,
+  isAccountSettingsVerificationDoneSelector,
+} from '../../../core/menu/redux/accountSettings/selectors';
+import { changeAccountContactData } from '../../../core/menu/redux/accountSettings/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { updateProfile } from '../../../core/redux/passenger';
 import { profilePhotoSelector, profileSelector } from '../../../core/redux/passenger/selectors';
@@ -35,11 +40,13 @@ const AccountSettings = (): JSX.Element => {
 
   const dispatch = useAppDispatch();
   const profile = useSelector(profileSelector);
-  const isVerificationDone = useSelector(isVerificationDoneSelector);
+  const isVerificationDone = useSelector(isAccountSettingsVerificationDoneSelector);
+  const changeDataError = useSelector(accountSettingsErrorSelector);
+  const isLoading = useSelector(isAccountSettingsLoadingSelector);
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(resetVerification());
+      dispatch(resetAccountSettingsVerification());
     }, [dispatch]),
   );
 
@@ -48,8 +55,11 @@ const AccountSettings = (): JSX.Element => {
     //TODO Change when we'll know more about uploading photo
   }, [dispatch, navigation, profile?.imageUri]);
 
-  const handleOpenVerification = () => {
-    navigation.navigate('AccountVerificateCode');
+  const handleOpenVerification = (mode: 'phone' | 'email', newValue: string) => {
+    if (!isLoading && !changeDataError) {
+      dispatch(changeAccountContactData({ method: mode, data: { oldData: profile?.[mode] ?? '', newData: newValue } }));
+      navigation.navigate('AccountVerificateCode', { mode, newValue });
+    }
   };
 
   const handleProfileDataSave = (profileData: AccountProfileDataProps) => {
