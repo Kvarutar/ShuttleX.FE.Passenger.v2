@@ -19,6 +19,7 @@ export type ContractorInfo = {
 
 export enum TripStatus {
   Idle = 'idle',
+  Accepted = 'accepted',
   Arrived = 'arrived',
   Ride = 'ride',
 }

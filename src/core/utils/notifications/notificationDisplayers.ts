@@ -1,87 +1,90 @@
 import notifee from '@notifee/react-native';
 
 import { store } from '../../redux/store';
-import { addFinishedTrips } from '../../ride/redux/trip';
+import { addFinishedTrips, setTripStatus } from '../../ride/redux/trip';
 import { fetchContractorInfo } from '../../ride/redux/trip/thunks';
-import { RemoteMessage } from './notificationTypes';
+import { TripStatus } from '../../ride/redux/trip/types';
+import { NotificationPayload, NotificationType, NotificationWithPayload, RemoteMessage } from './notificationTypes';
 
 //display notiff without buttons
-type NotificationTitle =
-  | 'driver_accepted'
-  | 'no_availible_drivers'
-  | 'trip_started'
-  | 'trip_ended'
-  | 'driver_arrived'
-  | 'driver_rejected'
-  | 'winner_founded';
 
-const isNotificationTitle = (key: string): key is NotificationTitle =>
-  [
-    'driver_accepted',
-    'no_availible_drivers',
-    'trip_started',
-    'trip_ended',
-    'driver_arrived',
-    'driver_rejected',
-    'winner_founded',
-  ].includes(key);
+const isValidNotificationType = (key: string): key is NotificationType => {
+  return Object.values(NotificationType).includes(key as NotificationType);
+};
+
+const requiresPayload = (type: NotificationType): type is NotificationWithPayload => {
+  return [NotificationType.DriverAccepted, NotificationType.WinnerFounded].includes(type);
+};
+
+const notificationHandlers: Record<NotificationType, (payload?: NotificationPayload) => Promise<void>> = {
+  [NotificationType.DriverAccepted]: async payload => {
+    if (payload?.orderId) {
+      await store.dispatch(fetchContractorInfo(payload.orderId));
+      store.dispatch(setTripStatus(TripStatus.Accepted));
+    }
+  },
+  [NotificationType.TripEnded]: async () => {
+    store.dispatch(addFinishedTrips());
+    store.dispatch(setTripStatus(TripStatus.Idle));
+  },
+  [NotificationType.WinnerFounded]: async payload => {
+    if (payload?.prizeId) {
+      console.log(payload.prizeId);
+      // TODO: add handler to redux
+    }
+  },
+  [NotificationType.NoAvailableDrivers]: async () => {
+    // TODO: Get to know what to do then
+    store.dispatch(setTripStatus(TripStatus.Idle));
+  },
+  [NotificationType.DriverArrived]: async () => {
+    store.dispatch(setTripStatus(TripStatus.Arrived));
+  },
+  [NotificationType.DriverRejected]: async () => {
+    // TODO: Get to know what to do then
+    store.dispatch(setTripStatus(TripStatus.Idle));
+  },
+  [NotificationType.TripStarted]: async () => {
+    store.dispatch(setTripStatus(TripStatus.Ride));
+  },
+};
 
 export const displayNotificationForAll = async (remoteMessage: RemoteMessage) => {
-  const { key, payload } = remoteMessage.data;
-  let payloadData;
+  const { key, payload, title, body } = remoteMessage.data;
 
-  if (payload) {
-    payloadData = JSON.parse(payload);
+  if (!isValidNotificationType(key)) {
+    console.error(`Invalid notification type: ${key}`);
+    return;
   }
 
-  const orderId = payloadData.OrderId;
-  const prizeId = payloadData.PrizeIds;
+  try {
+    let payloadData: NotificationPayload | undefined;
 
-  if (isNotificationTitle(key)) {
-    switch (key) {
-      case 'driver_accepted':
-        store.dispatch(fetchContractorInfo(orderId));
-        break;
-      case 'trip_ended':
-        store.dispatch(addFinishedTrips());
-        break;
-      case 'winner_founded':
-        console.log(prizeId);
-        break;
-      case 'no_availible_drivers':
-        // console.log(prizeId);
-        break;
-      case 'driver_arrived':
-        //TODO add case
-        break;
-      case 'driver_rejected':
-        //TODO add case
-        break;
-      case 'trip_started':
-        //TODO add case
-        break;
-      //TODO add to redux prizeId
+    if (payload && requiresPayload(key)) {
+      payloadData = JSON.parse(payload);
     }
-    //TODO change ride status setTripStatus
+
+    await notificationHandlers[key](payloadData);
+
+    await notifee.displayNotification({
+      title,
+      body,
+      android: {
+        channelId: 'general-channel',
+        smallIcon: 'bootsplash_logo',
+        pressAction: {
+          id: 'default',
+        },
+      },
+      ios: {
+        foregroundPresentationOptions: {
+          alert: true,
+          badge: true,
+          sound: true,
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error processing notification:', error);
   }
-
-  await notifee.displayNotification({
-    title: remoteMessage.data.title,
-    body: remoteMessage.data.body,
-
-    android: {
-      channelId: 'general-channel',
-      smallIcon: 'bootsplash_logo',
-      pressAction: {
-        id: 'default',
-      },
-    },
-    ios: {
-      foregroundPresentationOptions: {
-        alert: true,
-        badge: true,
-        sound: true,
-      },
-    },
-  });
 };

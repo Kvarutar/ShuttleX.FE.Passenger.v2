@@ -10,7 +10,7 @@ import {
 } from './types';
 
 export const verifyChangeAccountDataCode = createAppAsyncThunk<void, VerifyChangeAccountContactDataCodePayload>(
-  'accountSettings/verifyChangeDataCode',
+  'accountSettings/verifyChangeAccountDataCode',
   async (payload, { rejectWithValue, authAxios }) => {
     //TODO get deviceId from back
     const deviceId = 'string';
@@ -50,7 +50,7 @@ export const verifyChangeAccountDataCode = createAppAsyncThunk<void, VerifyChang
 );
 
 export const changeAccountContactData = createAppAsyncThunk<void, ChangeAccountContactDataPayload>(
-  'accountSettings/changeData',
+  'accountSettings/changeAccountContactData',
   async (payload, { rejectWithValue, authResetAxios }) => {
     const { method, data } = payload;
 
