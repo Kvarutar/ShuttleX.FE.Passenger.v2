@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { Button, ButtonProps, Text, useTheme } from 'shuttlex-integration';
@@ -7,6 +9,7 @@ import imageCollectCapybara from '../../../../../../../assets/images/startRide/i
 import imageStartRideCarouselCapybara from '../../../../../../../assets/images/startRide/imageStartRideCarouselCapybara';
 import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
 import imageUkraineHeart from '../../../../../../../assets/images/startRide/imageUkraineHeart';
+import { RootStackParamList } from '../../../../../../Navigate/props';
 import passengerColors from '../../../../../../shared/colors/colors';
 import usePrizeTimer from '../utils/usePrizeTimer';
 import AdsBlock from './AdsBlock';
@@ -26,6 +29,7 @@ const StartRideHidden = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const { hours, minutes, seconds } = usePrizeTimer(testData.endTime);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const collectedCapiArr = Array.from({ length: Math.min(testData.capiAmount - 1, 4) });
 
@@ -99,7 +103,10 @@ const StartRideHidden = () => {
               {`${hours}${t('ride_Ride_StartRide_hours')}:${minutes}${t('ride_Ride_StartRide_minutes')}:${seconds}${t('ride_Ride_StartRide_seconds')}`}
             </Text>
             <View style={styles.prizesButtonContainer}>
-              <AdsButton text={t('ride_Ride_StartRideHidden_adsPrizesButtonStart')} />
+              <AdsButton
+                text={t('ride_Ride_StartRideHidden_adsPrizesButtonStart')}
+                onPress={() => navigation.navigate('Raffle')}
+              />
               <View style={[styles.prizeBlock, computedStyles.prizeBlock]}>
                 <Text style={[styles.buttonText, computedStyles.prizeBlockText]}>
                   {t('ride_Ride_StartRideHidden_adsPrizesButtonWin')}

@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { ImageBackground, Linking, StyleSheet, View } from 'react-native';
 import {
@@ -14,6 +16,7 @@ import {
 //TODO: take image from BE
 import imageCapybaraBackground from '../../../../../assets/images/trip/imageCapybaraBackground';
 import imagePrizeBackground from '../../../../../assets/images/trip/imagePrizeBackground';
+import { RootStackParamList } from '../../../../Navigate/props';
 import passengerColors from '../../../../shared/colors/colors';
 import { ContractorInfoTestType, SquareBarProps } from './types';
 
@@ -63,6 +66,7 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const tariffIconsData = useTariffsIcons();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>>();
 
   const computedStyles = StyleSheet.create({
     firstSeasonTitleText: {
@@ -116,7 +120,7 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
       {/*  />*/}
       {/*</View>*/}
       <View style={styles.squareBarWrapper}>
-        <Bar style={styles.firstSeasonBarContainer}>
+        <Bar style={styles.firstSeasonBarContainer} onPress={() => navigation.navigate('Raffle')}>
           <ImageBackground style={StyleSheet.absoluteFill} source={imagePrizeBackground} resizeMode="cover" />
           <Text style={[styles.firstSeasonTitleText, computedStyles.firstSeasonTitleText]}>
             {t('ride_Ride_Trip_prize')}

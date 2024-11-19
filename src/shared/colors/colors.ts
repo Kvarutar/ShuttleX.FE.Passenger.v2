@@ -12,6 +12,9 @@ const passengerColors: PassengerColors = {
     firstSeason: '#916B56',
     helpUkraine: '#1C549E',
   },
+  raffle: {
+    surpriseTitleBackgroundColor: '#00000080',
+  },
 };
 
 export default passengerColors;

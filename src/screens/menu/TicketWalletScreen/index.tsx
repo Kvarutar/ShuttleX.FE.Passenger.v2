@@ -95,10 +95,6 @@ const TicketWalletScreen = () => {
       }
     });
 
-  const onLotteryPress = () => {
-    //TODO navigate to lottery page
-  };
-
   return (
     <>
       <SafeAreaView containerStyle={[styles.wrapper, computedStyles.wrapper]}>
@@ -106,7 +102,11 @@ const TicketWalletScreen = () => {
           onMenuPress={() => setIsMenuVisible(true)}
           onNotificationPress={() => navigation.navigate('Notifications')}
           rightButton={
-            <Button mode={CircleButtonModes.Mode2} shape={ButtonShapes.Circle} onPress={onLotteryPress}>
+            <Button
+              mode={CircleButtonModes.Mode2}
+              shape={ButtonShapes.Circle}
+              onPress={() => navigation.navigate('Raffle')}
+            >
               <LotteryIcon style={styles.lotteryIcon} />
             </Button>
           }

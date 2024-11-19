@@ -168,5 +168,14 @@
   "menu_AccountVerificateCode_secondHeader": "in Message",
   "menu_AccountVerificateCode_change": "Change",
   "menu_TicketWallet_title": "Ticket Wallet",
-  "menu_TicketWallet_numberTitle": "Ticket Number"
+  "menu_TicketWallet_numberTitle": "Ticket Number",
+  "raffle_Raffle_lotteryButton": "Lottery",
+  "raffle_Raffle_seasonButton": "Season",
+  "raffle_Lottery_startThrough": "Started Through",
+  "raffle_Lottery_day": "Day",
+  "raffle_Lottery_hour": "Hr",
+  "raffle_Lottery_minute": "Min",
+  "raffle_Lottery_PrizesSlider_position": "#{{pos}} st",
+  "raffle_Lottery_PrizeCard_position": "#{{pos}} st",
+  "raffle_Lottery_PrizeWithWinnerBar_name": "{{name}} - Ticket {{ticketCode}}"
 }
