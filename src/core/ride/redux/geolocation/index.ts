@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { LatLng } from 'react-native-maps';
 import { calculateExtendedHeading, getAngleBetweenPoints } from 'shuttlex-integration';
 
+import { convertGeoToAddress } from './thunks';
 import { GeolocationState } from './types';
 
 export const geolocationSliceName = 'geolocation';
@@ -49,6 +50,11 @@ const slice = createSlice({
     setGeolocationError(state, action: PayloadAction<GeolocationState['error']>) {
       state.error = action.payload;
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(convertGeoToAddress.rejected, (_, action) => {
+      console.error(convertGeoToAddress.typePrefix, action.payload);
+    });
   },
 });
 

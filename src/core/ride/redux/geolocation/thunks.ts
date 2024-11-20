@@ -6,10 +6,10 @@ import { ConvertGeoToAddressAPIResponse, ConvertGeoToAddressPayload } from './ty
 
 export const convertGeoToAddress = createAppAsyncThunk<string, ConvertGeoToAddressPayload>(
   `${geolocationSliceName}/convertGeoToAddress`,
-  async (payload, { rejectWithValue, geomappingAxios }) => {
+  async (payload, { rejectWithValue, passengerAxios }) => {
     try {
-      const result = await geomappingAxios.get<ConvertGeoToAddressAPIResponse>(
-        `/web-mapping/search/geo?Latitude=${payload.latitude}&Longitude=${payload.longitude}`,
+      const result = await passengerAxios.get<ConvertGeoToAddressAPIResponse>(
+        `/Ride/places/geo?latitude=${payload.latitude}&longitude=${payload.longitude}`,
       );
 
       return result.data[0].fullAddress;
