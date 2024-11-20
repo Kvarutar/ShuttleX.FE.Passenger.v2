@@ -55,10 +55,15 @@ const AccountSettings = (): JSX.Element => {
     //TODO Change when we'll know more about uploading photo
   }, [dispatch, navigation, profile?.imageUri]);
 
-  const handleOpenVerification = (mode: 'phone' | 'email', newValue: string) => {
+  const handleOpenVerification = async (mode: 'phone' | 'email', newValue: string) => {
     if (!isLoading && !changeDataError) {
-      dispatch(changeAccountContactData({ method: mode, data: { oldData: profile?.[mode] ?? '', newData: newValue } }));
-      navigation.navigate('AccountVerificateCode', { mode, newValue });
+      try {
+        await dispatch(
+          changeAccountContactData({ method: mode, data: { oldData: profile?.[mode] ?? '', newData: newValue } }),
+        ).unwrap();
+        // If there is an error, then try catch will catch it and the next line will not be executed
+        navigation.navigate('AccountVerificateCode', { mode, newValue });
+      } catch (_) {}
     }
   };
 

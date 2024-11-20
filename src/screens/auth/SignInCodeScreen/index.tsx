@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { CodeVerificationScreen, isLockedError, milSecToTime } from 'shuttlex-integration';
@@ -24,37 +24,21 @@ const SignInCodeScreen = ({ navigation, route }: SignInCodeScreenProps): JSX.Ele
 
   const [lockoutMinutes, setLockoutMinutes] = useState('');
 
-  const [verificationCode, setVerificationCode] = useState<string | null>(null);
-
   const getHeaderText = (type: string) => ({
     firstPart: type === 'phone' ? t('auth_SignInCode_phonePrompt') : t('auth_SignInCode_emailPrompt'),
     secondPart: data,
   });
 
-  const handleCodeChange = async (newCode: string) => {
-    //TODO: fix inputs: this function triggers when error state changes
-    if (!signError) {
-      setIsIncorrectCode(false);
-    }
-
-    if (newCode.length === 4) {
-      setVerificationCode(newCode);
-    } else {
-      setVerificationCode(null);
-    }
-  };
+  const handleCodeChange = useCallback(
+    (newCode: string) => {
+      if (newCode.length === 4) {
+        dispatch(verifyCode({ method: verificationType, code: newCode, body: data }));
+      }
+    },
+    [dispatch, verificationType, data],
+  );
 
   useEffect(() => {
-    if (verificationCode) {
-      dispatch(verifyCode({ method: verificationType, code: verificationCode, body: data })); //TODO: move logic to handle code change after bug with wron function trigger will be solved
-    }
-  }, [verificationCode, data, dispatch, verificationType]);
-
-  useEffect(() => {
-    if (isLoggedIn && !isLoading && !signError) {
-      navigation.replace('Ride');
-    }
-
     if (signError) {
       setIsIncorrectCode(true);
       if (isLockedError(signError)) {
@@ -65,6 +49,14 @@ const SignInCodeScreen = ({ navigation, route }: SignInCodeScreenProps): JSX.Ele
         setLockoutEndTimestamp(lockoutEndDate);
         setIsBlocked(true);
       }
+    } else {
+      setIsIncorrectCode(false);
+    }
+  }, [signError]);
+
+  useEffect(() => {
+    if (isLoggedIn && !isLoading && !signError) {
+      navigation.replace('Ride');
     }
   }, [isLoggedIn, isLoading, signError, navigation, dispatch]);
 

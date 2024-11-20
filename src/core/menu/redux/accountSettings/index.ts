@@ -58,6 +58,7 @@ const slice = createSlice({
           payload: action.payload as NetworkErrorDetailsWithBody<any>, //TODO: remove this cast after fix with rejectedValue
           type: setAccountSettingsError.type,
         });
+        console.error(changeAccountContactData.typePrefix, action.payload);
       })
       .addCase(verifyChangeAccountDataCode.pending, state => {
         slice.caseReducers.setAccountSettingsIsLoading(state, {
