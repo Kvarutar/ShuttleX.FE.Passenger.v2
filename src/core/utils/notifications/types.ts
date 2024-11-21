@@ -1,4 +1,4 @@
-export interface RemoteMessage {
+export interface NotificationRemoteMessage {
   data: {
     title: string;
     body: string;
@@ -9,7 +9,6 @@ export interface RemoteMessage {
 
 export enum NotificationType {
   DriverAccepted = 'driver_accepted',
-  NoAvailableDrivers = 'no_available_drivers',
   TripStarted = 'trip_started',
   TripEnded = 'trip_ended',
   DriverArrived = 'driver_arrived',

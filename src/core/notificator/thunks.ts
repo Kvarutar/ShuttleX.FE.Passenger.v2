@@ -12,12 +12,7 @@ export const sendFirebaseToken = createAppAsyncThunk<void, string>(
         userType: 'Passenger',
       } as sendFirebaseTokenAPIRequest);
     } catch (error) {
-      const { code, body, status } = getNetworkErrorInfo(error);
-      return rejectWithValue({
-        code,
-        body,
-        status,
-      });
+      return rejectWithValue(getNetworkErrorInfo(error));
     }
   },
 );

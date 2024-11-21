@@ -6,7 +6,7 @@ import { setIsLoggedIn } from '../core/auth/redux';
 import { isLoggedInSelector } from '../core/auth/redux/selectors';
 import { useAppDispatch } from '../core/redux/hooks';
 import { signalRThunks, updateSignalRAccessToken } from '../core/redux/signalr';
-import { getDeviceToken, setupNotifications } from '../core/utils/notifications/notificationSetup';
+import { getFirebaseDeviceToken, setupNotifications } from '../core/utils/notifications/notificationSetup';
 import { InitialSetupProps } from './types';
 
 const InitialSetup = ({ children }: InitialSetupProps) => {
@@ -21,7 +21,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
 
       if (accessToken) {
         dispatch(setIsLoggedIn(true));
-        getDeviceToken();
+        getFirebaseDeviceToken();
       } else {
         dispatch(setIsLoggedIn(false));
       }

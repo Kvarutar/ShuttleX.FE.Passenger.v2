@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonShadows,
@@ -27,20 +28,16 @@ import imageFriendlyDriver from '../../../../assets/images/likeFeedback/imageFri
 import imageGoodDriving from '../../../../assets/images/likeFeedback/imageGoodDriving';
 import imageNiceAtmosphere from '../../../../assets/images/likeFeedback/imageNiceAtmosphere';
 import { useAppDispatch } from '../../../core/redux/hooks';
+import { contractorInfoSelector, orderIdSelector } from '../../../core/ride/redux/trip/selectors';
 import { sendFeedback } from '../../../core/ride/redux/trip/thunks';
 import { RatingScreenProps } from './types';
-
-const contractorTestInfo = {
-  name: 'Slava',
-  likes: 51353,
-  rides: 3222,
-  img: 'https://s3-alpha-sig.figma.com/img/a077/4174/e90e7da558343949a212b72e0498120b?Expires=1731283200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=ji8~5irXi2j4kUsLQCdTMMzNoh4LCHNfCFs7nv9~erH15T1vg7kzZrm6ljKLeWGSiSuiWvyGQMowXUDRBdsYJsfwnhJchYI8zFk8LFrKqURYqC43-UUwWb~HFlcv7tO6TSe5EZEBsuIdTYDPp-9-7KOT1TWNg8chgfWEZVNbb-Bcn1QHU0sv3JB5aWZuIepHoI5VKJA8iIeB45mnK7RLhLQLl9hIm99JflOOtrexzMi9a4-1Z79Sns0bXjPo3~DZafbIsYoScx1I-Nxi~eq6taRgnr4cGMpYy9sCr0MDAHyiTarDZ~iPHWDdLDGjRpzkZzBCL5kGohRvuNh92HlfZQ__',
-};
 
 const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
+  const contractorInfo = useSelector(contractorInfoSelector);
+  const orderId = useSelector(orderIdSelector);
 
   const [mark, setMark] = useState<FeedbackRating | null>(null);
   const [isMarkSelected, setIsMarkSelected] = useState(false);
@@ -118,12 +115,18 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
     if (mark && isMarkSelected) {
       const selectedTitles = selectedSubMarks.map(index => subMarksData[mark].data[index].text.replace(/\n/g, ' '));
 
-      dispatch(
-        sendFeedback({
-          rating: mark,
-          description: selectedTitles,
-        }),
-      );
+      if (orderId) {
+        dispatch(
+          sendFeedback({
+            orderId: orderId,
+            payload: {
+              isLikedByPassenger: isMarkSelected,
+              positiveFeedbacks: mark === 'like' ? selectedTitles : [],
+              negativeFeedbacks: mark === 'dislike' ? selectedTitles : [],
+            },
+          }),
+        );
+      }
       navigation.navigate('Receipt');
     }
   };
@@ -174,7 +177,7 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
           <Text style={[styles.text, computedStyles.text]}>
             {t('ride_Rating_willYouLike')}
             {/*TODO swap to contractor name*/}
-            <Text style={[styles.text]}>{`${contractorTestInfo.name}?`}</Text>
+            <Text style={[styles.text]}>{`${contractorInfo?.info?.firstName}?`}</Text>
           </Text>
           <View style={styles.markContainer}>
             <Button
@@ -210,9 +213,12 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
         <View style={styles.contentWrapper}>
           <View style={styles.riderInfoContainer}>
             {/*TODO swap to contractor name*/}
-            <Image style={styles.avatar} source={{ uri: contractorTestInfo.img }} />
-            <Text style={[styles.text, styles.textName]}>{contractorTestInfo.name}</Text>
-            <StatsBlock amountLikes={contractorTestInfo.likes} amountRides={contractorTestInfo.rides} />
+            <Image style={styles.avatar} source={{ uri: contractorInfo?.avatar }} />
+            <Text style={[styles.text, styles.textName]}>{contractorInfo?.info?.firstName}</Text>
+            <StatsBlock
+              amountLikes={contractorInfo?.info?.totalLikesCount ?? 0}
+              amountRides={contractorInfo?.info?.totalRidesCount}
+            />
           </View>
           {markBlock}
         </View>

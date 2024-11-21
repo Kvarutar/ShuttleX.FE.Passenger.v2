@@ -3,16 +3,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
-import { getLocales } from 'react-native-localize';
 import { useSelector } from 'react-redux';
 import {
   BottomWindow,
   BottomWindowWithGesture,
-  minToMilSec,
+  formatTime,
   StatsBlock,
   SwipeButton,
   SwipeButtonModes,
-  TariffType,
   Text,
   Timer,
   TimerColorModes,
@@ -25,41 +23,16 @@ import {
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
-import { tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
+import { orderIdSelector, tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
 import { cancelTrip } from '../../../../core/ride/redux/trip/thunks';
-import { TripStatus } from '../../../../core/ride/redux/trip/types';
+import { Contractor, TripStatus } from '../../../../core/ride/redux/trip/types';
 import { RootStackParamList } from '../../../../Navigate/props';
 import AlertInitializer from '../../../../shared/AlertInitializer';
+import Order from '../Order';
 import HiddenPart from './HiddenPart';
 import VisiblePart from './VisiblePart';
 
-//TODO swap to contractorInfo
-const contractorInfoTest = {
-  contractor: {
-    name: 'Slava',
-    likes: 3255,
-    image:
-      'https://s3-alpha-sig.figma.com/img/a077/4174/e90e7da558343949a212b72e0498120b?Expires=1731283200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=ji8~5irXi2j4kUsLQCdTMMzNoh4LCHNfCFs7nv9~erH15T1vg7kzZrm6ljKLeWGSiSuiWvyGQMowXUDRBdsYJsfwnhJchYI8zFk8LFrKqURYqC43-UUwWb~HFlcv7tO6TSe5EZEBsuIdTYDPp-9-7KOT1TWNg8chgfWEZVNbb-Bcn1QHU0sv3JB5aWZuIepHoI5VKJA8iIeB45mnK7RLhLQLl9hIm99JflOOtrexzMi9a4-1Z79Sns0bXjPo3~DZafbIsYoScx1I-Nxi~eq6taRgnr4cGMpYy9sCr0MDAHyiTarDZ~iPHWDdLDGjRpzkZzBCL5kGohRvuNh92HlfZQ__',
-    car: {
-      model: 'Toyota Land Cruiser',
-      plateNumber: 'BB 4177 CH',
-    },
-  },
-  approximateArrival: minToMilSec(0.5), //travel time
-  tripType: 'Basic',
-  total: 20,
-};
-
-export const formatTime = (time: Date): string =>
-  time
-    .toLocaleTimeString(getLocales()[0].languageTag, {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: false,
-    })
-    .replace(/^0/, '');
-
-const Trip = () => {
+const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
@@ -69,12 +42,16 @@ const Trip = () => {
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
   const tripStatus = useSelector(tripStatusSelector);
+  const orderId = useSelector(orderIdSelector);
 
   const [extraSum, setExtraSum] = useState(0);
 
-  const arrivedTime = Date.now() + contractorInfoTest.approximateArrival;
+  const arrivedTime = contractorInfo?.info ? Date.parse(contractorInfo?.info?.arrivalTime) : 0;
 
-  const TariffIcon = tariffIconsData[contractorInfoTest.tripType as TariffType].icon;
+  console.log(tripStatus);
+
+  //TODO Where can we get tarrifType??? and change TariffIcon
+  const TariffIcon = tariffIconsData.Basic.icon;
 
   const computedStyles = StyleSheet.create({
     avatarWrapper: {
@@ -94,6 +71,11 @@ const Trip = () => {
     },
   });
 
+  //TODO test this case
+  if (tripStatus === TripStatus.Idle) {
+    return <Order />;
+  }
+
   if (tripStatus === TripStatus.Ride) {
     return (
       <BottomWindow>
@@ -108,7 +90,9 @@ const Trip = () => {
           <Text style={[styles.topText, computedStyles.topText]}>{t('ride_Ride_Trip_youBeIn')} </Text>
           <Text style={styles.topText}>{formatTime(new Date(arrivedTime))}</Text>
         </View>
-        <Text style={[styles.text, styles.carNameText]}>{contractorInfoTest.contractor.car.model}</Text>
+        <Text
+          style={[styles.text, styles.carNameText]}
+        >{`${contractorInfo.info?.carBrand} ${contractorInfo.info?.carModel}`}</Text>
         {/*TODO: delete mock data*/}
         <TrafficIndicator
           containerStyle={styles.trafficIndicatorContainer}
@@ -125,16 +109,16 @@ const Trip = () => {
             <Image
               style={styles.image}
               source={{
-                uri: contractorInfoTest.contractor.image,
+                uri: contractorInfo.avatar,
               }}
             />
             <View>
-              <Text style={styles.text}>{contractorInfoTest.contractor.name}</Text>
-              <StatsBlock amountLikes={contractorInfoTest.contractor.likes} />
+              <Text style={styles.text}>{contractorInfo?.info?.firstName}</Text>
+              <StatsBlock amountLikes={contractorInfo?.info?.totalLikesCount ?? 0} />
             </View>
           </View>
           <View style={[styles.plateNumberContainer, computedStyles.plateNumberContainer]}>
-            <Text style={styles.text}>{contractorInfoTest.contractor.car.plateNumber}</Text>
+            <Text style={styles.text}>{contractorInfo?.info?.carNumber}</Text>
           </View>
         </View>
       </BottomWindow>
@@ -152,7 +136,7 @@ const Trip = () => {
             <Image
               style={styles.avatar}
               source={{
-                uri: contractorInfoTest.contractor.image,
+                uri: contractorInfo.avatar,
               }}
             />
           </View>
@@ -169,13 +153,13 @@ const Trip = () => {
           options={'options' in alertData ? alertData.options : undefined}
         />
       ))}
-      visiblePart={<VisiblePart setExtraSum={setExtraSum} extraSum={extraSum} />}
+      visiblePart={<VisiblePart setExtraSum={setExtraSum} extraSum={extraSum} contractorInfo={contractorInfo} />}
       hiddenPart={<HiddenPart extraSum={extraSum} />}
       visiblePartStyle={styles.visiblePartStyle}
       hiddenPartButton={
         <SwipeButton
           mode={SwipeButtonModes.Decline}
-          onSwipeEnd={() => dispatch(cancelTrip())}
+          onSwipeEnd={() => orderId && dispatch(cancelTrip(orderId))}
           text={t('ride_Ride_Trip_cancelRideButton')}
         />
       }

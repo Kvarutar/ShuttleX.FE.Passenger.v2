@@ -4,7 +4,12 @@ import { type Profile } from './types';
 import { PassengerState } from './types';
 
 const initialState: PassengerState = {
-  profile: null,
+  profile: {
+    fullName: 'Test',
+    email: 'mail@mail.ua',
+    phone: '+380509245061',
+    imageUri: '',
+  },
 };
 
 const slice = createSlice({

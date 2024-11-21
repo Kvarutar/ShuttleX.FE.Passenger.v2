@@ -21,6 +21,7 @@ import passengerColors from '../../../../shared/colors/colors';
 import { ContractorInfoTestType, SquareBarProps } from './types';
 
 //TODO: swap to contractorInfo from BE
+//TODO where can I get this???
 const contractorInfoTest: ContractorInfoTestType = {
   tariffType: 'Basic',
   total: 20,

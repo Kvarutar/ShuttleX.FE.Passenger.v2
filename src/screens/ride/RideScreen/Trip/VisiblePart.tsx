@@ -9,6 +9,7 @@ import {
   ButtonSizes,
   CircleButtonModes,
   ClockIcon,
+  formatTime,
   getCurrencySign,
   minToMilSec,
   PhoneIcon,
@@ -20,33 +21,15 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
-import { useAppDispatch } from '../../../../core/redux/hooks';
-import { setTripStatus } from '../../../../core/ride/redux/trip';
 import { tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../../core/ride/redux/trip/types';
-import { formatTime } from './index';
 import { TimerStateDataType, VisiblePartProps } from './types';
-
-//TODO: swap contractorInfoTest to contractorInfo
-const contractorInfoTest = {
-  contractor: {
-    name: 'Slava',
-    car: {
-      model: 'Toyota Land Cruiser',
-      plateNumber: 'BB 4177 CH',
-    },
-  },
-  phone: '+380999999999',
-  tripType: 'Basic',
-  total: 20,
-};
 
 const testExtraSum = 0.5;
 
-const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
+const VisiblePart = ({ setExtraSum, extraSum, contractorInfo }: VisiblePartProps) => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const dispatch = useAppDispatch();
   const { colors } = useTheme();
   const { t } = useTranslation();
 
@@ -88,7 +71,7 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
   });
 
   const timerStateData: Record<string, TimerStateDataType> = {
-    idle: {
+    accepted: {
       timerTime: Date.now() + minToMilSec(0.5),
       mode: TimerColorModes.Mode1,
       title: (
@@ -112,13 +95,6 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
     },
   };
 
-  //for test
-  useEffect(() => {
-    if (extraSum > 1.5) {
-      dispatch(setTripStatus(TripStatus.Ride));
-    }
-  }, [dispatch, extraSum]);
-
   useEffect(() => {
     if (extraWaiting) {
       intervalRef.current = setInterval(() => {
@@ -134,10 +110,6 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
   const timerState = timerStateData[isWaiting ? 'waiting' : tripStatus];
 
   const onAfterCountdownEndsHandler = () => {
-    if (tripStatus === TripStatus.Idle) {
-      dispatch(setTripStatus(TripStatus.Arrived));
-    }
-
     if (tripStatus === TripStatus.Arrived) {
       if (isWaiting && !intervalRef.current) {
         setExtraWaiting(true);
@@ -161,16 +133,22 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
         {/*  </View>*/}
         {/*)}*/}
         <View style={styles.nameTimeContainer}>
-          <Text style={styles.nameTimeText}>{contractorInfoTest.contractor.name} </Text>
+          <Text style={styles.nameTimeText}>{contractorInfo?.info?.firstName} </Text>
           {timerState.title}
         </View>
-        <StatsBlock style={styles.statsContainer} amountLikes={325} amountRides={53153} />
+        <StatsBlock
+          style={styles.statsContainer}
+          amountLikes={contractorInfo.info?.totalLikesCount ?? 0}
+          amountRides={contractorInfo.info?.totalRidesCount}
+        />
         <View style={styles.carInfoContainer}>
           <Bar style={styles.carInfoBar}>
-            <Text style={styles.carInfoText}>{contractorInfoTest.contractor.car.model}</Text>
+            <Text
+              style={styles.carInfoText}
+            >{`${contractorInfo.info?.carBrand} ${contractorInfo.info?.carModel}`}</Text>
           </Bar>
           <Bar style={[styles.carInfoPlateNumberBar, computedStyles.carInfoPlateNumberBar]}>
-            <Text style={styles.carInfoText}>{contractorInfoTest.contractor.car.plateNumber}</Text>
+            <Text style={styles.carInfoText}>{contractorInfo?.info?.carNumber}</Text>
           </Bar>
         </View>
       </View>
@@ -180,7 +158,7 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
             shape={ButtonShapes.Circle}
             mode={CircleButtonModes.Mode2}
             size={ButtonSizes.M}
-            onPress={() => Linking.openURL(`tel:${contractorInfoTest.phone}`)}
+            onPress={() => Linking.openURL(`tel:${contractorInfo?.info?.phoneNumber}`)}
           >
             <PhoneIcon />
           </Button>

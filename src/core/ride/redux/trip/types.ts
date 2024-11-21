@@ -1,30 +1,62 @@
 import { LatLng } from 'react-native-maps';
-import { TariffType } from 'shuttlex-integration';
+import { NetworkErrorDetailsWithBody, Nullable, TariffType } from 'shuttlex-integration';
 
 import { AddressPoint } from '../order/types';
 
-export type ContractorInfo = {
+export type ContractorInfoApiResponse = {
   firstName: string;
   arrivalTime: string;
   carBrand: string;
   carModel: string;
   carNumber: string;
   totalLikesCount: number;
-  //TODO add phone number when back will add it
   totalRidesCount: number;
   level: number;
-  avatarId: string;
+  avatarId: string[];
   currencyCode: string;
+  phoneNumber: string;
 };
 
-export enum TripStatus {
-  Idle = 'idle',
-  Accepted = 'accepted',
-  Arrived = 'arrived',
-  Ride = 'ride',
-}
+export type Contractor = {
+  info: Nullable<ContractorInfoApiResponse>;
+  avatar: string;
+  orderId: string;
+};
 
-type RouteInfo = {
+export type RouteInfoApiResponse = {
+  routeId: string;
+  totalDistanceMtr: number;
+  totalDurationSec: number;
+  waypoints: {
+    geo: LatLng;
+    index: number;
+  }[];
+  accurateGeometries: {
+    polylineStartIndex: number;
+    polylineEndIndex: number;
+    trafficLoad: string;
+  }[];
+  geometry: string;
+  trafficLoad: string;
+  orderId: string;
+};
+
+export type RoutePickUpApiResponse = RouteInfoApiResponse;
+export type RouteDropOffApiResponse = RouteInfoApiResponse;
+
+export type RouteInfo = {
+  pickUp: RoutePickUpApiResponse;
+  dropOff: RouteDropOffApiResponse;
+};
+
+export type FeedbackAPIRequest = {
+  isLikedByPassenger: boolean;
+  positiveFeedbacks: string[];
+  negativeFeedbacks: string[];
+};
+
+//TODO do something with this type
+type RouteInfoOld = {
   duration: number;
   distance: number;
   legs: {
@@ -39,20 +71,31 @@ type RouteInfo = {
   }[];
 };
 
+//TODO do something with this type
 export type TripInfo = {
+  //TODO ask Andrew
   tripType: TariffType;
   total: string;
   route: {
     startPoint: AddressPoint;
     endPoints: AddressPoint[];
-    info: RouteInfo; // TODO: temporary, probably not the best place for this
+    info: RouteInfoOld; // TODO: temporary, probably not the best place for this
   };
 };
 
+export enum TripStatus {
+  Idle = 'idle',
+  Accepted = 'accepted',
+  Arrived = 'arrived',
+  Ride = 'ride',
+}
+
 export type TripState = {
-  contractorInfo: ContractorInfo | null;
-  tripInfo: TripInfo | null;
+  contractor: Nullable<Contractor>;
+  routeInfo: Nullable<RouteInfo>;
   status: TripStatus;
-  tip: number | null;
+  tip: Nullable<number>;
   finishedTrips: number;
+  isLoading: boolean;
+  error: Nullable<NetworkErrorDetailsWithBody<any>>;
 };

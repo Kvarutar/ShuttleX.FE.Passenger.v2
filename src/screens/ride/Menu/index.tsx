@@ -10,7 +10,7 @@ import {
   MenuBase,
   MenuNavigation,
   // PlayIcon,
-  PlusRoundIcon,
+  // PlusRoundIcon,
   sizes,
   Text,
   useTheme,
@@ -29,10 +29,11 @@ const Menu = ({ onClose }: MenuProps) => {
 
   const currentRoute = useNavigationState(state => state.routes[state.index].name);
 
-  const onCreateRide = () => {
-    navigation.navigate('Ride', { openAddressSelect: true });
-    onClose();
-  };
+  //TODO uncoment all comments when we need this code
+  // const onCreateRide = () => {
+  //   navigation.navigate('Ride', { openAddressSelect: true });
+  //   onClose();
+  // };
 
   const menuNavigation: MenuNavigation = {
     ride: {
@@ -41,7 +42,7 @@ const Menu = ({ onClose }: MenuProps) => {
         onClose();
       },
       title: t('ride_Menu_navigationMyRide'),
-      content: <CreateRide onClick={onCreateRide} />,
+      // content: <CreateRide onClick={onCreateRide} />,
     },
     activity: {
       navFunc: () => {
@@ -157,11 +158,11 @@ const TicketWalletButton = () => {
 //   );
 // };
 
-const CreateRide = ({ onClick }: { onClick: () => void }) => (
-  <Pressable onPress={onClick}>
-    <PlusRoundIcon />
-  </Pressable>
-);
+// const CreateRide = ({ onClick }: { onClick: () => void }) => (
+//   <Pressable onPress={onClick}>
+//     <PlusRoundIcon />
+//   </Pressable>
+// );
 
 const styles = StyleSheet.create({
   menu: {

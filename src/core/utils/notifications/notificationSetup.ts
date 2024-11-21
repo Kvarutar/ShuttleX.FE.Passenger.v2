@@ -10,7 +10,7 @@ import { handleMessage } from './notificationHandlers';
 export const setupNotifications = async () => {
   await requestNotificationsPermission();
   await createChannels();
-  setupTokenRefresh();
+  setupFirebaseRefreshToken();
   subscribeToMessages();
 };
 
@@ -30,20 +30,20 @@ const subscribeToMessages = () => {
   messaging().onMessage(handleMessage);
 };
 
-export const getDeviceToken = async () => {
+export const getFirebaseDeviceToken = async () => {
   try {
     const token = await messaging().getToken();
     //TODO delete console after all tests
-    console.log('token:', token);
+    console.log('Firebase Token:', token);
 
     store.dispatch(sendFirebaseToken(token));
   } catch (error) {
-    console.error('Cant get token:', error);
+    console.error('Cannot get firebase device token:', error);
   }
 };
 
 // Refresh token
-const setupTokenRefresh = async () => {
+const setupFirebaseRefreshToken = async () => {
   messaging().onTokenRefresh(async newToken => {
     store.dispatch(sendFirebaseToken(newToken));
   });

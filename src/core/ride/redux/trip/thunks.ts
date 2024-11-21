@@ -1,8 +1,15 @@
-import { FeedbackType, getNetworkErrorInfo } from 'shuttlex-integration';
+import { getNetworkErrorInfo } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../../redux/hooks';
-import { ContractorInfo, TripInfo } from './types';
+import {
+  ContractorInfoApiResponse,
+  FeedbackAPIRequest,
+  RouteDropOffApiResponse,
+  RoutePickUpApiResponse,
+  TripInfo,
+} from './types';
 
+//TODO decide what to do with this thunk
 export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(
   'trip/fetchTripInfo',
   async (_, { rejectWithValue, passengerAxios }) => {
@@ -12,68 +19,71 @@ export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(
 
       return response.data;
     } catch (error) {
-      const { code, body, status } = getNetworkErrorInfo(error);
-      return rejectWithValue({
-        code,
-        body,
-        status,
-      });
+      return rejectWithValue(getNetworkErrorInfo(error));
     }
   },
 );
 
-export const fetchContractorInfo = createAppAsyncThunk<ContractorInfo, string>(
-  'trip/fetchContractorInfo',
-  async (orderId, { rejectWithValue, passengerAxios }) => {
-    try {
-      const response = await passengerAxios.get<ContractorInfo>(`/api/v1/order/${orderId}`);
-      return response.data;
-    } catch (error) {
-      const { code, body, status } = getNetworkErrorInfo(error);
-      return rejectWithValue({
-        code,
-        body,
-        status,
-      });
-    }
-  },
-);
+export const getContractorInfo = createAppAsyncThunk<
+  { contractorInfo: ContractorInfoApiResponse; contractorAvatar: string; orderId: string },
+  string
+>('trip/getContractorInfo', async (orderId, { rejectWithValue, orderAxios }) => {
+  try {
+    const contractorInfoResponse = await orderAxios.get<ContractorInfoApiResponse>(`/${orderId}`);
+    const contractorInfo = contractorInfoResponse.data;
 
-export const sendFeedback = createAppAsyncThunk<FeedbackType, FeedbackType>(
+    const contractorAvatarResponse = await orderAxios.get<string>(
+      `/${orderId}/contractors/avatars/${contractorInfo.avatarId[0]}`,
+    );
+    const contractorAvatar = contractorAvatarResponse.data;
+
+    return { contractorInfo, contractorAvatar, orderId };
+  } catch (error) {
+    return rejectWithValue(getNetworkErrorInfo(error));
+  }
+});
+
+export const getRouteInfo = createAppAsyncThunk<
+  { pickUpData: RoutePickUpApiResponse; dropOffData: RouteDropOffApiResponse },
+  string
+>('trip/getRouteInfo', async (orderId, { rejectWithValue, orderAxios }) => {
+  try {
+    const [pickUpResponse, dropOffResponse] = await Promise.all([
+      orderAxios.get<RoutePickUpApiResponse>(`/${orderId}/route/pickup`),
+      orderAxios.get<RouteDropOffApiResponse>(`/${orderId}/route/dropoff`),
+    ]);
+    return {
+      pickUpData: pickUpResponse.data,
+      dropOffData: dropOffResponse.data,
+    };
+  } catch (error) {
+    return rejectWithValue(getNetworkErrorInfo(error));
+  }
+});
+
+export const sendFeedback = createAppAsyncThunk<FeedbackAPIRequest, { orderId: string; payload: FeedbackAPIRequest }>(
   'trip/sendFeedback',
-  async (payload, { rejectWithValue, passengerAxios }) => {
+  async ({ orderId, payload }, { rejectWithValue, orderAxios }) => {
     try {
-      await passengerAxios.post('/passenger/feedback', {
-        //TODO: add tripId: tripId,
-        rating: payload.rating,
-        tip: payload.tip,
-      });
-
+      await orderAxios.post(`/rate/${orderId}`, {
+        isLikedByPassenger: payload.isLikedByPassenger,
+        positiveFeedbacks: payload.positiveFeedbacks,
+        negativeFeedbacks: payload.negativeFeedbacks,
+      } as FeedbackAPIRequest);
       return payload;
     } catch (error) {
-      const { code, body, status } = getNetworkErrorInfo(error);
-      return rejectWithValue({
-        code,
-        body,
-        status,
-      });
+      return rejectWithValue(getNetworkErrorInfo(error));
     }
   },
 );
 
-// async thunk for canceling ride by passenger
-//TODO make a real post request to back
-export const cancelTrip = createAppAsyncThunk<void, void>(
+export const cancelTrip = createAppAsyncThunk<void, string>(
   'trip/cancelTrip',
-  async (_, { rejectWithValue, passengerAxios }) => {
+  async (orderId, { rejectWithValue, orderAxios }) => {
     try {
-      const response = await passengerAxios.post('/api/trips/cancel', {
-        message: 'Passenger cancelled the trip',
-      });
-
-      return response.data;
+      await orderAxios.put(`/cancel/${orderId}`);
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(getNetworkErrorInfo(error));
     }
   },
 );
