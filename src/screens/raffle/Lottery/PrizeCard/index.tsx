@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, Pressable, StyleSheet } from 'react-native';
 import { Text, useTheme } from 'shuttlex-integration';
 
+import { prizesData } from '../prizesData';
 import { PrizeCardProps } from './types';
 
 const PrizeCard = ({ item, onPress }: PrizeCardProps) => {
@@ -22,11 +23,11 @@ const PrizeCard = ({ item, onPress }: PrizeCardProps) => {
 
   return (
     <Pressable style={[styles.container, computedStyles.container]} onPress={() => onPress(item)}>
-      <Image source={item.image} style={styles.image} />
+      <Image source={prizesData[item.prizes[0].feKey].image} style={styles.image} />
       <Text style={[styles.placeNumber, computedStyles.placeNumber]} numberOfLines={1}>
-        {t('raffle_Lottery_PrizeCard_position', { pos: item.index })}
+        {t('raffle_Lottery_PrizeCard_position', { pos: item.index + 1 })}
       </Text>
-      <Text style={[styles.title, computedStyles.title]}>{item.name}</Text>
+      <Text style={[styles.title, computedStyles.title]}>{prizesData[item.prizes[0].feKey].name}</Text>
     </Pressable>
   );
 };

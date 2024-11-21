@@ -2,17 +2,17 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
+import { useSelector } from 'react-redux';
 import { PassengerDefaultCarImage, sizes, Text, useTheme } from 'shuttlex-integration';
 
 import imageStartRideCarouselCapybara from '../../../../../../../assets/images/startRide/imageStartRideCarouselCapybara';
 import ImageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
+import { lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
 import usePrizeTimer from '../utils/usePrizeTimer';
 import { SliderItemProps } from './types';
 
 const windowWidth = Dimensions.get('window').width;
 const carouselAnimationDurations = 300;
-
-const testEndLotteryTime = new Date(2024, 11, 1);
 
 const SliderItem = ({ topText, bottomText, image }: SliderItemProps) => {
   const { colors } = useTheme();
@@ -43,7 +43,9 @@ const SliderItem = ({ topText, bottomText, image }: SliderItemProps) => {
 const HeaderCarousel = () => {
   const { t } = useTranslation();
   const carouselRef = useRef<ICarouselInstance>(null);
-  const { hours, minutes, seconds } = usePrizeTimer(testEndLotteryTime);
+  const lotteryStartTime = useSelector(lotteryStartTimeSelector);
+
+  const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime));
 
   const [currentIndex, setCurrentIndex] = useState(0);
 

@@ -1,22 +1,35 @@
+import { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 import { PrizePedestalIcon, Text, TextElipsizeMode, useTheme } from 'shuttlex-integration';
 
+import { winnerAvatarSelector } from '../../../core/lottery/redux/selectors';
+import { getWinnerAvatar } from '../../../core/lottery/redux/thunks';
+import { Prize } from '../../../core/lottery/redux/types';
+import { useAppDispatch } from '../../../core/redux/hooks';
 import passengerColors from '../../../shared/colors/colors';
-import { Prize } from './types';
+import { prizesData } from './prizesData';
 
 const getPrizeByPlace = (prizes: Prize[], place: number) => {
-  return prizes.find(prize => prize.index === place);
+  return prizes.find(prize => prize.index + 1 === place);
 };
+
+//TODO: add ImageComponent with default image
+const defaultImage =
+  'https://s3-alpha-sig.figma.com/img/9446/d564/bd2ec06179682d62415780b8d0976216?Expires=1733097600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=asXkku9hzOkD4gS295RqStzvF937gRSwT~REzBfzcaGAh8NoH97Mc5SPoaPWSutgbYwoqaDTMZMH6P-WaoQdTEnfPjtdh5esnXPpGcrBFEQsFkPRVlqsmicS-Qi2Bf5bUP~I4pA7rtlrd0dBGipsXdIo8sUVClkDBOWqnJi7JnA2VQ-oP9MbzV82Vifdgm~WZA1tra2t5syPQwZ0Drk3o9LeKnAVx6D11fpYZ7ziwd~ror22dnHNibb0zrGg4Hbe7yu3-V1nP-NS3zG89aT75lZFBIJYKCQLLfwWrtwVdhicqxCgzwVgNcjnqsUBJF~YMILZ1OPHPT5N4i86sHYTCQ__';
 
 const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
   const { colors } = useTheme();
+  const dispatch = useAppDispatch();
 
   const firstPrize = getPrizeByPlace(prizes, 1);
   const secondPrize = getPrizeByPlace(prizes, 2);
   const thirdPrize = getPrizeByPlace(prizes, 3);
-  const firstPlaceWinner = firstPrize?.winnerProfile;
-  const secondPlaceWinner = secondPrize?.winnerProfile;
-  const thirdPlaceWinner = thirdPrize?.winnerProfile;
+
+  const firstPrizeAvatar = useSelector(winnerAvatarSelector(firstPrize?.winnerId));
+  const secondPrizeAvatar = useSelector(winnerAvatarSelector(secondPrize?.winnerId));
+  const thirdPrizeAvatar = useSelector(winnerAvatarSelector(thirdPrize?.winnerId));
 
   const computedStyles = StyleSheet.create({
     surpriseTitle: {
@@ -27,6 +40,24 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
     },
   });
 
+  useEffect(() => {
+    if (firstPrize?.winnerId) {
+      dispatch(getWinnerAvatar({ winnerId: firstPrize.winnerId, prizeId: firstPrize.prizes[0].prizeId }));
+    }
+  }, [dispatch, firstPrize?.prizes, firstPrize?.winnerId]);
+
+  useEffect(() => {
+    if (secondPrize?.winnerId) {
+      dispatch(getWinnerAvatar({ winnerId: secondPrize.winnerId, prizeId: secondPrize.prizes[0].prizeId }));
+    }
+  }, [dispatch, secondPrize?.prizes, secondPrize?.winnerId]);
+
+  useEffect(() => {
+    if (thirdPrize?.winnerId) {
+      dispatch(getWinnerAvatar({ winnerId: thirdPrize.winnerId, prizeId: thirdPrize.prizes[0].prizeId }));
+    }
+  }, [dispatch, thirdPrize?.prizes, thirdPrize?.winnerId]);
+
   return (
     <View style={styles.container}>
       <View style={styles.prizes}>
@@ -34,16 +65,20 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         <View style={[styles.prizeBox, styles.secondPlace]}>
           {secondPrize && (
             <>
-              <Image source={secondPrize.image} style={styles.prizeImage} />
+              <Image source={prizesData[secondPrize.prizes[0].feKey].image} style={styles.prizeImage} />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text style={[styles.surpriseTitle, computedStyles.surpriseTitle]} numberOfLines={1}>
-                  {secondPrize.name}
+                  {prizesData[secondPrize.prizes[0].feKey].name}
                 </Text>
               </View>
             </>
           )}
-          {secondPlaceWinner && (
-            <Image source={{ uri: secondPlaceWinner.imageUrl }} style={styles.userImageSecondPlace} />
+          {secondPrize?.winnerId && (
+            <Animated.Image
+              entering={FadeIn}
+              source={{ uri: secondPrizeAvatar ?? defaultImage }}
+              style={styles.userImageSecondPlace}
+            />
           )}
         </View>
 
@@ -51,41 +86,55 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         <View style={[styles.prizeBox, styles.firstPlace]}>
           {firstPrize && (
             <>
-              <Image source={firstPrize.image} style={[styles.prizeImage, styles.firstPlacePrize]} />
+              <Image
+                source={prizesData[firstPrize.prizes[0].feKey].image}
+                style={[styles.prizeImage, styles.firstPlacePrize]}
+              />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text style={[styles.surpriseTitle, computedStyles.surpriseTitle]} numberOfLines={1}>
-                  {firstPrize.name}
+                  {prizesData[firstPrize.prizes[0].feKey].name}
                 </Text>
               </View>
             </>
           )}
-          {firstPlaceWinner && <Image source={{ uri: firstPlaceWinner.imageUrl }} style={styles.userImageFirstPlace} />}
+          {firstPrize?.winnerId && (
+            <Animated.Image
+              entering={FadeIn}
+              source={{ uri: firstPrizeAvatar ?? defaultImage }}
+              style={styles.userImageFirstPlace}
+            />
+          )}
         </View>
 
         {/* 3rd Place */}
         <View style={[styles.prizeBox, styles.thirdPlace]}>
           {thirdPrize && (
             <>
-              <Image source={thirdPrize.image} style={styles.prizeImage} />
+              <Image source={prizesData[thirdPrize.prizes[0].feKey].image} style={styles.prizeImage} />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text
                   style={[styles.surpriseTitle, computedStyles.surpriseTitle]}
                   elipsizeMode={TextElipsizeMode.Clip}
                   numberOfLines={1}
                 >
-                  {thirdPrize.name}
+                  {prizesData[thirdPrize.prizes[0].feKey].name}
                 </Text>
               </View>
             </>
           )}
-
-          {thirdPlaceWinner && <Image source={{ uri: thirdPlaceWinner.imageUrl }} style={styles.userImageThirdPlace} />}
+          {thirdPrize?.winnerId && (
+            <Animated.Image
+              entering={FadeIn}
+              source={{ uri: thirdPrizeAvatar ?? defaultImage }}
+              style={styles.userImageThirdPlace}
+            />
+          )}
         </View>
       </View>
       <PrizePedestalIcon
-        firstPlaceColored={Boolean(firstPlaceWinner)}
-        secondPlaceColored={Boolean(secondPlaceWinner)}
-        thirdPlaceColored={Boolean(thirdPlaceWinner)}
+        firstPlaceColored={Boolean(firstPrize?.winnerId)}
+        secondPlaceColored={Boolean(secondPrize?.winnerId)}
+        thirdPlaceColored={Boolean(thirdPrize?.winnerId)}
       />
     </View>
   );

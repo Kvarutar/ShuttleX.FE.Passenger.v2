@@ -4,11 +4,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import { getLocales, getTimeZone } from 'react-native-localize';
 import { useTheme } from 'shuttlex-integration';
 
+import { getCurrentLottery } from '../../../../core/lottery/redux/thunks';
+import { useAppDispatch } from '../../../../core/redux/hooks';
 import { CountDownTimerProps } from './types';
 
-const getTimeUntilNextLottery = (time: number) => {
+const getTimeUntilNextLottery = (startDate: Date) => {
   const now = new Date();
-  const nextLottery = new Date(time);
+  const nextLottery = new Date(startDate);
 
   const diffInSeconds = Math.floor((nextLottery.getTime() - now.getTime()) / 1000);
   return Math.max(diffInSeconds, 0);
@@ -28,16 +30,23 @@ const formatTime = (seconds: number) => {
     .replace(/\s/g, '');
 };
 
-const CountdownTimer = ({ time }: CountDownTimerProps) => {
+const CountdownTimer = ({ startDate }: CountDownTimerProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
-  const [countdown, setCountdown] = useState(getTimeUntilNextLottery(time));
+  const [countdown, setCountdown] = useState(getTimeUntilNextLottery(startDate));
+
+  useEffect(() => {
+    if (countdown <= 0) {
+      dispatch(getCurrentLottery());
+    }
+  }, [countdown, dispatch]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCountdown(_ => {
-        const newCountdown = getTimeUntilNextLottery(time);
+        const newCountdown = getTimeUntilNextLottery(startDate);
         if (newCountdown <= 0) {
           clearInterval(interval);
           return 0;
@@ -47,7 +56,7 @@ const CountdownTimer = ({ time }: CountDownTimerProps) => {
     }, 30000);
 
     return () => clearInterval(interval);
-  }, [time]); //TODO: remove after network for test
+  }, [startDate]); //TODO: remove after network for test
 
   const computedStyles = StyleSheet.create({
     timerText: {

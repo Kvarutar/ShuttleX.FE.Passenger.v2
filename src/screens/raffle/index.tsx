@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Confetti, InputXIcon, SafeAreaView, Text, UploadIcon, useTheme } from 'shuttlex-integration';
 
@@ -26,6 +26,8 @@ const RaffleScreen = (): JSX.Element => {
     },
   });
 
+  const showConfettiHandler = useCallback(() => setShowConfetti(true), []);
+
   return (
     <>
       <SafeAreaView containerStyle={[styles.container, computedStyles.container]} wrapperStyle={styles.wrapper}>
@@ -50,7 +52,7 @@ const RaffleScreen = (): JSX.Element => {
         </View>
       </SafeAreaView>
 
-      {isLotterySelected ? <Lottery triggerConfetti={() => setShowConfetti(true)} /> : <Season />}
+      {isLotterySelected ? <Lottery triggerConfetti={showConfettiHandler} /> : <Season />}
 
       <Confetti showConfetti={showConfetti} onConfettiEnd={() => setShowConfetti(false)} />
     </>

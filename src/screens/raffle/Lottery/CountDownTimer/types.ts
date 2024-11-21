@@ -1,8 +1,8 @@
 /**
  * CountDownTimer Props
  *
- * @param {number} time - The timer takes `time` in milliseconds.
+ * @param {Date} startDate - The timer takes `startDate` in Date format.
  */
 export type CountDownTimerProps = {
-  time: number;
+  startDate: Date;
 };

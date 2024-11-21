@@ -4,8 +4,9 @@ import { Dimensions, Image, Modal, StyleSheet, TouchableWithoutFeedback, View } 
 import Carousel from 'react-native-reanimated-carousel';
 import { InputXIcon, sizes, Text, useTheme } from 'shuttlex-integration';
 
+import { Prize } from '../../../../core/lottery/redux/types';
 import SmallButton from '../../SmallButton';
-import { Prize } from '../types';
+import { prizesData } from '../prizesData';
 import { PrizesSliderProps } from './types';
 
 const windowWidth = Dimensions.get('window').width;
@@ -39,12 +40,14 @@ const PrizesSlider = memo(({ visible, onClose, selectedItemIndex, listItem }: Pr
     ({ item }: { item: Prize }) => {
       return (
         <View style={[styles.item, computedStyles.item]} onLayout={e => setItemHeight(e.nativeEvent.layout.height)}>
-          <Image source={item.image} style={styles.itemImage} />
+          <Image source={prizesData[item.prizes[0].feKey].image} style={styles.itemImage} />
           <Text style={[styles.itemPosition, computedStyles.itemPosition]}>
-            {t('raffle_Lottery_PrizesSlider_position', { pos: item.index })}
+            {t('raffle_Lottery_PrizesSlider_position', { pos: item.index + 1 })}
           </Text>
-          <Text style={styles.itemTitle}>{item.name}</Text>
-          <Text style={[styles.itemDescription, computedStyles.itemDescription]}>{item.description}</Text>
+          <Text style={styles.itemTitle}>{prizesData[item.prizes[0].feKey].name}</Text>
+          <Text style={[styles.itemDescription, computedStyles.itemDescription]}>
+            {prizesData[item.prizes[0].feKey].description}
+          </Text>
         </View>
       );
     },

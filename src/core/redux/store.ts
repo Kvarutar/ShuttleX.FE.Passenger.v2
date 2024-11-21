@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import reactotron from '../../../ReactotronConfig';
 import authReducer from '../auth/redux';
+import lotteryReducer from '../lottery/redux';
 import accountSettingsReducer from '../menu/redux/accountSettings';
 import notificationsReducer from '../menu/redux/notifications';
 import ticketWalletReducer from '../menu/redux/ticketWallet';
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   signalr: signalRReducer,
   accountSettings: accountSettingsReducer,
   ticketWallet: ticketWalletReducer,
+  lottery: lotteryReducer,
 });
 
 export const store = configureStore({

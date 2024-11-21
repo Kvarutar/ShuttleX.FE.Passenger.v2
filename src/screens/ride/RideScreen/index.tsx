@@ -38,6 +38,11 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
     }, 2000);
   }, []);
 
+  //TODO: uncomment data from BE will be correct
+  // useEffect(() => {
+  //   dispatch(getCurrentLottery());
+  // }, [dispatch]);
+
   //for test
   useEffect(() => {
     if (route.params?.openAddressSelect) {

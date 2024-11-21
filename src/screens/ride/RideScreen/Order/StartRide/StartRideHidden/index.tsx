@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import { Button, ButtonProps, Text, useTheme } from 'shuttlex-integration';
 
 import imageBonuses from '../../../../../../../assets/images/startRide/imageBonusesBackground';
@@ -9,6 +10,7 @@ import imageCollectCapybara from '../../../../../../../assets/images/startRide/i
 import imageStartRideCarouselCapybara from '../../../../../../../assets/images/startRide/imageStartRideCarouselCapybara';
 import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
 import imageUkraineHeart from '../../../../../../../assets/images/startRide/imageUkraineHeart';
+import { lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
 import { RootStackParamList } from '../../../../../../Navigate/props';
 import passengerColors from '../../../../../../shared/colors/colors';
 import usePrizeTimer from '../utils/usePrizeTimer';
@@ -17,7 +19,6 @@ import { AdsBlockProps } from './AdsBlock/types';
 import AdsContent from './AdsContent';
 
 const testData = {
-  endTime: new Date(2024, 11, 1),
   capiAmount: 16,
 };
 
@@ -28,7 +29,8 @@ const AdsButton = (props: ButtonProps) => {
 const StartRideHidden = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const { hours, minutes, seconds } = usePrizeTimer(testData.endTime);
+  const lotteryStartTime = useSelector(lotteryStartTimeSelector);
+  const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime));
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const collectedCapiArr = Array.from({ length: Math.min(testData.capiAmount - 1, 4) });

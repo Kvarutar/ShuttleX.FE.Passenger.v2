@@ -1,73 +1,123 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { useDerivedValue, useSharedValue } from 'react-native-reanimated';
-import { BottomWindowWithGesture, GroupedButtons, SafeAreaView, sizes, useTheme } from 'shuttlex-integration';
+import { useSelector } from 'react-redux';
+import {
+  BottomWindowWithGesture,
+  GroupedButtons,
+  LoadingSpinner,
+  LoadingSpinnerIconModes,
+  minToMilSec,
+  SafeAreaView,
+  sizes,
+  useTheme,
+} from 'shuttlex-integration';
 
+import { clearPrizes } from '../../../core/lottery/redux';
+import {
+  isPrizesLoadingSelector,
+  lotteryIdSelector,
+  lotteryPrizesSelector,
+  lotteryStartTimeSelector,
+  lotteryStateSelector,
+} from '../../../core/lottery/redux/selectors';
+import { getCurrentLottery, getCurrentPrizes } from '../../../core/lottery/redux/thunks';
+import { Prize } from '../../../core/lottery/redux/types';
+import { useAppDispatch } from '../../../core/redux/hooks';
 import CountdownTimer from './CountDownTimer';
-import { surprisesMock, winnersMock } from './mockData';
 import PrizeCard from './PrizeCard';
 import PrizePodium from './PrizePodium';
+import { prizesData } from './prizesData';
 import PrizesSlider from './PrizesSlider';
 import PrizeWithWinnerBar from './PrizeWithWinnerBar';
-import { LotteryProps, Prize } from './types';
+import { LotteryProps } from './types';
 
 const windowHeight = Dimensions.get('window').height;
 
 const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
   const { colors } = useTheme();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isFirstRender = useRef<boolean>(false);
+  const dispatch = useAppDispatch();
 
-  const [prizes, setPrizes] = useState<Prize[]>([]);
-  const [timeUntilLottery, setTimeUntilLottery] = useState<number>(0);
+  const timeUntilLottery = useSelector(lotteryStartTimeSelector);
+  const lotteryState = useSelector(lotteryStateSelector);
+  const lotteryId = useSelector(lotteryIdSelector);
+  const lotteryPrizes = useSelector(lotteryPrizesSelector);
+  const isPrizesLoading = useSelector(isPrizesLoadingSelector);
 
   const [isPrizeSelected, setIsPrizeSelected] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
-
-  const [isWinners, setIsWinners] = useState<boolean>(false);
-  const mainPrizes = prizes.sort((a, b) => a.index - b.index).slice(0, 3);
-  const otherPrizes = prizes.sort((a, b) => a.index - b.index).slice(3);
+  const [allWinners, setAllWinners] = useState<Prize[]>([]);
 
   const contentAnimatedHeight = useSharedValue(0);
   const podiumAnimatedHeight = useSharedValue(0);
   const bottomWindowMinHeight = useSharedValue(0);
 
-  //TODO get data from back
+  const { mainPrizes, otherPrizes } = useMemo(() => {
+    return lotteryPrizes.reduce<{ mainPrizes: Prize[]; otherPrizes: Prize[] }>(
+      (acc, prize) => {
+        if (prize.index >= 0 && prize.index <= 2) {
+          acc.mainPrizes.push(prize);
+        } else {
+          acc.otherPrizes.push(prize);
+        }
+        return acc;
+      },
+      { mainPrizes: [], otherPrizes: [] },
+    );
+  }, [lotteryPrizes]);
+
   useEffect(() => {
-    const startTime = 3032982400000;
-    setTimeUntilLottery(startTime);
-    setPrizes(surprisesMock);
-    setIsWinners(prizes.some(prize => prize.winnerProfile));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (lotteryState === 'CurrentUpcoming' && lotteryPrizes.length === 0) {
+      dispatch(getCurrentPrizes());
+    }
 
-  //TODO get data from back
+    if (lotteryState === 'CurrentActive') {
+      if (allWinners.find(prize => prize.index === 0)) {
+        setTimeout(() => {
+          triggerConfetti();
+        }, 1500);
+        intervalRef.current && clearInterval(intervalRef.current);
+      } else {
+        intervalRef.current = setInterval(() => {
+          triggerConfetti();
+          dispatch(getCurrentPrizes());
+        }, 10000);
+      }
+    }
+
+    return () => {
+      intervalRef.current && clearInterval(intervalRef.current);
+    };
+  }, [allWinners, dispatch, lotteryPrizes.length, lotteryState, triggerConfetti]);
+
   useEffect(() => {
-    setIsWinners(true);
-    triggerConfetti();
+    setAllWinners(lotteryPrizes.filter(prize => prize.winnerId !== null));
+  }, [lotteryPrizes]);
 
-    const initialDelay = setTimeout(() => {
-      let index = 0;
+  useEffect(() => {
+    let currentLotteryInterval: NodeJS.Timeout | undefined;
 
-      // add winners in 5 seconds timer
-      const intervalId = setInterval(() => {
-        setPrizes(prevPrizes => {
-          const newPrizes = [...prevPrizes];
-          const reverseIndex = newPrizes.length - 1 - index;
-          if (reverseIndex >= 0) {
-            newPrizes[reverseIndex].winnerProfile = winnersMock[reverseIndex];
-            index += 1;
-          } else {
-            clearInterval(intervalId);
-          }
+    if (lotteryState === 'CurrentActive') {
+      currentLotteryInterval = setInterval(() => {
+        dispatch(getCurrentLottery());
+      }, minToMilSec(15));
+    }
 
-          return newPrizes;
-        });
-      }, 5000);
-    }, 10000);
+    return () => clearInterval(currentLotteryInterval);
+  }, [dispatch, lotteryState]);
 
-    return () => clearTimeout(initialDelay);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useEffect(() => {
+    //Skip first render
+    if (!isFirstRender.current) {
+      isFirstRender.current = true;
+      return;
+    }
+
+    dispatch(clearPrizes());
+  }, [dispatch, lotteryId]);
 
   const handleSurprisesPress = useCallback((prize: Prize) => {
     setSelectedPrize(prize);
@@ -79,8 +129,8 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
       color: colors.textPrimaryColor,
     },
     renderContainer: {
-      flexDirection: isWinners ? 'column' : 'row',
-      justifyContent: isWinners ? undefined : 'space-between',
+      flexDirection: lotteryState === 'CurrentActive' ? 'column' : 'row',
+      justifyContent: lotteryState === 'CurrentActive' ? undefined : 'space-between',
     },
   });
 
@@ -89,20 +139,22 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
       <View style={[styles.renderContainer, computedStyles.renderContainer]}>
         {isPrizeSelected ? (
           otherPrizes.map(item => {
-            const winner = item.winnerProfile;
-            return isWinners ? (
-              winner && (
+            const isWinner = allWinners.some(prize => prize.index === item.index);
+            return lotteryState === 'CurrentActive' ? (
+              isWinner && (
                 <PrizeWithWinnerBar
-                  key={item.id}
-                  prizeImage={item.image}
-                  winnerImage={winner.imageUrl}
-                  prizeTitle={item.name}
-                  winnerName={winner.name}
-                  index={item.index}
+                  key={item.prizes[0].prizeId}
+                  prizeImage={prizesData[item.prizes[0].feKey].image}
+                  prizeTitle={prizesData[item.prizes[0].feKey].name}
+                  prizeId={item.prizes[0].prizeId}
+                  winnerId={item.winnerId}
+                  ticketCode={item.ticketNumber}
+                  winnerName={item.winnerFirstName}
+                  index={item.index + 1}
                 />
               )
             ) : (
-              <View key={item.id} style={styles.itemWrapper}>
+              <View key={item.prizes[0].prizeId} style={styles.itemWrapper}>
                 <PrizeCard item={item} onPress={handleSurprisesPress} />
               </View>
             );
@@ -127,12 +179,20 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
       (contentAnimatedHeight.value - podiumAnimatedHeight.value + sizes.paddingVertical) / windowHeight;
   });
 
+  if (isPrizesLoading && lotteryState === 'CurrentUpcoming') {
+    return (
+      <SafeAreaView>
+        <LoadingSpinner iconMode={LoadingSpinnerIconModes.Large} startColor={colors.backgroundPrimaryColor} />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <>
       <SafeAreaView>
         <View style={styles.podiumContainer} onLayout={onContentPartLayout}>
           <View onLayout={onPodiumPartLayout}>
-            {!isWinners && <CountdownTimer time={timeUntilLottery} />}
+            {lotteryState === 'CurrentUpcoming' && <CountdownTimer startDate={new Date(timeUntilLottery)} />}
             <PrizePodium prizes={mainPrizes} />
           </View>
         </View>
@@ -160,7 +220,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
       <PrizesSlider
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        selectedItemIndex={otherPrizes.findIndex(item => item.id === selectedPrize?.id)}
+        selectedItemIndex={otherPrizes.findIndex(item => item.prizes[0].prizeId === selectedPrize?.prizes[0].prizeId)}
         listItem={otherPrizes}
       />
     </>
@@ -195,6 +255,9 @@ const styles = StyleSheet.create({
   },
   bottomWindowHeaderWrapper: {
     paddingTop: 10,
+  },
+  prizesErrorText: {
+    alignSelf: 'center',
   },
 });
 
