@@ -28,7 +28,6 @@ import { cancelTrip } from '../../../../core/ride/redux/trip/thunks';
 import { Contractor, TripStatus } from '../../../../core/ride/redux/trip/types';
 import { RootStackParamList } from '../../../../Navigate/props';
 import AlertInitializer from '../../../../shared/AlertInitializer';
-import Order from '../Order';
 import HiddenPart from './HiddenPart';
 import VisiblePart from './VisiblePart';
 
@@ -43,12 +42,9 @@ const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
   const tripStatus = useSelector(tripStatusSelector);
   const orderId = useSelector(orderIdSelector);
-
   const [extraSum, setExtraSum] = useState(0);
 
   const arrivedTime = contractorInfo?.info ? Date.parse(contractorInfo?.info?.arrivalTime) : 0;
-
-  console.log(tripStatus);
 
   //TODO Where can we get tarrifType??? and change TariffIcon
   const TariffIcon = tariffIconsData.Basic.icon;
@@ -70,11 +66,6 @@ const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
       color: colors.textTitleColor,
     },
   });
-
-  //TODO test this case
-  if (tripStatus === TripStatus.Idle) {
-    return <Order />;
-  }
 
   if (tripStatus === TripStatus.Ride) {
     return (

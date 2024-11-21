@@ -6,7 +6,7 @@ import { MenuHeader, sizes, useTheme } from 'shuttlex-integration';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
-import { contractorInfoSelector } from '../../../core/ride/redux/trip/selectors';
+import { contractorSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
 import MapView from './MapView';
@@ -29,7 +29,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const [isMysteryBoxPopupVisible, setIsMysteryBoxPopupVisible] = useState(false);
   const [isWinningPopupVisible, setIsWinningPopupVisible] = useState(false);
 
-  const contractorInfo = useSelector(contractorInfoSelector);
+  const contractorInfo = useSelector(contractorSelector);
 
   //for test
   useEffect(() => {
@@ -123,7 +123,6 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
 
   const computedStyles = StyleSheet.create({
     menuStyle: {
-      //TODO big padding on a top for android
       paddingTop: 8,
       zIndex: orderStatus === OrderStatus.Confirming ? 1 : 0,
     },
@@ -176,11 +175,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
       <SafeAreaView style={styles.wrapper}>
         <MapView />
         {topMenu[orderStatus]}
-        {TripStatus.Accepted && contractorInfo?.info ? (
-          <Trip contractorInfo={contractorInfo} />
-        ) : (
-          <Order ref={orderRef} />
-        )}
+        {TripStatus.Accepted && contractorInfo ? <Trip contractorInfo={contractorInfo} /> : <Order ref={orderRef} />}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
       {isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}

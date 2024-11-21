@@ -2,13 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { NetworkErrorDetailsWithBody } from 'shuttlex-integration';
 
 import { cancelTrip, getContractorInfo, getRouteInfo } from './thunks';
-import {
-  ContractorInfoApiResponse,
-  RouteDropOffApiResponse,
-  RoutePickUpApiResponse,
-  TripState,
-  TripStatus,
-} from './types';
+import { Contractor, RouteDropOffApiResponse, RoutePickUpApiResponse, TripState, TripStatus } from './types';
 
 const initialState: TripState = {
   routeInfo: null,
@@ -39,15 +33,8 @@ const slice = createSlice({
         state.routeInfo.dropOff = action.payload.dropOffData;
       }
     },
-    setContractorInfo(
-      state,
-      action: PayloadAction<{ info: ContractorInfoApiResponse; avatar: string; orderId: string }>,
-    ) {
-      if (state.contractor) {
-        state.contractor.info = action.payload.info;
-        state.contractor.avatar = action.payload.avatar;
-        state.contractor.orderId = action.payload.orderId;
-      }
+    setContractorInfo(state, action: PayloadAction<Contractor>) {
+      state.contractor = action.payload;
     },
     setTripStatus(state, action: PayloadAction<TripStatus>) {
       state.status = action.payload;
@@ -84,11 +71,7 @@ const slice = createSlice({
       })
       .addCase(getContractorInfo.fulfilled, (state, action) => {
         slice.caseReducers.setContractorInfo(state, {
-          payload: {
-            info: action.payload.contractorInfo,
-            avatar: action.payload.contractorAvatar,
-            orderId: action.payload.orderId,
-          },
+          payload: action.payload,
           type: setContractorInfo.type,
         });
         slice.caseReducers.setTripError(state, {

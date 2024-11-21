@@ -19,7 +19,7 @@ const notificationHandlers: Record<NotificationType, (payload?: NotificationPayl
   [NotificationType.DriverAccepted]: async payload => {
     if (payload?.orderId) {
       await store.dispatch(getContractorInfo(payload.orderId));
-      store.dispatch(getRouteInfo(payload.orderId));
+      await store.dispatch(getRouteInfo(payload.orderId));
       store.dispatch(setTripStatus(TripStatus.Accepted));
     }
   },
@@ -68,7 +68,8 @@ export const displayNotificationForAll = async (remoteMessage: NotificationRemot
       body,
       android: {
         channelId: 'general-channel',
-        smallIcon: 'bootsplash_logo',
+        smallIcon: 'bootsplash_logo@1,5x',
+        //TODO test icon
         pressAction: {
           id: 'default',
         },

@@ -2,7 +2,8 @@ import { getNetworkErrorInfo } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import {
-  ContractorInfoApiResponse,
+  ContractorApiResponse,
+  ContractorInfo,
   FeedbackAPIRequest,
   RouteDropOffApiResponse,
   RoutePickUpApiResponse,
@@ -24,24 +25,25 @@ export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(
   },
 );
 
-export const getContractorInfo = createAppAsyncThunk<
-  { contractorInfo: ContractorInfoApiResponse; contractorAvatar: string; orderId: string },
-  string
->('trip/getContractorInfo', async (orderId, { rejectWithValue, orderAxios }) => {
-  try {
-    const contractorInfoResponse = await orderAxios.get<ContractorInfoApiResponse>(`/${orderId}`);
-    const contractorInfo = contractorInfoResponse.data;
+export const getContractorInfo = createAppAsyncThunk<ContractorApiResponse, string>(
+  'trip/getContractorInfo',
+  async (orderId, { rejectWithValue, orderAxios }) => {
+    try {
+      const info = (await orderAxios.get<ContractorInfo>(`/${orderId}`)).data;
+      const avatar = await orderAxios
+        .get<string>(`/${orderId}/contractors/avatars/${info.avatarIds[0]}`)
+        .then(response => response.data);
 
-    const contractorAvatarResponse = await orderAxios.get<string>(
-      `/${orderId}/contractors/avatars/${contractorInfo.avatarId[0]}`,
-    );
-    const contractorAvatar = contractorAvatarResponse.data;
-
-    return { contractorInfo, contractorAvatar, orderId };
-  } catch (error) {
-    return rejectWithValue(getNetworkErrorInfo(error));
-  }
-});
+      return {
+        info,
+        avatar,
+        orderId,
+      };
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
 
 export const getRouteInfo = createAppAsyncThunk<
   { pickUpData: RoutePickUpApiResponse; dropOffData: RouteDropOffApiResponse },

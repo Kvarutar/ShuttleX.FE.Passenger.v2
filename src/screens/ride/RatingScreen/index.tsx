@@ -28,7 +28,7 @@ import imageFriendlyDriver from '../../../../assets/images/likeFeedback/imageFri
 import imageGoodDriving from '../../../../assets/images/likeFeedback/imageGoodDriving';
 import imageNiceAtmosphere from '../../../../assets/images/likeFeedback/imageNiceAtmosphere';
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { contractorInfoSelector, orderIdSelector } from '../../../core/ride/redux/trip/selectors';
+import { contractorSelector, orderIdSelector } from '../../../core/ride/redux/trip/selectors';
 import { sendFeedback } from '../../../core/ride/redux/trip/thunks';
 import { RatingScreenProps } from './types';
 
@@ -36,7 +36,7 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
-  const contractorInfo = useSelector(contractorInfoSelector);
+  const contractorInfo = useSelector(contractorSelector);
   const orderId = useSelector(orderIdSelector);
 
   const [mark, setMark] = useState<FeedbackRating | null>(null);

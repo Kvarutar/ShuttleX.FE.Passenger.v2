@@ -3,7 +3,7 @@ import { NetworkErrorDetailsWithBody, Nullable, TariffType } from 'shuttlex-inte
 
 import { AddressPoint } from '../order/types';
 
-export type ContractorInfoApiResponse = {
+export type ContractorInfo = {
   firstName: string;
   arrivalTime: string;
   carBrand: string;
@@ -12,16 +12,18 @@ export type ContractorInfoApiResponse = {
   totalLikesCount: number;
   totalRidesCount: number;
   level: number;
-  avatarId: string[];
+  avatarIds: string[];
   currencyCode: string;
   phoneNumber: string;
 };
 
-export type Contractor = {
-  info: Nullable<ContractorInfoApiResponse>;
+export type ContractorApiResponse = {
+  info: Nullable<ContractorInfo>;
   avatar: string;
   orderId: string;
 };
+
+export type Contractor = ContractorApiResponse;
 
 export type RouteInfoApiResponse = {
   routeId: string;
