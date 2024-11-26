@@ -108,5 +108,14 @@
   "ride_Receipt_start": "Початок",
   "ride_Receipt_finish": "Кінець",
   "ride_Receipt_time": "Час",
+  "raffle_Raffle_lotteryButton": "Лотерея",
+  "raffle_Raffle_seasonButton": "Сезон",
+  "raffle_Raffle_winnersTitle": "Переможці",
+  "raffle_Lottery_startThrough": "До розіграшу",
+  "raffle_Lottery_day": "Дн",
+  "raffle_Lottery_hour": "Год",
+  "raffle_Lottery_minute": "Хв",
+  "raffle_Lottery_prizesButton": "Призи",
+  "raffle_Lottery_historyButton": "Історія",
   "raffle_Lottery_raffleBegins": "Розіграш розпочато"
 }

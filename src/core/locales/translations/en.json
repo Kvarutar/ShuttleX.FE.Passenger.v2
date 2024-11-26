@@ -171,12 +171,15 @@
   "menu_TicketWallet_numberTitle": "Ticket Number",
   "raffle_Raffle_lotteryButton": "Lottery",
   "raffle_Raffle_seasonButton": "Season",
+  "raffle_Raffle_winnersTitle": "Winners",
   "raffle_Lottery_startThrough": "Started Through",
   "raffle_Lottery_day": "Day",
   "raffle_Lottery_hour": "Hr",
   "raffle_Lottery_minute": "Min",
   "raffle_Lottery_PrizesSlider_position": "#{{pos}} st",
   "raffle_Lottery_PrizeCard_position": "#{{pos}} st",
-  "raffle_Lottery_raffleBegins": "Raffle begins",
-  "raffle_Lottery_PrizeWithWinnerBar_name": "{{name}} - Ticket {{ticketCode}}"
+  "raffle_Lottery_PrizeWithWinnerBar_name": "{{name}} - Ticket {{ticketCode}}",
+  "raffle_Lottery_prizesButton": "Prizes",
+  "raffle_Lottery_historyButton": "History",
+  "raffle_Lottery_raffleBegins": "Raffle begins"
 }

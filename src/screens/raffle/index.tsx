@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Confetti, InputXIcon, SafeAreaView, Text, UploadIcon, useTheme } from 'shuttlex-integration';
 
@@ -13,6 +14,7 @@ const RaffleScreen = (): JSX.Element => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Raffle'>>();
 
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   const [isLotterySelected] = useState<boolean>(true);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
@@ -42,7 +44,7 @@ const RaffleScreen = (): JSX.Element => {
               //TODO will be add later
             }}
           /> */}
-          <Text>Winners</Text>
+          <Text>{t('raffle_Raffle_winnersTitle')}</Text>
           <SmallButton
             icon={<UploadIcon />}
             onPress={() => {

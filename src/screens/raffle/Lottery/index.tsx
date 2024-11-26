@@ -257,8 +257,8 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
             <GroupedButtons
               style={styles.bottomWindowHeader}
               width={230}
-              firstButtonText={'Prizes'}
-              secondButtonText={'History'}
+              firstButtonText={t('raffle_Lottery_prizesButton')}
+              secondButtonText={t('raffle_Lottery_historyButton')}
               isFirstButtonSelected={isPrizeSelected}
               setIsFirstButtonSelected={onGroupedButtonsPress}
             />
