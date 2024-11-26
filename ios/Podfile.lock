@@ -418,6 +418,9 @@ PODS:
     - Google-Maps-iOS-Utils (= 4.2.2)
     - GoogleMaps (= 7.4.0)
     - React-Core
+  - react-native-image-picker (7.1.0):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
   - react-native-maps (1.11.3):
     - React-Core
   - react-native-netinfo (11.3.1):
@@ -561,6 +564,15 @@ PODS:
   - RNGestureHandler (2.16.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
+  - RNImageCropPicker (0.41.5):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.41.5)
+    - TOCropViewController (~> 2.7.4)
+  - RNImageCropPicker/QBImagePickerController (0.41.5):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController (~> 2.7.4)
   - RNKeychain (9.0.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
@@ -588,6 +600,7 @@ PODS:
   - RNSVG (13.14.0):
     - React-Core
   - SocketRocket (0.6.1)
+  - TOCropViewController (2.7.4)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -620,6 +633,7 @@ DEPENDENCIES:
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -648,6 +662,7 @@ DEPENDENCIES:
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - "RNNotifee (from `../node_modules/@notifee/react-native`)"
@@ -676,6 +691,7 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - SocketRocket
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   boost:
@@ -732,6 +748,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-get-random-values"
   react-native-google-maps:
     :path: "../node_modules/react-native-maps"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
@@ -788,6 +806,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/messaging"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNKeychain:
     :path: "../node_modules/react-native-keychain"
   RNLocalize:
@@ -851,6 +871,7 @@ SPEC CHECKSUMS:
   react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-google-maps: b80d3947411fcf462ec420c3e6122b7fa24beb9a
+  react-native-image-picker: e9cda49f0f2bb925453cb6d0ed38bea5f1e9231a
   react-native-maps: 79610ffcd0ec2ca8e0cefb48aa8ae7c62a75d7cc
   react-native-netinfo: bdb108d340cdb41875c9ced535977cac6d2ff321
   react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
@@ -879,6 +900,7 @@ SPEC CHECKSUMS:
   RNFBApp: 5f87753a8d8b37d229adf85cd0ff37709ffdf008
   RNFBMessaging: 3fa1114c0868dd21f20dfe186adf42297ea316b1
   RNGestureHandler: b24778ccfe2ee0fb1fe50e12e90e0d8edb1bf475
+  RNImageCropPicker: a536bb88eade8336e1d18fdeafa77dc893fbc42e
   RNKeychain: 835bbc753f1f93440c9cc052c109aa9565e421fc
   RNLocalize: 4222a3756cdbe2dc9a5bdf445765a4d2572107cb
   RNNotifee: 935f3ea8c134c88cbf8b13ea0c97c72c09ad2116
@@ -889,6 +911,7 @@ SPEC CHECKSUMS:
   RNShare: cc904a0d9305649d0fe7897fc6de938f958c3a40
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
+  TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   Yoga: 87e59f6d458e5061d2421086c5de994b3f7cd151
 
 PODFILE CHECKSUM: d88401305db579e0a6bdf744043f3dd931f5e95f

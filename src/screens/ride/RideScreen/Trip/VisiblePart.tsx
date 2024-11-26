@@ -12,6 +12,7 @@ import {
   formatTime,
   getCurrencySign,
   minToMilSec,
+  Nullable,
   PhoneIcon,
   StatsBlock,
   Text,
@@ -70,29 +71,41 @@ const VisiblePart = ({ setExtraSum, extraSum, contractorInfo }: VisiblePartProps
     },
   });
 
-  const timerStateData: Record<string, TimerStateDataType> = {
-    accepted: {
-      timerTime: Date.now() + minToMilSec(0.5),
-      mode: TimerColorModes.Mode1,
-      title: (
-        <>
-          <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>{t('ride_Ride_Trip_beIn')} </Text>
-          <Text style={styles.nameTimeText}>{formatTime(new Date(Date.now() + minToMilSec(0.5)))}</Text>
-        </>
-      ),
-    },
-    arrived: {
-      timerTime: Date.now(),
-      mode: TimerColorModes.Mode2,
-      timerLabel: t('ride_Ride_Trip_timerLabelArrived'),
-      title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleArrived')}</Text>,
-    },
-    waiting: {
-      timerTime: Date.now() + minToMilSec(0.5),
-      mode: extraWaiting ? TimerColorModes.Mode5 : TimerColorModes.Mode2,
-      timerLabel: t('ride_Ride_Trip_timerLabelWaiting'),
-      title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleWaiting')}</Text>,
-    },
+  const getTimerStateData = (status: TripStatus | 'waiting'): Nullable<TimerStateDataType> => {
+    switch (status) {
+      case TripStatus.Accepted: {
+        return {
+          timerTime: Date.now() + minToMilSec(0.5),
+          mode: TimerColorModes.Mode1,
+          title: (
+            <>
+              <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>
+                {t('ride_Ride_Trip_beIn')}{' '}
+              </Text>
+              <Text style={styles.nameTimeText}>{formatTime(new Date(Date.now() + minToMilSec(0.5)))}</Text>
+            </>
+          ),
+        };
+      }
+      case TripStatus.Arrived: {
+        return {
+          timerTime: Date.now(),
+          mode: TimerColorModes.Mode2,
+          timerLabel: t('ride_Ride_Trip_timerLabelArrived'),
+          title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleArrived')}</Text>,
+        };
+      }
+      case 'waiting': {
+        return {
+          timerTime: Date.now() + minToMilSec(0.5),
+          mode: extraWaiting ? TimerColorModes.Mode5 : TimerColorModes.Mode2,
+          timerLabel: t('ride_Ride_Trip_timerLabelWaiting'),
+          title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleWaiting')}</Text>,
+        };
+      }
+      default:
+        return null;
+    }
   };
 
   useEffect(() => {
@@ -107,7 +120,7 @@ const VisiblePart = ({ setExtraSum, extraSum, contractorInfo }: VisiblePartProps
     };
   }, [extraWaiting, setExtraSum]);
 
-  const timerState = timerStateData[isWaiting ? 'waiting' : tripStatus];
+  const timerState = getTimerStateData(isWaiting ? 'waiting' : tripStatus);
 
   const onAfterCountdownEndsHandler = () => {
     if (tripStatus === TripStatus.Arrived) {
@@ -134,7 +147,7 @@ const VisiblePart = ({ setExtraSum, extraSum, contractorInfo }: VisiblePartProps
         {/*)}*/}
         <View style={styles.nameTimeContainer}>
           <Text style={styles.nameTimeText}>{contractorInfo?.info?.firstName} </Text>
-          {timerState.title}
+          {timerState?.title}
         </View>
         <StatsBlock
           style={styles.statsContainer}
@@ -165,13 +178,16 @@ const VisiblePart = ({ setExtraSum, extraSum, contractorInfo }: VisiblePartProps
           <Text style={[styles.buttonText, computedStyles.buttonText]}>{t('ride_Ride_Trip_call')}</Text>
         </View>
         <View>
-          <Timer
-            isWaiting={extraWaiting}
-            time={extraWaiting ? 0 : timerState.timerTime}
-            sizeMode={TimerSizesModes.S}
-            colorMode={timerState.mode}
-            onAfterCountdownEnds={onAfterCountdownEndsHandler}
-          />
+          {timerState && (
+            <Timer
+              isWaiting={extraWaiting}
+              time={extraWaiting ? 0 : timerState.timerTime}
+              sizeMode={TimerSizesModes.S}
+              colorMode={timerState.mode}
+              onAfterCountdownEnds={onAfterCountdownEndsHandler}
+            />
+          )}
+
           {timerState?.timerLabel && (
             <View style={[styles.timerLabelContainer, computedStyles.timerLabelContainer]}>
               <Text style={[styles.timerLabelText, computedStyles.timerLabelText]}>

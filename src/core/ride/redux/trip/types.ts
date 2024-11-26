@@ -90,6 +90,7 @@ export enum TripStatus {
   Accepted = 'accepted',
   Arrived = 'arrived',
   Ride = 'ride',
+  Finished = 'finished',
 }
 
 export type TripState = {

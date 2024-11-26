@@ -1,6 +1,6 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -26,11 +26,10 @@ import {
 } from '../../../core/menu/redux/accountSettings/selectors';
 import { changeAccountContactData } from '../../../core/menu/redux/accountSettings/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { updateProfile } from '../../../core/redux/passenger';
 import { profilePhotoSelector, profileSelector } from '../../../core/redux/passenger/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
-import { AccountProfileDataProps, PhotoBlockProps } from './types';
+import { PhotoBlockProps } from './types';
 
 const AccountSettings = (): JSX.Element => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -50,11 +49,6 @@ const AccountSettings = (): JSX.Element => {
     }, [dispatch]),
   );
 
-  useEffect(() => {
-    dispatch(updateProfile({ imageUri: profile?.imageUri }));
-    //TODO Change when we'll know more about uploading photo
-  }, [dispatch, navigation, profile?.imageUri]);
-
   const handleOpenVerification = async (mode: 'phone' | 'email', newValue: string) => {
     if (!isLoading && !changeDataError) {
       try {
@@ -67,9 +61,10 @@ const AccountSettings = (): JSX.Element => {
     }
   };
 
-  const handleProfileDataSave = (profileData: AccountProfileDataProps) => {
-    dispatch(updateProfile(profileData));
-  };
+  //TODO dont need this for now
+  // const handleProfileDataSave = (profileData: AccountProfileDataProps) => {
+  //   dispatch(updateProfile(profileData));
+  // };
 
   const onUploadPhoto = () => {
     // navigation.navigate('ProfilePhoto');
@@ -88,7 +83,7 @@ const AccountSettings = (): JSX.Element => {
         <AccountSettingsScreen
           handleOpenVerification={handleOpenVerification}
           isVerificationDone={isVerificationDone}
-          onProfileDataSave={handleProfileDataSave}
+          // onProfileDataSave={handleProfileDataSave}
           profile={{
             fullName: profile?.fullName ?? '',
             email: profile?.email ?? '',

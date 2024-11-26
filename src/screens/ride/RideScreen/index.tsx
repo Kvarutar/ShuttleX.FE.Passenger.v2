@@ -38,6 +38,14 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
     }, 2000);
   }, []);
 
+  //TEST driver rejected push
+  // useEffect(() => {
+  //   console.log(orderStatus)
+  //   setInterval(()=>{
+  //     dispatch(setOrderStatus(OrderStatus.Confirming))
+  //   }, 20000)
+  // }, [orderStatus])
+
   //TODO: uncomment data from BE will be correct
   // useEffect(() => {
   //   dispatch(getCurrentLottery());

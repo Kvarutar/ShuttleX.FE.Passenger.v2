@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -45,6 +45,12 @@ const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
   const [extraSum, setExtraSum] = useState(0);
 
   const arrivedTime = contractorInfo?.info ? Date.parse(contractorInfo?.info?.arrivalTime) : 0;
+
+  useEffect(() => {
+    if (tripStatus === TripStatus.Finished) {
+      navigation.navigate('Rating');
+    }
+  }, [tripStatus, navigation]);
 
   //TODO Where can we get tarrifType??? and change TariffIcon
   const TariffIcon = tariffIconsData.Basic.icon;

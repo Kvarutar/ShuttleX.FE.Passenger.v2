@@ -33,7 +33,7 @@ const Order = forwardRef<OrderRef>(({}, ref) => {
     choosingTariff: <Tariffs setIsAddressSelectVisible={setIsAddressSelectVisible} />,
     payment: <PaymentPopup />,
     confirming: <Confirming />,
-    noDrivers: null,
+    noDrivers: <Confirming />,
     rideUnavailable: null,
   };
 

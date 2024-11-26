@@ -1,6 +1,8 @@
 import notifee from '@notifee/react-native';
 
 import { store } from '../../redux/store';
+import { setOrderStatus } from '../../ride/redux/order';
+import { OrderStatus } from '../../ride/redux/order/types';
 import { addFinishedTrips, endTrip, setTripStatus } from '../../ride/redux/trip';
 import { getContractorInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
@@ -25,6 +27,8 @@ const notificationHandlers: Record<NotificationType, (payload?: NotificationPayl
   },
   [NotificationType.TripEnded]: async () => {
     store.dispatch(addFinishedTrips());
+    //TODO go to rating page
+    store.dispatch(setTripStatus(TripStatus.Finished));
     store.dispatch(endTrip());
   },
   [NotificationType.WinnerFounded]: async payload => {
@@ -39,6 +43,7 @@ const notificationHandlers: Record<NotificationType, (payload?: NotificationPayl
   [NotificationType.DriverRejected]: async () => {
     // TODO: Get to searching screen again, what next??? Add logic later
     store.dispatch(endTrip());
+    store.dispatch(setOrderStatus(OrderStatus.Confirming));
   },
   [NotificationType.TripStarted]: async () => {
     store.dispatch(setTripStatus(TripStatus.Ride));
@@ -68,7 +73,8 @@ export const displayNotificationForAll = async (remoteMessage: NotificationRemot
       body,
       android: {
         channelId: 'general-channel',
-        smallIcon: 'bootsplash_logo@1,5x',
+        // smallIcon: 'ic_launcher',
+        //@mipmap/ic_launcher
         //TODO test icon
         pressAction: {
           id: 'default',
