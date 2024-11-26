@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Image, Pressable, StyleSheet } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Text, useTheme } from 'shuttlex-integration';
 
 import { prizesData } from '../prizesData';
@@ -22,13 +23,15 @@ const PrizeCard = ({ item, onPress }: PrizeCardProps) => {
   });
 
   return (
-    <Pressable style={[styles.container, computedStyles.container]} onPress={() => onPress(item)}>
-      <Image source={prizesData[item.prizes[0].feKey].image} style={styles.image} />
-      <Text style={[styles.placeNumber, computedStyles.placeNumber]} numberOfLines={1}>
-        {t('raffle_Lottery_PrizeCard_position', { pos: item.index + 1 })}
-      </Text>
-      <Text style={[styles.title, computedStyles.title]}>{prizesData[item.prizes[0].feKey].name}</Text>
-    </Pressable>
+    <Animated.View entering={FadeIn} exiting={FadeOut}>
+      <Pressable style={[styles.container, computedStyles.container]} onPress={() => onPress(item)}>
+        <Image source={prizesData[item.prizes[0].feKey].image} style={styles.image} />
+        <Text style={[styles.placeNumber, computedStyles.placeNumber]} numberOfLines={1}>
+          {t('raffle_Lottery_PrizeCard_position', { pos: item.index + 1 })}
+        </Text>
+        <Text style={[styles.title, computedStyles.title]}>{prizesData[item.prizes[0].feKey].name}</Text>
+      </Pressable>
+    </Animated.View>
   );
 };
 

@@ -107,5 +107,6 @@
   "ride_Receipt_ticketToLottery": "Білет лотереї",
   "ride_Receipt_start": "Початок",
   "ride_Receipt_finish": "Кінець",
-  "ride_Receipt_time": "Час"
+  "ride_Receipt_time": "Час",
+  "raffle_Lottery_raffleBegins": "Розіграш розпочато"
 }

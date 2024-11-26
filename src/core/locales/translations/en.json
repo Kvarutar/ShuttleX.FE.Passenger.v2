@@ -177,5 +177,6 @@
   "raffle_Lottery_minute": "Min",
   "raffle_Lottery_PrizesSlider_position": "#{{pos}} st",
   "raffle_Lottery_PrizeCard_position": "#{{pos}} st",
+  "raffle_Lottery_raffleBegins": "Raffle begins",
   "raffle_Lottery_PrizeWithWinnerBar_name": "{{name}} - Ticket {{ticketCode}}"
 }

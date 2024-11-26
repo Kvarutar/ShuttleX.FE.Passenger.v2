@@ -45,7 +45,7 @@ const HeaderCarousel = () => {
   const carouselRef = useRef<ICarouselInstance>(null);
   const lotteryStartTime = useSelector(lotteryStartTimeSelector);
 
-  const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime));
+  const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime ?? 0));
 
   const [currentIndex, setCurrentIndex] = useState(0);
 

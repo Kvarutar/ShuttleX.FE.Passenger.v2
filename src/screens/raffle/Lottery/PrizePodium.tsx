@@ -68,7 +68,7 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
               <Image source={prizesData[secondPrize.prizes[0].feKey].image} style={styles.prizeImage} />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text style={[styles.surpriseTitle, computedStyles.surpriseTitle]} numberOfLines={1}>
-                  {prizesData[secondPrize.prizes[0].feKey].name}
+                  {secondPrize?.winnerId ? secondPrize?.winnerFirstName : prizesData[secondPrize.prizes[0].feKey].name}
                 </Text>
               </View>
             </>
@@ -92,7 +92,7 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
               />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text style={[styles.surpriseTitle, computedStyles.surpriseTitle]} numberOfLines={1}>
-                  {prizesData[firstPrize.prizes[0].feKey].name}
+                  {firstPrize?.winnerId ? firstPrize?.winnerFirstName : prizesData[firstPrize.prizes[0].feKey].name}
                 </Text>
               </View>
             </>
@@ -117,7 +117,7 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
                   elipsizeMode={TextElipsizeMode.Clip}
                   numberOfLines={1}
                 >
-                  {prizesData[thirdPrize.prizes[0].feKey].name}
+                  {thirdPrize?.winnerId ? thirdPrize?.winnerFirstName : prizesData[thirdPrize.prizes[0].feKey].name}
                 </Text>
               </View>
             </>

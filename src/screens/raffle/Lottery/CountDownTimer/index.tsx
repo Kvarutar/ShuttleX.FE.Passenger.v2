@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
-import { getLocales, getTimeZone } from 'react-native-localize';
-import { useTheme } from 'shuttlex-integration';
+import { useSelector } from 'react-redux';
+import { Nullable, useTheme } from 'shuttlex-integration';
 
-import { getCurrentLottery } from '../../../../core/lottery/redux/thunks';
+import { lotteryStateSelector } from '../../../../core/lottery/redux/selectors';
+import { getCurrentActiveLottery } from '../../../../core/lottery/redux/thunks';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { CountDownTimerProps } from './types';
 
@@ -17,17 +18,13 @@ const getTimeUntilNextLottery = (startDate: Date) => {
 };
 
 const formatTime = (seconds: number) => {
-  const date = new Date(seconds * 1000);
-  return date
-    .toLocaleString(getLocales()[0].languageTag, {
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-      timeZone: getTimeZone(),
-    })
-    .replace(',', ':')
-    .replace(/\s/g, '');
+  const days = Math.floor(seconds / (24 * 3600));
+  const hours = Math.floor((seconds % (24 * 3600)) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+
+  const formattedTime = `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+
+  return formattedTime;
 };
 
 const CountdownTimer = ({ startDate }: CountDownTimerProps) => {
@@ -35,13 +32,23 @@ const CountdownTimer = ({ startDate }: CountDownTimerProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
+  const lotteryState = useSelector(lotteryStateSelector);
+
   const [countdown, setCountdown] = useState(getTimeUntilNextLottery(startDate));
 
   useEffect(() => {
-    if (countdown <= 0) {
-      dispatch(getCurrentLottery());
+    let interval: Nullable<NodeJS.Timeout> = null;
+
+    if (countdown <= 0 && (!lotteryState || lotteryState === 'CurrentUpcoming')) {
+      interval = setInterval(() => {
+        dispatch(getCurrentActiveLottery());
+      }, 5000);
     }
-  }, [countdown, dispatch]);
+
+    return () => {
+      interval && clearInterval(interval);
+    };
+  }, [countdown, dispatch, lotteryState]);
 
   useEffect(() => {
     const interval = setInterval(() => {

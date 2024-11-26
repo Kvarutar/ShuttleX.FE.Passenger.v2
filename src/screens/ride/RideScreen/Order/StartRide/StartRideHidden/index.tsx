@@ -30,7 +30,7 @@ const StartRideHidden = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const lotteryStartTime = useSelector(lotteryStartTimeSelector);
-  const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime));
+  const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime ?? 0));
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const collectedCapiArr = Array.from({ length: Math.min(testData.capiAmount - 1, 4) });

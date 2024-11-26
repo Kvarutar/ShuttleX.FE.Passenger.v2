@@ -3,6 +3,12 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MenuHeader, sizes, useTheme } from 'shuttlex-integration';
 
+import {
+  getCurrentActiveLottery,
+  getCurrentUpcomingLottery,
+  getPreviousLottery,
+} from '../../../core/lottery/redux/thunks';
+import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
@@ -20,6 +26,7 @@ import { RideScreenProps } from './types';
 const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();
   const orderRef = useRef<OrderRef>(null);
+  const dispatch = useAppDispatch();
 
   const orderStatus = useSelector(orderStatusSelector);
   //TODO uncomment when needed
@@ -37,6 +44,17 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
       setIsWinningPopupVisible(true);
     }, 2000);
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const activeLottery = await dispatch(getCurrentActiveLottery()).unwrap();
+
+      if (activeLottery === null) {
+        dispatch(getCurrentUpcomingLottery());
+      }
+      dispatch(getPreviousLottery());
+    })();
+  }, [dispatch]);
 
   //TEST driver rejected push
   // useEffect(() => {

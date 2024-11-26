@@ -1,93 +1,40 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { NetworkErrorDetailsWithBody } from 'shuttlex-integration';
 
-import { getCurrentLottery, getCurrentPrizes, getCurrentTickets, getWinnerAvatar } from './thunks';
+import {
+  getAllCurrentTickets,
+  getCurrentActiveLottery,
+  getCurrentPrizes,
+  getCurrentUpcomingLottery,
+  getPreviousLottery,
+  getPreviousPrizes,
+  getWinnerAvatar,
+} from './thunks';
 import { LotteryState } from './types';
 
-//TODO: delete testData when data from BE will be correct
 const initialState: LotteryState = {
   lottery: {
-    eventId: 'test',
-    name: 'test',
-    startTime: '2025-01-02',
-    state: 'CurrentActive',
+    eventId: '',
+    name: '',
+    startTime: '',
+    state: 'CurrentUpcoming',
   },
-  prizes: [
-    {
-      prizes: [
-        {
-          prizeId: 'prize1',
-          name: 'iPhone 16 Pro',
-          feKey: 'iPhone 16 Pro',
-        },
-      ],
-      index: 0,
-      winnerId: null,
-      winnerFirstName: null,
-      ticketNumber: null,
-    },
-    {
-      prizes: [
-        {
-          prizeId: 'prize2',
-          name: 'iPhone 16',
-          feKey: 'iPhone 16',
-        },
-      ],
-      index: 1,
-      winnerId: null,
-      winnerFirstName: null,
-      ticketNumber: null,
-    },
-    {
-      prizes: [
-        {
-          prizeId: 'prize3',
-          name: 'iPhone 15',
-          feKey: 'iPhone 15',
-        },
-      ],
-      index: 2,
-      winnerId: null,
-      winnerFirstName: null,
-      ticketNumber: null,
-    },
-    {
-      prizes: [
-        {
-          prizeId: 'prize4',
-          name: 'Nothing Ear (3)',
-          feKey: 'Nothing Ear (3)',
-        },
-      ],
-      index: 3,
-      winnerId: null,
-      winnerFirstName: null,
-      ticketNumber: null,
-    },
-    {
-      prizes: [
-        {
-          prizeId: 'prize5',
-          name: 'Nothing Ear (2)',
-          feKey: 'Nothing Ear (2)',
-        },
-      ],
-      index: 4,
-      winnerId: null,
-      winnerFirstName: null,
-      ticketNumber: null,
-    },
-  ],
+  previousLottery: null,
+  prizes: [],
+  previousPrizes: [],
   tickets: [],
   loading: {
+    previousLottery: false,
     lottery: false,
     prizes: false,
+    previousPrizes: false,
     tickets: false,
   },
   error: {
+    previousLottery: null,
     lottery: null,
     prizes: null,
+    previousPrizes: null,
     tickets: null,
   },
 };
@@ -98,22 +45,48 @@ const slice = createSlice({
   reducers: {
     clearPrizes: state => {
       state.prizes = initialState.prizes;
+      state.previousPrizes = initialState.previousPrizes;
     },
   },
   extraReducers: builder => {
     builder
-      // Lottery
-      .addCase(getCurrentLottery.pending, state => {
+      // CurrentUpcomingLottery
+      .addCase(getCurrentUpcomingLottery.pending, state => {
         state.loading.lottery = true;
         state.error.lottery = null;
       })
-      .addCase(getCurrentLottery.fulfilled, (state, action) => {
+      .addCase(getCurrentUpcomingLottery.fulfilled, (state, action) => {
         state.lottery = action.payload;
       })
-      .addCase(getCurrentLottery.rejected, (state, action) => {
+      .addCase(getCurrentUpcomingLottery.rejected, (state, action) => {
         state.loading.lottery = false;
         state.error.lottery = action.payload as NetworkErrorDetailsWithBody<any>;
-        console.error(action.payload);
+      })
+
+      // CurrentActiveLottery
+      .addCase(getCurrentActiveLottery.pending, state => {
+        state.loading.lottery = true;
+        state.error.lottery = null;
+      })
+      .addCase(getCurrentActiveLottery.fulfilled, (state, action) => {
+        state.lottery = action.payload;
+      })
+      .addCase(getCurrentActiveLottery.rejected, (state, action) => {
+        state.loading.lottery = false;
+        state.error.lottery = action.payload as NetworkErrorDetailsWithBody<any>;
+      })
+
+      // PreviousLottery
+      .addCase(getPreviousLottery.pending, state => {
+        state.loading.previousLottery = true;
+        state.error.previousLottery = null;
+      })
+      .addCase(getPreviousLottery.fulfilled, (state, action) => {
+        state.previousLottery = action.payload;
+      })
+      .addCase(getPreviousLottery.rejected, (state, action) => {
+        state.loading.previousLottery = false;
+        state.error.previousLottery = action.payload as NetworkErrorDetailsWithBody<any>;
       })
 
       // Prizes
@@ -128,22 +101,34 @@ const slice = createSlice({
       .addCase(getCurrentPrizes.rejected, (state, action) => {
         state.loading.prizes = false;
         state.error.prizes = action.payload as NetworkErrorDetailsWithBody<any>;
-        console.error(action.payload);
+      })
+
+      // PreviousPrizes
+      .addCase(getPreviousPrizes.pending, state => {
+        state.loading.previousPrizes = true;
+        state.error.previousPrizes = null;
+      })
+      .addCase(getPreviousPrizes.fulfilled, (state, action) => {
+        state.loading.previousPrizes = false;
+        state.previousPrizes = action.payload;
+      })
+      .addCase(getPreviousPrizes.rejected, (state, action) => {
+        state.loading.previousPrizes = false;
+        state.error.previousPrizes = action.payload as NetworkErrorDetailsWithBody<any>;
       })
 
       // Tickets
-      .addCase(getCurrentTickets.pending, state => {
+      .addCase(getAllCurrentTickets.pending, state => {
         state.loading.tickets = true;
         state.error.tickets = null;
       })
-      .addCase(getCurrentTickets.fulfilled, (state, action) => {
+      .addCase(getAllCurrentTickets.fulfilled, (state, action) => {
         state.loading.tickets = false;
         state.tickets = action.payload;
       })
-      .addCase(getCurrentTickets.rejected, (state, action) => {
+      .addCase(getAllCurrentTickets.rejected, (state, action) => {
         state.loading.tickets = false;
         state.error.tickets = action.payload as NetworkErrorDetailsWithBody<any>;
-        console.error(action.payload);
       })
 
       //WinnerAvatar
