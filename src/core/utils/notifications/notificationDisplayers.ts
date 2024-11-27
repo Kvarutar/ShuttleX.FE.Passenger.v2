@@ -1,4 +1,4 @@
-import notifee from '@notifee/react-native';
+import notifee, { AndroidColor } from '@notifee/react-native';
 
 import { store } from '../../redux/store';
 import { setOrderStatus } from '../../ride/redux/order';
@@ -73,9 +73,9 @@ export const displayNotificationForAll = async (remoteMessage: NotificationRemot
       body,
       android: {
         channelId: 'general-channel',
-        // smallIcon: 'ic_launcher',
-        //@mipmap/ic_launcher
-        //TODO test icon
+        color: AndroidColor.LIME,
+        smallIcon: 'ic_notification',
+        largeIcon: 'ic_launcher',
         pressAction: {
           id: 'default',
         },
