@@ -2,6 +2,7 @@ export interface NotificationRemoteMessage {
   data: {
     title: string;
     body: string;
+    sendTime: string;
     key: string;
     payload: string;
   };
@@ -20,5 +21,3 @@ export type NotificationPayload = {
   orderId?: string;
   prizeId?: string;
 };
-
-export type NotificationWithPayload = NotificationType.DriverAccepted | NotificationType.WinnerFounded;

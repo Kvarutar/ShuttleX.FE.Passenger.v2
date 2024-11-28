@@ -6,18 +6,14 @@ import { OrderStatus } from '../../ride/redux/order/types';
 import { addFinishedTrips, endTrip, setTripStatus } from '../../ride/redux/trip';
 import { getContractorInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
-import { NotificationPayload, NotificationRemoteMessage, NotificationType, NotificationWithPayload } from './types';
+import { NotificationPayload, NotificationRemoteMessage, NotificationType } from './types';
 
 //display notiff without buttons
 const isValidNotificationType = (key: string): key is NotificationType => {
   return Object.values(NotificationType).includes(key as NotificationType);
 };
 
-const requiresPayload = (type: NotificationType): type is NotificationWithPayload => {
-  return [NotificationType.DriverAccepted, NotificationType.WinnerFounded].includes(type);
-};
-
-const notificationHandlers: Record<NotificationType, (payload?: NotificationPayload) => Promise<void>> = {
+const notificationHandlers: Record<NotificationType, (payload: NotificationPayload | undefined) => Promise<void>> = {
   [NotificationType.DriverAccepted]: async payload => {
     if (payload?.orderId) {
       await store.dispatch(getContractorInfo(payload.orderId));
@@ -27,7 +23,6 @@ const notificationHandlers: Record<NotificationType, (payload?: NotificationPayl
   },
   [NotificationType.TripEnded]: async () => {
     store.dispatch(addFinishedTrips());
-    //TODO go to rating page
     store.dispatch(setTripStatus(TripStatus.Finished));
   },
   [NotificationType.WinnerFounded]: async payload => {
@@ -40,7 +35,6 @@ const notificationHandlers: Record<NotificationType, (payload?: NotificationPayl
     store.dispatch(setTripStatus(TripStatus.Arrived));
   },
   [NotificationType.DriverRejected]: async () => {
-    // TODO: Get to searching screen again, what next??? Add logic later
     store.dispatch(endTrip());
     store.dispatch(setOrderStatus(OrderStatus.Confirming));
   },
@@ -61,8 +55,12 @@ export const displayNotificationForAll = async (remoteMessage: NotificationRemot
   try {
     let payloadData: NotificationPayload | undefined;
 
-    if (payload && requiresPayload(key)) {
-      payloadData = JSON.parse(payload);
+    if (payload) {
+      try {
+        payloadData = JSON.parse(payload);
+      } catch (parseError) {
+        console.error(`Error parsing payload of notification ${remoteMessage}:`);
+      }
     }
 
     await notificationHandlers[key](payloadData);
