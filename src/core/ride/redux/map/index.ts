@@ -7,6 +7,7 @@ import { MapState } from './types';
 
 const initialState: MapState = {
   cameraMode: 'free',
+  cars: [],
   polylines: [],
   stopPoints: [],
 };
@@ -17,6 +18,9 @@ const slice = createSlice({
   reducers: {
     setMapCameraMode(state, action: PayloadAction<MapState['cameraMode']>) {
       state.cameraMode = action.payload;
+    },
+    setMapCars(state, action: PayloadAction<MapState['cars']>) {
+      state.cars = action.payload;
     },
     setMapPolylines(state, action: PayloadAction<MapState['polylines']>) {
       state.polylines = action.payload;
@@ -51,6 +55,6 @@ const slice = createSlice({
   },
 });
 
-export const { setMapCameraMode, setMapPolylines, setMapStopPoints } = slice.actions;
+export const { setMapCameraMode, setMapCars, setMapPolylines, setMapStopPoints } = slice.actions;
 
 export default slice.reducer;
