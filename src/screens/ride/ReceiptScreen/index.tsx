@@ -1,7 +1,10 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import { getLocales } from 'react-native-localize';
 import Share from 'react-native-share';
+import { useSelector } from 'react-redux';
 import {
   Bar,
   Button,
@@ -10,6 +13,7 @@ import {
   CloseIcon,
   CoinIcon,
   Fog,
+  formatTime,
   getCurrencySign,
   getPaymentIcon,
   minToMilSec,
@@ -19,22 +23,30 @@ import {
   Text,
   useTheme,
 } from 'shuttlex-integration';
+import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
+import { getTicketAfterRide } from '../../../core/lottery/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
+import { offerPointsSelector } from '../../../core/ride/redux/offer/selectors';
+import { cleanOrder } from '../../../core/ride/redux/order';
 import { endTrip } from '../../../core/ride/redux/trip';
+import { contractorSelector, routeDropOffInfoSelector } from '../../../core/ride/redux/trip/selectors';
+import { RootStackParamList } from '../../../Navigate/props';
 import passengerColors from '../../../shared/colors/colors';
 import MapView from '../RideScreen/MapView';
-import { ReceiptScreenProps } from './types';
 
 const windowHeight = Dimensions.get('window').height;
 
-const formatTime = (time: Date): string =>
-  time.toLocaleTimeString(getLocales()[0].languageTag, { hour: '2-digit', minute: '2-digit', hour12: false });
-
-const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
+const ReceiptScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Receipt'>>();
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+
+  const routeInfo = useSelector(routeDropOffInfoSelector);
+  const contractorInfo = useSelector(contractorSelector);
+  const addreses = useSelector(offerPointsSelector);
+  const [ticketNumber, setTicketNumber] = useState<string | null>(null);
 
   const computedStyles = StyleSheet.create({
     textSecondaryColor: {
@@ -63,7 +75,15 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
     },
   });
 
+  useEffect(() => {
+    (async () => {
+      const newTicketNumber = await dispatch(getTicketAfterRide()).unwrap();
+      setTicketNumber(newTicketNumber.ticketNumber);
+    })();
+  }, [dispatch]);
+
   const onEndTrip = async () => {
+    dispatch(cleanOrder());
     dispatch(endTrip());
     navigation.navigate('Ride');
   };
@@ -107,31 +127,35 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
     return { amount: distanceInMeters, title: t('ride_Receipt_meters') };
   };
 
-  const distance = formatDistance(3300);
+  const distance = formatDistance(routeInfo?.totalDistanceMtr ?? 0);
 
   const placeData = [
     {
       address: 'Home',
-      details: 'StreetEasy: NYC Real Estate Search',
+      //TODO check this data
+      details: addreses[0].address,
     },
     {
       address: 'Work',
-      details: 'StreetEasy: NYC Real Estate Search',
+      //TODO check this data
+      details: addreses[1].address,
     },
   ];
 
   const roadTimeData = [
     {
       title: t('ride_Receipt_start'),
+      //TODO get to know where can we get this time
       value: formatTime(new Date()),
     },
     {
       title: t('ride_Receipt_finish'),
+      //TODO get to know where can we get this time
       value: formatTime(new Date(Date.now() + minToMilSec(78))),
     },
     {
       title: t('ride_Receipt_time'),
-      value: formatTimeDuration(minToMilSec(78)),
+      value: formatTimeDuration(routeInfo?.totalDurationSec ?? 0),
     },
   ];
 
@@ -227,8 +251,8 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
                 <View style={styles.priceContainer}>
                   <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
                   <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
-                    {/*TODO: swap currencyCode to correct value*/}
-                    {getCurrencySign('UAH')}12,7
+                    {/*TODO: ask back about sign, not code*/}
+                    {getCurrencySign(contractorInfo?.info?.currencyCode as CurrencyType)}12,7
                   </Text>
                 </View>
               </View>
@@ -236,7 +260,7 @@ const ReceiptScreen = ({ navigation }: ReceiptScreenProps) => {
             <Bar style={[styles.paymentBarContainer, computedStyles.ticketLotteryContainer]}>
               <CoinIcon style={styles.barIcon} />
               <View>
-                <Text style={[styles.paymentTitleText, computedStyles.ticketLotteryTitleText]}>938475992</Text>
+                <Text style={[styles.paymentTitleText, computedStyles.ticketLotteryTitleText]}>{ticketNumber}</Text>
                 <View style={styles.priceContainer}>
                   <Text style={[styles.headerAndPaymentText, computedStyles.ticketLotteryText]}>
                     {t('ride_Receipt_ticketToLottery')}

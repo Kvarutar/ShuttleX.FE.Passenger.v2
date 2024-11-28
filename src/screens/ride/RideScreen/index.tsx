@@ -29,8 +29,6 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const orderStatus = useSelector(orderStatusSelector);
-  //TODO uncomment when needed
-  // const unreadNotifications = useSelector(numberOfUnreadNotificationsSelector);
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isMysteryBoxPopupVisible, setIsMysteryBoxPopupVisible] = useState(false);
@@ -39,11 +37,11 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const contractorInfo = useSelector(contractorSelector);
 
   //for test
-  useEffect(() => {
-    setTimeout(() => {
-      setIsWinningPopupVisible(true);
-    }, 2000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setIsWinningPopupVisible(true);
+  //   }, 2000);
+  // }, []);
 
   useEffect(() => {
     (async () => {
@@ -75,66 +73,6 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
       orderRef.current?.openAddressSelect();
     }
   }, [route.params?.openAddressSelect, route]);
-
-  // useEffect(() => {
-  //   //TODO uncomment when we need this
-  //   dispatch(
-  //     setNotificationList([
-  //       {
-  //         type: NotificationType.TripWasRated,
-  //         title: 'Jack Johnson',
-  //         description: 'rated the trip with you',
-  //         isRead: true,
-  //         time: '5m ago',
-  //         image: {
-  //           uri: 'https://sun9-34.userapi.com/impg/ZGuJiFBAp-93En3yLK7LWZNPxTGmncHrrtVgbg/hd6uHaUv1zE.jpg?size=1200x752&quality=96&sign=e79799e4b75c839d0ddb1a2232fe5d60&type=album',
-  //         },
-  //       },
-  //       {
-  //         type: NotificationType.RatingIncreased,
-  //         title: 'Rating increased',
-  //         description: 'Your rating was increased to 4.6',
-  //         isRead: false,
-  //         time: '5m ago',
-  //       },
-  //       {
-  //         type: NotificationType.PlannedTrip,
-  //         title: 'Booked time',
-  //         description: 'You have to make booked trip right now',
-  //         isRead: true,
-  //         time: '5m ago',
-  //       },
-  //       {
-  //         type: NotificationType.RatingIncreased,
-  //         title: 'Jack Johnson',
-  //         description: 'rated the trip with you',
-  //         isRead: true,
-  //         time: '5m ago',
-  //       },
-  //       {
-  //         type: NotificationType.RatingIncreased,
-  //         title: 'Jack Johnson',
-  //         description: 'rated the trip with you',
-  //         isRead: false,
-  //         time: '5m ago',
-  //       },
-  //       {
-  //         type: NotificationType.RatingIncreased,
-  //         title: 'Jack Johnson',
-  //         description: 'rated the trip with you',
-  //         isRead: true,
-  //         time: '5m ago',
-  //       },
-  //       {
-  //         type: NotificationType.RatingIncreased,
-  //         title: 'Jack Johnson',
-  //         description: 'rated the trip with you',
-  //         isRead: true,
-  //         time: '5m ago',
-  //       },
-  //     ]),
-  //   );
-  // }, [dispatch]);
 
   useEffect(() => {
     if (contractorInfo) {

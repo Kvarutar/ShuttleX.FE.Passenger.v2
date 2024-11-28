@@ -5,9 +5,8 @@ import { BottomWindowWithGesture, BottomWindowWithGestureRef } from 'shuttlex-in
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
-import { cleanOrderPoints } from '../../../../../core/ride/redux/order';
+import { SearchAddressFromAPI } from '../../../../../core/ride/redux/offer/types';
 import AlertInitializer from '../../../../../shared/AlertInitializer';
-import { PlaceType } from '../PlaceBar/types';
 import AddressSelect from './AddressSelect';
 import StartRideHidden from './StartRideHidden';
 import StartRideVisible from './StartRideVisible';
@@ -21,7 +20,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
     const alerts = useSelector(twoHighestPriorityAlertsSelector);
 
     const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
-    const [fastAddressSelect, setFastAddressSelect] = useState<PlaceType | null>(null);
+    const [fastAddressSelect, setFastAddressSelect] = useState<SearchAddressFromAPI | null>(null);
 
     useImperativeHandle(ref, () => ({
       openAddressSelect: () => {
@@ -34,7 +33,8 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
       if (isAddressSelectVisible) {
         addressSelectRef.current?.openWindow();
       } else {
-        dispatch(cleanOrderPoints());
+        //TODO: now offer poins are cleaning after we press green button in address select
+        //dispatch(cleanOfferPoints());
         setFastAddressSelect(null);
       }
     }, [dispatch, isAddressSelectVisible]);

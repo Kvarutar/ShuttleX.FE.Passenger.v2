@@ -21,4 +21,5 @@ export type RootStackParamList = {
   Activity: undefined;
   Raffle: undefined;
   TicketWallet: undefined;
+  ProfilePhoto: undefined;
 };

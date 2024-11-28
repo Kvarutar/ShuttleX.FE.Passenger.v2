@@ -1,6 +1,6 @@
 import { StyleProp, ViewStyle } from 'react-native';
 
-import { PlaceType } from '../../PlaceBar/types';
+import { SearchAddressFromAPI } from '../../../../../../core/ride/redux/offer/types';
 
 export type PointMode = 'pickUp' | 'default' | 'dropOff';
 
@@ -20,6 +20,6 @@ export type AddressButtonProps = {
 };
 
 export type AddressSelectProps = {
-  address?: PlaceType | null;
+  address?: SearchAddressFromAPI | null;
   setIsAddressSelectVisible: (state: boolean) => void;
 };

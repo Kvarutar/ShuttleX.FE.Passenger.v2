@@ -1,4 +1,4 @@
-import { getNetworkErrorInfo } from 'shuttlex-integration';
+import { convertBlobToImgUri, getNetworkErrorInfo } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import {
@@ -31,8 +31,8 @@ export const getContractorInfo = createAppAsyncThunk<ContractorApiResponse, stri
     try {
       const info = (await orderAxios.get<ContractorInfo>(`/${orderId}`)).data;
       const avatar = await orderAxios
-        .get<string>(`/${orderId}/contractors/avatars/${info.avatarIds[0]}`)
-        .then(response => response.data);
+        .get<Blob>(`/${orderId}/contractors/avatars/${info.avatarIds[0]}`, { responseType: 'blob' })
+        .then(response => convertBlobToImgUri(response.data));
 
       return {
         info,

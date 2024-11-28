@@ -2,8 +2,9 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, StyleSheet, View } from 'react-native';
+import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { LatLng } from 'react-native-maps';
 import { useSelector } from 'react-redux';
 import {
   ArrowIcon,
@@ -20,85 +21,51 @@ import {
 
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
-import { setOrderStatus, updateOrderPoint } from '../../../../../../core/ride/redux/order';
-import { isOrderLoadingSelector, orderPointsSelector } from '../../../../../../core/ride/redux/order/selectors';
+import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
+import {
+  isSearchAdressesLoadingSelector,
+  offerPointsSelector,
+  offerRecentDropoffsSelector,
+} from '../../../../../../core/ride/redux/offer/selectors';
+import {
+  enhanceAddress,
+  getAddressSearchHistory,
+  getOfferRoutes,
+  getTariffsPrices,
+  saveSearchResult,
+  searchAddress,
+} from '../../../../../../core/ride/redux/offer/thunks';
+import { SearchAddressFromAPI } from '../../../../../../core/ride/redux/offer/types';
+import { setOrderStatus } from '../../../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../../../core/ride/redux/order/types';
 import { RootStackParamList } from '../../../../../../Navigate/props';
 import PlaceBar from '../../PlaceBar';
-import { PlaceBarModes, PlaceType } from '../../PlaceBar/types';
+import { PlaceBarModes } from '../../PlaceBar/types';
 import AddressButton from './AddressButton';
 import PointItem from './PointItem';
 import { AddressSelectProps, PointMode } from './types';
 
-const testPlace = [
-  {
-    address: 'Joe`s Pizza',
-    details: '7 Carmine St, New York, NY 10014',
-    distance: '1.5',
-  },
-  {
-    address: 'Katz`s Delicatessen',
-    details: '205 E Houston St, New York, NY 10002',
-    distance: '3.2',
-  },
-  {
-    address: 'Shake Shack',
-    details: 'Madison Square Park, New York, NY 10010',
-    distance: '2.0',
-  },
-  {
-    address: 'Levain Bakery',
-    details: '167 W 74th St, New York, NY 10023',
-    distance: '4.1',
-  },
-  {
-    address: 'Russ & Daughters',
-    details: '179 E Houston St, New York, NY 10002',
-    distance: '3.0',
-  },
-  {
-    address: 'Peter Luger Steak House',
-    details: '178 Broadway, Brooklyn, NY 11211',
-    distance: '5.3',
-  },
-  {
-    address: 'The Spotted Pig',
-    details: '314 W 11th St, New York, NY 10014',
-    distance: '2.4',
-  },
-  {
-    address: "Lombardi's Pizza",
-    details: '32 Spring St, New York, NY 10012',
-    distance: '2.8',
-  },
-  {
-    address: 'Carbone',
-    details: '181 Thompson St, New York, NY 10012',
-    distance: '2.9',
-  },
-  {
-    address: 'Balthazar',
-    details: '80 Spring St, New York, NY 10012',
-    distance: '3.1',
-  },
-];
-
+//TODO: rewrite logic for adresses. For the reference - look at yandex GO
 const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProps) => {
   const dispatch = useAppDispatch();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { colors } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride'>>();
 
-  const isLoading = useSelector(isOrderLoadingSelector);
-  const points = useSelector(orderPointsSelector);
+  const isLoading = useSelector(isSearchAdressesLoadingSelector);
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
-  const initialFocusedInput = defaultLocation ? { id: 1, value: '', focus: false } : { id: 0, value: '', focus: false };
+  const recentDropoffs = useSelector(offerRecentDropoffsSelector);
+  const offerPoints = useSelector(offerPointsSelector);
+  const initialFocusedInput = defaultLocation
+    ? { id: 1, value: offerPoints[1].address, focus: false }
+    : { id: 0, value: offerPoints[0].address, focus: false };
 
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [focusedInput, setFocusedInput] = useState<{ id: number; value: string; focus: boolean }>(initialFocusedInput);
   const [isAddressSelected, setIsAddressSelected] = useState(false);
   const [updateDefaultLocation, setUpdateDefaultLocation] = useState(true);
-  const [addresses, setAddresses] = useState<PlaceType[]>([]);
+  const [addresses, setAddresses] = useState<SearchAddressFromAPI[]>([]);
+  const [addressesHistory, setAddressesHistory] = useState<SearchAddressFromAPI[]>([]);
   const debounceInputValue = useDebounce(focusedInput.value, 300);
 
   const computedStyles = StyleSheet.create({
@@ -123,23 +90,40 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   });
 
   useEffect(() => {
-    const fetchData = async (text: string) => {
-      // const fetchedAddresses = await dispatch(fetchAddresses(text)).unwrap();
-      const fetchedAddresses = testPlace.filter(
-        item =>
-          item.address.toLowerCase().includes(text.toLowerCase()) ||
-          item.details.toLowerCase().includes(text.toLowerCase()),
-      );
-      setAddresses(fetchedAddresses);
-    };
+    (async () => {
+      const addressessHistory = await dispatch(getAddressSearchHistory({ amount: 10 })).unwrap();
 
-    fetchData(debounceInputValue);
-  }, [debounceInputValue, dispatch]);
+      setAddressesHistory(addressessHistory);
+    })();
+  }, [dispatch, setAddressesHistory]);
 
   useEffect(() => {
-    const isAllAddressesFilled = !points.some(el => el.address === '');
+    if (debounceInputValue.trim() === '') {
+      setAddresses([]);
+    } else {
+      dispatch(searchAddress({ query: debounceInputValue, language: i18n.language }))
+        .unwrap()
+        .then(res => {
+          const mappedRes = res.map<SearchAddressFromAPI>(el => ({
+            id: el.externalId,
+            address: el.mainText,
+            fullAddress: el.secondaryText,
+            geo: {
+              latitude: 0,
+              longitude: 0,
+            },
+            totalDistanceMtr: el.distanceMtr,
+          }));
+
+          setAddresses(mappedRes);
+        });
+    }
+  }, [debounceInputValue, i18n.language, dispatch]);
+
+  useEffect(() => {
+    const isAllAddressesFilled = !offerPoints.some(el => el.address === '');
     setShowConfirmButton(isAllAddressesFilled);
-  }, [points]);
+  }, [offerPoints]);
 
   useEffect(() => {
     if (focusedInput.id === 0) {
@@ -148,26 +132,32 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   }, [focusedInput.id]);
 
   useEffect(() => {
-    if (defaultLocation && updateDefaultLocation) {
+    if (
+      defaultLocation &&
+      updateDefaultLocation &&
+      offerPoints.find(el => el.address === '' && el.id === 0) !== undefined
+    ) {
       dispatch(
-        updateOrderPoint({
+        updateOfferPoint({
           id: 0,
           address: t('ride_Ride_AddressSelect_addressInputMyLocation'),
+          fullAdress: t('ride_Ride_AddressSelect_addressInputMyLocation'),
           longitude: defaultLocation.longitude,
           latitude: defaultLocation.latitude,
         }),
       );
     }
-  }, [defaultLocation, dispatch, t, updateDefaultLocation]);
+  }, [defaultLocation, dispatch, t, updateDefaultLocation, offerPoints]);
 
   useEffect(() => {
     if (address) {
       dispatch(
-        updateOrderPoint({
+        updateOfferPoint({
           id: 1,
           address: address.address,
-          longitude: 2412011, //TODO: replace with real coordinates
-          latitude: 4214120,
+          fullAdress: address.fullAddress,
+          longitude: address.geo.longitude,
+          latitude: address.geo.latitude,
         }),
       );
     }
@@ -183,40 +173,54 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
     }
   }, [focusedInput.focus, focusedInput.value]);
 
-  const onConfirm = () => {
-    setIsAddressSelectVisible(false);
-    dispatch(setOrderStatus(OrderStatus.ChoosingTariff));
-  };
-
   const onLocationSelectPress = () => navigation.navigate('MapAddressSelection', { orderPointId: focusedInput.id });
 
-  const onAddressSelect = (selectedAddress: string) => () => {
+  const onAddressSelect = async (place: SearchAddressFromAPI, isHistory: boolean = false) => {
+    let geo: LatLng = {
+      latitude: place.geo.latitude,
+      longitude: place.geo.longitude,
+    };
+
+    if (!isHistory) {
+      const enhancedAddress = await dispatch(enhanceAddress(place)).unwrap();
+
+      dispatch(saveSearchResult(enhancedAddress));
+      setAddressesHistory(prev => [place, ...prev]);
+
+      geo = {
+        latitude: enhancedAddress.geo.latitude,
+        longitude: enhancedAddress.geo.longitude,
+      };
+    }
+
     dispatch(
-      updateOrderPoint({
+      updateOfferPoint({
         id: focusedInput.id,
-        address: selectedAddress,
-        longitude: 123123123, //TODO: replace with real coordinates
-        latitude: 2132131231,
+        address: place.address,
+        fullAdress: place.fullAddress,
+        latitude: geo.latitude,
+        longitude: geo.longitude,
       }),
     );
+
     Keyboard.dismiss();
     setIsAddressSelected(false);
   };
 
-  const pointsContent = points.map((point, index) => {
+  const pointsContent = offerPoints.map((point, index) => {
     let pointMode: PointMode = 'default';
 
     const pointsContentComputedStyles = StyleSheet.create({
       wrapper: {
-        zIndex: points.length - point.id,
-        borderBottomWidth: point.id === 0 && points.length > 2 ? 1 : 0,
+        zIndex: offerPoints.length - point.id,
+        borderBottomWidth: point.id === 0 && offerPoints.length > 2 ? 1 : 0,
         borderBottomColor: colors.textTertiaryColor,
       },
     });
 
     if (index === 0) {
       pointMode = 'pickUp';
-    } else if (index === points.length - 1) {
+    } else if (index === offerPoints.length - 1) {
       pointMode = 'dropOff';
     }
 
@@ -240,8 +244,8 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
           <PlaceBar
             key={`last_search_${index}`}
             mode={PlaceBarModes.Search}
-            place={{ address: item.address, details: item.details, distance: '12' }}
-            onPress={onAddressSelect(item.address)}
+            place={item}
+            onPress={() => onAddressSelect(item)}
           />
         ))
       ) : (
@@ -258,6 +262,13 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
     );
   }
 
+  const onConfirm = async () => {
+    await dispatch(getOfferRoutes());
+    await dispatch(getTariffsPrices());
+    setIsAddressSelectVisible(false);
+    dispatch(setOrderStatus(OrderStatus.ChoosingTariff));
+  };
+
   return (
     <>
       <Bar>{pointsContent}</Bar>
@@ -268,62 +279,70 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
           onPress={onLocationSelectPress}
         />
       </View>
-      <View style={styles.scrollViewSearchContainer}>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          style={[styles.scrollViewSearchWrapper, computedStyles.scrollViewSearchWrapper]}
-          contentContainerStyle={computedStyles.scrollViewSearchContentContainer}
-        >
-          {isAddressSelected ? (
-            searchAddresses
-          ) : (
-            <>
-              <View>
-                {title(t('ride_Ride_AddressSelect_addressTitle_recent'))}
-                <ScrollView
-                  keyboardShouldPersistTaps="handled"
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  style={styles.recentPlaceBarWrapper}
-                >
-                  {testPlace.map((item, index) => (
-                    <PlaceBar
-                      key={index}
-                      mode={PlaceBarModes.Save}
-                      place={item}
-                      onPress={onAddressSelect(item.address)}
-                      style={styles.recentPlaceBar}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-              <View style={styles.addressContainer}>
-                {title(t('ride_Ride_AddressSelect_addressTitle_lastSearch'))}
-                <View style={[styles.searchPlaceBarWrapper, computedStyles.searchPlaceBarWrapper]}>
-                  {testPlace.map((item, index) => (
-                    <PlaceBar
-                      key={index}
-                      mode={PlaceBarModes.Search}
-                      place={{ address: item.address, details: item.details, distance: '12' }}
-                      onPress={onAddressSelect(item.address)}
-                    />
-                  ))}
-                </View>
-              </View>
-            </>
-          )}
-        </ScrollView>
-        {showConfirmButton && !isAddressSelected && (
-          <Button
-            onPress={onConfirm}
-            shape={ButtonShapes.Circle}
-            style={[styles.confirmButton, computedStyles.confirmButton]}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.scrollViewSearchContainer}>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            style={[styles.scrollViewSearchWrapper, computedStyles.scrollViewSearchWrapper]}
+            contentContainerStyle={computedStyles.scrollViewSearchContentContainer}
+            // onScroll={Keyboard.dismiss} //TODO: do a proper keyboard hide when scroll through address search
+            // scrollEventThrottle={16} //this line is required with onScroll event
           >
-            <ArrowIcon />
-          </Button>
-        )}
-      </View>
+            {isAddressSelected ? (
+              searchAddresses
+            ) : (
+              <>
+                {recentDropoffs.length > 0 && (
+                  <View>
+                    {title(t('ride_Ride_AddressSelect_addressTitle_recent'))}
+                    <ScrollView
+                      //keyboardShouldPersistTaps="handled" //TODO: do a proper keyboard hide when scroll through address search
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      style={styles.recentPlaceBarWrapper}
+                    >
+                      {recentDropoffs.map((item, index) => (
+                        <PlaceBar
+                          key={index}
+                          mode={PlaceBarModes.Save}
+                          place={item}
+                          onPress={() => onAddressSelect(item)}
+                          style={styles.recentPlaceBar}
+                        />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
+                {addressesHistory.length > 0 && (
+                  <View style={styles.addressContainer}>
+                    {title(t('ride_Ride_AddressSelect_addressTitle_lastSearch'))}
+                    <View style={[styles.searchPlaceBarWrapper, computedStyles.searchPlaceBarWrapper]}>
+                      {addressesHistory.map((item, index) => (
+                        <PlaceBar
+                          key={index}
+                          mode={PlaceBarModes.Search}
+                          place={item}
+                          onPress={() => onAddressSelect(item, true)}
+                        />
+                      ))}
+                    </View>
+                  </View>
+                )}
+              </>
+            )}
+          </ScrollView>
+          {showConfirmButton && (
+            <Button
+              onPress={onConfirm}
+              shape={ButtonShapes.Circle}
+              style={[styles.confirmButton, computedStyles.confirmButton]}
+            >
+              <ArrowIcon />
+            </Button>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
     </>
   );
 };

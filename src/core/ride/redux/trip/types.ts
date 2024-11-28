@@ -1,7 +1,7 @@
 import { LatLng } from 'react-native-maps';
 import { NetworkErrorDetailsWithBody, Nullable, TariffType } from 'shuttlex-integration';
 
-import { AddressPoint } from '../order/types';
+import { AddressPoint } from '../offer/types';
 
 export type ContractorInfo = {
   firstName: string;

@@ -16,16 +16,17 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { profilePrefferedNameSelector, profileSelectedPhotoSelector } from '../../../core/passenger/redux/selectors';
 import { finishedTripsSelector } from '../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
-import { profileSelector } from './../../../core/redux/passenger/selectors';
 import { MenuProps } from './types';
 
 const Menu = ({ onClose }: MenuProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const { t } = useTranslation();
-  const profile = useSelector(profileSelector);
+  const prefferedName = useSelector(profilePrefferedNameSelector);
+  const selectedPhoto = useSelector(profileSelectedPhotoSelector);
 
   const currentRoute = useNavigationState(state => state.routes[state.index].name);
 
@@ -97,8 +98,8 @@ const Menu = ({ onClose }: MenuProps) => {
   return (
     <MenuBase
       onClose={onClose}
-      userImageUri={profile?.imageUri ?? undefined}
-      userName={profile?.fullName}
+      userImageUri={selectedPhoto}
+      userName={prefferedName}
       menuNavigation={menuNavigation}
       additionalButton={<TicketWalletButton />}
       style={styles.menu}

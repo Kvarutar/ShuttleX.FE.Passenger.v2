@@ -56,14 +56,14 @@ const PlanButton = ({ plan, onPress, isSelected, style, withTimeShow = true }: P
     <Pressable onPress={onPress} style={[styles.wrapper, style]}>
       <Animated.View style={[styles.container, animatedStyles.wrapper]}>
         <Text style={[styles.time, computedStyles.time]}>
-          {withTimeShow ? formatTime(Number(plan.DurationSec)) : tariffModes[plan.AlgorythmType]}
+          {withTimeShow ? formatTime(Number(plan.durationSec)) : tariffModes[plan.algorythm]}
         </Text>
         <Animated.Text style={[styles.price, animatedStyles.price]}>
           {/*TODO: swap currencyCode to correct value*/}
           {getCurrencySign('UAH')}
-          {planPriceCounting(Number(plan.DurationSec), plan.AlgorythmType)}
+          {planPriceCounting(Number(plan.durationSec), plan.algorythm)}
         </Animated.Text>
-        {plan.AlgorythmType === 'Eager Fast' && <LightningIcon style={styles.icon} />}
+        {plan.algorythm === 'Eager Fast' && <LightningIcon style={styles.icon} />}
       </Animated.View>
     </Pressable>
   );

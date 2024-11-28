@@ -1,15 +1,11 @@
 import { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native';
 
-export type Plan = {
-  Tariffid: number;
-  AlgorythmType: 'Eager Fast' | 'Hungarian' | 'Eager Cheap';
-  DurationSec: number | null;
-};
+import { Matching } from '../../../../core/ride/redux/offer/types';
 
 export type PlanButtonProps = {
   onPress: (event: GestureResponderEvent) => void;
   isSelected: boolean;
-  plan: Plan;
+  plan: Matching;
   style?: StyleProp<ViewStyle>;
   withTimeShow?: boolean;
 };

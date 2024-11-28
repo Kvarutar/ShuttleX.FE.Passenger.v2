@@ -6,13 +6,13 @@ import { createAxiosInstance, InitCreateAppAsyncThunkDispatch } from 'shuttlex-i
 import { AppDispatch } from '../redux/store';
 import instanceDefaultConfig from './instanceDefaultConfig';
 
-const passengerInstanceInitializer = (
+const matchingInstanceInitializer = (
   dispatch: InitCreateAppAsyncThunkDispatch<AppState, AppDispatch>,
 ): AxiosInstance => {
   return createAxiosInstance({
-    url: `${Config.API_PASSENGER_URL_HTTPS}`,
+    url: `${Config.API_MATCHING_URL_HTTPS}`,
     ...instanceDefaultConfig(dispatch),
   });
 };
 
-export default passengerInstanceInitializer;
+export default matchingInstanceInitializer;

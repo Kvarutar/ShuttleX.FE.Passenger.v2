@@ -12,6 +12,7 @@ import {
   CloseIcon,
   MapPinIcon,
   MapView,
+  Nullable,
   PointIcon,
   SafeAreaView,
   Text,
@@ -23,8 +24,13 @@ import {
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../core/ride/redux/geolocation/selectors';
 import { convertGeoToAddress } from '../../../core/ride/redux/geolocation/thunks';
-import { updateOrderPoint } from '../../../core/ride/redux/order';
+import { updateOfferPoint } from '../../../core/ride/redux/offer';
 import { MapAddressSelectionScreenProps } from './types';
+
+type EnhancedAddressInfo = {
+  address: string;
+  fullAddress: string;
+};
 
 const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScreenProps): JSX.Element => {
   const { t } = useTranslation();
@@ -35,18 +41,29 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
   const initialCoordinates: LatLng | undefined = geolocationCoordinates ?? undefined;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState<Nullable<EnhancedAddressInfo>>(null);
   const [addressCoordinates, setAddressCoordinates] = useState<LatLng>({ latitude: 0, longitude: 0 });
 
   const onDragComplete = async (coordinates: LatLng) => {
     // If the new coordinates differ from the previous ones
     if (JSON.stringify(coordinates) !== JSON.stringify(addressCoordinates)) {
       setIsLoading(true);
-      let convertedAddress = '';
+      let convertedAddress: EnhancedAddressInfo = {
+        address: '',
+        fullAddress: '',
+      };
       try {
-        convertedAddress = await dispatch(convertGeoToAddress(coordinates)).unwrap();
+        const addressWithFullInfo = await dispatch(convertGeoToAddress(coordinates)).unwrap();
+        convertedAddress = {
+          address: addressWithFullInfo.place,
+          fullAddress: addressWithFullInfo.fullAddress,
+        };
       } catch (error) {
-        convertedAddress = `${coordinates.latitude.toFixed(4)}, ${coordinates.longitude.toFixed(4)}`;
+        const location = `${coordinates.latitude.toFixed(4)}, ${coordinates.longitude.toFixed(4)}`;
+        convertedAddress = {
+          address: location,
+          fullAddress: '',
+        };
       }
       setAddress(convertedAddress);
       setAddressCoordinates(coordinates);
@@ -55,14 +72,17 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
   };
 
   const onConfirm = () => {
-    dispatch(
-      updateOrderPoint({
-        id: route.params.orderPointId,
-        address: address,
-        latitude: addressCoordinates.latitude,
-        longitude: addressCoordinates.longitude,
-      }),
-    );
+    if (address) {
+      dispatch(
+        updateOfferPoint({
+          id: route.params.orderPointId,
+          address: address.address,
+          fullAdress: address.fullAddress,
+          latitude: addressCoordinates.latitude,
+          longitude: addressCoordinates.longitude,
+        }),
+      );
+    }
     navigation.goBack();
   };
 
@@ -96,7 +116,7 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
           <Bar style={styles.bottomBar}>
             <PointIcon style={styles.pinIcon} />
             {address ? (
-              <Text style={styles.address}>{address}</Text>
+              <Text style={styles.address}>{address.address}</Text>
             ) : (
               <Text style={[styles.address, { color: colors.textSecondaryColor }]}>
                 {t('ride_Ride_MapAddressSelect_placeholder')}

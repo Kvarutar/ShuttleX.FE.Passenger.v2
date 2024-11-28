@@ -28,10 +28,10 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ pickUpData: RoutePickUpApiResponse; dropOffData: RouteDropOffApiResponse }>,
     ) {
-      if (state.routeInfo) {
-        state.routeInfo.pickUp = action.payload.pickUpData;
-        state.routeInfo.dropOff = action.payload.dropOffData;
-      }
+      state.routeInfo = {
+        pickUp: action.payload.pickUpData,
+        dropOff: action.payload.dropOffData,
+      };
     },
     setContractorInfo(state, action: PayloadAction<Contractor>) {
       state.contractor = action.payload;

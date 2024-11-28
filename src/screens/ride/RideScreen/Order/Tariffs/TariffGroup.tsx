@@ -3,7 +3,8 @@ import { Pressable, StyleSheet } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { getCurrencySign, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
-import { TariffGroupName, TariffGroupProps } from './types';
+import { TariffsType } from '../../../../../core/ride/redux/offer/types';
+import { TariffGroupProps } from './types';
 
 const animationDuration = 300;
 
@@ -12,16 +13,16 @@ const TariffGroup = ({ price, title, isSelected, onPress, style, isAvailableTari
   const { colors } = useTheme();
   const iconsData = useTariffsIcons();
 
-  const tariffsGroupImagesNames: Record<TariffGroupName, { title: TariffGroupName; image: TariffType }> = {
-    Economy: {
+  const tariffsGroupImagesNames: Record<TariffsType, { title: TariffsType; image: TariffType }> = {
+    economy: {
       title: t('ride_Ride_TariffGroup_economy'),
       image: 'Eco',
     },
-    Exclusive: {
+    exclusive: {
       title: t('ride_Ride_TariffGroup_exclusive'),
       image: 'ComfortPlus',
     },
-    Business: {
+    business: {
       title: t('ride_Ride_TariffGroup_business'),
       image: 'Business',
     },

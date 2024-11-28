@@ -62,3 +62,7 @@ export type LotteryFilterOptions = {
   sortBy?: string;
   filterBy?: string;
 };
+
+export type GetTicketAfterRideAPIResponse = {
+  ticketNumber: string;
+};

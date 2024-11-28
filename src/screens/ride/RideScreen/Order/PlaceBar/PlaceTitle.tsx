@@ -27,12 +27,12 @@ const PlaceTitle = ({ withDistance, place, style }: PlaceTitleProps) => {
           <View style={styles.distanceContainer}>
             <PickUpIcon style={styles.icon} color={colors.iconSecondaryColor} />
             <Text style={[styles.distance, computedStyles.distance]}>
-              {place.distance && t('ride_Ride_PlaceBar_kilometers', { count: Number(place.distance) })}
+              {place.totalDistanceMtr && t('ride_Ride_PlaceBar_kilometers', { count: Number(place.totalDistanceMtr) })}
             </Text>
           </View>
         )}
       </View>
-      {place.details && <Text style={[styles.details, computedStyles.details]}>{place.details}</Text>}
+      {place.fullAddress && <Text style={[styles.details, computedStyles.details]}>{place.fullAddress}</Text>}
     </View>
   );
 };

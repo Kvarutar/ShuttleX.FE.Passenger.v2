@@ -1,4 +1,5 @@
 //TODO uncoment code when we'll need other payment methods and wallet
+//TODO: fix casting with "as"
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from 'react-native';
@@ -6,6 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { getLocales } from 'react-native-localize';
 import Animated, { Easing, FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import WebView from 'react-native-webview';
+import { useSelector } from 'react-redux';
 import {
   ArrowIcon,
   Bar,
@@ -31,10 +33,11 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
+import { offerSelectedTariffSelector } from '../../../../core/ride/redux/offer/selectors';
+import { createInitialOffer } from '../../../../core/ride/redux/offer/thunks';
 import { setOrderStatus } from '../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
 import PlanButton, { planPriceCounting } from '../PlanButton/PlanButton';
-import { Plan } from '../PlanButton/types';
 import { checkPaymentStatus, handleBinancePayment, handleMonoPayment } from './handlePayments';
 import { DefaultPaymentMethodsType } from './types';
 
@@ -44,11 +47,11 @@ const testPaymentMethods = [
     details: '',
     expiresAt: '',
   },
-  {
-    method: 'card',
-    details: '',
-    expiresAt: '',
-  },
+  // {
+  //   method: 'card',
+  //   details: '',
+  //   expiresAt: '',
+  // },
   // {
   //   method: 'visa',
   //   details: '2131',
@@ -64,30 +67,27 @@ const testPaymentMethods = [
   //   details: '',
   //   expiresAt: '',
   // },
-  {
-    method: 'crypto',
-    details: '',
-    expiresAt: '',
-  },
+  // {
+  //   method: 'crypto',
+  //   details: '',
+  //   expiresAt: '',
+  // },
 ];
 
-const testPlans: Plan[] = [
-  {
-    Tariffid: 0,
-    AlgorythmType: 'Eager Fast',
-    DurationSec: 100,
-  },
-  {
-    Tariffid: 1,
-    AlgorythmType: 'Hungarian',
-    DurationSec: 200,
-  },
-  {
-    Tariffid: 2,
-    AlgorythmType: 'Eager Cheap',
-    DurationSec: 300,
-  },
-];
+// const testPlans: Matching[] = [
+//   {
+//     algorythm: 'Eager Fast',
+//     durationSec: 100,
+//   },
+//   {
+//     algorythm: 'Hungarian',
+//     durationSec: 200,
+//   },
+//   {
+//     algorythm: 'Eager Cheap',
+//     durationSec: 300,
+//   },
+// ];
 
 // const testAddPaymentMethods: PaymentMethod[] = [
 //   {
@@ -126,7 +126,9 @@ const PaymentPopup = () => {
   const datePickerRef = useRef<BottomWindowWithGestureRef>(null);
 
   const TariffIcon = tariffIconsData.Basic.icon;
-  const availableTestPlans = testPlans.filter(item => item.DurationSec !== null);
+  const selectedTariff = useSelector(offerSelectedTariffSelector);
+  //TODO: remove this !
+  const availableTestPlans = selectedTariff!.matching.filter(item => item.durationSec !== null);
 
   const [windowIsOpened, setWindowIsOpened] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
@@ -232,12 +234,13 @@ const PaymentPopup = () => {
     const paymentId = '3456677'; //TODO: get to know from where I can get it?
     let status = 'pending';
     const price = planPriceCounting(
-      Number(availableTestPlans[selectedPlan].DurationSec),
-      availableTestPlans[selectedPlan].AlgorythmType,
+      Number(availableTestPlans[selectedPlan].durationSec),
+      availableTestPlans[selectedPlan].algorythm,
     );
 
     switch (selectedPayment) {
       case 'cash':
+        await dispatch(createInitialOffer());
         status = 'success';
         break;
       case 'card':
@@ -294,8 +297,8 @@ const PaymentPopup = () => {
       title: t('ride_Ride_PaymentPopup_priceTitle'),
       // TODO: swap currencyCode to correct value
       value: `${getCurrencySign('UAH')}${planPriceCounting(
-        Number(availableTestPlans[selectedPlan].DurationSec),
-        availableTestPlans[selectedPlan].AlgorythmType,
+        Number(availableTestPlans[selectedPlan].durationSec),
+        availableTestPlans[selectedPlan].algorythm,
       )}`,
     },
     {
@@ -419,30 +422,31 @@ const PaymentPopup = () => {
       )}
 
       <Animated.View style={[styles.scrollViewWrapper, computedStyles.scrollViewWrapper]} layout={FadeIn}>
-        <ScrollView
-          horizontal={!windowIsOpened}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          style={computedStyles.scrollView}
-          contentContainerStyle={styles.scrollViewContainerStyle}
-        >
-          <>
-            {reorderPaymentMethods(selectedPayment).map(method => (
-              //TODO: change method.details in key to card number
-              <Animated.View
-                key={`${method.method}_${method.details}`}
-                layout={LinearTransition.easing(Easing.ease).duration(200)}
-              >
-                <PaymentBar
-                  method={method}
-                  title={paymentTitle[method.method as DefaultPaymentMethodsType]}
-                  squareShape={!windowIsOpened}
-                  onPress={() => setSelectedPayment(method.method as DefaultPaymentMethodsType)}
-                  selected={method.method === selectedPayment}
-                />
-              </Animated.View>
-            ))}
-            {/* {windowIsOpened && (
+        {testPaymentMethods.length > 1 ? (
+          <ScrollView
+            horizontal={!windowIsOpened}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            style={computedStyles.scrollView}
+            contentContainerStyle={styles.scrollViewContainerStyle}
+          >
+            <>
+              {reorderPaymentMethods(selectedPayment).map(method => (
+                //TODO: change method.details in key to card number
+                <Animated.View
+                  key={`${method.method}_${method.details}`}
+                  layout={LinearTransition.easing(Easing.ease).duration(200)}
+                >
+                  <PaymentBar
+                    method={method}
+                    title={paymentTitle[method.method as DefaultPaymentMethodsType]}
+                    squareShape={!windowIsOpened}
+                    onPress={() => setSelectedPayment(method.method as DefaultPaymentMethodsType)}
+                    selected={method.method === selectedPayment}
+                  />
+                </Animated.View>
+              ))}
+              {/* {windowIsOpened && (
               <View>
                 <Text style={[styles.addMethodLabel, computedStyles.addMethodLabel]}>
                   {t('ride_Ride_PaymentPopup_addPaymentMethod')}
@@ -458,8 +462,23 @@ const PaymentPopup = () => {
                 ))}
               </View>
             )} */}
-          </>
-        </ScrollView>
+            </>
+          </ScrollView>
+        ) : (
+          <Animated.View
+            key={`${testPaymentMethods[0].method}_${testPaymentMethods[0].details}`}
+            layout={LinearTransition.easing(Easing.ease).duration(200)}
+          >
+            <PaymentBar
+              style={styles.paymentBar}
+              method={testPaymentMethods[0]}
+              title={paymentTitle[testPaymentMethods[0].method as DefaultPaymentMethodsType]}
+              squareShape={!windowIsOpened}
+              onPress={() => setSelectedPayment(testPaymentMethods[0].method as DefaultPaymentMethodsType)}
+              selected={testPaymentMethods[0].method === selectedPayment}
+            />
+          </Animated.View>
+        )}
       </Animated.View>
       <View style={styles.infoWrapper}>
         <View style={styles.buttonContainer}>
@@ -605,6 +624,9 @@ const styles = StyleSheet.create({
   infoTextContainer: {
     alignItems: 'center',
     flex: 1,
+  },
+  paymentBar: {
+    width: '100%',
   },
   infoTopText: {
     fontSize: 14,

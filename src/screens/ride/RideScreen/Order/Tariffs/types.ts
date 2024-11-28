@@ -1,30 +1,17 @@
 import { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native';
-import { TariffType } from 'shuttlex-integration';
 
-import { Plan } from '../../PlanButton/types';
-
-export type TariffGroupName = 'Economy' | 'Exclusive' | 'Business';
+import { TariffsType, TariffWithMatching } from '../../../../../core/ride/redux/offer/types';
 
 export type TariffGroupProps = {
   price: string;
-  title: TariffGroupName;
+  title: TariffsType;
   isSelected?: boolean;
   style?: StyleProp<ViewStyle>;
   onPress: () => void;
   isAvailableTariffGroup: boolean;
 };
 
-export type TariffBarType = {
-  tariff: TariffType;
-  info: {
-    capacity: string;
-    baggage: string;
-    isAvailable: boolean;
-  };
-  plans: Plan[];
-};
-
-export type TariffBarProps = TariffBarType & {
+export type TariffBarProps = { tariff: TariffWithMatching } & {
   onPress: (event: GestureResponderEvent) => void;
   isPlanSelected: boolean;
   selectedPrice: number | null;
@@ -34,8 +21,8 @@ export type TariffBarProps = TariffBarType & {
 };
 
 export type TariffGroupType = {
-  name: TariffGroupName;
-  tariffs: TariffBarType[];
+  name: TariffsType;
+  tariffs: TariffWithMatching[];
 };
 
 export type TariffsProps = {

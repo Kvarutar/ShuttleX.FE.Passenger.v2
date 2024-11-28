@@ -7,8 +7,10 @@ import { useSelector } from 'react-redux';
 import { CloseIcon, PointIcon, PointIcon2, TextInput, TextInputInputMode, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
-import { updateOrderPoint } from '../../../../../../core/ride/redux/order';
-import { orderPointsSelector } from '../../../../../../core/ride/redux/order/selectors';
+import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
+import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
+import { offerPointsSelector } from '../../../../../../core/ride/redux/offer/selectors';
+import { createPhantomOffer } from '../../../../../../core/ride/redux/offer/thunks';
 import { PointItemProps } from './types';
 
 const fadeAnimationDuration = 100;
@@ -18,10 +20,11 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const points = useSelector(orderPointsSelector);
+  const points = useSelector(offerPointsSelector);
   const currentPoint = points.find(point => point.id === currentPointId);
+  const defaultLocation = useSelector(geolocationCoordinatesSelector);
 
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(currentPoint?.address ?? '');
   const [isFocused, setIsFocused] = useState(false);
   const [isInputTouched, setIsInputTouched] = useState(false);
 
@@ -31,16 +34,20 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
   };
 
   useEffect(() => {
-    if (isFocused) {
-      setIsInputTouched(true);
-    }
+    setIsInputTouched(isFocused);
   }, [setIsInputTouched, isFocused]);
 
   useEffect(() => {
     if (isInputTouched) {
       setFocusedInput({ id: currentPointId, value: inputValue, focus: isFocused });
     }
-  }, [currentPointId, inputValue, isFocused, isInputTouched, setFocusedInput]);
+  }, [currentPointId, inputValue, isFocused, isInputTouched, setFocusedInput, defaultLocation]);
+
+  useEffect(() => {
+    if (!isInputTouched && currentPointId === 0 && currentPoint?.address) {
+      dispatch(createPhantomOffer());
+    }
+  }, [isInputTouched, currentPointId, currentPoint?.address, dispatch]);
 
   useEffect(() => {
     if (currentPoint?.address && !isFocused) {
@@ -48,11 +55,26 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
     }
   }, [currentPoint?.address, isFocused]);
 
+  //TODO: fix this effect. It should clean value input, besides when we scroll searched addresses
   useEffect(() => {
-    if (!inputValue.length) {
-      dispatch(updateOrderPoint({ id: currentPointId, address: '', longitude: 0, latitude: 0 }));
+    if (!inputValue.length && !isFocused) {
+      if (currentPointId === 0 && defaultLocation !== null) {
+        //setInputValue(t('ride_Ride_AddressSelect_addressInputMyLocation'));
+        dispatch(
+          updateOfferPoint({
+            id: 0,
+            address: t('ride_Ride_AddressSelect_addressInputMyLocation'),
+            fullAdress: t('ride_Ride_AddressSelect_addressInputMyLocation'),
+            longitude: defaultLocation.longitude,
+            latitude: defaultLocation.latitude,
+          }),
+        );
+      } else {
+        //dispatch(updateOfferPoint({ id: currentPointId, address: '', fullAdress: '', longitude: 0, latitude: 0 }));
+      }
+      //setInputValue('');
     }
-  }, [currentPointId, dispatch, inputValue]);
+  }, [currentPointId, dispatch, inputValue, isFocused, defaultLocation, t]);
 
   const computedStyles = StyleSheet.create({
     inputContent: {

@@ -81,7 +81,6 @@ const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
           time={arrivedTime}
           sizeMode={TimerSizesModes.S}
           colorMode={TimerColorModes.Mode3}
-          onAfterCountdownEnds={() => navigation.navigate('Rating')}
         />
         <View style={styles.topTitleContainer}>
           <Text style={[styles.topText, computedStyles.topText]}>{t('ride_Ride_Trip_youBeIn')} </Text>

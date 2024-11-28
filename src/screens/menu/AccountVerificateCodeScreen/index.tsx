@@ -11,8 +11,8 @@ import {
   isAccountSettingsLoadingSelector,
 } from '../../../core/menu/redux/accountSettings/selectors';
 import { changeAccountContactData, verifyChangeAccountDataCode } from '../../../core/menu/redux/accountSettings/thunks';
+import { profileContactEmailSelector, profileContactPhoneSelector } from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { profileSelector } from '../../../core/redux/passenger/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 
 const AccountVerificateCodeScreen = (): JSX.Element => {
@@ -27,7 +27,8 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
   const [lockoutMinutes, setLockoutMinutes] = useState('');
   const [lockoutEndTimestamp, setLockoutEndTimestamp] = useState(0);
 
-  const profile = useSelector(profileSelector);
+  const contactEmail = useSelector(profileContactEmailSelector);
+  const contactPhone = useSelector(profileContactPhoneSelector);
   const changeDataError = useSelector(accountSettingsErrorSelector);
   const isLoading = useSelector(isAccountSettingsLoadingSelector);
 
@@ -65,7 +66,7 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
     }
   }, [changeDataError, navigation, isLoading, dispatch]);
 
-  const isOldData = mode === 'phone' ? profile?.phone : profile?.email;
+  const isOldData = mode === 'phone' ? contactPhone : contactEmail;
 
   const handleRequestAgain = () => {
     dispatch(changeAccountContactData({ method: mode, data: { oldData: isOldData ?? '', newData: newValue } }));

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NetworkErrorDetailsWithBody } from 'shuttlex-integration';
 
 import {
@@ -8,9 +8,10 @@ import {
   getCurrentUpcomingLottery,
   getPreviousLottery,
   getPreviousPrizes,
+  getTicketAfterRide,
   getWinnerAvatar,
 } from './thunks';
-import { LotteryState } from './types';
+import { GetTicketAfterRideAPIResponse, LotteryState } from './types';
 
 const initialState: LotteryState = {
   lottery: {
@@ -39,6 +40,7 @@ const initialState: LotteryState = {
   },
 };
 
+//TODO: rewrite caseReducer to use reducers
 const slice = createSlice({
   name: 'lottery',
   initialState,
@@ -46,6 +48,9 @@ const slice = createSlice({
     clearPrizes: state => {
       state.prizes = initialState.prizes;
       state.previousPrizes = initialState.previousPrizes;
+    },
+    addTicket(state, action: PayloadAction<GetTicketAfterRideAPIResponse>) {
+      state.tickets.push(action.payload);
     },
   },
   extraReducers: builder => {
@@ -130,6 +135,12 @@ const slice = createSlice({
         state.loading.tickets = false;
         state.error.tickets = action.payload as NetworkErrorDetailsWithBody<any>;
       })
+      .addCase(getTicketAfterRide.fulfilled, (state, action) => {
+        slice.caseReducers.addTicket(state, {
+          payload: action.payload,
+          type: addTicket.type,
+        });
+      })
 
       //WinnerAvatar
       .addCase(getWinnerAvatar.pending, (state, action) => {
@@ -165,6 +176,6 @@ const slice = createSlice({
   },
 });
 
-export const { clearPrizes } = slice.actions;
+export const { clearPrizes, addTicket } = slice.actions;
 
 export default slice.reducer;

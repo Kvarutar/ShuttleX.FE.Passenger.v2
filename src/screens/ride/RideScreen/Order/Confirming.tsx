@@ -4,9 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { Bar, BarModes, CloseIcon, Fog, sizes, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
-import { setOrderStatus } from '../../../../core/ride/redux/order';
-import { createOrder } from '../../../../core/ride/redux/order/thunks';
-import { OrderStatus } from '../../../../core/ride/redux/order/types';
+import { cancelOffer } from '../../../../core/ride/redux/offer/thunks';
 
 const Confirming = () => {
   const { colors } = useTheme();
@@ -39,8 +37,6 @@ const Confirming = () => {
       });
     }, 400);
 
-    dispatch(createOrder());
-
     return () => clearInterval(interval);
   }, [dispatch]);
 
@@ -58,7 +54,7 @@ const Confirming = () => {
           <Bar
             mode={BarModes.Disabled}
             style={[styles.button, computedStyles.button]}
-            onPress={() => dispatch(setOrderStatus(OrderStatus.Payment))}
+            onPress={() => dispatch(cancelOffer())}
           >
             <CloseIcon style={styles.closeIcon} />
           </Bar>

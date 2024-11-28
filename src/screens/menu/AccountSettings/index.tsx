@@ -25,12 +25,18 @@ import {
   isAccountSettingsVerificationDoneSelector,
 } from '../../../core/menu/redux/accountSettings/selectors';
 import { changeAccountContactData } from '../../../core/menu/redux/accountSettings/thunks';
+import {
+  profileContactEmailSelector,
+  profileContactPhoneSelector,
+  profilePrefferedNameSelector,
+  profileSelectedPhotoSelector,
+} from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { profilePhotoSelector, profileSelector } from '../../../core/redux/passenger/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
 import { PhotoBlockProps } from './types';
 
+//TODO rewrite this block for new profile state
 const AccountSettings = (): JSX.Element => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
@@ -38,8 +44,11 @@ const AccountSettings = (): JSX.Element => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   const dispatch = useAppDispatch();
-  const profile = useSelector(profileSelector);
   const isVerificationDone = useSelector(isAccountSettingsVerificationDoneSelector);
+
+  const prefferedName = useSelector(profilePrefferedNameSelector);
+  const contactEmail = useSelector(profileContactEmailSelector);
+  const contactPhone = useSelector(profileContactPhoneSelector);
   const changeDataError = useSelector(accountSettingsErrorSelector);
   const isLoading = useSelector(isAccountSettingsLoadingSelector);
 
@@ -51,9 +60,20 @@ const AccountSettings = (): JSX.Element => {
 
   const handleOpenVerification = async (mode: 'phone' | 'email', newValue: string) => {
     if (!isLoading && !changeDataError) {
+      let oldData: string | undefined;
+
+      switch (mode) {
+        case 'phone':
+          oldData = contactPhone;
+          break;
+        case 'email':
+          oldData = contactEmail;
+          break;
+      }
+
       try {
         await dispatch(
-          changeAccountContactData({ method: mode, data: { oldData: profile?.[mode] ?? '', newData: newValue } }),
+          changeAccountContactData({ method: mode, data: { oldData: oldData ?? '', newData: newValue } }),
         ).unwrap();
         // If there is an error, then try catch will catch it and the next line will not be executed
         navigation.navigate('AccountVerificateCode', { mode, newValue });
@@ -67,8 +87,7 @@ const AccountSettings = (): JSX.Element => {
   // };
 
   const onUploadPhoto = () => {
-    // navigation.navigate('ProfilePhoto');
-    // TODO Change after reliese
+    navigation.navigate('ProfilePhoto');
   };
 
   return (
@@ -85,9 +104,9 @@ const AccountSettings = (): JSX.Element => {
           isVerificationDone={isVerificationDone}
           // onProfileDataSave={handleProfileDataSave}
           profile={{
-            fullName: profile?.fullName ?? '',
-            email: profile?.email ?? '',
-            phone: profile?.phone ?? '',
+            fullName: prefferedName ?? '',
+            email: contactEmail ?? '',
+            phone: contactPhone ?? '',
           }}
           photoBlock={<PhotoBlock onUploadPhoto={onUploadPhoto} />}
         />
@@ -98,7 +117,7 @@ const AccountSettings = (): JSX.Element => {
 };
 
 const PhotoBlock = ({ onUploadPhoto }: PhotoBlockProps) => {
-  const profilePhoto = useSelector(profilePhotoSelector);
+  const selectedPhoto = useSelector(profileSelectedPhotoSelector);
 
   const [imageHeight, setImageHeight] = useState(0);
 
@@ -124,7 +143,7 @@ const PhotoBlock = ({ onUploadPhoto }: PhotoBlockProps) => {
         <UploadPhotoIcon />
       </Button>
       <View onLayout={handleImageLayout}>
-        <MenuUserImage2 url={profilePhoto} />
+        <MenuUserImage2 url={selectedPhoto} />
       </View>
     </View>
   );

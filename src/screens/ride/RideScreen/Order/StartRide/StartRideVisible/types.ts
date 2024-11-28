@@ -1,4 +1,4 @@
-import { PlaceType } from '../../PlaceBar/types';
+import { SearchAddressFromAPI } from './../../../../../../core/ride/redux/offer/types';
 
 export type SliderItemProps = {
   topText: string;
@@ -8,6 +8,6 @@ export type SliderItemProps = {
 
 export type StartRideVisibleProps = {
   openAddressSelect: (state: boolean) => void;
-  setFastAddressSelect: (address: PlaceType) => void;
+  setFastAddressSelect: (address: SearchAddressFromAPI) => void;
   isBottomWindowOpen: boolean;
 };

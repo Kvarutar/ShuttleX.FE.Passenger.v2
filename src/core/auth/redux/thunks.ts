@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import DeviceInfo from 'react-native-device-info';
 import { formatPhone, getNetworkErrorInfo, saveTokens } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../redux/hooks';
@@ -24,9 +25,7 @@ export const signIn = createAppAsyncThunk<void, SignInPayload>(
     const methodUrlPart = method === 'phone' ? 'sms' : 'email';
 
     try {
-      //TODO: do firebase init
-      //const deviceId = await getNotificationToken();
-      const deviceId = 'string';
+      const deviceId = await DeviceInfo.getUniqueId();
 
       await authAxios.post<SignInAPIRequest, void>(`/sign-in/${methodUrlPart}`, {
         ...requestData,
@@ -69,9 +68,7 @@ export const signUp = createAppAsyncThunk<void, SignUpPayload>(
 export const signOut = createAppAsyncThunk<void, SignOutPayload>(
   'auth/signOut',
   async (payload, { rejectWithValue, authAxios, dispatch }) => {
-    //TODO: do firebase init
-    //const deviceId = await getNotificationToken();
-    const deviceId = 'string';
+    const deviceId = await DeviceInfo.getUniqueId();
 
     try {
       if (payload.refreshToken !== null) {
@@ -97,9 +94,7 @@ export const signOut = createAppAsyncThunk<void, SignOutPayload>(
 export const verifyCode = createAppAsyncThunk<void, VerifyCodePayload>(
   'auth/verifyCode',
   async (payload, { rejectWithValue, authAxios }) => {
-    //TODO: do firebase init
-    //const deviceId = await getNotificationToken();
-    const deviceId = 'string';
+    const deviceId = await DeviceInfo.getUniqueId();
 
     let bodyPart;
 

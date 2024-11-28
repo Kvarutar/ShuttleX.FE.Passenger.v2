@@ -29,7 +29,6 @@ const notificationHandlers: Record<NotificationType, (payload?: NotificationPayl
     store.dispatch(addFinishedTrips());
     //TODO go to rating page
     store.dispatch(setTripStatus(TripStatus.Finished));
-    store.dispatch(endTrip());
   },
   [NotificationType.WinnerFounded]: async payload => {
     if (payload?.prizeId) {

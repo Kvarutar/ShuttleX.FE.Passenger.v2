@@ -7,12 +7,13 @@ import accountSettingsReducer from '../menu/redux/accountSettings';
 import notificationsReducer from '../menu/redux/notifications';
 import ticketWalletReducer from '../menu/redux/ticketWallet';
 import walletRedicer from '../menu/redux/wallet';
+import passengerReducer from '../passenger/redux';
 import alertsReducer from '../ride/redux/alerts';
 import geolocationReducer from '../ride/redux/geolocation';
 import mapReducer from '../ride/redux/map';
+import offerReducer from '../ride/redux/offer';
 import orderReducer from '../ride/redux/order';
 import tripReducer from '../ride/redux/trip';
-import passengerReducer from './passenger';
 import signalRReducer from './signalr';
 
 const rootReducer = combineReducers({
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   geolocation: geolocationReducer,
   map: mapReducer,
   order: orderReducer,
+  offer: offerReducer,
   trip: tripReducer,
   passenger: passengerReducer,
   signalr: signalRReducer,

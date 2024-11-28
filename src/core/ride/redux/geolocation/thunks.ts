@@ -4,7 +4,7 @@ import { createAppAsyncThunk } from '../../../redux/hooks';
 import { geolocationSliceName } from '.';
 import { ConvertGeoToAddressAPIResponse, ConvertGeoToAddressPayload } from './types';
 
-export const convertGeoToAddress = createAppAsyncThunk<string, ConvertGeoToAddressPayload>(
+export const convertGeoToAddress = createAppAsyncThunk<ConvertGeoToAddressAPIResponse, ConvertGeoToAddressPayload>(
   `${geolocationSliceName}/convertGeoToAddress`,
   async (payload, { rejectWithValue, passengerAxios }) => {
     try {
@@ -12,7 +12,7 @@ export const convertGeoToAddress = createAppAsyncThunk<string, ConvertGeoToAddre
         `/Ride/places/geo?latitude=${payload.latitude}&longitude=${payload.longitude}`,
       );
 
-      return result.data[0].fullAddress;
+      return result.data;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

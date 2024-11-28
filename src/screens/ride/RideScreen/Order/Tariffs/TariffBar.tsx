@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { BaggageIcon, Bar, getCurrencySign, ProfileIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
-import PlanButton, { planPriceCounting } from '../../PlanButton/PlanButton';
+import PlanButton from '../../PlanButton/PlanButton';
 import { TariffBarProps } from './types';
 
 const animationDuration = 300;
@@ -14,8 +14,6 @@ const TariffBar = ({
   setSelectedPrice,
   onPress,
   tariff,
-  info,
-  plans,
   windowIsOpened,
   isAvailableTariff,
 }: TariffBarProps) => {
@@ -23,9 +21,9 @@ const TariffBar = ({
   const { t } = useTranslation();
   const tariffsCarData = useTariffsIcons();
 
-  const TariffImage = tariffsCarData[tariff].icon;
-  const tariffTitle = tariffsCarData[tariff].text;
-  const availablePlans = plans.filter(item => item.DurationSec !== null);
+  const TariffImage = tariffsCarData[tariff.name].icon;
+  const tariffTitle = tariffsCarData[tariff.name].text;
+  const availablePlans = tariff.matching.filter(item => item.durationSec !== null);
   const defaultPlanIndex = availablePlans.length > 1 ? 1 : 0;
   const showPriceAndTime = !isPlanSelected || availablePlans.length === 1;
 
@@ -89,13 +87,13 @@ const TariffBar = ({
     <View style={styles.capacityContainer}>
       <ProfileIcon />
       <Text style={[styles.capacityText, computedStyles.capacityColor]}>
-        {formatCapacityAmount(Number(info.capacity))}
+        {formatCapacityAmount(Number(tariff.maxSeatsCount))}
       </Text>
       {(windowIsOpened || isAvailableTariff) && (
         <>
           <View style={[styles.separateCircle, computedStyles.separateCircle]} />
           <BaggageIcon />
-          <Text style={[styles.capacityText, computedStyles.capacityColor]}>{info.baggage}</Text>
+          <Text style={[styles.capacityText, computedStyles.capacityColor]}>{tariff.maxLuggagesCount}</Text>
         </>
       )}
     </View>
@@ -106,7 +104,7 @@ const TariffBar = ({
       <Text style={styles.title}>{tariffTitle}</Text>
       {showPriceAndTime && isAvailableTariff && (
         <Text style={[styles.capacityText, computedStyles.capacityColor]}>
-          {formatTime(Number(availablePlans[defaultPlanIndex].DurationSec))}
+          {formatTime(Number(availablePlans[defaultPlanIndex].durationSec))}
         </Text>
       )}
     </View>
@@ -116,7 +114,7 @@ const TariffBar = ({
     if (isAvailableTariff) {
       if (showPriceAndTime) {
         //TODO: swap currencyCode to correct value
-        return `${getCurrencySign('UAH')}${planPriceCounting(Number(availablePlans[defaultPlanIndex].DurationSec), availablePlans[defaultPlanIndex].AlgorythmType)}`;
+        return `${getCurrencySign('UAH')}${availablePlans[defaultPlanIndex].cost}`;
       }
     } else {
       return t('ride_Ride_TariffBar_notAvailable');
