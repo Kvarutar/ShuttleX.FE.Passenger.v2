@@ -27,10 +27,6 @@ export type SignUpPayload = {
   method: AvaliableSignMethods;
 };
 
-export type SignOutPayload = {
-  refreshToken: string | null;
-};
-
 export type SignInPayload = {
   method: AvaliableSignMethods;
   data: string;

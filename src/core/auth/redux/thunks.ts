@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import DeviceInfo from 'react-native-device-info';
-import { formatPhone, getNetworkErrorInfo, saveTokens } from 'shuttlex-integration';
+import Keychain from 'react-native-keychain';
+import { formatPhone, getNetworkErrorInfo, getTokens, saveTokens } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../redux/hooks';
 import { setIsLoggedIn } from '.';
@@ -8,7 +9,6 @@ import {
   SignInAPIRequest,
   SignInPayload,
   SignOutAPIRequest,
-  SignOutPayload,
   SignUpAPIRequest,
   SignUpPayload,
   VerifyCodeAPIRequest,
@@ -65,20 +65,22 @@ export const signUp = createAppAsyncThunk<void, SignUpPayload>(
   },
 );
 
-export const signOut = createAppAsyncThunk<void, SignOutPayload>(
+export const signOut = createAppAsyncThunk<void, void>(
   'auth/signOut',
-  async (payload, { rejectWithValue, authAxios, dispatch }) => {
+  async (_, { rejectWithValue, authAxios, dispatch }) => {
     const deviceId = await DeviceInfo.getUniqueId();
+    const { refreshToken } = await getTokens();
 
     try {
-      if (payload.refreshToken !== null) {
+      if (refreshToken !== null) {
         await authAxios.post<SignOutAPIRequest>('/sign-out', {
-          ...payload,
+          refreshToken,
           deviceId,
           allOpenSessions: false,
         });
       }
 
+      await Keychain.resetGenericPassword();
       dispatch(setIsLoggedIn(false));
     } catch (error) {
       const { code, body, status } = getNetworkErrorInfo(error);

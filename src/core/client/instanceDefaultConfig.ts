@@ -10,7 +10,7 @@ const instanceDefaultConfig = (
 ): AxiosInstanceConfig => {
   return {
     retryConfig: defaultAxiosRetryConfig,
-    onSignOut: refreshToken => dispatch(signOut({ refreshToken })),
+    onSignOut: () => dispatch(signOut()),
     refreshTokenUrl: `${Config.API_AUTH_URL_HTTPS}/refresh`,
   };
 };

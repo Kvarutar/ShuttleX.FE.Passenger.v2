@@ -18,6 +18,7 @@ import {
   UploadPhotoIcon,
 } from 'shuttlex-integration';
 
+import { signOut } from '../../../core/auth/redux/thunks';
 import { resetAccountSettingsVerification } from '../../../core/menu/redux/accountSettings';
 import {
   accountSettingsErrorSelector,
@@ -100,6 +101,7 @@ const AccountSettings = (): JSX.Element => {
           <Text style={styles.textTitle}>{t('ride_Menu_navigationAccountSettings')}</Text>
         </MenuHeader>
         <AccountSettingsScreen
+          onSignOut={() => dispatch(signOut())}
           handleOpenVerification={handleOpenVerification}
           isVerificationDone={isVerificationDone}
           // onProfileDataSave={handleProfileDataSave}
