@@ -11,6 +11,7 @@ import {
   Bar,
   Button,
   ButtonShapes,
+  CircleButtonModes,
   LoadingSpinner,
   SelectOnMapIcon,
   sizes,
@@ -19,6 +20,7 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { profileZoneSelector } from '../../../../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
@@ -56,6 +58,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
   const offerPoints = useSelector(offerPointsSelector);
+  const profileZone = useSelector(profileZoneSelector);
   const initialFocusedInput = defaultLocation
     ? { id: 1, value: offerPoints[1].address, focus: false }
     : { id: 0, value: offerPoints[0].address, focus: false };
@@ -334,7 +337,9 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
           </ScrollView>
           {showConfirmButton && (
             <Button
+              disabled={!profileZone}
               onPress={onConfirm}
+              mode={profileZone ? CircleButtonModes.Mode1 : CircleButtonModes.Mode4}
               shape={ButtonShapes.Circle}
               style={[styles.confirmButton, computedStyles.confirmButton]}
             >

@@ -1,8 +1,9 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { BottomWindowWithGesture, BottomWindowWithGestureRef } from 'shuttlex-integration';
+import { BottomWindowWithGesture, BottomWindowWithGestureRef, UnsupportedCityPopup } from 'shuttlex-integration';
 
+import { profileZoneSelector } from '../../../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
 import { SearchAddressFromAPI } from '../../../../../core/ride/redux/offer/types';
@@ -18,9 +19,11 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
     const dispatch = useAppDispatch();
 
     const alerts = useSelector(twoHighestPriorityAlertsSelector);
+    const profileZone = useSelector(profileZoneSelector);
 
     const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
     const [fastAddressSelect, setFastAddressSelect] = useState<SearchAddressFromAPI | null>(null);
+    const [isUnsupportedCityPopupVisible, setIsUnsupportedCityPopupVisible] = useState<boolean>(false);
 
     useImperativeHandle(ref, () => ({
       openAddressSelect: () => {
@@ -28,6 +31,10 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
         addressSelectRef.current?.openWindow();
       },
     }));
+
+    useEffect(() => {
+      setIsUnsupportedCityPopupVisible(!profileZone && isAddressSelectVisible);
+    }, [isAddressSelectVisible, profileZone]);
 
     useEffect(() => {
       if (isAddressSelectVisible) {
@@ -73,6 +80,13 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
             hiddenPartStyle={styles.hiddenPartStyleAddressSelect}
             hiddenPartWrapperStyle={styles.hiddenPartWrapper}
             withHiddenPartScroll={false}
+          />
+        )}
+        {isUnsupportedCityPopupVisible && (
+          <UnsupportedCityPopup
+            //TODO: swap console.log('Support') to navigation on Support
+            onSupportPressHandler={() => console.log('Support')}
+            setIsUnsupportedCityPopupVisible={setIsUnsupportedCityPopupVisible}
           />
         )}
       </>
