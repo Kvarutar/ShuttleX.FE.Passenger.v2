@@ -11,6 +11,7 @@ import {
   Bar,
   Button,
   ButtonShapes,
+  ButtonSizes,
   CircleButtonModes,
   LoadingSpinner,
   SelectOnMapIcon,
@@ -337,6 +338,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
           </ScrollView>
           {showConfirmButton && (
             <Button
+              size={ButtonSizes.S}
               disabled={!profileZone}
               onPress={onConfirm}
               mode={profileZone ? CircleButtonModes.Mode1 : CircleButtonModes.Mode4}
@@ -389,8 +391,6 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     position: 'absolute',
-    width: 44,
-    height: 44,
     right: 0,
   },
 });

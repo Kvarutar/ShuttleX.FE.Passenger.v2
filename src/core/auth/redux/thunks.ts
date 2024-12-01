@@ -72,6 +72,8 @@ export const signOut = createAppAsyncThunk<void, void>(
     const { refreshToken } = await getTokens();
 
     try {
+      await Keychain.resetGenericPassword();
+
       if (refreshToken !== null) {
         await authAxios.post<SignOutAPIRequest>('/sign-out', {
           refreshToken,
@@ -80,7 +82,6 @@ export const signOut = createAppAsyncThunk<void, void>(
         });
       }
 
-      await Keychain.resetGenericPassword();
       dispatch(setIsLoggedIn(false));
     } catch (error) {
       const { code, body, status } = getNetworkErrorInfo(error);
