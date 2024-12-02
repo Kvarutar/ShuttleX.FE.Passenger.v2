@@ -30,7 +30,11 @@ import { useAppDispatch } from '../../../core/redux/hooks';
 import { offerPointsSelector } from '../../../core/ride/redux/offer/selectors';
 import { cleanOrder } from '../../../core/ride/redux/order';
 import { endTrip } from '../../../core/ride/redux/trip';
-import { contractorSelector, routeDropOffInfoSelector } from '../../../core/ride/redux/trip/selectors';
+import {
+  contractorSelector,
+  isTripCanceledSelector,
+  routeDropOffInfoSelector,
+} from '../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import passengerColors from '../../../shared/colors/colors';
 import MapView from '../RideScreen/MapView';
@@ -45,7 +49,8 @@ const ReceiptScreen = () => {
 
   const routeInfo = useSelector(routeDropOffInfoSelector);
   const contractorInfo = useSelector(contractorSelector);
-  const addreses = useSelector(offerPointsSelector);
+  const addresses = useSelector(offerPointsSelector);
+  const isTripCanceled = useSelector(isTripCanceledSelector);
   const [ticketNumber, setTicketNumber] = useState<string | null>(null);
 
   const computedStyles = StyleSheet.create({
@@ -72,6 +77,12 @@ const ReceiptScreen = () => {
     },
     ticketLotteryTitleText: {
       color: passengerColors.lotteryColors.text,
+    },
+    cancelledTripTitleContainer: {
+      backgroundColor: colors.errorColor,
+    },
+    cancelledTripTitleText: {
+      color: colors.textTertiaryColor,
     },
   });
 
@@ -128,19 +139,6 @@ const ReceiptScreen = () => {
   };
 
   const distance = formatDistance(routeInfo?.totalDistanceMtr ?? 0);
-
-  const placeData = [
-    {
-      address: 'Home',
-      //TODO check this data
-      details: addreses[0].address,
-    },
-    {
-      address: 'Work',
-      //TODO check this data
-      details: addreses[1].address,
-    },
-  ];
 
   const roadTimeData = [
     {
@@ -201,6 +199,24 @@ const ReceiptScreen = () => {
     </View>
   );
 
+  const paymentBarBlock = (
+    <Bar style={[styles.paymentBarContainer]}>
+      {getPaymentIcon('cash', { color: colors.textSecondaryColor, style: styles.barIcon })}
+      <View>
+        <Text style={[styles.paymentTitleText, computedStyles.textSecondaryColor]}>
+          {t('ride_Receipt_paymentTitle')}
+        </Text>
+        <View style={styles.priceContainer}>
+          <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
+          <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
+            {/*TODO: ask back about sign, not code*/}
+            {getCurrencySign(contractorInfo?.info?.currencyCode as CurrencyType)}12,7
+          </Text>
+        </View>
+      </View>
+    </Bar>
+  );
+
   return (
     <>
       <MapView />
@@ -211,64 +227,65 @@ const ReceiptScreen = () => {
           <View style={styles.roadPointContainer}>
             <View style={styles.pointContainer}>
               <PointIcon2 outerColor={colors.iconPrimaryColor} innerColor={colors.primaryColor} />
-              <Text style={[styles.pointText, computedStyles.textSecondaryColor]}>{t('ride_Receipt_pickUp')}</Text>
+              <Text numberOfLines={1} style={styles.pointText}>
+                {t('ride_Receipt_pickUpTitle')}
+              </Text>
             </View>
-            {roadSeparator}
             <View style={styles.pointContainer}>
-              <Text style={[styles.pointText, computedStyles.textSecondaryColor]}>{t('ride_Receipt_dropOff')}</Text>
+              <Text numberOfLines={1} style={styles.pointText}>
+                {t('ride_Receipt_dropOffTitle')}
+              </Text>
               <PointIcon2 outerColor={colors.iconTertiaryColor} innerColor={colors.errorColor} />
             </View>
           </View>
+          {roadSeparator}
           <View style={styles.addressContainer}>
-            {placeData.map((place, index) => (
-              <View style={styles.placeContainer} key={place.address}>
-                <Text numberOfLines={1} style={[styles.addressText, index === 1 ? styles.placeTextRight : null]}>
-                  {place.address}
-                </Text>
-                <Text
-                  numberOfLines={2}
-                  style={[
-                    styles.addressDetailsText,
-                    computedStyles.textTitleColor,
-                    index === 1 ? styles.placeTextRight : null,
-                  ]}
-                >
-                  {place.details}
-                </Text>
-              </View>
-            ))}
+            <View style={styles.placeContainer}>
+              <Text numberOfLines={2} style={[styles.addressDetailsText, computedStyles.textTitleColor]}>
+                {/*{TODO check this data}*/}
+                {addresses[0].address}
+              </Text>
+            </View>
+            <View style={styles.placeContainer}>
+              <Text
+                numberOfLines={2}
+                style={[styles.addressDetailsText, computedStyles.textTitleColor, styles.placeTextRight]}
+              >
+                {/*{TODO check this data}*/}
+                {addresses[1].address}
+              </Text>
+            </View>
           </View>
         </View>
         <View>
-          {roadTimeBlock}
-          <View style={styles.bottomBarsContainer}>
-            <Bar style={styles.paymentBarContainer}>
-              {getPaymentIcon('cash', { color: colors.textSecondaryColor, style: styles.barIcon })}
-              <View>
-                <Text style={[styles.paymentTitleText, computedStyles.textSecondaryColor]}>
-                  {t('ride_Receipt_paymentTitle')}
+          {isTripCanceled ? (
+            <View style={styles.cancelledTripContainer}>
+              <View style={[styles.cancelledTripTitleContainer, computedStyles.cancelledTripTitleContainer]}>
+                <Text style={[styles.cancelledTripTitleText, computedStyles.cancelledTripTitleText]}>
+                  {t('ride_Receipt_cancelledTrip')}
                 </Text>
-                <View style={styles.priceContainer}>
-                  <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
-                  <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
-                    {/*TODO: ask back about sign, not code*/}
-                    {getCurrencySign(contractorInfo?.info?.currencyCode as CurrencyType)}12,7
-                  </Text>
-                </View>
               </View>
-            </Bar>
-            <Bar style={[styles.paymentBarContainer, computedStyles.ticketLotteryContainer]}>
-              <CoinIcon style={styles.barIcon} />
-              <View>
-                <Text style={[styles.paymentTitleText, computedStyles.ticketLotteryTitleText]}>{ticketNumber}</Text>
-                <View style={styles.priceContainer}>
-                  <Text style={[styles.headerAndPaymentText, computedStyles.ticketLotteryText]}>
-                    {t('ride_Receipt_ticketToLottery')}
-                  </Text>
-                </View>
+              {paymentBarBlock}
+            </View>
+          ) : (
+            <>
+              {roadTimeBlock}
+              <View style={styles.bottomBarsContainer}>
+                {paymentBarBlock}
+                <Bar style={[styles.paymentBarContainer, computedStyles.ticketLotteryContainer]}>
+                  <CoinIcon style={styles.barIcon} />
+                  <View>
+                    <Text style={[styles.paymentTitleText, computedStyles.ticketLotteryTitleText]}>{ticketNumber}</Text>
+                    <View style={styles.priceContainer}>
+                      <Text style={[styles.headerAndPaymentText, computedStyles.ticketLotteryText]}>
+                        {t('ride_Receipt_ticketToLottery')}
+                      </Text>
+                    </View>
+                  </View>
+                </Bar>
               </View>
-            </Bar>
-          </View>
+            </>
+          )}
         </View>
       </SafeAreaView>
     </>
@@ -307,6 +324,8 @@ const styles = StyleSheet.create({
   roadSeparatorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: 12,
   },
   timeContainer: {
     flexDirection: 'row',
@@ -314,6 +333,8 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
     borderRadius: 14,
     marginHorizontal: 6,
+    minWidth: 64,
+    justifyContent: 'center',
   },
   addressContainer: {
     flexDirection: 'row',
@@ -341,7 +362,7 @@ const styles = StyleSheet.create({
   paymentBarContainer: {
     padding: 16,
     borderWidth: 0,
-    flex: 1,
+    flexGrow: 1,
   },
   priceContainer: {
     flexDirection: 'row',
@@ -359,19 +380,15 @@ const styles = StyleSheet.create({
     fontSize: 17,
     lineHeight: 22,
   },
-  pointText: {
-    fontFamily: 'Inter Medium',
-    fontSize: 14,
-    lineHeight: 22,
-  },
   separatorDistanceText: {
     fontFamily: 'Inter Medium',
     fontSize: 12,
     lineHeight: 22,
   },
-  addressText: {
+  pointText: {
     fontFamily: 'Inter Medium',
     fontSize: 32,
+    lineHeight: 32,
   },
   addressDetailsText: {
     fontSize: 14,
@@ -393,6 +410,22 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     left: 16,
+  },
+  cancelledTripContainer: {
+    width: '50%',
+    minWidth: 180,
+    alignSelf: 'center',
+  },
+  cancelledTripTitleContainer: {
+    borderRadius: 12,
+    padding: 6,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  cancelledTripTitleText: {
+    fontFamily: 'Inter Medium',
+    fontSize: 17,
+    lineHeight: 22,
   },
 });
 

@@ -10,6 +10,7 @@ const initialState: TripState = {
   tip: null,
   finishedTrips: 0,
   contractor: null,
+  isCanceled: false,
   isLoading: false,
   error: null,
 };
@@ -23,6 +24,9 @@ const slice = createSlice({
     },
     setTripError(state, action: PayloadAction<TripState['error']>) {
       state.error = action.payload;
+    },
+    setTripIsCanceled(state, action: PayloadAction<boolean>) {
+      state.isCanceled = action.payload;
     },
     setTripRouteInfo(
       state,
@@ -48,6 +52,7 @@ const slice = createSlice({
       state.routeInfo = null;
       state.status = initialState.status;
       state.contractor = initialState.contractor;
+      state.isCanceled = initialState.isCanceled;
     },
     addFinishedTrips(state) {
       state.finishedTrips++;
@@ -96,7 +101,14 @@ const slice = createSlice({
         });
       })
       .addCase(cancelTrip.fulfilled, state => {
-        slice.caseReducers.endTrip(state);
+        slice.caseReducers.setTripIsCanceled(state, {
+          payload: true,
+          type: setTripIsCanceled.type,
+        });
+        slice.caseReducers.setTripStatus(state, {
+          payload: TripStatus.Finished,
+          type: setTripStatus.type,
+        });
       });
   },
 });
@@ -111,6 +123,7 @@ export const {
   endTrip,
   addFinishedTrips,
   resetFinishedTrips,
+  setTripIsCanceled,
 } = slice.actions;
 
 export default slice.reducer;

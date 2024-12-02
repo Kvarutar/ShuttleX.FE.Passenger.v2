@@ -1,9 +1,7 @@
 import notifee, { AndroidColor } from '@notifee/react-native';
 
 import { store } from '../../redux/store';
-import { setOrderStatus } from '../../ride/redux/order';
-import { OrderStatus } from '../../ride/redux/order/types';
-import { addFinishedTrips, endTrip, setTripStatus } from '../../ride/redux/trip';
+import { addFinishedTrips, setTripIsCanceled, setTripStatus } from '../../ride/redux/trip';
 import { getContractorInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { NotificationPayload, NotificationRemoteMessage, NotificationType } from './types';
@@ -35,8 +33,8 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     store.dispatch(setTripStatus(TripStatus.Arrived));
   },
   [NotificationType.DriverRejected]: async () => {
-    store.dispatch(endTrip());
-    store.dispatch(setOrderStatus(OrderStatus.Confirming));
+    store.dispatch(setTripIsCanceled(true));
+    store.dispatch(setTripStatus(TripStatus.Finished));
   },
   [NotificationType.TripStarted]: async () => {
     store.dispatch(setTripStatus(TripStatus.Ride));

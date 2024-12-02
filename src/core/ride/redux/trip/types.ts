@@ -99,6 +99,7 @@ export type TripState = {
   status: TripStatus;
   tip: Nullable<number>;
   finishedTrips: number;
+  isCanceled: boolean;
   isLoading: boolean;
   error: Nullable<NetworkErrorDetailsWithBody<any>>;
 };
