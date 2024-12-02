@@ -61,7 +61,7 @@ const WinningPopup = ({ setIsWinningPopupVisible }: WinningPopupProps) => {
   );
 
   return (
-    <>
+    <View style={StyleSheet.absoluteFill}>
       <SafeAreaView style={styles.confettiContainer}>
         <Confetti showConfetti />
       </SafeAreaView>
@@ -73,7 +73,7 @@ const WinningPopup = ({ setIsWinningPopupVisible }: WinningPopupProps) => {
         hiddenPart={hiddenPartContent}
         hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
       />
-    </>
+    </View>
   );
 };
 
