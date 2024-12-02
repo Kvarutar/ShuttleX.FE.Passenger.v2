@@ -4,12 +4,15 @@ import { useSelector } from 'react-redux';
 import {
   CustomKeyboardAvoidingView,
   isIncorrectFieldsError,
+  isLockedError,
+  milSecToTime,
   SafeAreaView,
   SignInMethod,
   SignInScreen,
   SignUpForm,
   SignUpScreen,
   SignUpScreenRef,
+  TemporaryLockoutPopup,
   TitleWithCloseButton,
 } from 'shuttlex-integration';
 
@@ -29,6 +32,7 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
   const [isSignIn, setIsisSignIn] = useState<boolean>(route.params.state === 'SignIn');
   const [data, setData] = useState<string | null>();
   const [signMethod, setSignMethod] = useState<SignInMethod>(SignInMethod.Phone);
+  const [lockoutMinutes, setLockoutMinutes] = useState('');
 
   useEffect(() => {
     if (!isLoading && !signError && data) {
@@ -45,6 +49,15 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
       }
     }
   }, [isLoading, signError, navigation, data, signMethod]);
+
+  useEffect(() => {
+    if (signError && isLockedError(signError)) {
+      const lockoutEndDate = new Date(signError.body.lockOutEndTime).getTime() - Date.now();
+      setLockoutMinutes(Math.round(milSecToTime(lockoutEndDate)).toString());
+    } else {
+      setLockoutMinutes('');
+    }
+  }, [signError]);
 
   const handleSendingSignUpData = (dataForm: SignUpForm) => {
     setData(dataForm.phone);
@@ -81,6 +94,13 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
           />
         )}
       </SafeAreaView>
+      {isSignIn && lockoutMinutes !== '' && (
+        //TODO: swap console.log('onSupportButtonPress') to navigation on Support
+        <TemporaryLockoutPopup
+          lockOutTimeText={lockoutMinutes}
+          onSupportButtonPress={() => console.log('onSupportButtonPress')}
+        />
+      )}
     </CustomKeyboardAvoidingView>
   );
 };
