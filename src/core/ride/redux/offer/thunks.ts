@@ -1,5 +1,6 @@
 import { getNetworkErrorInfo } from 'shuttlex-integration';
 
+import { profileZoneSelector } from '../../../passenger/redux/selectors';
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import { geolocationCoordinatesSelector } from '../geolocation/selectors';
 import { setOrderStatus } from '../order';
@@ -144,21 +145,26 @@ export const getOfferRoutes = createAppAsyncThunk<OfferRoutesFromAPI, void>(
   },
 );
 
-export const getAvaliableTariffs = createAppAsyncThunk<TariffFromAPI[], void>(
+export const getAvaliableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, void>(
   'offer/getAvaliableTariffs',
   async (_, { rejectWithValue, configAxios, getState }) => {
-    const zoneId = getState().passenger.zone?.id;
+    const zoneId = profileZoneSelector(getState());
 
     try {
-      const response = await configAxios.get<GetAvaliableTariffsAPIResponse>(`/zones/${zoneId}/tariffs`);
+      if (zoneId) {
+        const response = await configAxios.get<GetAvaliableTariffsAPIResponse>(`/zones/${zoneId}/tariffs`);
 
-      const tariffsWithMapedName = response.data.map<TariffFromAPI>(tariff => ({
-        ...tariff,
-        name: tariffsNamesByFeKey[tariff.feKey],
-        type: tariff.type,
-      }));
+        const tariffsWithMapedName = response.data.map<TariffFromAPI>(tariff => ({
+          ...tariff,
+          name: tariffsNamesByFeKey[tariff.feKey],
+          type: tariff.type,
+        }));
 
-      return tariffsWithMapedName;
+        return tariffsWithMapedName;
+      } else {
+        console.error(`Wrong url path. getAvaliableTariffs thunk uzes zoneId = ${zoneId}`);
+        return null;
+      }
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }
@@ -226,7 +232,7 @@ export const getTariffsPrices = createAppAsyncThunk<void, void>(
 export const createInitialOffer = createAppAsyncThunk<void, void>(
   'offer/createInitialOffer',
   async (_, { rejectWithValue, passengerAxios, getState, dispatch }) => {
-    const { points, selectedTariff, offerRoutes, estimatedPrice } = offerSelector(getState());
+    const { points, selectedTariff, offerRoutes } = offerSelector(getState());
 
     //todo: change payment method to real one
     //todo: ask backend to do endpoint for currency
@@ -234,8 +240,6 @@ export const createInitialOffer = createAppAsyncThunk<void, void>(
       routeId: offerRoutes?.routeId,
       tariffId: selectedTariff?.id,
       paymentMethod: 'Cash',
-      estimatedPrice: estimatedPrice?.value,
-      currencyCode: estimatedPrice?.currencyCode,
       pickUpGeo: {
         latitude: points[0].latitude,
         longitude: points[0].longitude,

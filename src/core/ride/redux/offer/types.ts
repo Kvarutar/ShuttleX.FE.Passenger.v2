@@ -30,6 +30,7 @@ export type OfferState = {
   loading: {
     searchAdresses: boolean;
     avaliableTariffs: boolean;
+    offerRoutes: boolean;
   };
   errors: {
     avaliableTariffs: Nullable<NetworkErrorDetailsWithBody<any>>;

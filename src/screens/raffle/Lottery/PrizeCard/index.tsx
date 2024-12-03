@@ -22,14 +22,15 @@ const PrizeCard = ({ item, onPress }: PrizeCardProps) => {
     },
   });
 
+  //TODO: change prizes data with the real one
   return (
     <Animated.View entering={FadeIn} exiting={FadeOut}>
       <Pressable style={[styles.container, computedStyles.container]} onPress={() => onPress(item)}>
-        <Image source={prizesData[item.prizes[0].feKey].image} style={styles.image} />
+        <Image source={prizesData['iPhone 16'].image} style={styles.image} />
         <Text style={[styles.placeNumber, computedStyles.placeNumber]} numberOfLines={1}>
           {t('raffle_Lottery_PrizeCard_position', { pos: item.index + 1 })}
         </Text>
-        <Text style={[styles.title, computedStyles.title]}>{prizesData[item.prizes[0].feKey].name}</Text>
+        <Text style={[styles.title, computedStyles.title]}>{prizesData['iPhone 16'].name}</Text>
       </Pressable>
     </Animated.View>
   );

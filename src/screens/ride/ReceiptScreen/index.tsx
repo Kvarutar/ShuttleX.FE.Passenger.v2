@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Share from 'react-native-share';
@@ -25,7 +24,7 @@ import {
 } from 'shuttlex-integration';
 import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
-import { getTicketAfterRide } from '../../../core/lottery/redux/thunks';
+import { lotteryTicketAfterRideSelector } from '../../../core/lottery/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { offerPointsSelector } from '../../../core/ride/redux/offer/selectors';
 import { cleanOrder } from '../../../core/ride/redux/order';
@@ -51,7 +50,7 @@ const ReceiptScreen = () => {
   const contractorInfo = useSelector(contractorSelector);
   const addresses = useSelector(offerPointsSelector);
   const isTripCanceled = useSelector(isTripCanceledSelector);
-  const [ticketNumber, setTicketNumber] = useState<string | null>(null);
+  const ticket = useSelector(lotteryTicketAfterRideSelector);
 
   const computedStyles = StyleSheet.create({
     textSecondaryColor: {
@@ -85,13 +84,6 @@ const ReceiptScreen = () => {
       color: colors.textTertiaryColor,
     },
   });
-
-  useEffect(() => {
-    (async () => {
-      const newTicketNumber = await dispatch(getTicketAfterRide()).unwrap();
-      setTicketNumber(newTicketNumber.ticketNumber);
-    })();
-  }, [dispatch]);
 
   const onEndTrip = async () => {
     dispatch(cleanOrder());
@@ -272,17 +264,21 @@ const ReceiptScreen = () => {
               {roadTimeBlock}
               <View style={styles.bottomBarsContainer}>
                 {paymentBarBlock}
-                <Bar style={[styles.paymentBarContainer, computedStyles.ticketLotteryContainer]}>
-                  <CoinIcon style={styles.barIcon} />
-                  <View>
-                    <Text style={[styles.paymentTitleText, computedStyles.ticketLotteryTitleText]}>{ticketNumber}</Text>
-                    <View style={styles.priceContainer}>
-                      <Text style={[styles.headerAndPaymentText, computedStyles.ticketLotteryText]}>
-                        {t('ride_Receipt_ticketToLottery')}
+                {ticket && (
+                  <Bar style={[styles.paymentBarContainer, computedStyles.ticketLotteryContainer]}>
+                    <CoinIcon style={styles.barIcon} />
+                    <View>
+                      <Text style={[styles.paymentTitleText, computedStyles.ticketLotteryTitleText]}>
+                        {ticket.ticketNumber}
                       </Text>
+                      <View style={styles.priceContainer}>
+                        <Text style={[styles.headerAndPaymentText, computedStyles.ticketLotteryText]}>
+                          {t('ride_Receipt_ticketToLottery')}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                </Bar>
+                  </Bar>
+                )}
               </View>
             </>
           )}

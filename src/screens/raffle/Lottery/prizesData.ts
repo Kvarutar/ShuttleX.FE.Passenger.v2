@@ -21,7 +21,8 @@ export const prizesData: Record<string, PrizeData> = {
   'iPhone 16': {
     name: 'iPhone 16',
     image: secondSurprise,
-    description: null,
+    description:
+      'The iPhone 16 display has rounded corners that follow a beautiful curved design, and these corners are within a standard rectangle.',
   },
   'iPhone 15': {
     name: 'iPhone 15',

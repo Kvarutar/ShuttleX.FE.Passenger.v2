@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NetworkErrorDetailsWithBody } from 'shuttlex-integration';
+import { NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 
 import {
   getAllCurrentTickets,
@@ -11,7 +11,7 @@ import {
   getTicketAfterRide,
   getWinnerAvatar,
 } from './thunks';
-import { GetTicketAfterRideAPIResponse, LotteryState } from './types';
+import { LotteryState, TicketFromAPI } from './types';
 
 const initialState: LotteryState = {
   lottery: {
@@ -24,6 +24,7 @@ const initialState: LotteryState = {
   prizes: [],
   previousPrizes: [],
   tickets: [],
+  ticketAfterRide: null,
   loading: {
     previousLottery: false,
     lottery: false,
@@ -49,8 +50,12 @@ const slice = createSlice({
       state.prizes = initialState.prizes;
       state.previousPrizes = initialState.previousPrizes;
     },
-    addTicket(state, action: PayloadAction<GetTicketAfterRideAPIResponse>) {
-      state.tickets.push(action.payload);
+    addTicket(state, action: PayloadAction<TicketFromAPI>) {
+      state.tickets.unshift(action.payload);
+      setTicketAfterRide(action.payload);
+    },
+    setTicketAfterRide(state, action: PayloadAction<Nullable<TicketFromAPI>>) {
+      state.ticketAfterRide = action.payload;
     },
   },
   extraReducers: builder => {
@@ -140,6 +145,16 @@ const slice = createSlice({
           payload: action.payload,
           type: addTicket.type,
         });
+        slice.caseReducers.setTicketAfterRide(state, {
+          payload: action.payload,
+          type: addTicket.type,
+        });
+      })
+      .addCase(getTicketAfterRide.rejected, state => {
+        slice.caseReducers.setTicketAfterRide(state, {
+          payload: null,
+          type: addTicket.type,
+        });
       })
 
       //WinnerAvatar
@@ -176,6 +191,6 @@ const slice = createSlice({
   },
 });
 
-export const { clearPrizes, addTicket } = slice.actions;
+export const { clearPrizes, addTicket, setTicketAfterRide } = slice.actions;
 
 export default slice.reducer;

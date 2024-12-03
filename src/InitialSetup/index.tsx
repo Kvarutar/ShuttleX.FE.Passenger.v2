@@ -5,6 +5,7 @@ import { getTokens, useTheme } from 'shuttlex-integration';
 
 import { setIsLoggedIn } from '../core/auth/redux';
 import { isLoggedInSelector } from '../core/auth/redux/selectors';
+import { getAllCurrentTickets } from '../core/lottery/redux/thunks';
 import { passengerZoneSelector } from '../core/passenger/redux/selectors';
 import { getOrUpdateZone, getProfileInfo, updateProfileLanguage } from '../core/passenger/redux/thunks';
 import { useAppDispatch } from '../core/redux/hooks';
@@ -34,6 +35,8 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
       if (accessToken) {
         getFirebaseDeviceToken();
         dispatch(getProfileInfo());
+        console.log('accessToken', accessToken);
+        dispatch(getAllCurrentTickets());
         dispatch(setIsLoggedIn(true));
       } else {
         dispatch(setIsLoggedIn(false));

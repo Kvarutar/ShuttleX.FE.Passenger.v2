@@ -5,7 +5,8 @@ export type LotteryState = {
   previousLottery: Nullable<LotteryAPIResponse>;
   prizes: Prize[];
   previousPrizes: Prize[];
-  tickets: TicketAPIResponse;
+  tickets: TicketFromAPI[];
+  ticketAfterRide: Nullable<TicketFromAPI>;
   loading: {
     previousLottery: boolean;
     lottery: boolean;
@@ -48,9 +49,7 @@ export type Prize = PrizesAPIResponse[0] & {
   };
 };
 
-export type TicketAPIResponse = {
-  ticketNumber: string;
-}[];
+export type TicketAPIResponse = TicketFromAPI[];
 
 export type WinnerAvatarAPIResponse = string;
 
@@ -63,6 +62,8 @@ export type LotteryFilterOptions = {
   filterBy?: string;
 };
 
-export type GetTicketAfterRideAPIResponse = {
+export type TicketFromAPI = {
   ticketNumber: string;
 };
+
+export type GetTicketAfterRideAPIResponse = TicketFromAPI;

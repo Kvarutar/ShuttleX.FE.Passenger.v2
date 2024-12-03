@@ -25,6 +25,7 @@ const initialState: OfferState = {
   loading: {
     searchAdresses: false,
     avaliableTariffs: false,
+    offerRoutes: false,
   },
   avaliableTariffs: null,
   errors: {
@@ -110,6 +111,9 @@ const slice = createSlice({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       state = initialState;
     },
+    setOfferRoutesLoading(state, action: PayloadAction<boolean>) {
+      state.loading.offerRoutes = action.payload;
+    },
   },
   extraReducers: builder => {
     builder
@@ -129,16 +133,34 @@ const slice = createSlice({
         state.loading.avaliableTariffs = true;
       })
       .addCase(getAvaliableTariffs.fulfilled, (state, action) => {
-        state.avaliableTariffs = action.payload.map(tariff => ({ ...tariff, matching: [], isAvaliable: false }));
-        state.loading.avaliableTariffs = false;
+        if (action.payload) {
+          state.avaliableTariffs = action.payload.map(tariff => ({ ...tariff, matching: [], isAvaliable: false }));
+          state.loading.avaliableTariffs = false;
+        }
       })
       .addCase(getAvaliableTariffs.rejected, (state, action) => {
         state.loading.avaliableTariffs = false;
         state.errors.avaliableTariffs = action.payload as NetworkErrorDetailsWithBody<any>;
       })
+      .addCase(getOfferRoutes.pending, state => {
+        slice.caseReducers.setOfferRoutesLoading(state, {
+          payload: true,
+          type: setOfferRoutes.type,
+        });
+      })
       .addCase(getOfferRoutes.fulfilled, (state, action) => {
         slice.caseReducers.setOfferRoutes(state, {
           payload: action.payload,
+          type: setOfferRoutes.type,
+        });
+        slice.caseReducers.setOfferRoutesLoading(state, {
+          payload: false,
+          type: setOfferRoutes.type,
+        });
+      })
+      .addCase(getOfferRoutes.rejected, state => {
+        slice.caseReducers.setOfferRoutesLoading(state, {
+          payload: false,
           type: setOfferRoutes.type,
         });
       })

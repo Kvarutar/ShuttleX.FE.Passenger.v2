@@ -16,7 +16,7 @@ export type TariffBarProps = { tariff: TariffWithMatching } & {
   isPlanSelected: boolean;
   selectedPrice: number | null;
   setSelectedPrice: (newState: number | null) => void;
-  isAvailableTariff: boolean;
+  isAvailableTariff?: boolean;
   windowIsOpened: boolean;
 };
 

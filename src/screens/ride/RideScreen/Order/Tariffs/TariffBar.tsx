@@ -8,6 +8,7 @@ import { TariffBarProps } from './types';
 
 const animationDuration = 300;
 
+//TODO: do skeleton while we don't have price and duration
 const TariffBar = ({
   isPlanSelected,
   selectedPrice,
@@ -15,7 +16,7 @@ const TariffBar = ({
   onPress,
   tariff,
   windowIsOpened,
-  isAvailableTariff,
+  isAvailableTariff = true,
 }: TariffBarProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -23,9 +24,9 @@ const TariffBar = ({
 
   const TariffImage = tariffsCarData[tariff.name].icon;
   const tariffTitle = tariffsCarData[tariff.name].text;
-  const availablePlans = tariff.matching.filter(item => item.durationSec !== null);
+  const availablePlans = tariff.matching ? tariff.matching.filter(item => item.durationSec !== null) : [];
   const defaultPlanIndex = availablePlans.length > 1 ? 1 : 0;
-  const showPriceAndTime = !isPlanSelected || availablePlans.length === 1;
+  const showPriceAndTime = !isPlanSelected || availablePlans.length < 2;
 
   const computedStyles = StyleSheet.create({
     capacityColor: {
@@ -102,7 +103,7 @@ const TariffBar = ({
   const tariffTitleBlock = (
     <View style={styles.tariffTitleContainer}>
       <Text style={styles.title}>{tariffTitle}</Text>
-      {showPriceAndTime && isAvailableTariff && (
+      {showPriceAndTime && isAvailableTariff && availablePlans[defaultPlanIndex] && (
         <Text style={[styles.capacityText, computedStyles.capacityColor]}>
           {formatTime(Number(availablePlans[defaultPlanIndex].durationSec))}
         </Text>
@@ -112,7 +113,7 @@ const TariffBar = ({
 
   const tariffPrice = () => {
     if (isAvailableTariff) {
-      if (showPriceAndTime) {
+      if (showPriceAndTime && availablePlans[defaultPlanIndex]) {
         //TODO: swap currencyCode to correct value
         return `${getCurrencySign('UAH')}${availablePlans[defaultPlanIndex].cost}`;
       }
@@ -158,7 +159,7 @@ const TariffBar = ({
       <Animated.View style={[styles.tariffContainer, computedStyles.tariffContainer, animatedStyles.tariffContainer]}>
         {tariffContent}
       </Animated.View>
-      {availablePlans.length !== 1 && (
+      {availablePlans.length > 1 && (
         <Animated.View style={animatedStyles.buttonWrapper}>
           <View style={styles.buttonContainer}>
             {availablePlans.map((plan, index) => (

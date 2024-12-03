@@ -71,7 +71,7 @@ export const getAvatar = createAppAsyncThunk<AvatarFromAPI[], AvatarWithoutValue
 //TODO just for test because i dont know any information for saving photo
 export const saveAvatar = createAppAsyncThunk<SaveAvatarAPIResponse, SaveAvatarAPIRequest>(
   'passenger/saveAvatar',
-  async (data, { rejectWithValue, profileAxios }) => {
+  async (data, { rejectWithValue, profileAxios, dispatch }) => {
     const { file } = data;
     const formData = new FormData();
     formData.append('Avatar', file);
@@ -80,6 +80,8 @@ export const saveAvatar = createAppAsyncThunk<SaveAvatarAPIResponse, SaveAvatarA
       const response = await profileAxios.post<SaveAvatarAPIResponse>('profile/avatars/blob', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+
+      dispatch(getProfileInfo());
 
       return response.data;
     } catch (error) {

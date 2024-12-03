@@ -58,6 +58,7 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
     }
   }, [dispatch, thirdPrize?.prizes, thirdPrize?.winnerId]);
 
+  //TODO: change prizes data with the real one
   return (
     <View style={styles.container}>
       <View style={styles.prizes}>
@@ -65,10 +66,10 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         <View style={[styles.prizeBox, styles.secondPlace]}>
           {secondPrize && (
             <>
-              <Image source={prizesData[secondPrize.prizes[0].feKey].image} style={styles.prizeImage} />
+              <Image source={prizesData['iPhone 16'].image} style={styles.prizeImage} />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text style={[styles.surpriseTitle, computedStyles.surpriseTitle]} numberOfLines={1}>
-                  {secondPrize?.winnerId ? secondPrize?.winnerFirstName : prizesData[secondPrize.prizes[0].feKey].name}
+                  {secondPrize?.winnerId ? secondPrize?.winnerFirstName : prizesData['iPhone 16'].name}
                 </Text>
               </View>
             </>
@@ -86,13 +87,10 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         <View style={[styles.prizeBox, styles.firstPlace]}>
           {firstPrize && (
             <>
-              <Image
-                source={prizesData[firstPrize.prizes[0].feKey].image}
-                style={[styles.prizeImage, styles.firstPlacePrize]}
-              />
+              <Image source={prizesData['iPhone 16'].image} style={[styles.prizeImage, styles.firstPlacePrize]} />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text style={[styles.surpriseTitle, computedStyles.surpriseTitle]} numberOfLines={1}>
-                  {firstPrize?.winnerId ? firstPrize?.winnerFirstName : prizesData[firstPrize.prizes[0].feKey].name}
+                  {firstPrize?.winnerId ? firstPrize?.winnerFirstName : prizesData['iPhone 16'].name}
                 </Text>
               </View>
             </>
@@ -110,14 +108,14 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         <View style={[styles.prizeBox, styles.thirdPlace]}>
           {thirdPrize && (
             <>
-              <Image source={prizesData[thirdPrize.prizes[0].feKey].image} style={styles.prizeImage} />
+              <Image source={prizesData['iPhone 16'].image} style={styles.prizeImage} />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text
                   style={[styles.surpriseTitle, computedStyles.surpriseTitle]}
                   elipsizeMode={TextElipsizeMode.Clip}
                   numberOfLines={1}
                 >
-                  {thirdPrize?.winnerId ? thirdPrize?.winnerFirstName : prizesData[thirdPrize.prizes[0].feKey].name}
+                  {thirdPrize?.winnerId ? thirdPrize?.winnerFirstName : prizesData['iPhone 16'].name}
                 </Text>
               </View>
             </>

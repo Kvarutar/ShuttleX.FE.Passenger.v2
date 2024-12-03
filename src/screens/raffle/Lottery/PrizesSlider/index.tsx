@@ -36,17 +36,18 @@ const PrizesSlider = memo(({ visible, onClose, selectedItemIndex, listItem }: Pr
     },
   });
 
+  //TODO: change prizes data with the real one
   const renderItem = useCallback(
     ({ item }: { item: Prize }) => {
       return (
         <View style={[styles.item, computedStyles.item]} onLayout={e => setItemHeight(e.nativeEvent.layout.height)}>
-          <Image source={prizesData[item.prizes[0].feKey].image} style={styles.itemImage} />
+          <Image source={prizesData['iPhone 16'].image} style={styles.itemImage} />
           <Text style={[styles.itemPosition, computedStyles.itemPosition]}>
             {t('raffle_Lottery_PrizesSlider_position', { pos: item.index + 1 })}
           </Text>
-          <Text style={styles.itemTitle}>{prizesData[item.prizes[0].feKey].name}</Text>
+          <Text style={styles.itemTitle}>{prizesData['iPhone 16'].name}</Text>
           <Text style={[styles.itemDescription, computedStyles.itemDescription]}>
-            {prizesData[item.prizes[0].feKey].description}
+            {prizesData['iPhone 16'].description}
           </Text>
         </View>
       );

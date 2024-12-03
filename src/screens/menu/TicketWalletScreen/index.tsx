@@ -14,11 +14,13 @@ import {
   LotteryIcon,
   MenuHeader,
   SafeAreaView,
+  sizes,
   Text,
+  useTheme,
 } from 'shuttlex-integration';
 
 import capyTicketWallet from '../../../../assets/images/capyTicketWallet';
-import { ticketWalletTicketsSelector } from '../../../core/menu/redux/ticketWallet/selectors';
+import { lotteryTicketsSelector } from '../../../core/lottery/redux/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
 import { cardColors } from './cardColors';
@@ -32,12 +34,16 @@ const TicketWalletScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const { t } = useTranslation();
-  const ticketNumbers = useSelector(ticketWalletTicketsSelector);
+  const ticketNumbers = useSelector(lotteryTicketsSelector);
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   const computedStyles = StyleSheet.create({
     wrapper: {
       marginBottom: -insets.bottom,
+    },
+    noTickets: {
+      color: colors.textSecondaryColor,
     },
   });
 
@@ -54,7 +60,7 @@ const TicketWalletScreen = () => {
       const color = getRandomItem(cardColors, prevColor);
 
       result.push({
-        number: ticket.number,
+        number: ticket.ticketNumber,
         color: color,
         photo: getRandomItem(Object.values(capyTicketWallet)),
       });
@@ -115,19 +121,25 @@ const TicketWalletScreen = () => {
         </MenuHeader>
 
         <View style={styles.cardsWrapper}>
-          <GestureDetector gesture={pan}>
-            <View onLayout={event => setListHeight(event.nativeEvent.layout.height)}>
-              {tickets.map((ticket, index) => (
-                <TicketCard
-                  key={index}
-                  ticket={ticket}
-                  index={index}
-                  scrollY={scrollY}
-                  activeCardIndex={activeCardIndex}
-                />
-              ))}
+          {tickets.length > 0 ? (
+            <GestureDetector gesture={pan}>
+              <View onLayout={event => setListHeight(event.nativeEvent.layout.height)}>
+                {tickets.map((ticket, index) => (
+                  <TicketCard
+                    key={index}
+                    ticket={ticket}
+                    index={index}
+                    scrollY={scrollY}
+                    activeCardIndex={activeCardIndex}
+                  />
+                ))}
+              </View>
+            </GestureDetector>
+          ) : (
+            <View style={styles.noTicketsWrapper}>
+              <Text style={[styles.noTickets, computedStyles.noTickets]}>{t('menu_TicketWallet_noTickets')}</Text>
             </View>
-          </GestureDetector>
+          )}
         </View>
       </SafeAreaView>
 
@@ -155,5 +167,15 @@ const styles = StyleSheet.create({
   lotteryIcon: {
     width: 20,
     height: 18,
+  },
+  noTicketsWrapper: {
+    flex: 1,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: sizes.paddingHorizontal,
+  },
+  noTickets: {
+    fontSize: 20,
   },
 });

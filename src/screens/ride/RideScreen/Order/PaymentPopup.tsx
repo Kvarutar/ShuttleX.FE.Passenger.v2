@@ -2,11 +2,10 @@
 //TODO: fix casting with "as"
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getLocales } from 'react-native-localize';
 import Animated, { Easing, FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
-import WebView from 'react-native-webview';
 import { useSelector } from 'react-redux';
 import {
   ArrowIcon,
@@ -37,8 +36,8 @@ import { offerSelectedTariffSelector } from '../../../../core/ride/redux/offer/s
 import { createInitialOffer } from '../../../../core/ride/redux/offer/thunks';
 import { setOrderStatus } from '../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
-import PlanButton, { planPriceCounting } from '../PlanButton/PlanButton';
-import { checkPaymentStatus, handleBinancePayment, handleMonoPayment } from './handlePayments';
+import PlanButton from '../PlanButton/PlanButton';
+import { checkPaymentStatus } from './handlePayments';
 import { DefaultPaymentMethodsType } from './types';
 
 const testPaymentMethods = [
@@ -139,7 +138,7 @@ const PaymentPopup = () => {
   const [selectedPayment, setSelectedPayment] = useState<DefaultPaymentMethodsType>('cash');
   const [dateTimeTitle, setDateTimeTitle] = useState(t('ride_Ride_PaymentPopup_defaultTime'));
   const [confirmDateChecker, setConfirmDateChecker] = useState(false);
-  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+  //const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
   const computedStyles = StyleSheet.create({
     wrapper: {
@@ -230,13 +229,14 @@ const PaymentPopup = () => {
     }
   };
 
+  //TODO: rewrite this logic after we connect payment
   const onConfirmPress = async () => {
     const paymentId = '3456677'; //TODO: get to know from where I can get it?
     let status = 'pending';
-    const price = planPriceCounting(
-      Number(availableTestPlans[selectedPlan].durationSec),
-      availableTestPlans[selectedPlan].algorythm,
-    );
+    // const price = planPriceCounting(
+    //   Number(availableTestPlans[selectedPlan].durationSec),
+    //   availableTestPlans[selectedPlan].algorythm,
+    // );
 
     switch (selectedPayment) {
       case 'cash':
@@ -244,10 +244,10 @@ const PaymentPopup = () => {
         status = 'success';
         break;
       case 'card':
-        await handleMonoPayment({ amount: price, setPaymentUrl });
+        //await handleMonoPayment({ amount: price, setPaymentUrl });
         break;
       case 'crypto':
-        await handleBinancePayment({ amount: price, setPaymentUrl });
+        //await handleBinancePayment({ amount: price, setPaymentUrl });
         break;
       default:
         console.error('Unknown payment method');
@@ -296,10 +296,7 @@ const PaymentPopup = () => {
     {
       title: t('ride_Ride_PaymentPopup_priceTitle'),
       // TODO: swap currencyCode to correct value
-      value: `${getCurrencySign('UAH')}${planPriceCounting(
-        Number(availableTestPlans[selectedPlan].durationSec),
-        availableTestPlans[selectedPlan].algorythm,
-      )}`,
+      value: `${getCurrencySign('UAH')}${availableTestPlans[selectedPlan]?.cost}`,
     },
     {
       title: t('ride_Ride_PaymentPopup_timeTitle'),
@@ -518,7 +515,7 @@ const PaymentPopup = () => {
 
   return (
     <>
-      {paymentUrl ? (
+      {/* {paymentUrl ? (
         <WebView
           source={{ uri: paymentUrl }}
           startInLoadingState={true}
@@ -533,7 +530,15 @@ const PaymentPopup = () => {
           headerWrapperStyle={styles.headerWrapperStyle}
           headerElement={<TariffIcon style={styles.image} />}
         />
-      )}
+      )} */}
+      <BottomWindowWithGesture
+        maxHeight={0.82}
+        setIsOpened={setWindowIsOpened}
+        visiblePart={content}
+        visiblePartStyle={styles.visiblePartStyles}
+        headerWrapperStyle={styles.headerWrapperStyle}
+        headerElement={<TariffIcon style={styles.image} />}
+      />
       {Platform.OS === 'ios' && isDatePickerVisible ? (
         <BottomWindowWithGesture
           withDraggable={false}

@@ -19,7 +19,8 @@ import {
 //TODO: rewrite all tariffs files, current solution is not flexible
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { setEstimatedPrice, setTripTariff } from '../../../../../core/ride/redux/offer';
-import { groupedTariffsSelector } from '../../../../../core/ride/redux/offer/selectors';
+import { groupedTariffsSelector, offerRoutesSelector } from '../../../../../core/ride/redux/offer/selectors';
+import { getTariffsPrices } from '../../../../../core/ride/redux/offer/thunks';
 import { SelectedTariff, TariffCategory, TariffsType } from '../../../../../core/ride/redux/offer/types';
 import { setOrderStatus } from '../../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../../core/ride/redux/order/types';
@@ -39,6 +40,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   const [selectedPriceIdx, setSelectedPriceIdx] = useState<number | null>(null);
   const [tariff, setTariff] = useState<SelectedTariff | null>(null);
   const [windowIsOpened, setWindowIsOpened] = useState(false);
+  const offerRoutes = useSelector(offerRoutesSelector);
 
   const isAvailableSelectedTariffGroup = Boolean(selectedTariffGroup?.tariffs);
 
@@ -47,6 +49,12 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
       color: isAvailableSelectedTariffGroup ? colors.textPrimaryColor : colors.textQuadraticColor,
     },
   });
+
+  useEffect(() => {
+    if (offerRoutes) {
+      dispatch(getTariffsPrices());
+    }
+  }, [offerRoutes, dispatch]);
 
   useEffect(() => {
     let foundAvailableTariffGroup = null;
@@ -160,7 +168,6 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
                   selectedPrice={selectedPriceIdx}
                   setSelectedPrice={setSelectedPriceIdx}
                   tariff={tariffBar}
-                  isAvailableTariff={true} //TODO: rewrite avaliability of tariff
                   windowIsOpened={windowIsOpened}
                 />
               </Animated.View>

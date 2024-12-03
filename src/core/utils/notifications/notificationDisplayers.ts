@@ -1,5 +1,6 @@
 import notifee, { AndroidColor } from '@notifee/react-native';
 
+import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
 import { addFinishedTrips, setTripIsCanceled, setTripStatus } from '../../ride/redux/trip';
 import { getContractorInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
@@ -21,6 +22,8 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
   },
   [NotificationType.TripEnded]: async () => {
     store.dispatch(addFinishedTrips());
+    //TODO go to rating page
+    store.dispatch(getTicketAfterRide());
     store.dispatch(setTripStatus(TripStatus.Finished));
   },
   [NotificationType.WinnerFounded]: async payload => {

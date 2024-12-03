@@ -7,6 +7,7 @@ export const lotteryPrizesSelector = (state: AppState) => state.lottery.prizes;
 export const lotteryTicketsSelector = (state: AppState) => state.lottery.tickets;
 export const previousLotteryIdSelector = (state: AppState) => state.lottery.previousLottery?.eventId;
 export const lotteryPreviousPrizesSelector = (state: AppState) => state.lottery.previousPrizes;
+export const lotteryTicketAfterRideSelector = (state: AppState) => state.lottery.ticketAfterRide;
 
 export const isLotteryLoadingSelector = (state: AppState) => state.lottery.loading.lottery;
 export const isPrizesLoadingSelector = (state: AppState) => state.lottery.loading.prizes;

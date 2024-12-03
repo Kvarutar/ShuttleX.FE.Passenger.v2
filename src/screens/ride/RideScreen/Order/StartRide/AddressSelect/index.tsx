@@ -34,7 +34,6 @@ import {
   enhanceAddress,
   getAddressSearchHistory,
   getOfferRoutes,
-  getTariffsPrices,
   saveSearchResult,
   searchAddress,
 } from '../../../../../../core/ride/redux/offer/thunks';
@@ -267,8 +266,7 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   }
 
   const onConfirm = async () => {
-    await dispatch(getOfferRoutes());
-    await dispatch(getTariffsPrices());
+    dispatch(getOfferRoutes());
     setIsAddressSelectVisible(false);
     dispatch(setOrderStatus(OrderStatus.ChoosingTariff));
   };

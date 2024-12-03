@@ -164,6 +164,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
     },
   });
 
+  //TODO: change prizes data with the real one
   const renderContent = () => (
     <View style={[styles.renderContainer, computedStyles.renderContainer]}>
       {isPrizeSelected ? (
@@ -180,8 +181,8 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
               isWinner && (
                 <PrizeWithWinnerBar
                   key={item.prizes[0].prizeId}
-                  prizeImage={prizesData[item.prizes[0].feKey].image}
-                  prizeTitle={prizesData[item.prizes[0].feKey].name}
+                  prizeImage={prizesData['iPhone 16'].image}
+                  prizeTitle={prizesData['iPhone 16'].name}
                   prizeId={item.prizes[0].prizeId}
                   winnerId={item.winnerId}
                   ticketCode={item.ticketNumber}
@@ -200,8 +201,8 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
         otherPrizes.map(item => (
           <PrizeWithWinnerBar
             key={item.prizes[0].prizeId}
-            prizeImage={prizesData[item.prizes[0].feKey].image}
-            prizeTitle={prizesData[item.prizes[0].feKey].name}
+            prizeImage={prizesData['Iphone 16'].image}
+            prizeTitle={prizesData['iPhone 16'].name}
             prizeId={item.prizes[0].prizeId}
             winnerId={item.winnerId}
             ticketCode={item.ticketNumber}
