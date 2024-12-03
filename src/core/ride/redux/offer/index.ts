@@ -1,7 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 
-import { createOffer, getAvaliableTariffs, getOfferRoutes, getRecentDropoffs, searchAddress } from './thunks';
+import { cancelTrip } from '../trip/thunks';
+import {
+  createInitialOffer,
+  createOffer,
+  getAvaliableTariffs,
+  getOfferRoutes,
+  getRecentDropoffs,
+  searchAddress,
+} from './thunks';
 import {
   AddressPoint,
   EstimatedPrice,
@@ -48,7 +56,7 @@ const slice = createSlice({
     setTripTariff(state, action: PayloadAction<SelectedTariff>) {
       state.selectedTariff = action.payload;
     },
-    updateTariffMathcing(state, action: PayloadAction<MatchingFromAPI[]>) {
+    updateTariffMatching(state, action: PayloadAction<MatchingFromAPI[]>) {
       if (state.avaliableTariffs && action.payload.length > 0) {
         const tariffToUpdateIndex = state.avaliableTariffs.findIndex(
           tariff => tariff.id === action.payload[0].tariffid,
@@ -164,11 +172,24 @@ const slice = createSlice({
           type: setOfferRoutes.type,
         });
       })
+      .addCase(createInitialOffer.fulfilled, (state, action) => {
+        slice.caseReducers.setOfferId(state, {
+          payload: action.payload,
+          type: setOfferId.type,
+        });
+      })
+      //TODO: uncomment after payment will be done
+      // .addCase(createInitialOffer.rejected, (state, action) => {
+      //   store.dispatch(createOffer());
+      // })
       .addCase(createOffer.fulfilled, (state, action) => {
         slice.caseReducers.setOfferId(state, {
           payload: action.payload,
           type: setOfferId.type,
         });
+      })
+      .addCase(cancelTrip.fulfilled, state => {
+        slice.caseReducers.clearOffer(state);
       });
   },
 });
@@ -180,7 +201,7 @@ export const {
   removeOfferPoint,
   updateOfferPoint,
   cleanOfferPoints,
-  updateTariffMathcing,
+  updateTariffMatching,
   setIsAvaliableTariff,
   setOfferRoutes,
   updateTariffsCost,

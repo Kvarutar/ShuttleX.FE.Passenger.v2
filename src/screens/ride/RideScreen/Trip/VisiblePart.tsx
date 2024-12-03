@@ -28,7 +28,7 @@ import { TimerStateDataType, VisiblePartProps } from './types';
 
 const testExtraSum = 0.5;
 
-const VisiblePart = ({ setExtraSum, extraSum, contractorInfo }: VisiblePartProps) => {
+const VisiblePart = ({ setExtraSum, extraSum, orderInfo }: VisiblePartProps) => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const { colors } = useTheme();
@@ -75,7 +75,7 @@ const VisiblePart = ({ setExtraSum, extraSum, contractorInfo }: VisiblePartProps
     switch (status) {
       case TripStatus.Accepted: {
         return {
-          timerTime: Date.now() + minToMilSec(0.5),
+          timerTime: Date.now() + minToMilSec(0.5), //change to real data
           mode: TimerColorModes.Mode1,
           title: (
             <>
@@ -97,7 +97,7 @@ const VisiblePart = ({ setExtraSum, extraSum, contractorInfo }: VisiblePartProps
       }
       case 'waiting': {
         return {
-          timerTime: Date.now() + minToMilSec(0.5),
+          timerTime: Date.now() + minToMilSec(0.5), //change to real data
           mode: extraWaiting ? TimerColorModes.Mode5 : TimerColorModes.Mode2,
           timerLabel: t('ride_Ride_Trip_timerLabelWaiting'),
           title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleWaiting')}</Text>,
@@ -146,22 +146,20 @@ const VisiblePart = ({ setExtraSum, extraSum, contractorInfo }: VisiblePartProps
         {/*  </View>*/}
         {/*)}*/}
         <View style={styles.nameTimeContainer}>
-          <Text style={styles.nameTimeText}>{contractorInfo?.info?.firstName} </Text>
+          <Text style={styles.nameTimeText}>{orderInfo?.info?.firstName} </Text>
           {timerState?.title}
         </View>
         <StatsBlock
           style={styles.statsContainer}
-          amountLikes={contractorInfo.info?.totalLikesCount ?? 0}
-          amountRides={contractorInfo.info?.totalRidesCount}
+          amountLikes={orderInfo.info?.totalLikesCount ?? 0}
+          amountRides={orderInfo.info?.totalRidesCount}
         />
         <View style={styles.carInfoContainer}>
           <Bar style={styles.carInfoBar}>
-            <Text
-              style={styles.carInfoText}
-            >{`${contractorInfo.info?.carBrand} ${contractorInfo.info?.carModel}`}</Text>
+            <Text style={styles.carInfoText}>{`${orderInfo.info?.carBrand} ${orderInfo.info?.carModel}`}</Text>
           </Bar>
           <Bar style={[styles.carInfoPlateNumberBar, computedStyles.carInfoPlateNumberBar]}>
-            <Text style={styles.carInfoText}>{contractorInfo?.info?.carNumber}</Text>
+            <Text style={styles.carInfoText}>{orderInfo?.info?.carNumber}</Text>
           </Bar>
         </View>
       </View>
@@ -171,7 +169,7 @@ const VisiblePart = ({ setExtraSum, extraSum, contractorInfo }: VisiblePartProps
             shape={ButtonShapes.Circle}
             mode={CircleButtonModes.Mode2}
             size={ButtonSizes.M}
-            onPress={() => Linking.openURL(`tel:${contractorInfo?.info?.phoneNumber}`)}
+            onPress={() => Linking.openURL(`tel:${orderInfo?.info?.phoneNumber}`)}
           >
             <PhoneIcon />
           </Button>

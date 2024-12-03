@@ -3,7 +3,7 @@ import notifee, { AndroidColor } from '@notifee/react-native';
 import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
 import { addFinishedTrips, setTripIsCanceled, setTripStatus } from '../../ride/redux/trip';
-import { getContractorInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
+import { getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { NotificationPayload, NotificationRemoteMessage, NotificationType } from './types';
 
@@ -15,7 +15,7 @@ const isValidNotificationType = (key: string): key is NotificationType => {
 const notificationHandlers: Record<NotificationType, (payload: NotificationPayload | undefined) => Promise<void>> = {
   [NotificationType.DriverAccepted]: async payload => {
     if (payload?.orderId) {
-      await store.dispatch(getContractorInfo(payload.orderId));
+      await store.dispatch(getOrderInfo(payload.orderId));
       await store.dispatch(getRouteInfo(payload.orderId));
       store.dispatch(setTripStatus(TripStatus.Accepted));
     }

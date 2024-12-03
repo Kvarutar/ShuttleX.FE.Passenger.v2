@@ -57,6 +57,12 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   }, [offerRoutes, dispatch]);
 
   useEffect(() => {
+    if (offerRoutes) {
+      dispatch(getTariffsPrices());
+    }
+  }, [offerRoutes, dispatch]);
+
+  useEffect(() => {
     let foundAvailableTariffGroup = null;
     Object.entries(groupedTariffs).forEach(([_, value]) => {
       if (value) {
@@ -128,21 +134,20 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 
     Object.entries(groupedTariffs).forEach(([key, value]) => {
       const isAvailableTariffGroup = value.tariffs !== undefined && value.tariffs.length > 0;
-      let groupPrice = '';
+      let groupPrice = 0;
 
       if (value.tariffs !== undefined && value.tariffs.length > 0) {
-        groupPrice = (
+        groupPrice =
           value.tariffs?.reduce(
             (accumulator, currentValue) =>
               accumulator + currentValue.matching.reduce((acc, el) => acc + (el.cost ?? 0), 0),
             0,
-          ) / value.tariffs.length
-        ).toString();
+          ) / value.tariffs.length;
       }
       content.push(
         <TariffGroup
           key={`tariff_group_${key}`}
-          price={groupPrice}
+          price={groupPrice.toFixed(2)}
           title={key as TariffsType}
           onPress={() => setSelectedTariffGroup(value)}
           isSelected={value.groupName === selectedTariffGroup?.groupName}

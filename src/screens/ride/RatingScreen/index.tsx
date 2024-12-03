@@ -28,7 +28,7 @@ import imageFriendlyDriver from '../../../../assets/images/likeFeedback/imageFri
 import imageGoodDriving from '../../../../assets/images/likeFeedback/imageGoodDriving';
 import imageNiceAtmosphere from '../../../../assets/images/likeFeedback/imageNiceAtmosphere';
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { contractorSelector, orderIdSelector } from '../../../core/ride/redux/trip/selectors';
+import { orderIdSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
 import { sendFeedback } from '../../../core/ride/redux/trip/thunks';
 import { RatingScreenProps } from './types';
 
@@ -36,7 +36,7 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
-  const contractorInfo = useSelector(contractorSelector);
+  const orderInfo = useSelector(orderSelector);
   const orderId = useSelector(orderIdSelector);
 
   const [mark, setMark] = useState<FeedbackRating | null>(null);
@@ -177,7 +177,7 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
           <Text style={[styles.text, computedStyles.text]}>
             {t('ride_Rating_willYouLike')}
             {/*TODO swap to contractor name*/}
-            <Text style={[styles.text]}>{`${contractorInfo?.info?.firstName}?`}</Text>
+            <Text style={[styles.text]}>{`${orderInfo?.info?.firstName}?`}</Text>
           </Text>
           <View style={styles.markContainer}>
             <Button
@@ -213,11 +213,11 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
         <View style={styles.contentWrapper}>
           <View style={styles.riderInfoContainer}>
             {/*TODO swap to contractor name*/}
-            <Image style={styles.avatar} source={{ uri: contractorInfo?.avatar }} />
-            <Text style={[styles.text, styles.textName]}>{contractorInfo?.info?.firstName}</Text>
+            <Image style={styles.avatar} source={{ uri: orderInfo?.avatar }} />
+            <Text style={[styles.text, styles.textName]}>{orderInfo?.info?.firstName}</Text>
             <StatsBlock
-              amountLikes={contractorInfo?.info?.totalLikesCount ?? 0}
-              amountRides={contractorInfo?.info?.totalRidesCount}
+              amountLikes={orderInfo?.info?.totalLikesCount ?? 0}
+              amountRides={orderInfo?.info?.totalRidesCount}
             />
           </View>
           {markBlock}

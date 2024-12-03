@@ -5,7 +5,7 @@ import { createAppAsyncThunk } from '../../../redux/hooks';
 import { geolocationCoordinatesSelector } from '../geolocation/selectors';
 import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
-import { setIsAvaliableTariff, updateTariffMathcing, updateTariffsCost } from '.';
+import { setIsAvaliableTariff, updateTariffMatching, updateTariffsCost } from '.';
 import { offerSelector } from './selectors';
 import {
   AddressSearchPayload,
@@ -148,7 +148,7 @@ export const getOfferRoutes = createAppAsyncThunk<OfferRoutesFromAPI, void>(
 export const getAvaliableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, void>(
   'offer/getAvaliableTariffs',
   async (_, { rejectWithValue, configAxios, getState }) => {
-    const zoneId = profileZoneSelector(getState());
+    const zoneId = profileZoneSelector(getState())?.id;
 
     try {
       if (zoneId) {
@@ -181,7 +181,7 @@ export const createPhantomOffer = createAppAsyncThunk<void, void>(
     try {
       if (avaliableTariffs) {
         const requests = avaliableTariffs.map(tariff =>
-          matchingAxios.get<CreatePhantomOfferAPIResponse>(`/phantom-data?TariffId=${tariff.id}${urlPart}`),
+          matchingAxios.get<CreatePhantomOfferAPIResponse>(`/offers/phantom?TariffId=${tariff.id}${urlPart}`),
         );
         const responses = await Promise.allSettled(requests);
 
@@ -189,11 +189,11 @@ export const createPhantomOffer = createAppAsyncThunk<void, void>(
           if (response.status === 'fulfilled') {
             dispatch(setIsAvaliableTariff({ tariffId: avaliableTariffs[index].id, isAvaliable: true }));
             dispatch(
-              updateTariffMathcing(
-                response.value.data.responseList.map(el => ({
-                  tariffid: el.tariffid,
+              updateTariffMatching(
+                response.value.data.map(el => ({
+                  tariffid: avaliableTariffs[index].id,
                   algorythmType: algorythmTypeParser(el.algorythmType),
-                  durationSeconds: el.durationSeconds === null ? 0 : el.durationSeconds,
+                  durationSeconds: el.durationSec === null ? 0 : el.durationSec,
                 })),
               ),
             );
@@ -229,9 +229,9 @@ export const getTariffsPrices = createAppAsyncThunk<void, void>(
   },
 );
 
-export const createInitialOffer = createAppAsyncThunk<void, void>(
+export const createInitialOffer = createAppAsyncThunk<string, void>(
   'offer/createInitialOffer',
-  async (_, { rejectWithValue, passengerAxios, getState, dispatch }) => {
+  async (_, { rejectWithValue, passengerAxios, getState }) => {
     const { points, selectedTariff, offerRoutes } = offerSelector(getState());
 
     //todo: change payment method to real one
@@ -259,7 +259,7 @@ export const createInitialOffer = createAppAsyncThunk<void, void>(
     try {
       const response = await passengerAxios.post<CreateInitialOfferAPIResponse>('/Offer/create/initial', bodyPart);
 
-      dispatch(createOffer(response.data.id));
+      return response.data.id;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

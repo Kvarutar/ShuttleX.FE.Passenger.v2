@@ -12,7 +12,7 @@ import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
-import { contractorSelector } from '../../../core/ride/redux/trip/selectors';
+import { orderSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
 import MapView from './MapView';
@@ -34,7 +34,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const [isMysteryBoxPopupVisible, setIsMysteryBoxPopupVisible] = useState(false);
   const [isWinningPopupVisible, setIsWinningPopupVisible] = useState(false);
 
-  const contractorInfo = useSelector(contractorSelector);
+  const orderInfo = useSelector(orderSelector);
 
   //for test
   // useEffect(() => {
@@ -75,12 +75,12 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   }, [route.params?.openAddressSelect, route]);
 
   useEffect(() => {
-    if (contractorInfo) {
+    if (orderInfo) {
       setTimeout(() => {
         setIsMysteryBoxPopupVisible(true);
       }, 2000);
     }
-  }, [contractorInfo]);
+  }, [orderInfo]);
 
   useGeolocationStartWatch();
   useNetworkConnectionStartWatch();
@@ -139,7 +139,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
       <SafeAreaView style={styles.wrapper}>
         <MapView />
         {topMenu[orderStatus]}
-        {TripStatus.Accepted && contractorInfo ? <Trip contractorInfo={contractorInfo} /> : <Order ref={orderRef} />}
+        {TripStatus.Accepted && orderInfo ? <Trip orderInfo={orderInfo} /> : <Order ref={orderRef} />}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
       {isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}

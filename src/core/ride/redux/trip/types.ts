@@ -3,9 +3,20 @@ import { NetworkErrorDetailsWithBody, Nullable, TariffType } from 'shuttlex-inte
 
 import { AddressPoint } from '../offer/types';
 
-export type ContractorInfo = {
+export type TripStatusFromAPI =
+  | 'None'
+  | 'InPreviousOrder'
+  | 'MoveToPickUp'
+  | 'InPickUp'
+  | 'MoveToStopPoint'
+  | 'InStopPoint'
+  | 'MoveToDropOff'
+  | 'CompletedSuccessfully'
+  | 'CanceledByPassenger'
+  | 'CanceledByContractor';
+
+export type OrderFromAPI = {
   firstName: string;
-  arrivalTime: string;
   carBrand: string;
   carModel: string;
   carNumber: string;
@@ -15,15 +26,28 @@ export type ContractorInfo = {
   avatarIds: string[];
   currencyCode: string;
   phoneNumber: string;
+  estimatedArriveToPickUpDate: string;
+  estimatedArriveToDropOffDate: string;
+  dropOffRouteId: string;
+  pickUpRouteId: string;
+  pickUpAddress: string;
+  pickUpPlace: string;
+  dropOffAddress: string;
+  dropOffPlace: string;
+  state: TripStatusFromAPI;
+  totalFinalPrice: number;
+  tariffId: string;
+  passengerId: string;
 };
 
-export type ContractorApiResponse = {
-  info: Nullable<ContractorInfo>;
+export type GetOrderInfoAPIResponse = OrderFromAPI;
+export type GetOrdersHistoryAPIResponse = OrderFromAPI[];
+
+export type Order = {
+  info: Nullable<OrderFromAPI>;
   avatar: string;
   orderId: string;
 };
-
-export type Contractor = ContractorApiResponse;
 
 export type RouteInfoApiResponse = {
   routeId: string;
@@ -75,7 +99,6 @@ type RouteInfoOld = {
 
 //TODO do something with this type
 export type TripInfo = {
-  //TODO ask Andrew
   tripType: TariffType;
   total: string;
   route: {
@@ -94,7 +117,7 @@ export enum TripStatus {
 }
 
 export type TripState = {
-  contractor: Nullable<Contractor>;
+  order: Nullable<Order>;
   routeInfo: Nullable<RouteInfo>;
   status: TripStatus;
   tip: Nullable<number>;

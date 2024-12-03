@@ -9,6 +9,8 @@ const reactotron = Reactotron.configure()
         'geolocation/setGeolocationIsLocationEnabled',
         'geolocation/setGeolocationAccuracy',
         'geolocation/setGeolocationIsPermissionGranted',
+        'signalr/update-passenger-geo',
+        'map/setMapCars',
       ],
     }),
   )

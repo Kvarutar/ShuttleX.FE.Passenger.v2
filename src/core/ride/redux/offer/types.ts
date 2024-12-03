@@ -141,12 +141,10 @@ export type MatchingFromAPI = {
 };
 
 export type CreatePhantomOfferAPIResponse = {
-  responseList: {
-    tariffid: string;
-    algorythmType: number;
-    durationSeconds: Nullable<number>;
-  }[];
-};
+  tariffid: string;
+  algorythmType: number;
+  durationSec: Nullable<number>;
+}[];
 
 export type TariffsPricesFromAPI = {
   tariffId: string;

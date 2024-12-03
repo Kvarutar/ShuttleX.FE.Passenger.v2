@@ -1,6 +1,6 @@
 import { type AppState } from '../../../redux/store';
 
-export const contractorSelector = (state: AppState) => state.trip.contractor;
+export const orderSelector = (state: AppState) => state.trip.order;
 export const tripStatusSelector = (state: AppState) => state.trip.status;
 export const routeDropOffInfoSelector = (state: AppState) => state.trip.routeInfo?.dropOff;
 export const routePickUpCoordinatesSelector = (state: AppState) => state.trip.routeInfo?.pickUp.waypoints[0].geo;
@@ -8,5 +8,5 @@ export const routeDropOffCoordinatesSelector = (state: AppState) => state.trip.r
 export const tripTipSelector = (state: AppState) => state.trip.tip;
 export const finishedTripsSelector = (state: AppState) => state.trip.finishedTrips;
 export const isTripLoadingSelector = (state: AppState) => state.trip.isLoading;
-export const orderIdSelector = (state: AppState) => state.trip.contractor?.orderId;
+export const orderIdSelector = (state: AppState) => state.trip.order?.orderId;
 export const isTripCanceledSelector = (state: AppState) => state.trip.isCanceled;

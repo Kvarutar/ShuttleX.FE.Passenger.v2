@@ -2,9 +2,11 @@ import { convertBlobToImgUri, getNetworkErrorInfo } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import {
-  ContractorApiResponse,
-  ContractorInfo,
   FeedbackAPIRequest,
+  GetOrderInfoAPIResponse,
+  GetOrdersHistoryAPIResponse,
+  Order,
+  OrderFromAPI,
   RouteDropOffApiResponse,
   RoutePickUpApiResponse,
   TripInfo,
@@ -25,20 +27,65 @@ export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(
   },
 );
 
-export const getContractorInfo = createAppAsyncThunk<ContractorApiResponse, string>(
-  'trip/getContractorInfo',
+//change to normal order
+export const getOrderInfo = createAppAsyncThunk<Order, string>(
+  'trip/getOrderInfo',
   async (orderId, { rejectWithValue, orderAxios }) => {
     try {
-      const info = (await orderAxios.get<ContractorInfo>(`/${orderId}`)).data;
-      const avatar = await orderAxios
-        .get<Blob>(`/${orderId}/contractors/avatars/${info.avatarIds[0]}`, { responseType: 'blob' })
-        .then(response => convertBlobToImgUri(response.data));
+      const data = (await orderAxios.get<GetOrderInfoAPIResponse>(`/${orderId}`)).data;
+      const avatar = await orderAxios.get<Blob>(`/${orderId}/contractors/avatars/${data.avatarIds[0]}`, {
+        responseType: 'blob',
+      });
 
       return {
-        info,
-        avatar,
+        info: data,
+        avatar: await convertBlobToImgUri(avatar.data),
         orderId,
       };
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
+
+// export const getContractorInfo = createAppAsyncThunk<ContractorApiResponse, string>(
+//   'trip/getContractorInfo',
+//   async (orderId, { rejectWithValue, orderAxios }) => {
+//     try {
+//       const info = (await orderAxios.get<ContractorInfo>(`/${orderId}`)).data;
+//       const avatar = await orderAxios.get<Blob>(`/${orderId}/contractors/avatars/${info.avatarIds[0]}`, { responseType: 'blob' })
+
+//       return {
+//         info,
+//         avatar: await convertBlobToImgUri(avatar.data),
+//         orderId,
+//       };
+//     } catch (error) {
+//       return rejectWithValue(getNetworkErrorInfo(error));
+//     }
+//   },
+// );
+
+export const getOrdersHistory = createAppAsyncThunk<OrderFromAPI[], string>(
+  'trip/getOrdersHistory',
+  async (_, { rejectWithValue, passengerAxios }) => {
+    try {
+      const data = (await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders')).data;
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
+
+export const getActiveOrdersHistory = createAppAsyncThunk<OrderFromAPI[], string>(
+  'trip/getActiveOrdersHistory',
+  async (_, { rejectWithValue, passengerAxios }) => {
+    try {
+      const data = (await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders')).data;
+
+      return data;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

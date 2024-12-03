@@ -30,8 +30,8 @@ import { offerPointsSelector } from '../../../core/ride/redux/offer/selectors';
 import { cleanOrder } from '../../../core/ride/redux/order';
 import { endTrip } from '../../../core/ride/redux/trip';
 import {
-  contractorSelector,
   isTripCanceledSelector,
+  orderSelector,
   routeDropOffInfoSelector,
 } from '../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
@@ -47,7 +47,7 @@ const ReceiptScreen = () => {
   const { t } = useTranslation();
 
   const routeInfo = useSelector(routeDropOffInfoSelector);
-  const contractorInfo = useSelector(contractorSelector);
+  const orderInfo = useSelector(orderSelector);
   const addresses = useSelector(offerPointsSelector);
   const isTripCanceled = useSelector(isTripCanceledSelector);
   const ticket = useSelector(lotteryTicketAfterRideSelector);
@@ -202,7 +202,8 @@ const ReceiptScreen = () => {
           <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
           <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
             {/*TODO: ask back about sign, not code*/}
-            {getCurrencySign(contractorInfo?.info?.currencyCode as CurrencyType)}12,7
+            {getCurrencySign(orderInfo?.info?.currencyCode as CurrencyType)}
+            {orderInfo?.info?.totalFinalPrice}
           </Text>
         </View>
       </View>
@@ -256,6 +257,13 @@ const ReceiptScreen = () => {
                 <Text style={[styles.cancelledTripTitleText, computedStyles.cancelledTripTitleText]}>
                   {t('ride_Receipt_cancelledTrip')}
                 </Text>
+                <View style={styles.priceContainer}>
+                  <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
+                  <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
+                    {/*TODO: ask back about sign, not code*/}
+                    {getCurrencySign(orderInfo?.info?.currencyCode as CurrencyType)}12,7
+                  </Text>
+                </View>
               </View>
               {paymentBarBlock}
             </View>

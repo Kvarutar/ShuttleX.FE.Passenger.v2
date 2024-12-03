@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { BarModes, TariffType, TimerColorModes } from 'shuttlex-integration';
 
-import { Contractor } from '../../../../core/ride/redux/trip/types';
+import { Order } from '../../../../core/ride/redux/trip/types';
 
 export type SquareBarProps = {
   icon: React.ReactNode;
@@ -13,7 +13,7 @@ export type SquareBarProps = {
 export type VisiblePartProps = {
   extraSum: number;
   setExtraSum: (value: number | ((prev: number) => number)) => void;
-  contractorInfo: Contractor;
+  orderInfo: Order;
 };
 
 export type TimerStateDataType = {

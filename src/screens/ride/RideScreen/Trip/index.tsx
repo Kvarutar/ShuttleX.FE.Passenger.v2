@@ -25,13 +25,13 @@ import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
 import { orderIdSelector, tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
 import { cancelTrip } from '../../../../core/ride/redux/trip/thunks';
-import { Contractor, TripStatus } from '../../../../core/ride/redux/trip/types';
+import { Order, TripStatus } from '../../../../core/ride/redux/trip/types';
 import { RootStackParamList } from '../../../../Navigate/props';
 import AlertInitializer from '../../../../shared/AlertInitializer';
 import HiddenPart from './HiddenPart';
 import VisiblePart from './VisiblePart';
 
-const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
+const Trip = ({ orderInfo }: { orderInfo: Order }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
@@ -44,7 +44,7 @@ const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
   const orderId = useSelector(orderIdSelector);
   const [extraSum, setExtraSum] = useState(0);
 
-  const arrivedTime = contractorInfo?.info ? Date.parse(contractorInfo?.info?.arrivalTime) : 0;
+  const arrivedTime = orderInfo?.info ? Date.parse(orderInfo?.info?.estimatedArriveToDropOffDate) : 0;
 
   useEffect(() => {
     if (tripStatus === TripStatus.Finished) {
@@ -88,7 +88,7 @@ const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
         </View>
         <Text
           style={[styles.text, styles.carNameText]}
-        >{`${contractorInfo.info?.carBrand} ${contractorInfo.info?.carModel}`}</Text>
+        >{`${orderInfo.info?.carBrand} ${orderInfo.info?.carModel}`}</Text>
         {/*TODO: delete mock data*/}
         <TrafficIndicator
           containerStyle={styles.trafficIndicatorContainer}
@@ -105,16 +105,16 @@ const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
             <Image
               style={styles.image}
               source={{
-                uri: contractorInfo.avatar,
+                uri: orderInfo.avatar,
               }}
             />
             <View>
-              <Text style={styles.text}>{contractorInfo?.info?.firstName}</Text>
-              <StatsBlock amountLikes={contractorInfo?.info?.totalLikesCount ?? 0} />
+              <Text style={styles.text}>{orderInfo?.info?.firstName}</Text>
+              <StatsBlock amountLikes={orderInfo?.info?.totalLikesCount ?? 0} />
             </View>
           </View>
           <View style={[styles.plateNumberContainer, computedStyles.plateNumberContainer]}>
-            <Text style={styles.text}>{contractorInfo?.info?.carNumber}</Text>
+            <Text style={styles.text}>{orderInfo?.info?.carNumber}</Text>
           </View>
         </View>
       </BottomWindow>
@@ -132,7 +132,7 @@ const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
             <Image
               style={styles.avatar}
               source={{
-                uri: contractorInfo.avatar,
+                uri: orderInfo.avatar,
               }}
             />
           </View>
@@ -149,7 +149,7 @@ const Trip = ({ contractorInfo }: { contractorInfo: Contractor }) => {
           options={'options' in alertData ? alertData.options : undefined}
         />
       ))}
-      visiblePart={<VisiblePart setExtraSum={setExtraSum} extraSum={extraSum} contractorInfo={contractorInfo} />}
+      visiblePart={<VisiblePart setExtraSum={setExtraSum} extraSum={extraSum} orderInfo={orderInfo} />}
       hiddenPart={<HiddenPart extraSum={extraSum} />}
       visiblePartStyle={styles.visiblePartStyle}
       hiddenPartButton={

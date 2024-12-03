@@ -32,7 +32,7 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
-import { offerSelectedTariffSelector } from '../../../../core/ride/redux/offer/selectors';
+import { offerSelector } from '../../../../core/ride/redux/offer/selectors';
 import { createInitialOffer } from '../../../../core/ride/redux/offer/thunks';
 import { setOrderStatus } from '../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
@@ -125,7 +125,7 @@ const PaymentPopup = () => {
   const datePickerRef = useRef<BottomWindowWithGestureRef>(null);
 
   const TariffIcon = tariffIconsData.Basic.icon;
-  const selectedTariff = useSelector(offerSelectedTariffSelector);
+  const { points, selectedTariff, estimatedPrice } = useSelector(offerSelector);
   //TODO: remove this !
   const availableTestPlans = selectedTariff!.matching.filter(item => item.durationSec !== null);
 
@@ -296,7 +296,7 @@ const PaymentPopup = () => {
     {
       title: t('ride_Ride_PaymentPopup_priceTitle'),
       // TODO: swap currencyCode to correct value
-      value: `${getCurrencySign('UAH')}${availableTestPlans[selectedPlan]?.cost}`,
+      value: `${getCurrencySign('UAH')}${estimatedPrice?.value ? estimatedPrice?.value.toFixed(2) : 0}`,
     },
     {
       title: t('ride_Ride_PaymentPopup_timeTitle'),
@@ -396,7 +396,7 @@ const PaymentPopup = () => {
             {t('ride_Ride_PaymentPopup_pickUpPoint')}
           </Text>
           <Text style={styles.addressText} numberOfLines={1}>
-            StreetEasy: NYC Real Estate long long long
+            {points[0].address}
           </Text>
         </View>
       </View>

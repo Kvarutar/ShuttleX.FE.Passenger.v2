@@ -1,15 +1,15 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { NetworkErrorDetailsWithBody } from 'shuttlex-integration';
 
-import { cancelTrip, getContractorInfo, getRouteInfo } from './thunks';
-import { Contractor, RouteDropOffApiResponse, RoutePickUpApiResponse, TripState, TripStatus } from './types';
+import { cancelTrip, getOrderInfo, getRouteInfo } from './thunks';
+import { Order, RouteDropOffApiResponse, RoutePickUpApiResponse, TripState, TripStatus } from './types';
 
 const initialState: TripState = {
   routeInfo: null,
   status: TripStatus.Idle,
   tip: null,
   finishedTrips: 0,
-  contractor: null,
+  order: null,
   isCanceled: false,
   isLoading: false,
   error: null,
@@ -37,8 +37,8 @@ const slice = createSlice({
         dropOff: action.payload.dropOffData,
       };
     },
-    setContractorInfo(state, action: PayloadAction<Contractor>) {
-      state.contractor = action.payload;
+    setOrderInfo(state, action: PayloadAction<Order>) {
+      state.order = action.payload;
     },
     setTripStatus(state, action: PayloadAction<TripStatus>) {
       state.status = action.payload;
@@ -51,7 +51,7 @@ const slice = createSlice({
     endTrip(state) {
       state.routeInfo = null;
       state.status = initialState.status;
-      state.contractor = initialState.contractor;
+      state.order = initialState.order;
       state.isCanceled = initialState.isCanceled;
     },
     addFinishedTrips(state) {
@@ -64,7 +64,7 @@ const slice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(getContractorInfo.pending, state => {
+      .addCase(getOrderInfo.pending, state => {
         slice.caseReducers.setTripIsLoading(state, {
           payload: true,
           type: setTripIsLoading.type,
@@ -74,17 +74,40 @@ const slice = createSlice({
           type: setTripError.type,
         });
       })
-      .addCase(getContractorInfo.fulfilled, (state, action) => {
-        slice.caseReducers.setContractorInfo(state, {
+      .addCase(getOrderInfo.fulfilled, (state, action) => {
+        slice.caseReducers.setOrderInfo(state, {
           payload: action.payload,
-          type: setContractorInfo.type,
+          type: setOrderInfo.type,
         });
+
+        let newTripStatus: TripStatus;
+
+        switch (action.payload.info?.state) {
+          case 'MoveToPickUp':
+            newTripStatus = TripStatus.Accepted;
+            break;
+          case 'InPickUp':
+            newTripStatus = TripStatus.Arrived;
+            break;
+          case 'MoveToDropOff':
+            newTripStatus = TripStatus.Ride;
+            break;
+          default:
+            newTripStatus = TripStatus.Idle;
+            break;
+        }
+
+        slice.caseReducers.setTripStatus(state, {
+          payload: newTripStatus,
+          type: setTripError.type,
+        });
+
         slice.caseReducers.setTripError(state, {
           payload: initialState.error,
           type: setTripError.type,
         });
       })
-      .addCase(getContractorInfo.rejected, (state, action) => {
+      .addCase(getOrderInfo.rejected, (state, action) => {
         slice.caseReducers.setTripIsLoading(state, {
           payload: false,
           type: setTripIsLoading.type,
@@ -118,7 +141,7 @@ export const {
   setTripIsLoading,
   setTripError,
   setTripStatus,
-  setContractorInfo,
+  setOrderInfo,
   setTip,
   endTrip,
   addFinishedTrips,

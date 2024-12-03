@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { getTokens, useTheme } from 'shuttlex-integration';
@@ -24,6 +24,8 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
   const passengerZone = useSelector(passengerZoneSelector);
 
+  const [locationLoaded, setLocationLoaded] = useState(false);
+
   useEffect(() => {
     setThemeMode('light');
   }, [setThemeMode]);
@@ -34,15 +36,33 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
 
       if (accessToken) {
         getFirebaseDeviceToken();
+
+        dispatch(getRecentDropoffs({ amount: 10 }));
         dispatch(getProfileInfo());
         console.log('accessToken', accessToken);
         dispatch(getAllCurrentTickets());
         dispatch(setIsLoggedIn(true));
+
+        dispatch(getOrUpdateZone());
       } else {
         dispatch(setIsLoggedIn(false));
       }
     })();
   }, [dispatch, isLoggedIn]);
+
+  useEffect(() => {
+    if (locationLoaded) {
+      dispatch(getOrUpdateZone());
+      dispatch(getAvaliableTariffs());
+      dispatch(getRecentDropoffs({ amount: 10 }));
+    }
+  }, [locationLoaded, dispatch]);
+
+  useEffect(() => {
+    if (defaultLocation && !locationLoaded) {
+      setLocationLoaded(true);
+    }
+  }, [defaultLocation, locationLoaded]);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -59,16 +79,12 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
   }, [dispatch, isLoggedIn]);
 
   useEffect(() => {
-    (async () => {
-      await dispatch(getOrUpdateZone());
-      dispatch(getAvaliableTariffs());
-      dispatch(getRecentDropoffs({ amount: 10 }));
-    })();
-  }, [defaultLocation, dispatch]);
-
-  useEffect(() => {
     dispatch(updateProfileLanguage(i18n.language));
   }, [passengerZone, i18n.language, dispatch]);
+
+  useEffect(() => {
+    dispatch(getAvaliableTariffs());
+  }, [passengerZone, dispatch]);
 
   useEffect(() => {
     setupNotifications();
