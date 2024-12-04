@@ -64,6 +64,7 @@ const RaffleScreen = (): JSX.Element => {
 const styles = StyleSheet.create({
   container: {
     flex: 0,
+    paddingBottom: 0,
   },
   wrapper: {
     flex: 0,

@@ -8,6 +8,7 @@ import {
   Bar,
   Button,
   ButtonShapes,
+  ButtonSizes,
   CircleButtonModes,
   CloseIcon,
   MapPinIcon,
@@ -16,8 +17,6 @@ import {
   PointIcon,
   SafeAreaView,
   Text,
-  TimerV1,
-  TimerV1Modes,
   useTheme,
 } from 'shuttlex-integration';
 
@@ -104,29 +103,27 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
       >
         <CloseIcon />
       </Button>
-      <View style={styles.timerContainer}>
-        {isLoading ? (
-          <TimerV1
-            withCountdown={false}
-            startColor={colors.primaryGradientStartColor}
-            endColor={colors.primaryColor}
-            mode={TimerV1Modes.Mini}
-          />
-        ) : (
-          <Bar style={styles.bottomBar}>
-            <PointIcon style={styles.pinIcon} />
-            {address ? (
-              <Text style={styles.address}>{address.address}</Text>
-            ) : (
-              <Text style={[styles.address, { color: colors.textSecondaryColor }]}>
-                {t('ride_Ride_MapAddressSelect_placeholder')}
-              </Text>
-            )}
-            <Button style={styles.buttonContainer} shape={ButtonShapes.Circle} onPress={onConfirm} disabled={isLoading}>
-              <ArrowIcon />
-            </Button>
-          </Bar>
-        )}
+      <View>
+        <Bar style={styles.bottomBar}>
+          <PointIcon style={styles.pinIcon} />
+          {address ? (
+            <Text style={styles.address}>{address.address}</Text>
+          ) : (
+            <Text style={[styles.address, { color: colors.textSecondaryColor }]}>
+              {t('ride_Ride_MapAddressSelect_placeholder')}
+            </Text>
+          )}
+          <Button
+            size={ButtonSizes.S}
+            isLoading={isLoading}
+            style={styles.buttonStyle}
+            shape={ButtonShapes.Circle}
+            onPress={onConfirm}
+            circleSubContainerStyle={styles.circleSubContainerStyle}
+          >
+            <ArrowIcon />
+          </Button>
+        </Bar>
       </View>
     </SafeAreaView>
   );
@@ -166,17 +163,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flexShrink: 1,
   },
-  buttonContainer: {
+  buttonStyle: {
     alignSelf: 'stretch',
-    height: 44,
-    width: 44,
+  },
+  circleSubContainerStyle: {
+    borderWidth: 0,
   },
   goBackButtonContainer: {
     borderWidth: 0,
-  },
-  timerContainer: {
-    alignItems: 'center',
-    marginBottom: 5,
   },
 });
 

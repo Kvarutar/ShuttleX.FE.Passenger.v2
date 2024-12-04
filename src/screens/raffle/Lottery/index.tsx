@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { Dimensions, LayoutChangeEvent, Platform, StyleSheet, View } from 'react-native';
 import { useDerivedValue, useSharedValue } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import {
   BottomWindowWithGesture,
@@ -51,6 +52,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
   const intervalRef = useRef<Nullable<NodeJS.Timeout>>(null);
   const isFirstRender = useRef<boolean>(false);
   const dispatch = useAppDispatch();
+  const insets = useSafeAreaInsets();
 
   const timeUntilLottery = useSelector(lotteryStartTimeSelector);
   const lotteryState = useSelector(lotteryStateSelector);
@@ -70,6 +72,8 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
   const contentAnimatedHeight = useSharedValue(0);
   const podiumAnimatedHeight = useSharedValue(0);
   const bottomWindowMinHeight = useSharedValue(0);
+  const safeAreaViewPaddingVertical =
+    insets.bottom && Platform.OS === 'ios' ? sizes.paddingVertical : sizes.paddingVertical / 2;
 
   const isWinnersExist = allWinners.some(prize => prize.winnerId !== null);
 
@@ -224,7 +228,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
 
   useDerivedValue(() => {
     bottomWindowMinHeight.value =
-      (contentAnimatedHeight.value - podiumAnimatedHeight.value + sizes.paddingVertical) / windowHeight;
+      (contentAnimatedHeight.value - podiumAnimatedHeight.value + safeAreaViewPaddingVertical) / windowHeight;
   });
 
   if ((isPrizesLoading && lotteryState === 'CurrentUpcoming') || isPreviousPrizesLoading) {
@@ -237,7 +241,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
 
   return (
     <>
-      <SafeAreaView>
+      <SafeAreaView containerStyle={styles.safeAreaViewContainerStyle}>
         <View style={styles.podiumContainer} onLayout={onContentPartLayout}>
           <View onLayout={onPodiumPartLayout}>
             {lotteryState === 'CurrentUpcoming' && timeUntilLottery && isPrizeSelected && (
@@ -265,8 +269,8 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
             />
           )
         }
-        headerWrapperStyle={styles.bottomWindowHeaderWrapper}
         containerStyle={styles.bottomWindowContainer}
+        visiblePartStyle={styles.visiblePartStyle}
       />
 
       <PrizesSlider
@@ -280,6 +284,9 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
 };
 
 const styles = StyleSheet.create({
+  safeAreaViewContainerStyle: {
+    paddingTop: 0,
+  },
   title: {
     marginTop: 12,
     fontFamily: 'Inter Medium',
@@ -290,8 +297,11 @@ const styles = StyleSheet.create({
   bottomWindowContainer: {
     zIndex: 2,
   },
+  visiblePartStyle: {
+    paddingTop: 18,
+    marginBottom: 8,
+  },
   renderContainer: {
-    marginTop: 8,
     flexWrap: 'wrap',
     gap: 8,
   },
@@ -304,9 +314,7 @@ const styles = StyleSheet.create({
   },
   bottomWindowHeader: {
     alignSelf: 'center',
-  },
-  bottomWindowHeaderWrapper: {
-    paddingTop: 10,
+    marginTop: 8,
   },
   prizesErrorText: {
     alignSelf: 'center',
