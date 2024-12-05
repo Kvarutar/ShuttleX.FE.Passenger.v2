@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { FileInfo, MediaAmount, MediaCore, Text, useTheme } from 'shuttlex-integration';
 
-import { saveAvatar } from '../../../core/passenger/redux/thunks';
+import { getProfileInfo, saveAvatar } from '../../../core/passenger/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { RootStackParamList } from '../../../Navigate/props';
 
@@ -33,6 +33,7 @@ const ProfilePhotoScreen = (): JSX.Element => {
 
   const onSaveFiles = async (files: FileInfo[]) => {
     await dispatch(saveAvatar({ file: files[0] }));
+    dispatch(getProfileInfo());
   };
 
   return (

@@ -5,7 +5,6 @@ import authReducer from '../auth/redux';
 import lotteryReducer from '../lottery/redux';
 import accountSettingsReducer from '../menu/redux/accountSettings';
 import notificationsReducer from '../menu/redux/notifications';
-import ticketWalletReducer from '../menu/redux/ticketWallet';
 import walletRedicer from '../menu/redux/wallet';
 import passengerReducer from '../passenger/redux';
 import alertsReducer from '../ride/redux/alerts';
@@ -29,7 +28,6 @@ const rootReducer = combineReducers({
   passenger: passengerReducer,
   signalr: signalRReducer,
   accountSettings: accountSettingsReducer,
-  ticketWallet: ticketWalletReducer,
   lottery: lotteryReducer,
 });
 

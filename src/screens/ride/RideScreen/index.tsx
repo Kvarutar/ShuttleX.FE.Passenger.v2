@@ -12,7 +12,8 @@ import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
-import { orderSelector } from '../../../core/ride/redux/trip/selectors';
+import { orderIdSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
+import { getTripCanceledBeforePickUpLongPolling } from '../../../core/ride/redux/trip/thunks';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
 import MapView from './MapView';
@@ -35,6 +36,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   // const [isMysteryBoxPopupVisible, setIsMysteryBoxPopupVisible] = useState(false);
 
   const orderInfo = useSelector(orderSelector);
+  const orderId = useSelector(orderIdSelector);
 
   //for test
   // useEffect(() => {
@@ -42,6 +44,13 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   //     setIsWinningPopupVisible(true);
   //   }, 2000);
   // }, []);
+
+  useEffect(() => {
+    //TODO get to know if this is the best place for this longpolling
+    if (orderId) {
+      dispatch(getTripCanceledBeforePickUpLongPolling(orderId));
+    }
+  }, [orderId, dispatch]);
 
   useEffect(() => {
     (async () => {

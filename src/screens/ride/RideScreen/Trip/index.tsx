@@ -24,7 +24,11 @@ import {
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
 import { orderIdSelector, tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
-import { cancelTrip } from '../../../../core/ride/redux/trip/thunks';
+import {
+  cancelTrip,
+  getTripCanceledAfterPickUpLongPolling,
+  getTripSuccessfullLongPolling,
+} from '../../../../core/ride/redux/trip/thunks';
 import { Order, TripStatus } from '../../../../core/ride/redux/trip/types';
 import { RootStackParamList } from '../../../../Navigate/props';
 import AlertInitializer from '../../../../shared/AlertInitializer';
@@ -47,10 +51,15 @@ const Trip = ({ orderInfo }: { orderInfo: Order }) => {
   const arrivedTime = orderInfo?.info ? Date.parse(orderInfo?.info?.estimatedArriveToDropOffDate) : 0;
 
   useEffect(() => {
+    if (orderId && tripStatus === TripStatus.Ride) {
+      dispatch(getTripSuccessfullLongPolling(orderId));
+      dispatch(getTripCanceledAfterPickUpLongPolling(orderId));
+    }
+
     if (tripStatus === TripStatus.Finished) {
       navigation.navigate('Rating');
     }
-  }, [tripStatus, navigation]);
+  }, [tripStatus, navigation, orderId, dispatch]);
 
   //TODO Where can we get tarrifType??? and change TariffIcon
   const TariffIcon = tariffIconsData.Basic.icon;

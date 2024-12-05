@@ -3,6 +3,7 @@ import authResetInstanceInitializer from './authResetClient';
 import cashieringInstanceInitializer from './casheringClient';
 import configInstanceInitializer from './configClient';
 import geomappingInstanceInitializer from './geomappingClient';
+import passengerLongPollingInstanceInitializer from './longPollingClient';
 import lotteryInstanceInitializer from './lotteryClient';
 import matchingInstanceInitializer from './matchingClient';
 import notificatorInstanceInitializer from './notificatorClient';
@@ -22,6 +23,7 @@ const axiosInitilizers = {
   orderAxios: orderInstanceInitializer,
   passengerAxios: passengerInstanceInitializer,
   profileAxios: profileInstanceInitializer,
+  passengerLongPollingAxios: passengerLongPollingInstanceInitializer,
 };
 
 export default axiosInitilizers;

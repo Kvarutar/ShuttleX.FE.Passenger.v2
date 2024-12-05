@@ -81,6 +81,15 @@ export type FeedbackAPIRequest = {
   negativeFeedbacks: string[];
 };
 
+export type LongPollingAPIResponse = {
+  orderId: string;
+};
+
+export type OrderLongPollingAPIResponse = LongPollingAPIResponse;
+export type TripSuccessfullLongPollingAPIResponse = LongPollingAPIResponse;
+export type TripCanceledBeforePickupLongPollingAPIResponse = LongPollingAPIResponse;
+export type TripCanceledAfterPickupLongPollingAPIResponse = LongPollingAPIResponse;
+
 //TODO do something with this type
 type RouteInfoOld = {
   duration: number;

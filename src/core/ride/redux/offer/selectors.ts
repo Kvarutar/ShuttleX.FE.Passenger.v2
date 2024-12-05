@@ -4,6 +4,7 @@ import { AppState } from '../../../redux/store';
 import { GroupedTariffs } from './types';
 
 export const offerSelector = (state: AppState) => state.offer;
+export const offerIdSelector = (state: AppState) => state.offer.offerId;
 export const offerLoadingsSelector = (state: AppState) => state.offer.loading;
 export const offerRoutesSelector = (state: AppState) => state.offer.offerRoutes;
 export const offerRecentDropoffsSelector = (state: AppState) => state.offer.recentDropoffs;

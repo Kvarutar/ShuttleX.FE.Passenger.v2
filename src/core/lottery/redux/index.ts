@@ -57,6 +57,10 @@ const slice = createSlice({
     setTicketAfterRide(state, action: PayloadAction<Nullable<TicketFromAPI>>) {
       state.ticketAfterRide = action.payload;
     },
+    //TODO call when lottery is done
+    clearTicketList(state) {
+      state.tickets = [];
+    },
   },
   extraReducers: builder => {
     builder

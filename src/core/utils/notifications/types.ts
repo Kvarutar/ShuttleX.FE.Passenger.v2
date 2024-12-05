@@ -15,6 +15,7 @@ export enum NotificationType {
   DriverArrived = 'driver_arrived',
   DriverRejected = 'driver_rejected',
   WinnerFounded = 'winner_founded',
+  DriverCanceled = 'driver_canceled',
 }
 
 export type NotificationPayload = {

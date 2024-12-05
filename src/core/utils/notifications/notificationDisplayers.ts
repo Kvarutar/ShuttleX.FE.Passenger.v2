@@ -2,7 +2,10 @@ import notifee, { AndroidColor } from '@notifee/react-native';
 
 import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
-import { addFinishedTrips, setTripIsCanceled, setTripStatus } from '../../ride/redux/trip';
+import { createInitialOffer } from '../../ride/redux/offer/thunks';
+import { setOrderStatus } from '../../ride/redux/order';
+import { OrderStatus } from '../../ride/redux/order/types';
+import { addFinishedTrips, endTrip, setTripIsCanceled, setTripStatus } from '../../ride/redux/trip';
 import { getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { NotificationPayload, NotificationRemoteMessage, NotificationType } from './types';
@@ -35,9 +38,16 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
   [NotificationType.DriverArrived]: async () => {
     store.dispatch(setTripStatus(TripStatus.Arrived));
   },
-  [NotificationType.DriverRejected]: async () => {
+  //when trip started and driver canceled trip - go to receipt screen
+  [NotificationType.DriverCanceled]: async () => {
     store.dispatch(setTripIsCanceled(true));
     store.dispatch(setTripStatus(TripStatus.Finished));
+  },
+  //when trip doesnt start and driver rejected - go to search driver again
+  [NotificationType.DriverRejected]: async () => {
+    store.dispatch(endTrip());
+    store.dispatch(createInitialOffer());
+    store.dispatch(setOrderStatus(OrderStatus.Confirming));
   },
   [NotificationType.TripStarted]: async () => {
     store.dispatch(setTripStatus(TripStatus.Ride));
