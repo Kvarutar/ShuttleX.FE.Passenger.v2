@@ -3,18 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSelector } from 'react-redux';
-import { PassengerDefaultCarImage, sizes, Text, useTheme } from 'shuttlex-integration';
+import { PassengerDefaultCarImage, sizes, Skeleton, Text, useTheme } from 'shuttlex-integration';
 
 import imageStartRideCarouselCapybara from '../../../../../../../assets/images/startRide/imageStartRideCarouselCapybara';
 import ImageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
-import { lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
+import { isLotteryLoadingSelector, lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
 import usePrizeTimer from '../utils/usePrizeTimer';
 import { SliderItemProps } from './types';
 
 const windowWidth = Dimensions.get('window').width;
 const carouselAnimationDurations = 300;
 
-const SliderItem = ({ topText, bottomText, image }: SliderItemProps) => {
+const SliderItem = ({ topText, bottomText, image, isTextLoading }: SliderItemProps) => {
   const { colors } = useTheme();
 
   const computedStyles = StyleSheet.create({
@@ -33,7 +33,11 @@ const SliderItem = ({ topText, bottomText, image }: SliderItemProps) => {
     <View style={[styles.container, computedStyles.container]}>
       <View style={styles.textContainer}>
         <Text style={[styles.text, computedStyles.topText]}>{topText}</Text>
-        <Text style={[styles.text, computedStyles.bottomText]}>{bottomText}</Text>
+        {isTextLoading ? (
+          <Skeleton skeletonContainerStyle={styles.skeletonUpcomingLotteryStartTime} />
+        ) : (
+          <Text style={[styles.text, computedStyles.bottomText]}>{bottomText}</Text>
+        )}
       </View>
       {image}
     </View>
@@ -44,6 +48,7 @@ const HeaderCarousel = () => {
   const { t } = useTranslation();
   const carouselRef = useRef<ICarouselInstance>(null);
   const lotteryStartTime = useSelector(lotteryStartTimeSelector);
+  const isLotteryLoading = useSelector(isLotteryLoadingSelector);
 
   const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime ?? 0));
 
@@ -104,7 +109,14 @@ const HeaderCarousel = () => {
         data={carouselData}
         onSnapToItem={index => setCurrentIndex(index)}
         scrollAnimationDuration={carouselAnimationDurations}
-        renderItem={({ item }) => <SliderItem topText={item.topText} bottomText={item.bottomText} image={item.image} />}
+        renderItem={({ item, index }) => (
+          <SliderItem
+            topText={item.topText}
+            bottomText={item.bottomText}
+            image={item.image}
+            isTextLoading={isLotteryLoading && index === 1}
+          />
+        )}
       />
       <View style={styles.dotsContainer}>{renderDots}</View>
     </View>
@@ -112,6 +124,11 @@ const HeaderCarousel = () => {
 };
 
 const styles = StyleSheet.create({
+  skeletonUpcomingLotteryStartTime: {
+    width: 150,
+    height: 21,
+    borderRadius: 4,
+  },
   carouselWrapper: {
     alignItems: 'center',
     justifyContent: 'space-between',

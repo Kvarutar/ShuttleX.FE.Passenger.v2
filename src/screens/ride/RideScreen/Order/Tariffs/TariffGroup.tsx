@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { getCurrencySign, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { useSelector } from 'react-redux';
+import { getCurrencySign, Skeleton, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
+import { isTariffsPricesLoadingSelector } from '../../../../../core/ride/redux/offer/selectors';
 import { TariffsType } from '../../../../../core/ride/redux/offer/types';
+import passengerColors from '../../../../../shared/colors/colors';
 import { TariffGroupProps } from './types';
 
 const animationDuration = 300;
@@ -12,6 +15,8 @@ const TariffGroup = ({ price, title, isSelected, onPress, style, isAvailableTari
   const { t } = useTranslation();
   const { colors } = useTheme();
   const iconsData = useTariffsIcons();
+
+  const isTariffsPricesLoading = useSelector(isTariffsPricesLoadingSelector);
 
   const tariffsGroupImagesNames: Record<TariffsType, { title: TariffsType; image: TariffType }> = {
     economy: {
@@ -58,10 +63,19 @@ const TariffGroup = ({ price, title, isSelected, onPress, style, isAvailableTari
     >
       <Animated.View style={[styles.container, animatedStyles]}>
         <Text style={[styles.title, computedStyles.title]}>{tariffsGroupImagesNames[title].title}</Text>
-        <Text style={[styles.price, computedStyles.price]}>
-          {/*TODO: swap currencyCode to correct value*/}
-          {isAvailableTariffGroup ? `~${getCurrencySign('UAH')}${price}` : t('ride_Ride_TariffGroup_notAvailable')}
-        </Text>
+        {isTariffsPricesLoading ? (
+          <Skeleton
+            skeletonContainerStyle={styles.skeletonTariffPrice}
+            boneColor={
+              isSelected ? colors.skeletonBoneColor : passengerColors.tariffsColors.tariffGroupPriceLoadingColor
+            }
+          />
+        ) : (
+          <Text style={[styles.price, computedStyles.price]}>
+            {/*TODO: swap currencyCode to correct value*/}
+            {isAvailableTariffGroup ? `~${getCurrencySign('UAH')}${price}` : t('ride_Ride_TariffGroup_notAvailable')}
+          </Text>
+        )}
         <IconComponent style={styles.img} />
       </Animated.View>
     </Pressable>
@@ -69,6 +83,11 @@ const TariffGroup = ({ price, title, isSelected, onPress, style, isAvailableTari
 };
 
 const styles = StyleSheet.create({
+  skeletonTariffPrice: {
+    width: 60,
+    height: 20,
+    borderRadius: 4,
+  },
   wrapper: {
     flex: 1,
     height: 130,

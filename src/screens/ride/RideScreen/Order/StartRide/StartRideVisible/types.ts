@@ -4,6 +4,7 @@ export type SliderItemProps = {
   topText: string;
   bottomText: string;
   image: React.ReactNode;
+  isTextLoading: boolean;
 };
 
 export type StartRideVisibleProps = {

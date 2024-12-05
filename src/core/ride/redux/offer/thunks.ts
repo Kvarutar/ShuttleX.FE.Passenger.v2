@@ -5,7 +5,7 @@ import { createAppAsyncThunk } from '../../../redux/hooks';
 import { geolocationCoordinatesSelector } from '../geolocation/selectors';
 import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
-import { setIsAvaliableTariff, updateTariffMatching, updateTariffsCost } from '.';
+import { setIsAvaliableTariff, updateTariffMatching } from '.';
 import { offerSelector } from './selectors';
 import {
   AddressSearchPayload,
@@ -18,6 +18,7 @@ import {
   GetOfferRoutesAPIRequest,
   GetOfferRoutesAPIResoponse,
   GetTariffsPricesAPIResponse,
+  GetTariffsPricesThunkResult,
   OfferRoutesFromAPI,
   RecentAddressAPIResponse,
   RecentDropoffsAPIResponse,
@@ -208,9 +209,9 @@ export const createPhantomOffer = createAppAsyncThunk<void, void>(
   },
 );
 
-export const getTariffsPrices = createAppAsyncThunk<void, void>(
+export const getTariffsPrices = createAppAsyncThunk<GetTariffsPricesThunkResult, void>(
   'offer/getTariffsPrices',
-  async (_, { rejectWithValue, cashieringAxios, getState, dispatch }) => {
+  async (_, { rejectWithValue, cashieringAxios, getState }) => {
     const state = getState();
 
     try {
@@ -219,9 +220,10 @@ export const getTariffsPrices = createAppAsyncThunk<void, void>(
           `/cashiering/ride/routes/${state.offer.offerRoutes.routeId}/zones/${state.passenger.zone.id}/cost`,
         );
 
-        dispatch(updateTariffsCost(response.data));
+        return response.data;
       } else {
         console.error('Something wrong with the route in getTariffsPrices thunk');
+        return null;
       }
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));

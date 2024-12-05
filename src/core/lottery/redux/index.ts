@@ -67,6 +67,8 @@ const slice = createSlice({
       })
       .addCase(getCurrentUpcomingLottery.fulfilled, (state, action) => {
         state.lottery = action.payload;
+        state.loading.lottery = false;
+        state.error.lottery = null;
       })
       .addCase(getCurrentUpcomingLottery.rejected, (state, action) => {
         state.loading.lottery = false;

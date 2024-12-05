@@ -17,7 +17,12 @@ import {
 } from 'shuttlex-integration';
 
 import { lotteryTicketsSelector } from '../../../core/lottery/redux/selectors';
-import { profilePrefferedNameSelector, profileSelectedPhotoSelector } from '../../../core/passenger/redux/selectors';
+import {
+  isPassengerAvatarLoadingSelector,
+  isPassengerInfoLoadingSelector,
+  profilePrefferedNameSelector,
+  profileSelectedPhotoSelector,
+} from '../../../core/passenger/redux/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import { MenuProps } from './types';
 
@@ -27,6 +32,9 @@ const Menu = ({ onClose }: MenuProps) => {
   const { t } = useTranslation();
   const prefferedName = useSelector(profilePrefferedNameSelector);
   const selectedPhoto = useSelector(profileSelectedPhotoSelector);
+
+  const isPassengerInfoLoading = useSelector(isPassengerInfoLoadingSelector);
+  const isPassengerAvatarLoading = useSelector(isPassengerAvatarLoadingSelector);
 
   const currentRoute = useNavigationState(state => state.routes[state.index].name);
 
@@ -104,6 +112,10 @@ const Menu = ({ onClose }: MenuProps) => {
       additionalButton={<TicketWalletButton />}
       style={styles.menu}
       currentRoute={currentRoute}
+      loading={{
+        avatar: isPassengerAvatarLoading,
+        username: isPassengerInfoLoading,
+      }}
     />
   );
 };

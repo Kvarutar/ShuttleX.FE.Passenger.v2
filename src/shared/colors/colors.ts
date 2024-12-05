@@ -4,6 +4,7 @@ const passengerColors: PassengerColors = {
   lotteryColors: {
     background: '#0133FC',
     text: '#FFFFFF99',
+    timeTextLoadingColor: '#3458e9',
   },
   adsBackgroundColor: {
     whiteOpacityLight: '#FFFFFF1A',
@@ -14,6 +15,9 @@ const passengerColors: PassengerColors = {
   },
   raffle: {
     surpriseTitleBackgroundColor: '#00000080',
+  },
+  tariffsColors: {
+    tariffGroupPriceLoadingColor: '#e2e2e2',
   },
 };
 

@@ -1,5 +1,5 @@
 import { LatLng } from 'react-native-maps';
-import { Nullable } from 'shuttlex-integration';
+import { NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 
 type NameTypeFromAPI = 'Preferred';
 
@@ -62,6 +62,16 @@ export type ZoneFromAPI = {
 export type PassengerState = {
   profile: Nullable<Profile>;
   zone: Nullable<ZoneFromAPI>;
+  loading: {
+    passengerAvatar: boolean;
+    passengerInfo: boolean;
+    general: boolean;
+  };
+  error: {
+    passengerAvatar: Nullable<NetworkErrorDetailsWithBody<any>>;
+    passengerInfo: Nullable<NetworkErrorDetailsWithBody<any>>;
+    general: Nullable<NetworkErrorDetailsWithBody<any>>;
+  };
 };
 
 export type GetOrUpdateZoneAPIResponse = ZoneFromAPI[];

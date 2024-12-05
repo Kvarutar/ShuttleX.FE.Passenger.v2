@@ -31,9 +31,13 @@ export type OfferState = {
     searchAdresses: boolean;
     avaliableTariffs: boolean;
     offerRoutes: boolean;
+    recentDropoffs: boolean;
+    tariffsPrices: boolean;
   };
   errors: {
     avaliableTariffs: Nullable<NetworkErrorDetailsWithBody<any>>;
+    recentDropoffs: Nullable<NetworkErrorDetailsWithBody<any>>;
+    tariffsPrices: Nullable<NetworkErrorDetailsWithBody<any>>;
   };
   offerRoutes: Nullable<OfferRoutesFromAPI>;
   avaliableTariffs: Nullable<TariffWithMatching[]>;
@@ -152,6 +156,8 @@ export type TariffsPricesFromAPI = {
 };
 
 export type GetTariffsPricesAPIResponse = TariffsPricesFromAPI[];
+
+export type GetTariffsPricesThunkResult = Nullable<GetTariffsPricesAPIResponse>;
 
 export type CreateInitialOfferAPIResponse = {
   id: string;

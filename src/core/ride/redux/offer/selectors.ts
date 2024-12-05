@@ -9,7 +9,6 @@ export const offerRoutesSelector = (state: AppState) => state.offer.offerRoutes;
 export const offerRecentDropoffsSelector = (state: AppState) => state.offer.recentDropoffs;
 export const offerPointsSelector = (state: AppState) => state.offer.points;
 export const offerSelectedTariffSelector = (state: AppState) => state.offer.selectedTariff;
-export const isSearchAdressesLoadingSelector = (state: AppState) => state.offer.loading.searchAdresses;
 export const offerAvaliableTariffsSelector = (state: AppState) => state.offer.avaliableTariffs;
 
 export const groupedTariffsSelector = createSelector(
@@ -29,3 +28,12 @@ export const groupedTariffsSelector = createSelector(
     },
   }),
 );
+
+//Loadings
+export const isSearchAdressesLoadingSelector = (state: AppState) => state.offer.loading.searchAdresses;
+export const isRecentDropoffsLoadingSelector = (state: AppState) => state.offer.loading.recentDropoffs;
+export const isTariffsPricesLoadingSelector = (state: AppState) => state.offer.loading.tariffsPrices;
+
+//Errors
+export const recentDropoffsErrorSelector = (state: AppState) => state.offer.errors.recentDropoffs;
+export const tariffsPricesErrorSelector = (state: AppState) => state.offer.errors.tariffsPrices;

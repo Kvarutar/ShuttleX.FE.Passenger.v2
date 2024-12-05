@@ -8,6 +8,7 @@ import {
   getAvaliableTariffs,
   getOfferRoutes,
   getRecentDropoffs,
+  getTariffsPrices,
   searchAddress,
 } from './thunks';
 import {
@@ -34,10 +35,14 @@ const initialState: OfferState = {
     searchAdresses: false,
     avaliableTariffs: false,
     offerRoutes: false,
+    recentDropoffs: false,
+    tariffsPrices: false,
   },
   avaliableTariffs: null,
   errors: {
     avaliableTariffs: null,
+    recentDropoffs: null,
+    tariffsPrices: null,
   },
   selectedTariff: null,
   estimatedPrice: null,
@@ -125,8 +130,18 @@ const slice = createSlice({
   },
   extraReducers: builder => {
     builder
+      .addCase(getRecentDropoffs.pending, state => {
+        state.loading.recentDropoffs = true;
+        state.errors.recentDropoffs = null;
+      })
       .addCase(getRecentDropoffs.fulfilled, (state, action) => {
         state.recentDropoffs = action.payload;
+        state.loading.recentDropoffs = false;
+        state.errors.recentDropoffs = null;
+      })
+      .addCase(getRecentDropoffs.rejected, (state, action) => {
+        state.loading.recentDropoffs = false;
+        state.errors.recentDropoffs = action.payload as NetworkErrorDetailsWithBody<any>;
       })
       .addCase(searchAddress.pending, state => {
         state.loading.searchAdresses = true;
@@ -149,6 +164,23 @@ const slice = createSlice({
       .addCase(getAvaliableTariffs.rejected, (state, action) => {
         state.loading.avaliableTariffs = false;
         state.errors.avaliableTariffs = action.payload as NetworkErrorDetailsWithBody<any>;
+      })
+      .addCase(getTariffsPrices.pending, state => {
+        state.loading.tariffsPrices = true;
+        state.errors.tariffsPrices = null;
+      })
+      .addCase(getTariffsPrices.fulfilled, (state, action) => {
+        if (action.payload) {
+          slice.caseReducers.updateTariffsCost(state, {
+            payload: action.payload,
+            type: updateTariffsCost.type,
+          });
+        }
+        state.loading.tariffsPrices = false;
+      })
+      .addCase(getTariffsPrices.rejected, (state, action) => {
+        state.loading.tariffsPrices = false;
+        state.errors.tariffsPrices = action.payload as NetworkErrorDetailsWithBody<any>;
       })
       .addCase(getOfferRoutes.pending, state => {
         slice.caseReducers.setOfferRoutesLoading(state, {

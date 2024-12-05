@@ -3,14 +3,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Button, ButtonProps, Text, useTheme } from 'shuttlex-integration';
+import { Button, ButtonProps, Skeleton, Text, useTheme } from 'shuttlex-integration';
 
 import imageBonuses from '../../../../../../../assets/images/startRide/imageBonusesBackground';
 import imageCollectCapybara from '../../../../../../../assets/images/startRide/imageCollectCapybara';
 import imageStartRideCarouselCapybara from '../../../../../../../assets/images/startRide/imageStartRideCarouselCapybara';
 import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
 import imageUkraineHeart from '../../../../../../../assets/images/startRide/imageUkraineHeart';
-import { lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
+import { isLotteryLoadingSelector, lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
 import { RootStackParamList } from '../../../../../../Navigate/props';
 import passengerColors from '../../../../../../shared/colors/colors';
 import usePrizeTimer from '../utils/usePrizeTimer';
@@ -32,6 +32,7 @@ const StartRideHidden = () => {
   const lotteryStartTime = useSelector(lotteryStartTimeSelector);
   const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime ?? 0));
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const isLotteryLoading = useSelector(isLotteryLoadingSelector);
 
   const collectedCapiArr = Array.from({ length: Math.min(testData.capiAmount - 1, 4) });
 
@@ -101,9 +102,17 @@ const StartRideHidden = () => {
             <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
               {t('ride_Ride_StartRideHidden_adsPrizes')}
             </Text>
-            <Text style={[styles.timeText, computedStyles.lotteryText]}>
-              {`${hours}${t('ride_Ride_StartRide_hours')}:${minutes}${t('ride_Ride_StartRide_minutes')}:${seconds}${t('ride_Ride_StartRide_seconds')}`}
-            </Text>
+            {isLotteryLoading ? (
+              <Skeleton
+                skeletonContainerStyle={styles.skeletonUpcomingLotteryStartTime}
+                boneColor={passengerColors.lotteryColors.timeTextLoadingColor}
+                highlightColor={passengerColors.adsBackgroundColor.whiteOpacityStrong}
+              />
+            ) : (
+              <Text style={[styles.timeText, computedStyles.lotteryText]}>
+                {`${hours}${t('ride_Ride_StartRide_hours')}:${minutes}${t('ride_Ride_StartRide_minutes')}:${seconds}${t('ride_Ride_StartRide_seconds')}`}
+              </Text>
+            )}
             <View style={styles.prizesButtonContainer}>
               <AdsButton
                 text={t('ride_Ride_StartRideHidden_adsPrizesButtonStart')}
@@ -231,6 +240,13 @@ const StartRideHidden = () => {
 };
 
 const styles = StyleSheet.create({
+  skeletonUpcomingLotteryStartTime: {
+    width: 150,
+    height: 22,
+    borderRadius: 4,
+    marginBottom: 12,
+    marginTop: 6,
+  },
   wrapper: {
     paddingBottom: 16,
   },

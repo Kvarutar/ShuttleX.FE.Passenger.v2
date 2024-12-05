@@ -2,6 +2,7 @@ export type PassengerColors = {
   lotteryColors: {
     background: string;
     text: string;
+    timeTextLoadingColor: string;
   };
   adsBackgroundColor: {
     whiteOpacityLight: string;
@@ -12,5 +13,8 @@ export type PassengerColors = {
   };
   raffle: {
     surpriseTitleBackgroundColor: string;
+  };
+  tariffsColors: {
+    tariffGroupPriceLoadingColor: string;
   };
 };
