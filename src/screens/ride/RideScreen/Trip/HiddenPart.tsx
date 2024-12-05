@@ -87,11 +87,12 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
   });
 
   const tripInfo = [
-    {
-      text: t('ride_Ride_Trip_mysteryBoxTitle'),
-      value: t('ride_Ride_Trip_mysteryBoxNo', { count: contractorInfoTest.mysteryBoxNumber }),
-      barMode: BarModes.Default,
-    },
+    //TODO: uncomment when we will need mysteryBoxBlock
+    // {
+    //   text: t('ride_Ride_Trip_mysteryBoxTitle'),
+    //   value: t('ride_Ride_Trip_mysteryBoxNo', { count: contractorInfoTest.mysteryBoxNumber }),
+    //   barMode: BarModes.Default,
+    // },
     {
       text: t('ride_Ride_Trip_tripType'),
       value: tariffIconsData[contractorInfoTest.tariffType].text,

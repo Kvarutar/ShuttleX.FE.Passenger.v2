@@ -18,7 +18,6 @@ import Menu from '../Menu';
 import MapView from './MapView';
 import Order from './Order';
 import { OrderRef } from './Order/types';
-import MysteryBoxPopup from './popups/MysteryBoxPopup';
 import WinningPopup from './popups/WinningPopup';
 import Trip from './Trip';
 import { RideScreenProps } from './types';
@@ -31,8 +30,9 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   const orderStatus = useSelector(orderStatusSelector);
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const [isMysteryBoxPopupVisible, setIsMysteryBoxPopupVisible] = useState(false);
   const [isWinningPopupVisible, setIsWinningPopupVisible] = useState(false);
+  //TODO: uncomment when we will need MysteryBoxPopup
+  // const [isMysteryBoxPopupVisible, setIsMysteryBoxPopupVisible] = useState(false);
 
   const orderInfo = useSelector(orderSelector);
 
@@ -62,11 +62,6 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   //   }, 20000)
   // }, [orderStatus])
 
-  //TODO: uncomment data from BE will be correct
-  // useEffect(() => {
-  //   dispatch(getCurrentLottery());
-  // }, [dispatch]);
-
   //for test
   useEffect(() => {
     if (route.params?.openAddressSelect) {
@@ -74,13 +69,14 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
     }
   }, [route.params?.openAddressSelect, route]);
 
-  useEffect(() => {
-    if (orderInfo) {
-      setTimeout(() => {
-        setIsMysteryBoxPopupVisible(true);
-      }, 2000);
-    }
-  }, [orderInfo]);
+  //TODO: uncomment when we will need MysteryBoxPopup
+  // useEffect(() => {
+  //   if (orderInfo) {
+  //     setTimeout(() => {
+  //       setIsMysteryBoxPopupVisible(true);
+  //     }, 2000);
+  //   }
+  // }, [orderInfo]);
 
   useGeolocationStartWatch();
   useNetworkConnectionStartWatch();
@@ -142,8 +138,9 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
         {TripStatus.Accepted && orderInfo ? <Trip orderInfo={orderInfo} /> : <Order ref={orderRef} />}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
-      {isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}
       {isWinningPopupVisible && <WinningPopup setIsWinningPopupVisible={setIsWinningPopupVisible} />}
+      {/*TODO: uncomment when we will need MysteryBoxPopup*/}
+      {/*{isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}*/}
     </>
   );
 };
