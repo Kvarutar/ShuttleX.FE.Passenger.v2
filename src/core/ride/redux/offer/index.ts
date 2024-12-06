@@ -41,6 +41,7 @@ const initialState: OfferState = {
   avaliableTariffs: null,
   errors: {
     avaliableTariffs: null,
+    offerRoutes: null,
     recentDropoffs: null,
     tariffsPrices: null,
   },
@@ -158,8 +159,8 @@ const slice = createSlice({
       .addCase(getAvaliableTariffs.fulfilled, (state, action) => {
         if (action.payload) {
           state.avaliableTariffs = action.payload.map(tariff => ({ ...tariff, matching: [], isAvaliable: false }));
-          state.loading.avaliableTariffs = false;
         }
+        state.loading.avaliableTariffs = false;
       })
       .addCase(getAvaliableTariffs.rejected, (state, action) => {
         state.loading.avaliableTariffs = false;
@@ -187,6 +188,7 @@ const slice = createSlice({
           payload: true,
           type: setOfferRoutes.type,
         });
+        state.errors.offerRoutes = null;
       })
       .addCase(getOfferRoutes.fulfilled, (state, action) => {
         slice.caseReducers.setOfferRoutes(state, {
@@ -197,12 +199,14 @@ const slice = createSlice({
           payload: false,
           type: setOfferRoutes.type,
         });
+        state.errors.offerRoutes = null;
       })
-      .addCase(getOfferRoutes.rejected, state => {
+      .addCase(getOfferRoutes.rejected, (state, action) => {
         slice.caseReducers.setOfferRoutesLoading(state, {
           payload: false,
           type: setOfferRoutes.type,
         });
+        state.errors.offerRoutes = action.payload as NetworkErrorDetailsWithBody<any>;
       })
       .addCase(createInitialOffer.fulfilled, (state, action) => {
         slice.caseReducers.setOfferId(state, {

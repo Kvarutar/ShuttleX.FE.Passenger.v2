@@ -25,10 +25,14 @@ import { profileZoneSelector } from '../../../../../../core/passenger/redux/sele
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
+import { isRoutePointsLocationError } from '../../../../../../core/ride/redux/offer/errors';
 import {
+  isAvailableTariffsLoadingSelector,
+  isOfferRoutesLoadingSelector,
   isSearchAdressesLoadingSelector,
   offerPointsSelector,
   offerRecentDropoffsSelector,
+  offerRoutesErrorSelector,
 } from '../../../../../../core/ride/redux/offer/selectors';
 import {
   enhanceAddress,
@@ -48,13 +52,21 @@ import PointItem from './PointItem';
 import { AddressSelectProps, PointMode } from './types';
 
 //TODO: rewrite logic for adresses. For the reference - look at yandex GO
-const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProps) => {
+const AddressSelect = ({
+  address,
+  setIsAddressSelectVisible,
+  setIsUnsupportedDestinationPopupVisible,
+}: AddressSelectProps) => {
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation();
   const { colors } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride'>>();
 
   const isLoading = useSelector(isSearchAdressesLoadingSelector);
+  const isAvailableTariffsLoading = useSelector(isAvailableTariffsLoadingSelector);
+  const isOfferRoutesLoading = useSelector(isOfferRoutesLoadingSelector);
+
+  const offerRoutesError = useSelector(offerRoutesErrorSelector);
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
   const offerPoints = useSelector(offerPointsSelector);
@@ -69,6 +81,8 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   const [updateDefaultLocation, setUpdateDefaultLocation] = useState(true);
   const [addresses, setAddresses] = useState<SearchAddressFromAPI[]>([]);
   const [addressesHistory, setAddressesHistory] = useState<SearchAddressFromAPI[]>([]);
+  const [isAllOfferPointsFilled, setIsAllOfferPointsFilled] = useState(false);
+  const [incorrectWaypoints, setIncorrectWaypoints] = useState(false);
   const debounceInputValue = useDebounce(focusedInput.value, 300);
 
   const computedStyles = StyleSheet.create({
@@ -176,6 +190,25 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
     }
   }, [focusedInput.focus, focusedInput.value]);
 
+  useEffect(() => {
+    setIsAllOfferPointsFilled(offerPoints.every(item => item.address.length));
+
+    if (isAllOfferPointsFilled) {
+      dispatch(getOfferRoutes());
+    }
+  }, [dispatch, isAllOfferPointsFilled, offerPoints]);
+
+  useEffect(() => {
+    if (isAllOfferPointsFilled) {
+      if (offerRoutesError && isRoutePointsLocationError(offerRoutesError)) {
+        setIncorrectWaypoints(true);
+      } else {
+        setIncorrectWaypoints(false);
+      }
+      setIsUnsupportedDestinationPopupVisible(incorrectWaypoints);
+    }
+  }, [incorrectWaypoints, isAllOfferPointsFilled, offerRoutesError, setIsUnsupportedDestinationPopupVisible]);
+
   const onLocationSelectPress = () => navigation.navigate('MapAddressSelection', { orderPointId: focusedInput.id });
 
   const onAddressSelect = async (place: SearchAddressFromAPI, isHistory: boolean = false) => {
@@ -266,7 +299,6 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
   }
 
   const onConfirm = async () => {
-    dispatch(getOfferRoutes());
     setIsAddressSelectVisible(false);
     dispatch(setOrderStatus(OrderStatus.ChoosingTariff));
   };
@@ -336,10 +368,11 @@ const AddressSelect = ({ address, setIsAddressSelectVisible }: AddressSelectProp
           </ScrollView>
           {showConfirmButton && (
             <Button
+              isLoading={isAvailableTariffsLoading || isOfferRoutesLoading}
               size={ButtonSizes.S}
-              disabled={!profileZone}
+              disabled={incorrectWaypoints || !profileZone}
               onPress={onConfirm}
-              mode={profileZone ? CircleButtonModes.Mode1 : CircleButtonModes.Mode4}
+              mode={!incorrectWaypoints || profileZone ? CircleButtonModes.Mode1 : CircleButtonModes.Mode4}
               shape={ButtonShapes.Circle}
               style={[styles.confirmButton, computedStyles.confirmButton]}
             >

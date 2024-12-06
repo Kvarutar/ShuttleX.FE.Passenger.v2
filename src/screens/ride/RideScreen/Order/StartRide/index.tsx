@@ -8,6 +8,7 @@ import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
 import { SearchAddressFromAPI } from '../../../../../core/ride/redux/offer/types';
 import AlertInitializer from '../../../../../shared/AlertInitializer';
+import UnsupportedDestinationPopup from '../../popups/UnsupportedDestinationPopup';
 import AddressSelect from './AddressSelect';
 import StartRideHidden from './StartRideHidden';
 import StartRideVisible from './StartRideVisible';
@@ -24,6 +25,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
     const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
     const [fastAddressSelect, setFastAddressSelect] = useState<SearchAddressFromAPI | null>(null);
     const [isUnsupportedCityPopupVisible, setIsUnsupportedCityPopupVisible] = useState<boolean>(false);
+    const [isUnsupportedDestinationPopupVisible, setIsUnsupportedDestinationPopupVisible] = useState<boolean>(false);
 
     useImperativeHandle(ref, () => ({
       openAddressSelect: () => {
@@ -73,7 +75,11 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
         {isAddressSelectVisible && (
           <BottomWindowWithGesture
             hiddenPart={
-              <AddressSelect setIsAddressSelectVisible={setIsAddressSelectVisible} address={fastAddressSelect} />
+              <AddressSelect
+                setIsAddressSelectVisible={setIsAddressSelectVisible}
+                address={fastAddressSelect}
+                setIsUnsupportedDestinationPopupVisible={setIsUnsupportedDestinationPopupVisible}
+              />
             }
             setIsOpened={setIsAddressSelectVisible}
             ref={addressSelectRef}
@@ -87,6 +93,11 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
             //TODO: swap console.log('Support') to navigation on Support
             onSupportPressHandler={() => console.log('Support')}
             setIsUnsupportedCityPopupVisible={setIsUnsupportedCityPopupVisible}
+          />
+        )}
+        {isUnsupportedDestinationPopupVisible && (
+          <UnsupportedDestinationPopup
+            setIsUnsupportedDestinationPopupVisible={setIsUnsupportedDestinationPopupVisible}
           />
         )}
       </>

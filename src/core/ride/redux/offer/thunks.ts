@@ -5,7 +5,8 @@ import { createAppAsyncThunk } from '../../../redux/hooks';
 import { geolocationCoordinatesSelector } from '../geolocation/selectors';
 import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
-import { setIsAvaliableTariff, updateTariffMatching } from '.';
+import { getOfferNetworkErrorInfo } from './errors';
+import { setIsAvaliableTariff, updateTariffMatching } from './index';
 import { offerSelector } from './selectors';
 import {
   AddressSearchPayload,
@@ -141,7 +142,7 @@ export const getOfferRoutes = createAppAsyncThunk<OfferRoutesFromAPI, void>(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(getNetworkErrorInfo(error));
+      return rejectWithValue(getOfferNetworkErrorInfo(error));
     }
   },
 );

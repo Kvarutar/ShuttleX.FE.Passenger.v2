@@ -36,6 +36,7 @@ export type OfferState = {
   };
   errors: {
     avaliableTariffs: Nullable<NetworkErrorDetailsWithBody<any>>;
+    offerRoutes: Nullable<NetworkErrorDetailsWithBody<any>>;
     recentDropoffs: Nullable<NetworkErrorDetailsWithBody<any>>;
     tariffsPrices: Nullable<NetworkErrorDetailsWithBody<any>>;
   };

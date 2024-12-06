@@ -22,4 +22,5 @@ export type AddressButtonProps = {
 export type AddressSelectProps = {
   address?: SearchAddressFromAPI | null;
   setIsAddressSelectVisible: (state: boolean) => void;
+  setIsUnsupportedDestinationPopupVisible: (state: boolean) => void;
 };

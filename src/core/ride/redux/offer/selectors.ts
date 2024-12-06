@@ -34,7 +34,10 @@ export const groupedTariffsSelector = createSelector(
 export const isSearchAdressesLoadingSelector = (state: AppState) => state.offer.loading.searchAdresses;
 export const isRecentDropoffsLoadingSelector = (state: AppState) => state.offer.loading.recentDropoffs;
 export const isTariffsPricesLoadingSelector = (state: AppState) => state.offer.loading.tariffsPrices;
+export const isAvailableTariffsLoadingSelector = (state: AppState) => state.offer.loading.avaliableTariffs;
+export const isOfferRoutesLoadingSelector = (state: AppState) => state.offer.loading.offerRoutes;
 
 //Errors
 export const recentDropoffsErrorSelector = (state: AppState) => state.offer.errors.recentDropoffs;
 export const tariffsPricesErrorSelector = (state: AppState) => state.offer.errors.tariffsPrices;
+export const offerRoutesErrorSelector = (state: AppState) => state.offer.errors.offerRoutes;
