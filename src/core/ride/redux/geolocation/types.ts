@@ -27,4 +27,4 @@ export type ConvertGeoToAddressAPIResponse = {
   countryCode: Nullable<string>;
   region: Nullable<string>;
   cityOrLocality: Nullable<string>;
-};
+}[];

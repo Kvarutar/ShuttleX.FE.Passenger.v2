@@ -2,7 +2,7 @@ import { LatLng } from 'react-native-maps';
 
 export type UpdatePassengerGeoSignalRRequest = {
   position: LatLng;
-  state: 'InRadius' | 'InOrder' | 'InThinking';
+  state: 'InOrder' | 'InThinking' | 'InLooking';
   orderId: string | null;
 };
 

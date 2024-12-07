@@ -53,6 +53,7 @@ const slice = createSlice({
       state.status = initialState.status;
       state.order = initialState.order;
       state.isCanceled = initialState.isCanceled;
+      state.routeInfo = initialState.routeInfo;
     },
     addFinishedTrips(state) {
       state.finishedTrips++;

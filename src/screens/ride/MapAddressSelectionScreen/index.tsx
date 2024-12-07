@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { LatLng } from 'react-native-maps';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import {
   ArrowIcon,
@@ -15,7 +16,7 @@ import {
   MapView,
   Nullable,
   PointIcon,
-  SafeAreaView,
+  sizes,
   Text,
   useTheme,
 } from 'shuttlex-integration';
@@ -85,8 +86,22 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
     navigation.goBack();
   };
 
+  const safeareaInsets = useSafeAreaInsets();
+
+  const computedStyles = StyleSheet.create({
+    closeButton: {
+      left: sizes.paddingHorizontal,
+      top: safeareaInsets.top || sizes.paddingHorizontal,
+    },
+    bottomBarContainer: {
+      bottom: safeareaInsets.bottom,
+      left: sizes.paddingHorizontal,
+      right: sizes.paddingHorizontal,
+    },
+  });
+
   return (
-    <SafeAreaView containerStyle={styles.container}>
+    <>
       <MapView
         style={StyleSheet.absoluteFill}
         geolocationCoordinates={initialCoordinates}
@@ -96,6 +111,7 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
         <MapPinIcon style={styles.mapPinIcon} />
       </View>
       <Button
+        containerStyle={[styles.closeButton, computedStyles.closeButton]}
         shape={ButtonShapes.Circle}
         mode={CircleButtonModes.Mode2}
         onPress={navigation.goBack}
@@ -103,11 +119,11 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
       >
         <CloseIcon />
       </Button>
-      <View>
+      <View style={[styles.bottomBarContainer, computedStyles.bottomBarContainer]}>
         <Bar style={styles.bottomBar}>
           <PointIcon style={styles.pinIcon} />
           {address ? (
-            <Text style={styles.address}>{address.address}</Text>
+            <Text style={styles.address}>{address.fullAddress}</Text>
           ) : (
             <Text style={[styles.address, { color: colors.textSecondaryColor }]}>
               {t('ride_Ride_MapAddressSelect_placeholder')}
@@ -125,14 +141,13 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
           </Button>
         </Bar>
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
   },
   mapPinIconContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -143,6 +158,9 @@ const styles = StyleSheet.create({
     width: 37,
     height: 54,
     marginBottom: 40, // to center icon
+  },
+  closeButton: {
+    position: 'absolute',
   },
   bottomBar: {
     flexDirection: 'row',
@@ -171,6 +189,11 @@ const styles = StyleSheet.create({
   },
   goBackButtonContainer: {
     borderWidth: 0,
+  },
+  bottomBarContainer: {
+    position: 'absolute',
+    alignItems: 'center',
+    marginBottom: 5,
   },
 });
 

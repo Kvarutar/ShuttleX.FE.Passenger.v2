@@ -32,7 +32,7 @@ import { endTrip } from '../../../core/ride/redux/trip';
 import {
   isTripCanceledSelector,
   orderSelector,
-  routeDropOffInfoSelector,
+  tripDropOffRouteSelector,
 } from '../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import passengerColors from '../../../shared/colors/colors';
@@ -46,7 +46,7 @@ const ReceiptScreen = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const routeInfo = useSelector(routeDropOffInfoSelector);
+  const routeInfo = useSelector(tripDropOffRouteSelector);
   const orderInfo = useSelector(orderSelector);
   const addresses = useSelector(offerPointsSelector);
   const isTripCanceled = useSelector(isTripCanceledSelector);
