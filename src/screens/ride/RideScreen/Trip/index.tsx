@@ -5,18 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
-  BottomWindow,
   BottomWindowWithGesture,
-  formatTime,
-  StatsBlock,
   SwipeButton,
   SwipeButtonModes,
-  Text,
   Timer,
   TimerColorModes,
   TimerSizesModes,
-  TrafficIndicator,
-  TrafficLevel,
   useTariffsIcons,
   useTheme,
 } from 'shuttlex-integration';
@@ -68,85 +62,36 @@ const Trip = ({ orderInfo }: { orderInfo: Order }) => {
     avatarWrapper: {
       backgroundColor: colors.backgroundPrimaryColor,
     },
-    topText: {
-      color: colors.textSecondaryColor,
-    },
-    plateNumberContainer: {
-      backgroundColor: colors.primaryColor,
-    },
-    likesAmount: {
-      color: colors.textSecondaryColor,
-    },
-    likes: {
-      color: colors.textTitleColor,
-    },
   });
 
-  if (tripStatus === TripStatus.Ride) {
-    return (
-      <BottomWindow>
-        <Timer
-          style={{ timerWrapper: styles.timerWrapper }}
-          time={arrivedTime}
-          sizeMode={TimerSizesModes.S}
-          colorMode={TimerColorModes.Mode3}
-        />
-        <View style={styles.topTitleContainer}>
-          <Text style={[styles.topText, computedStyles.topText]}>{t('ride_Ride_Trip_youBeIn')} </Text>
-          <Text style={styles.topText}>{formatTime(new Date(arrivedTime))}</Text>
+  const headerElementBlock =
+    tripStatus === TripStatus.Ride ? (
+      <Timer
+        style={{ timerWrapper: styles.timerWrapper }}
+        time={arrivedTime}
+        sizeMode={TimerSizesModes.S}
+        colorMode={TimerColorModes.Mode3}
+      />
+    ) : (
+      <View style={styles.imageContainer}>
+        <TariffIcon style={styles.carImage} />
+        <View style={[styles.avatarWrapper, computedStyles.avatarWrapper]}>
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: orderInfo.avatar,
+            }}
+          />
         </View>
-        <Text
-          style={[styles.text, styles.carNameText]}
-        >{`${orderInfo.info?.carBrand} ${orderInfo.info?.carModel}`}</Text>
-        {/*TODO: delete mock data*/}
-        <TrafficIndicator
-          containerStyle={styles.trafficIndicatorContainer}
-          currentPercent={`${70}%`}
-          segments={[
-            { percent: '15%', level: TrafficLevel.Low },
-            { percent: '15%', level: TrafficLevel.Average },
-            { percent: '30%', level: TrafficLevel.High },
-            { percent: '40%', level: TrafficLevel.Low },
-          ]}
-        />
-        <View style={styles.driverInfoWrapper}>
-          <View style={styles.driverInfoContainer}>
-            <Image
-              style={styles.image}
-              source={{
-                uri: orderInfo.avatar,
-              }}
-            />
-            <View>
-              <Text style={styles.text}>{orderInfo?.info?.firstName}</Text>
-              <StatsBlock amountLikes={orderInfo?.info?.totalLikesCount ?? 0} />
-            </View>
-          </View>
-          <View style={[styles.plateNumberContainer, computedStyles.plateNumberContainer]}>
-            <Text style={styles.text}>{orderInfo?.info?.carNumber}</Text>
-          </View>
-        </View>
-      </BottomWindow>
+      </View>
     );
-  }
 
   return (
     <BottomWindowWithGesture
       maxHeight={0.88}
+      withDraggable={!TripStatus.Ride}
       headerWrapperStyle={styles.headerWrapperStyle}
-      headerElement={
-        <View style={styles.imageContainer}>
-          <TariffIcon style={styles.carImage} />
-          <View style={[styles.avatarWrapper, computedStyles.avatarWrapper]}>
-            <Image
-              style={styles.avatar}
-              source={{
-                uri: orderInfo.avatar,
-              }}
-            />
-          </View>
-        </View>
-      }
+      headerElement={headerElementBlock}
       withAllPartsScroll
       withHiddenPartScroll={false}
       alerts={alerts.map(alertData => (
@@ -180,6 +125,7 @@ const styles = StyleSheet.create({
   headerWrapperStyle: {
     height: 40,
     justifyContent: 'flex-end',
+    marginBottom: 20,
   },
   timerWrapper: {
     position: 'absolute',
@@ -212,50 +158,6 @@ const styles = StyleSheet.create({
     width: '65%',
     height: undefined,
     aspectRatio: 3.15,
-  },
-  topText: {
-    fontFamily: 'Inter Medium',
-    fontSize: 21,
-    lineHeight: 22,
-  },
-  text: {
-    fontFamily: 'Inter Medium',
-    fontSize: 17,
-    lineHeight: 22,
-  },
-  topTitleContainer: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    marginTop: 40,
-  },
-  carNameText: {
-    alignSelf: 'center',
-    marginTop: 10,
-  },
-  driverInfoWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  driverInfoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  plateNumberContainer: {
-    paddingVertical: 9,
-    paddingHorizontal: 11,
-    borderRadius: 9,
-  },
-  image: {
-    marginRight: 12,
-    objectFit: 'contain',
-    width: 52,
-    height: 52,
-    borderRadius: 100,
-  },
-  trafficIndicatorContainer: {
-    marginTop: 16,
   },
 });
 

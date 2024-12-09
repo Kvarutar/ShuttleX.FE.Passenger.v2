@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, StyleSheet, View } from 'react-native';
+import { Image, Linking, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   Bar,
@@ -19,6 +19,8 @@ import {
   Timer,
   TimerColorModes,
   TimerSizesModes,
+  TrafficIndicator,
+  TrafficLevel,
   useTheme,
 } from 'shuttlex-integration';
 
@@ -38,6 +40,7 @@ const VisiblePart = ({ setExtraSum, extraSum, orderInfo }: VisiblePartProps) => 
 
   const [isWaiting, setIsWaiting] = useState(false);
   const [extraWaiting, setExtraWaiting] = useState(false);
+  const arrivedTime = orderInfo?.info ? Date.parse(orderInfo?.info?.estimatedArriveToDropOffDate) : 0;
 
   const computedStyles = StyleSheet.create({
     beInAndLvlAmountText: {
@@ -68,6 +71,9 @@ const VisiblePart = ({ setExtraSum, extraSum, orderInfo }: VisiblePartProps) => 
     // },
     lvlText: {
       color: colors.textTitleColor,
+    },
+    plateNumberContainer: {
+      backgroundColor: colors.primaryColor,
     },
   });
 
@@ -133,6 +139,48 @@ const VisiblePart = ({ setExtraSum, extraSum, orderInfo }: VisiblePartProps) => 
       }
     }
   };
+
+  if (tripStatus === TripStatus.Ride) {
+    return (
+      <>
+        <View style={styles.topTitleContainer}>
+          <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>{t('ride_Ride_Trip_youBeIn')} </Text>
+          <Text style={styles.nameTimeText}>{formatTime(new Date(arrivedTime))}</Text>
+        </View>
+        <Text
+          style={[styles.carInfoText, styles.carNameAlign]}
+        >{`${orderInfo.info?.carBrand} ${orderInfo.info?.carModel}`}</Text>
+        {/*TODO: delete mock data*/}
+        <TrafficIndicator
+          containerStyle={styles.trafficIndicatorContainer}
+          currentPercent={`${70}%`}
+          segments={[
+            { percent: '15%', level: TrafficLevel.Low },
+            { percent: '15%', level: TrafficLevel.Average },
+            { percent: '30%', level: TrafficLevel.High },
+            { percent: '40%', level: TrafficLevel.Low },
+          ]}
+        />
+        <View style={styles.driverInfoWrapper}>
+          <View style={styles.driverInfoContainer}>
+            <Image
+              style={styles.driverInfoImage}
+              source={{
+                uri: orderInfo.avatar,
+              }}
+            />
+            <View>
+              <Text style={styles.carInfoText}>{orderInfo?.info?.firstName}</Text>
+              <StatsBlock amountLikes={orderInfo?.info?.totalLikesCount ?? 0} />
+            </View>
+          </View>
+          <View style={[styles.plateNumberContainer, computedStyles.plateNumberContainer]}>
+            <Text style={styles.carInfoText}>{orderInfo?.info?.carNumber}</Text>
+          </View>
+        </View>
+      </>
+    );
+  }
 
   return (
     <View>
@@ -213,7 +261,6 @@ const styles = StyleSheet.create({
   nameTimeContainer: {
     flexDirection: 'row',
     marginBottom: 10,
-    marginTop: 20,
   },
   nameTimeText: {
     fontSize: 21,
@@ -287,6 +334,39 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Inter Medium',
     lineHeight: 22,
+  },
+  topTitleContainer: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+  },
+  carNameAlign: {
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  trafficIndicatorContainer: {
+    marginTop: 16,
+  },
+  driverInfoWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  driverInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  driverInfoImage: {
+    marginRight: 12,
+    objectFit: 'contain',
+    width: 52,
+    height: 52,
+    borderRadius: 1000,
+  },
+  plateNumberContainer: {
+    paddingVertical: 9,
+    paddingHorizontal: 11,
+    borderRadius: 9,
   },
 });
 

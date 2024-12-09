@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   squareBarContainer: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     paddingVertical: 10,
   },
   squareBarText: {
