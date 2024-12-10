@@ -59,9 +59,9 @@ switch (process.env.npm_lifecycle_event) {
     prepareGoogleServices('dev');
     exec({
       unixCommand:
-        'npx react-native run-android --mode=devdebug && adb shell am start -n com.shuttlex.passenger.dev/com.shuttlex.passenger.MainActivity',
+        'npx react-native run-android --mode=devdebug && adb shell am start -n com.newshuttlex.passenger.dev/com.newshuttlex.passenger.MainActivity',
       winCommand:
-        'cmd /c "npx react-native run-android --mode=devdebug & adb shell am start -n com.shuttlex.passenger.dev/com.shuttlex.passenger.MainActivity"',
+        'cmd /c "npx react-native run-android --mode=devdebug & adb shell am start -n com.newshuttlex.passenger.dev/com.newshuttlex.passenger.MainActivity"',
     });
     break;
   case 'android:prod':

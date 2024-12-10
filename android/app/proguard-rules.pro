@@ -10,7 +10,7 @@
 # Add any project specific keep options here:
 
 # Fix for release build with react-native-config, if not specified config is empty
--keep class com.shuttlex.passenger.BuildConfig { *; }
+-keep class com.newshuttlex.passenger.BuildConfig { *; }
 
 # Fix for release build with react-native-keychain when using FB storage.
 # After upgrading react-native package need to migrate to AES and version 9+

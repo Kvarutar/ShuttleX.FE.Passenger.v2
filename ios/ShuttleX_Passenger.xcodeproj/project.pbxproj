@@ -89,6 +89,7 @@
 		C6EF64B7BE214801A1E90650 /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = ShuttleX_Passenger/BootSplash.storyboard; sourceTree = "<group>"; };
 		C73DA53E1AF1049EA84D6F6C /* Pods-SharedPods-ShuttleX_Passenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedPods-ShuttleX_Passenger.release.xcconfig"; path = "Target Support Files/Pods-SharedPods-ShuttleX_Passenger/Pods-SharedPods-ShuttleX_Passenger.release.xcconfig"; sourceTree = "<group>"; };
 		CBCFB05EDB24470FA5063889 /* Pods_SharedPods_ShuttleX_PassengerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedPods_ShuttleX_PassengerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF84BE642D03265A006D7B4E /* ShuttleX_Passenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ShuttleX_Passenger.entitlements; path = ShuttleX_Passenger/ShuttleX_Passenger.entitlements; sourceTree = "<group>"; };
 		DDCC4FB4E1F24C2CA91EB3AA /* Inter Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter Bold.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter Bold.ttf"; sourceTree = "<group>"; };
 		E8D65E8F741D48DE287B75A5 /* Pods-SharePods-ShuttleX_Passenger_dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharePods-ShuttleX_Passenger_dev.release.xcconfig"; path = "Target Support Files/Pods-SharePods-ShuttleX_Passenger_dev/Pods-SharePods-ShuttleX_Passenger_dev.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -144,6 +145,7 @@
 		13B07FAE1A68108700A75B9A /* ShuttleX_Passenger */ = {
 			isa = PBXGroup;
 			children = (
+				CF84BE642D03265A006D7B4E /* ShuttleX_Passenger.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -692,7 +694,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shuttlex.passenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newshuttlex.passenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShuttleX_Passenger.app/ShuttleX_Passenger";
 			};
@@ -716,7 +718,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shuttlex.passenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newshuttlex.passenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShuttleX_Passenger.app/ShuttleX_Passenger";
 			};
@@ -728,6 +730,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ShuttleX_Passenger/ShuttleX_Passenger.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ShuttleX_Passenger/Info.plist;
@@ -741,7 +744,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shuttlex.passenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newshuttlex.passenger;
 				PRODUCT_NAME = ShuttleX_Passenger;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -755,6 +758,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ShuttleX_Passenger/ShuttleX_Passenger.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = ShuttleX_Passenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -767,7 +771,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shuttlex.passenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newshuttlex.passenger;
 				PRODUCT_NAME = ShuttleX_Passenger;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -781,6 +785,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7D4K8F5PSQ;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ShuttleX_Passenger_dev.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -793,7 +798,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shuttlex.passenger.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newshuttlex.passenger.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -808,6 +813,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7D4K8F5PSQ;
 				INFOPLIST_FILE = ShuttleX_Passenger_dev.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -819,7 +825,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shuttlex.passenger.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newshuttlex.passenger.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
