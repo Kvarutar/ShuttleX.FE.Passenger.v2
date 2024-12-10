@@ -2,12 +2,12 @@
   "project_info": {
     "project_number": "702990775970",
     "project_id": "shuttlex-passanger-prod",
-    "storage_bucket": "shuttlex-passanger-prod.appspot.com"
+    "storage_bucket": "shuttlex-passanger-prod.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:702990775970:android:681da1ea22b6be352a09fb",
+        "mobilesdk_app_id": "1:702990775970:android:7846fd04d9615b9b2a09fb",
         "android_client_info": {
           "package_name": "com.newshuttlex.passenger"
         }
