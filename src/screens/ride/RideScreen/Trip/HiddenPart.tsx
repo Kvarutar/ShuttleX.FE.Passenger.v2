@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { ImageBackground, Linking, StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import {
   Bar,
   BarModes,
@@ -16,6 +17,8 @@ import {
 //TODO: take image from BE
 import imageCapybaraBackground from '../../../../../assets/images/trip/imageCapybaraBackground';
 import imagePrizeBackground from '../../../../../assets/images/trip/imagePrizeBackground';
+import { tariffByIdSelector } from '../../../../core/ride/redux/offer/selectors';
+import { orderSelector, orderTariffIdSelector } from '../../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../../Navigate/props';
 import passengerColors from '../../../../shared/colors/colors';
 import { ContractorInfoTestType, SquareBarProps } from './types';
@@ -69,96 +72,104 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
   const tariffIconsData = useTariffsIcons();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>>();
 
-  const computedStyles = StyleSheet.create({
-    firstSeasonTitleText: {
-      color: colors.textTertiaryColor,
-    },
-    capiText: {
-      color: passengerColors.adsBackgroundColor.whiteOpacityStrong,
-    },
-    capiAmountContainer: {
-      backgroundColor: contractorInfoTest.capiAmount
-        ? colors.primaryColor
-        : passengerColors.adsBackgroundColor.whiteOpacityLight,
-    },
-    capiAmountText: {
-      color: contractorInfoTest.capiAmount ? colors.textPrimaryColor : colors.textTertiaryColor,
-    },
-  });
+  const order = useSelector(orderSelector);
+  const tripTariffId = useSelector(orderTariffIdSelector);
+  const tripTariff = useSelector(state => tariffByIdSelector(state, tripTariffId));
 
-  const tripInfo = [
-    //TODO: uncomment when we will need mysteryBoxBlock
-    // {
-    //   text: t('ride_Ride_Trip_mysteryBoxTitle'),
-    //   value: t('ride_Ride_Trip_mysteryBoxNo', { count: contractorInfoTest.mysteryBoxNumber }),
-    //   barMode: BarModes.Default,
-    // },
-    {
-      text: t('ride_Ride_Trip_tripType'),
-      value: tariffIconsData[contractorInfoTest.tariffType].text,
-    },
-    {
-      text: t('ride_Ride_Trip_totalForRide'),
-      //TODO: swap currencyCode to correct value
-      value: `${getCurrencySign('UAH')}${contractorInfoTest.total + extraSum}`,
-    },
-  ];
+  if (tripTariff && order?.info) {
+    const computedStyles = StyleSheet.create({
+      firstSeasonTitleText: {
+        color: colors.textTertiaryColor,
+      },
+      capiText: {
+        color: passengerColors.adsBackgroundColor.whiteOpacityStrong,
+      },
+      capiAmountContainer: {
+        backgroundColor: contractorInfoTest.capiAmount
+          ? colors.primaryColor
+          : passengerColors.adsBackgroundColor.whiteOpacityLight,
+      },
+      capiAmountText: {
+        color: contractorInfoTest.capiAmount ? colors.textPrimaryColor : colors.textTertiaryColor,
+      },
+    });
 
-  return (
-    <View style={styles.container}>
-      {/*TODO: remove comments when we will have game and achievements screens*/}
-      {/*<View style={styles.squareBarWrapper}>*/}
-      {/*  <SquareBar*/}
-      {/*    icon={<Image source={imageBossEarth} style={styles.image} />}*/}
-      {/*    text={t('ride_Ride_Trip_playGame')}*/}
-      {/*    //TODO: navigate to game*/}
-      {/*    onPress={() => true}*/}
-      {/*  />*/}
-      {/*  <SquareBar*/}
-      {/*    icon={<Image source={imageCapybara} style={styles.image} />}*/}
-      {/*    text={t('ride_Ride_Trip_Achievements')}*/}
-      {/*    //TODO: navigate to achievements*/}
-      {/*    onPress={() => true}*/}
-      {/*  />*/}
-      {/*</View>*/}
-      <View style={styles.squareBarWrapper}>
-        <Bar style={styles.firstSeasonBarContainer} onPress={() => navigation.navigate('Raffle')}>
-          <ImageBackground style={StyleSheet.absoluteFill} source={imagePrizeBackground} resizeMode="cover" />
-          <Text style={[styles.firstSeasonTitleText, computedStyles.firstSeasonTitleText]}>
-            {t('ride_Ride_Trip_prize')}
-          </Text>
-        </Bar>
-        <Bar style={styles.firstSeasonBarContainer}>
-          <ImageBackground style={StyleSheet.absoluteFill} source={imageCapybaraBackground} resizeMode="cover" />
-          <Text style={[styles.firstSeasonTitleText, computedStyles.firstSeasonTitleText]}>
-            {t('ride_Ride_Trip_firstSeason')}
-          </Text>
-          <Text style={[styles.capiText, computedStyles.capiText]}>{contractorInfoTest.capiAmount}/20</Text>
-          <View style={[styles.capiAmountContainer, computedStyles.capiAmountContainer]}>
-            <Text style={[styles.capiAmountText, computedStyles.capiAmountText]}>{contractorInfoTest.capiAmount}</Text>
-          </View>
-        </Bar>
+    const tripInfo = [
+      //TODO: uncomment when we will need mysteryBoxBlock
+      // {
+      //   text: t('ride_Ride_Trip_mysteryBoxTitle'),
+      //   value: t('ride_Ride_Trip_mysteryBoxNo', { count: contractorInfoTest.mysteryBoxNumber }),
+      //   barMode: BarModes.Default,
+      // },
+      {
+        text: t('ride_Ride_Trip_tripType'),
+        value: tariffIconsData[tripTariff.name].text,
+      },
+      {
+        text: t('ride_Ride_Trip_totalForRide'),
+        //TODO: swap currencyCode to correct value
+        value: `${getCurrencySign('UAH')}${order.info.estimatedPrice + extraSum}`,
+      },
+    ];
+
+    return (
+      <View style={styles.container}>
+        {/*TODO: remove comments when we will have game and achievements screens*/}
+        {/*<View style={styles.squareBarWrapper}>*/}
+        {/*  <SquareBar*/}
+        {/*    icon={<Image source={imageBossEarth} style={styles.image} />}*/}
+        {/*    text={t('ride_Ride_Trip_playGame')}*/}
+        {/*    //TODO: navigate to game*/}
+        {/*    onPress={() => true}*/}
+        {/*  />*/}
+        {/*  <SquareBar*/}
+        {/*    icon={<Image source={imageCapybara} style={styles.image} />}*/}
+        {/*    text={t('ride_Ride_Trip_Achievements')}*/}
+        {/*    //TODO: navigate to achievements*/}
+        {/*    onPress={() => true}*/}
+        {/*  />*/}
+        {/*</View>*/}
+        <View style={styles.squareBarWrapper}>
+          <Bar style={styles.firstSeasonBarContainer} onPress={() => navigation.navigate('Raffle')}>
+            <ImageBackground style={StyleSheet.absoluteFill} source={imagePrizeBackground} resizeMode="cover" />
+            <Text style={[styles.firstSeasonTitleText, computedStyles.firstSeasonTitleText]}>
+              {t('ride_Ride_Trip_prize')}
+            </Text>
+          </Bar>
+          <Bar style={styles.firstSeasonBarContainer}>
+            <ImageBackground style={StyleSheet.absoluteFill} source={imageCapybaraBackground} resizeMode="cover" />
+            <Text style={[styles.firstSeasonTitleText, computedStyles.firstSeasonTitleText]}>
+              {t('ride_Ride_Trip_firstSeason')}
+            </Text>
+            <Text style={[styles.capiText, computedStyles.capiText]}>{contractorInfoTest.capiAmount}/20</Text>
+            <View style={[styles.capiAmountContainer, computedStyles.capiAmountContainer]}>
+              <Text style={[styles.capiAmountText, computedStyles.capiAmountText]}>
+                {contractorInfoTest.capiAmount}
+              </Text>
+            </View>
+          </Bar>
+        </View>
+        {tripInfo.map((info, index) => (
+          <TripInfoBar info={info} key={index} />
+        ))}
+        <View style={styles.squareBarWrapper}>
+          <SquareBar
+            mode={BarModes.Default}
+            icon={<EmergencyServiceIcon />}
+            text={t('ride_Ride_Trip_contactEmergency')}
+            onPress={() => Linking.openURL('tel:911')}
+          />
+          <SquareBar
+            mode={BarModes.Default}
+            icon={<ReportIcon />}
+            text={t('ride_Ride_Trip_reportIssue')}
+            //TODO: navigate to report
+            onPress={() => true}
+          />
+        </View>
       </View>
-      {tripInfo.map((info, index) => (
-        <TripInfoBar info={info} key={index} />
-      ))}
-      <View style={styles.squareBarWrapper}>
-        <SquareBar
-          mode={BarModes.Default}
-          icon={<EmergencyServiceIcon />}
-          text={t('ride_Ride_Trip_contactEmergency')}
-          onPress={() => Linking.openURL('tel:911')}
-        />
-        <SquareBar
-          mode={BarModes.Default}
-          icon={<ReportIcon />}
-          text={t('ride_Ride_Trip_reportIssue')}
-          //TODO: navigate to report
-          onPress={() => true}
-        />
-      </View>
-    </View>
-  );
+    );
+  }
 };
 
 const styles = StyleSheet.create({

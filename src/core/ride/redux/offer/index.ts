@@ -5,10 +5,12 @@ import { cancelTrip } from '../trip/thunks';
 import {
   createInitialOffer,
   createOffer,
+  createPhantomOffer,
   getAvaliableTariffs,
   getOfferRoutes,
   getRecentDropoffs,
   getTariffsPrices,
+  getZoneIdByLocation,
   searchAddress,
 } from './thunks';
 import {
@@ -21,6 +23,7 @@ import {
   SearchAddressFromAPI,
   SelectedTariff,
   TariffsPricesFromAPI,
+  ZoneIdFromAPI,
 } from './types';
 
 const initialState: OfferState = {
@@ -37,7 +40,9 @@ const initialState: OfferState = {
     offerRoutes: false,
     recentDropoffs: false,
     tariffsPrices: false,
+    phantomOffer: false,
   },
+  zoneId: null,
   avaliableTariffs: null,
   errors: {
     avaliableTariffs: null,
@@ -128,6 +133,15 @@ const slice = createSlice({
     setOfferRoutesLoading(state, action: PayloadAction<boolean>) {
       state.loading.offerRoutes = action.payload;
     },
+    setTariffsPricesLoading(state, action: PayloadAction<boolean>) {
+      state.loading.tariffsPrices = action.payload;
+    },
+    setPhantomOfferLoading(state, action: PayloadAction<boolean>) {
+      state.loading.phantomOffer = action.payload;
+    },
+    setOfferZoneId(state, action: PayloadAction<ZoneIdFromAPI>) {
+      state.zoneId = action.payload;
+    },
   },
   extraReducers: builder => {
     builder
@@ -186,7 +200,7 @@ const slice = createSlice({
       .addCase(getOfferRoutes.pending, state => {
         slice.caseReducers.setOfferRoutesLoading(state, {
           payload: true,
-          type: setOfferRoutes.type,
+          type: setOfferRoutesLoading.type,
         });
         state.errors.offerRoutes = null;
       })
@@ -197,14 +211,14 @@ const slice = createSlice({
         });
         slice.caseReducers.setOfferRoutesLoading(state, {
           payload: false,
-          type: setOfferRoutes.type,
+          type: setOfferRoutesLoading.type,
         });
         state.errors.offerRoutes = null;
       })
       .addCase(getOfferRoutes.rejected, (state, action) => {
         slice.caseReducers.setOfferRoutesLoading(state, {
           payload: false,
-          type: setOfferRoutes.type,
+          type: setOfferRoutesLoading.type,
         });
         state.errors.offerRoutes = action.payload as NetworkErrorDetailsWithBody<any>;
       })
@@ -226,12 +240,37 @@ const slice = createSlice({
       })
       .addCase(cancelTrip.fulfilled, state => {
         slice.caseReducers.clearOffer(state);
+      })
+      .addCase(getZoneIdByLocation.fulfilled, (state, action) => {
+        slice.caseReducers.setOfferZoneId(state, {
+          payload: action.payload,
+          type: setOfferZoneId.type,
+        });
+      })
+      .addCase(createPhantomOffer.pending, state => {
+        slice.caseReducers.setPhantomOfferLoading(state, {
+          payload: true,
+          type: setPhantomOfferLoading.type,
+        });
+      })
+      .addCase(createPhantomOffer.rejected, state => {
+        slice.caseReducers.setPhantomOfferLoading(state, {
+          payload: false,
+          type: setPhantomOfferLoading.type,
+        });
+      })
+      .addCase(createPhantomOffer.fulfilled, state => {
+        slice.caseReducers.setPhantomOfferLoading(state, {
+          payload: false,
+          type: setPhantomOfferLoading.type,
+        });
       });
   },
 });
 
 export const {
   addRecentDropoff,
+  setOfferZoneId,
   setTripTariff,
   addOfferPoint,
   removeOfferPoint,
@@ -242,8 +281,11 @@ export const {
   setOfferRoutes,
   updateTariffsCost,
   clearOffer,
+  setOfferRoutesLoading,
   setOfferId,
   setEstimatedPrice,
+  setTariffsPricesLoading,
+  setPhantomOfferLoading,
 } = slice.actions;
 
 export default slice.reducer;

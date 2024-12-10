@@ -34,13 +34,13 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   const { colors } = useTheme();
 
   const groupedTariffs = useSelector(groupedTariffsSelector);
+  const offerRoutes = useSelector(offerRoutesSelector);
 
   const [selectedTariffGroup, setSelectedTariffGroup] = useState<TariffCategory | null>(groupedTariffs.economy ?? null);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number | null>(null);
   const [selectedPriceIdx, setSelectedPriceIdx] = useState<number | null>(null);
   const [tariff, setTariff] = useState<SelectedTariff | null>(null);
   const [windowIsOpened, setWindowIsOpened] = useState(false);
-  const offerRoutes = useSelector(offerRoutesSelector);
 
   const isAvailableSelectedTariffGroup = Boolean(selectedTariffGroup?.tariffs);
 
@@ -57,20 +57,14 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   }, [offerRoutes, dispatch]);
 
   useEffect(() => {
-    if (offerRoutes) {
-      dispatch(getTariffsPrices());
-    }
-  }, [offerRoutes, dispatch]);
-
-  useEffect(() => {
     let foundAvailableTariffGroup = null;
-    Object.entries(groupedTariffs).forEach(([_, value]) => {
+    Object.entries(groupedTariffs).some(([_, value]) => {
       if (value) {
         foundAvailableTariffGroup = value;
+        return true;
       }
-
-      foundAvailableTariffGroup = null;
     });
+
     if (foundAvailableTariffGroup) {
       setSelectedTariffGroup(foundAvailableTariffGroup);
     }
@@ -129,7 +123,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
     }
   }, [selectedPlanIndex, selectedTariffGroup, resetTariffPrice]);
 
-  const renderTariffsCategories = (): ReactNode[] => {
+  const renderTariffsCategories = useCallback((): ReactNode[] => {
     const content: ReactNode[] = [];
 
     Object.entries(groupedTariffs).forEach(([key, value]) => {
@@ -144,6 +138,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
             0,
           ) / value.tariffs.length;
       }
+      //TODO: think about smarter key?
       content.push(
         <TariffGroup
           key={`tariff_group_${key}`}
@@ -157,7 +152,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
     });
 
     return content;
-  };
+  }, [groupedTariffs, selectedTariffGroup]);
 
   const content = (
     <>

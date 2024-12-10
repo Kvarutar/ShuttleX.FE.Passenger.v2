@@ -6,6 +6,7 @@ import { createInitialOffer } from '../../ride/redux/offer/thunks';
 import { setOrderStatus } from '../../ride/redux/order';
 import { OrderStatus } from '../../ride/redux/order/types';
 import { addFinishedTrips, endTrip, setTripIsCanceled, setTripStatus } from '../../ride/redux/trip';
+import { orderInfoSelector } from '../../ride/redux/trip/selectors';
 import { getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { NotificationPayload, NotificationRemoteMessage, NotificationType } from './types';
@@ -27,6 +28,12 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     store.dispatch(addFinishedTrips());
     //TODO go to rating page
     store.dispatch(getTicketAfterRide());
+
+    const orderInfo = orderInfoSelector(store.getState());
+    if (orderInfo) {
+      store.dispatch(getOrderInfo(orderInfo.orderId));
+    }
+
     store.dispatch(setTripStatus(TripStatus.Finished));
   },
   [NotificationType.WinnerFounded]: async payload => {
@@ -41,6 +48,12 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
   //when trip started and driver canceled trip - go to receipt screen
   [NotificationType.DriverCanceled]: async () => {
     store.dispatch(setTripIsCanceled(true));
+
+    const orderInfo = orderInfoSelector(store.getState());
+    if (orderInfo) {
+      store.dispatch(getOrderInfo(orderInfo.orderId));
+    }
+
     store.dispatch(setTripStatus(TripStatus.Finished));
   },
   //when trip doesnt start and driver rejected - go to search driver again

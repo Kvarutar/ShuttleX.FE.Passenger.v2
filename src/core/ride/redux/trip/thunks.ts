@@ -36,19 +36,22 @@ export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(
   },
 );
 
-//change to normal order
 export const getOrderInfo = createAppAsyncThunk<Order, string>(
   'trip/getOrderInfo',
   async (orderId, { rejectWithValue, orderAxios }) => {
     try {
       const data = (await orderAxios.get<GetOrderInfoAPIResponse>(`/${orderId}`)).data;
-      const avatar = await orderAxios.get<Blob>(`/${orderId}/contractors/avatars/${data.avatarIds[0]}`, {
-        responseType: 'blob',
-      });
+      let avatar = null;
+
+      try {
+        avatar = await orderAxios.get<Blob>(`/${orderId}/contractors/avatars/${data.avatarIds[0]}`, {
+          responseType: 'blob',
+        });
+      } catch {}
 
       return {
         info: data,
-        avatar: await convertBlobToImgUri(avatar.data),
+        avatar: avatar ? await convertBlobToImgUri(avatar.data) : null,
         orderId,
       };
     } catch (error) {

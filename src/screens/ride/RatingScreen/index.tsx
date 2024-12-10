@@ -212,8 +212,8 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
         </Button>
         <View style={styles.contentWrapper}>
           <View style={styles.riderInfoContainer}>
-            {/*TODO swap to contractor name*/}
-            <Image style={styles.avatar} source={{ uri: orderInfo?.avatar }} />
+            {/* TODO: change to default avatar */}
+            <Image style={styles.avatar} source={{ uri: orderInfo?.avatar ?? undefined }} />
             <Text style={[styles.text, styles.textName]}>{orderInfo?.info?.firstName}</Text>
             <StatsBlock
               amountLikes={orderInfo?.info?.totalLikesCount ?? 0}

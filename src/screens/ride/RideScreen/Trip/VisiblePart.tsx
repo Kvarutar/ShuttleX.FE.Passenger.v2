@@ -24,23 +24,32 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
-import { tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
+//TODO: rewrite strange logic with timers
+import { tariffByIdSelector } from '../../../../core/ride/redux/offer/selectors';
+import {
+  contractorAvatarSelector,
+  orderInfoSelector,
+  orderTariffIdSelector,
+  tripStatusSelector,
+} from '../../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../../core/ride/redux/trip/types';
 import { TimerStateDataType, VisiblePartProps } from './types';
 
-const testExtraSum = 0.5;
-
-const VisiblePart = ({ setExtraSum, extraSum, orderInfo }: VisiblePartProps) => {
+const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const { colors } = useTheme();
   const { t } = useTranslation();
 
   const tripStatus = useSelector(tripStatusSelector);
+  const orderInfo = useSelector(orderInfoSelector);
+  const contractorAvatar = useSelector(contractorAvatarSelector);
+  const tripTariffId = useSelector(orderTariffIdSelector);
+  const tripTariff = useSelector(state => tariffByIdSelector(state, tripTariffId));
 
   const [isWaiting, setIsWaiting] = useState(false);
   const [extraWaiting, setExtraWaiting] = useState(false);
-  const arrivedTime = orderInfo?.info ? Date.parse(orderInfo?.info?.estimatedArriveToDropOffDate) : 0;
+  const arrivedTime = orderInfo ? Date.parse(orderInfo.estimatedArriveToDropOffDate) : 0;
 
   const computedStyles = StyleSheet.create({
     beInAndLvlAmountText: {
@@ -77,180 +86,192 @@ const VisiblePart = ({ setExtraSum, extraSum, orderInfo }: VisiblePartProps) => 
     },
   });
 
-  const getTimerStateData = (status: TripStatus | 'waiting'): Nullable<TimerStateDataType> => {
-    switch (status) {
-      case TripStatus.Accepted: {
-        return {
-          timerTime: Date.now() + minToMilSec(0.5), //change to real data
-          mode: TimerColorModes.Mode1,
-          title: (
-            <>
-              <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>
-                {t('ride_Ride_Trip_beIn')}{' '}
-              </Text>
-              <Text style={styles.nameTimeText}>{formatTime(new Date(Date.now() + minToMilSec(0.5)))}</Text>
-            </>
-          ),
-        };
-      }
-      case TripStatus.Arrived: {
-        return {
-          timerTime: Date.now(),
-          mode: TimerColorModes.Mode2,
-          timerLabel: t('ride_Ride_Trip_timerLabelArrived'),
-          title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleArrived')}</Text>,
-        };
-      }
-      case 'waiting': {
-        return {
-          timerTime: Date.now() + minToMilSec(0.5), //change to real data
-          mode: extraWaiting ? TimerColorModes.Mode5 : TimerColorModes.Mode2,
-          timerLabel: t('ride_Ride_Trip_timerLabelWaiting'),
-          title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleWaiting')}</Text>,
-        };
-      }
-      default:
-        return null;
-    }
-  };
-
   useEffect(() => {
-    if (extraWaiting) {
+    if (extraWaiting && tripTariff) {
       intervalRef.current = setInterval(() => {
-        setExtraSum(prev => prev + testExtraSum);
-      }, 10000);
+        setExtraSum(prev => prev + tripTariff.paidWaitingTimeFeePriceMin);
+      }, minToMilSec(1));
     }
 
     return () => {
       intervalRef.current && clearInterval(intervalRef.current);
     };
-  }, [extraWaiting, setExtraSum]);
+  }, [extraWaiting, setExtraSum, tripTariff]);
 
-  const timerState = getTimerStateData(isWaiting ? 'waiting' : tripStatus);
+  if (orderInfo && tripTariff) {
+    const {
+      estimatedArriveToPickUpDate,
+      carBrand,
+      carModel,
+      firstName,
+      totalLikesCount,
+      carNumber,
+      totalRidesCount,
+      phoneNumber,
+    } = orderInfo;
 
-  const onAfterCountdownEndsHandler = () => {
-    if (tripStatus === TripStatus.Arrived) {
-      if (isWaiting && !intervalRef.current) {
-        setExtraWaiting(true);
-      } else {
-        setTimeout(() => {
-          setIsWaiting(true);
-        }, 2000);
+    const waitingTimeMin = tripTariff.freeWaitingTimeMin;
+
+    const getTimerStateData = (status: TripStatus | 'waiting'): Nullable<TimerStateDataType> => {
+      switch (status) {
+        case TripStatus.Accepted: {
+          return {
+            timerTime: new Date(estimatedArriveToPickUpDate).getTime(), //change to real data
+            mode: TimerColorModes.Mode1,
+            title: (
+              <>
+                <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>
+                  {t('ride_Ride_Trip_beIn')}{' '}
+                </Text>
+                <Text style={styles.nameTimeText}>{formatTime(new Date(estimatedArriveToPickUpDate!))}</Text>
+              </>
+            ),
+          };
+        }
+        case TripStatus.Arrived: {
+          return {
+            timerTime: Date.now() + minToMilSec(waitingTimeMin),
+            mode: TimerColorModes.Mode2,
+            timerLabel: t('ride_Ride_Trip_timerLabelArrived'),
+            title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleArrived')}</Text>,
+          };
+        }
+        case 'waiting': {
+          return {
+            timerTime: Date.now(), //change to real data
+            mode: extraWaiting ? TimerColorModes.Mode5 : TimerColorModes.Mode2,
+            timerLabel: t('ride_Ride_Trip_timerLabelWaiting'),
+            title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleWaiting')}</Text>,
+          };
+        }
+        default:
+          return null;
       }
-    }
-  };
+    };
 
-  if (tripStatus === TripStatus.Ride) {
-    return (
-      <>
-        <View style={styles.topTitleContainer}>
-          <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>{t('ride_Ride_Trip_youBeIn')} </Text>
-          <Text style={styles.nameTimeText}>{formatTime(new Date(arrivedTime))}</Text>
-        </View>
-        <Text
-          style={[styles.carInfoText, styles.carNameAlign]}
-        >{`${orderInfo.info?.carBrand} ${orderInfo.info?.carModel}`}</Text>
-        {/*TODO: delete mock data*/}
-        <TrafficIndicator
-          containerStyle={styles.trafficIndicatorContainer}
-          currentPercent={`${70}%`}
-          segments={[
-            { percent: '15%', level: TrafficLevel.Low },
-            { percent: '15%', level: TrafficLevel.Average },
-            { percent: '30%', level: TrafficLevel.High },
-            { percent: '40%', level: TrafficLevel.Low },
-          ]}
-        />
-        <View style={styles.driverInfoWrapper}>
-          <View style={styles.driverInfoContainer}>
-            <Image
-              style={styles.driverInfoImage}
-              source={{
-                uri: orderInfo.avatar,
-              }}
-            />
-            <View>
-              <Text style={styles.carInfoText}>{orderInfo?.info?.firstName}</Text>
-              <StatsBlock amountLikes={orderInfo?.info?.totalLikesCount ?? 0} />
+    const timerState = getTimerStateData(isWaiting ? 'waiting' : tripStatus);
+
+    const onAfterCountdownEndsHandler = () => {
+      if (tripStatus === TripStatus.Arrived) {
+        if (isWaiting && !intervalRef.current) {
+          setExtraWaiting(true);
+        } else {
+          setIsWaiting(true);
+        }
+      }
+    };
+
+    if (tripStatus === TripStatus.Ride) {
+      return (
+        <>
+          <View style={styles.topTitleContainer}>
+            <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>
+              {t('ride_Ride_Trip_youBeIn')}{' '}
+            </Text>
+            <Text style={styles.nameTimeText}>{formatTime(new Date(arrivedTime))}</Text>
+          </View>
+          <Text style={[styles.carInfoText, styles.carNameAlign]}>{`${carBrand} ${carModel}`}</Text>
+          {/*TODO: delete mock data*/}
+          <TrafficIndicator
+            containerStyle={styles.trafficIndicatorContainer}
+            currentPercent={`${70}%`}
+            segments={[
+              { percent: '15%', level: TrafficLevel.Low },
+              { percent: '15%', level: TrafficLevel.Average },
+              { percent: '30%', level: TrafficLevel.High },
+              { percent: '40%', level: TrafficLevel.Low },
+            ]}
+          />
+          <View style={styles.driverInfoWrapper}>
+            <View style={styles.driverInfoContainer}>
+              {/*TODO: change to default image*/}
+              <Image
+                style={styles.driverInfoImage}
+                source={{
+                  uri: contractorAvatar ?? undefined,
+                }}
+              />
+              <View>
+                <Text style={styles.carInfoText}>{firstName}</Text>
+                <StatsBlock amountLikes={totalLikesCount ?? 0} />
+              </View>
+            </View>
+            <View style={[styles.plateNumberContainer, computedStyles.plateNumberContainer]}>
+              <Text style={styles.carInfoText}>{carNumber}</Text>
             </View>
           </View>
-          <View style={[styles.plateNumberContainer, computedStyles.plateNumberContainer]}>
-            <Text style={styles.carInfoText}>{orderInfo?.info?.carNumber}</Text>
+        </>
+      );
+    }
+
+    return (
+      <View>
+        <View style={styles.contractorInfoContainer}>
+          {/*TODO: remove comments when we will show a contractor lvl */}
+          {/*{tripStatus === TripStatus.Idle && (*/}
+          {/*  <View style={styles.lvlContainer}>*/}
+          {/*    <CrownIcon />*/}
+          {/*    <Text style={[styles.lvlText, computedStyles.beInAndLvlAmountText]}> 45 </Text>*/}
+          {/*    <Text style={[styles.lvlText, computedStyles.lvlText]}>{t('ride_Ride_Trip_lvl')}</Text>*/}
+          {/*  </View>*/}
+          {/*)}*/}
+          <View style={styles.nameTimeContainer}>
+            <Text style={styles.nameTimeText}>{firstName} </Text>
+            {timerState?.title}
+          </View>
+          <StatsBlock style={styles.statsContainer} amountLikes={totalLikesCount ?? 0} amountRides={totalRidesCount} />
+          <View style={styles.carInfoContainer}>
+            <Bar style={styles.carInfoBar}>
+              <Text style={styles.carInfoText}>{`${carBrand} ${carModel}`}</Text>
+            </Bar>
+            <Bar style={[styles.carInfoPlateNumberBar, computedStyles.carInfoPlateNumberBar]}>
+              <Text style={styles.carInfoText}>{carNumber}</Text>
+            </Bar>
           </View>
         </View>
-      </>
+        <View style={styles.timerContainer}>
+          <View style={styles.buttonContainer}>
+            <Button
+              shape={ButtonShapes.Circle}
+              mode={CircleButtonModes.Mode2}
+              size={ButtonSizes.M}
+              onPress={() => Linking.openURL(`tel:${phoneNumber}`)}
+            >
+              <PhoneIcon />
+            </Button>
+            <Text style={[styles.buttonText, computedStyles.buttonText]}>{t('ride_Ride_Trip_call')}</Text>
+          </View>
+          <View>
+            {timerState && (
+              <Timer
+                isWaiting={extraWaiting}
+                time={extraWaiting ? 0 : timerState.timerTime}
+                sizeMode={TimerSizesModes.S}
+                colorMode={timerState.mode}
+                onAfterCountdownEnds={onAfterCountdownEndsHandler}
+              />
+            )}
+
+            {timerState?.timerLabel && (
+              <View style={[styles.timerLabelContainer, computedStyles.timerLabelContainer]}>
+                <Text style={[styles.timerLabelText, computedStyles.timerLabelText]}>
+                  {extraWaiting ? `-${getCurrencySign('UAH')}${extraSum}` : timerState.timerLabel}
+                </Text>
+              </View>
+            )}
+          </View>
+          <View style={styles.buttonContainer}>
+            <Bar style={styles.buttonDisable}>
+              <ClockIcon color={colors.borderColor} />
+            </Bar>
+            <Text style={[styles.buttonText, computedStyles.buttonDisableText]}>{t('ride_Ride_Trip_message')}</Text>
+          </View>
+        </View>
+      </View>
     );
   }
 
-  return (
-    <View>
-      <View style={styles.contractorInfoContainer}>
-        {/*TODO: remove comments when we will show a contractor lvl */}
-        {/*{tripStatus === TripStatus.Idle && (*/}
-        {/*  <View style={styles.lvlContainer}>*/}
-        {/*    <CrownIcon />*/}
-        {/*    <Text style={[styles.lvlText, computedStyles.beInAndLvlAmountText]}> 45 </Text>*/}
-        {/*    <Text style={[styles.lvlText, computedStyles.lvlText]}>{t('ride_Ride_Trip_lvl')}</Text>*/}
-        {/*  </View>*/}
-        {/*)}*/}
-        <View style={styles.nameTimeContainer}>
-          <Text style={styles.nameTimeText}>{orderInfo?.info?.firstName} </Text>
-          {timerState?.title}
-        </View>
-        <StatsBlock
-          style={styles.statsContainer}
-          amountLikes={orderInfo.info?.totalLikesCount ?? 0}
-          amountRides={orderInfo.info?.totalRidesCount}
-        />
-        <View style={styles.carInfoContainer}>
-          <Bar style={styles.carInfoBar}>
-            <Text style={styles.carInfoText}>{`${orderInfo.info?.carBrand} ${orderInfo.info?.carModel}`}</Text>
-          </Bar>
-          <Bar style={[styles.carInfoPlateNumberBar, computedStyles.carInfoPlateNumberBar]}>
-            <Text style={styles.carInfoText}>{orderInfo?.info?.carNumber}</Text>
-          </Bar>
-        </View>
-      </View>
-      <View style={styles.timerContainer}>
-        <View style={styles.buttonContainer}>
-          <Button
-            shape={ButtonShapes.Circle}
-            mode={CircleButtonModes.Mode2}
-            size={ButtonSizes.M}
-            onPress={() => Linking.openURL(`tel:${orderInfo?.info?.phoneNumber}`)}
-          >
-            <PhoneIcon />
-          </Button>
-          <Text style={[styles.buttonText, computedStyles.buttonText]}>{t('ride_Ride_Trip_call')}</Text>
-        </View>
-        <View>
-          {timerState && (
-            <Timer
-              isWaiting={extraWaiting}
-              time={extraWaiting ? 0 : timerState.timerTime}
-              sizeMode={TimerSizesModes.S}
-              colorMode={timerState.mode}
-              onAfterCountdownEnds={onAfterCountdownEndsHandler}
-            />
-          )}
-
-          {timerState?.timerLabel && (
-            <View style={[styles.timerLabelContainer, computedStyles.timerLabelContainer]}>
-              <Text style={[styles.timerLabelText, computedStyles.timerLabelText]}>
-                {extraWaiting ? `-${getCurrencySign('UAH')}${extraSum}` : timerState.timerLabel}
-              </Text>
-            </View>
-          )}
-        </View>
-        <View style={styles.buttonContainer}>
-          <Bar style={styles.buttonDisable}>
-            <ClockIcon color={colors.borderColor} />
-          </Bar>
-          <Text style={[styles.buttonText, computedStyles.buttonDisableText]}>{t('ride_Ride_Trip_message')}</Text>
-        </View>
-      </View>
-    </View>
-  );
+  return <></>;
 };
 
 const styles = StyleSheet.create({

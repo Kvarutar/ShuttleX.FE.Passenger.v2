@@ -144,7 +144,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
       <SafeAreaView style={styles.wrapper}>
         <MapView />
         {topMenu[orderStatus]}
-        {TripStatus.Accepted && orderInfo ? <Trip orderInfo={orderInfo} /> : <Order ref={orderRef} />}
+        {TripStatus.Accepted && orderInfo ? <Trip /> : <Order ref={orderRef} />}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
       {isWinningPopupVisible && <WinningPopup setIsWinningPopupVisible={setIsWinningPopupVisible} />}

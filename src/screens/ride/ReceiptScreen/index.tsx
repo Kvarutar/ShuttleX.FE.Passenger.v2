@@ -257,15 +257,18 @@ const ReceiptScreen = () => {
                 <Text style={[styles.cancelledTripTitleText, computedStyles.cancelledTripTitleText]}>
                   {t('ride_Receipt_cancelledTrip')}
                 </Text>
-                <View style={styles.priceContainer}>
-                  <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
-                  <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
-                    {/*TODO: ask back about sign, not code*/}
-                    {getCurrencySign(orderInfo?.info?.currencyCode as CurrencyType)}12,7
-                  </Text>
-                </View>
+                {Boolean(orderInfo?.info) && (
+                  <View style={styles.priceContainer}>
+                    <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
+                    <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
+                      {/*TODO: ask back about sign, not code*/}
+                      {getCurrencySign(orderInfo?.info?.currencyCode as CurrencyType)}{' '}
+                      {orderInfo?.info?.totalFinalPrice}
+                    </Text>
+                  </View>
+                )}
               </View>
-              {paymentBarBlock}
+              {Boolean(orderInfo?.info) && paymentBarBlock}
             </View>
           ) : (
             <>

@@ -1,3 +1,4 @@
+import { LatLng } from 'react-native-maps';
 import { getNetworkErrorInfo } from 'shuttlex-integration';
 
 import { profileZoneSelector } from '../../../passenger/redux/selectors';
@@ -20,6 +21,7 @@ import {
   GetOfferRoutesAPIResoponse,
   GetTariffsPricesAPIResponse,
   GetTariffsPricesThunkResult,
+  GetZoneIdByLocationAPIResponse,
   OfferRoutesFromAPI,
   RecentAddressAPIResponse,
   RecentDropoffsAPIResponse,
@@ -28,6 +30,7 @@ import {
   SearchAddressFromAPI,
   SearchAddressPayload,
   TariffFromAPI,
+  ZoneIdFromAPI,
 } from './types';
 import { algorythmTypeParser, tariffsNamesByFeKey } from './utils';
 
@@ -147,10 +150,30 @@ export const getOfferRoutes = createAppAsyncThunk<OfferRoutesFromAPI, void>(
   },
 );
 
-export const getAvaliableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, void>(
+export const getZoneIdByLocation = createAppAsyncThunk<ZoneIdFromAPI, LatLng>(
+  'offer/getZoneIdByLocation',
+  async (payload, { rejectWithValue, configAxios }) => {
+    //TODO: rewrite this logic for stop points
+    try {
+      const response = await configAxios.get<GetZoneIdByLocationAPIResponse>(
+        `/zones/geo?Geo.Latitude=${payload.latitude}&Geo.Longitude=${payload.longitude}`,
+      );
+
+      return response.data.id;
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
+
+export const getAvaliableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, void | LatLng>(
   'offer/getAvaliableTariffs',
-  async (_, { rejectWithValue, configAxios, getState }) => {
-    const zoneId = profileZoneSelector(getState())?.id;
+  async (payload, { rejectWithValue, configAxios, getState, dispatch }) => {
+    let zoneId = profileZoneSelector(getState())?.id;
+
+    if (payload) {
+      zoneId = await dispatch(getZoneIdByLocation(payload)).unwrap();
+    }
 
     try {
       if (zoneId) {
@@ -215,10 +238,12 @@ export const getTariffsPrices = createAppAsyncThunk<GetTariffsPricesThunkResult,
   async (_, { rejectWithValue, cashieringAxios, getState }) => {
     const state = getState();
 
+    const zoneId = state.offer.zoneId ?? state.passenger.zone?.id;
+
     try {
-      if (state.offer.offerRoutes && state.passenger.zone) {
+      if (state.offer.offerRoutes && zoneId) {
         const response = await cashieringAxios.get<GetTariffsPricesAPIResponse>(
-          `/cashiering/ride/routes/${state.offer.offerRoutes.routeId}/zones/${state.passenger.zone.id}/cost`,
+          `/cashiering/ride/routes/${state.offer.offerRoutes.routeId}/zones/${zoneId}/cost`,
         );
 
         return response.data;

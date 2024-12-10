@@ -1,8 +1,24 @@
+import { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { BaggageIcon, Bar, getCurrencySign, ProfileIcon, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { useSelector } from 'react-redux';
+import {
+  BaggageIcon,
+  Bar,
+  getCurrencySign,
+  ProfileIcon,
+  Skeleton,
+  Text,
+  useTariffsIcons,
+  useTheme,
+} from 'shuttlex-integration';
 
+import {
+  isPhantomOfferLoadingSelector,
+  isTariffsPricesLoadingSelector,
+} from '../../../../../core/ride/redux/offer/selectors';
+import passengerColors from '../../../../../shared/colors/colors';
 import PlanButton from '../../PlanButton/PlanButton';
 import { TariffBarProps } from './types';
 
@@ -22,9 +38,15 @@ const TariffBar = ({
   const { t } = useTranslation();
   const tariffsCarData = useTariffsIcons();
 
+  const isTariffsPricesLoading = useSelector(isTariffsPricesLoadingSelector);
+  const isPhantomOfferLoading = useSelector(isPhantomOfferLoadingSelector);
+
   const TariffImage = tariffsCarData[tariff.name].icon;
   const tariffTitle = tariffsCarData[tariff.name].text;
-  const availablePlans = tariff.matching ? tariff.matching.filter(item => item.durationSec !== null) : [];
+  const availablePlans = useMemo(
+    () => (tariff.matching ? tariff.matching.filter(item => item.durationSec !== null) : []),
+    [tariff],
+  );
   const defaultPlanIndex = availablePlans.length > 1 ? 1 : 0;
   const showPriceAndTime = !isPlanSelected || availablePlans.length < 2;
 
@@ -100,13 +122,28 @@ const TariffBar = ({
     </View>
   );
 
-  const tariffTitleBlock = (
-    <View style={styles.tariffTitleContainer}>
-      <Text style={styles.title}>{tariffTitle}</Text>
-      {showPriceAndTime && isAvailableTariff && availablePlans[defaultPlanIndex] && (
+  const esimatedArrival = (): ReactNode => {
+    if (showPriceAndTime && isAvailableTariff && availablePlans[defaultPlanIndex]) {
+      return (
         <Text style={[styles.capacityText, computedStyles.capacityColor]}>
           {formatTime(Number(availablePlans[defaultPlanIndex].durationSec))}
         </Text>
+      );
+    }
+
+    return <></>;
+  };
+
+  const tariffTitleBlock = (
+    <View style={styles.tariffTitleContainer}>
+      <Text style={styles.title}>{tariffTitle}</Text>
+      {isPhantomOfferLoading ? (
+        <Skeleton
+          skeletonContainerStyle={styles.skeletonTariffPrice}
+          boneColor={passengerColors.tariffsColors.tariffGroupPriceLoadingColor}
+        />
+      ) : (
+        esimatedArrival()
       )}
     </View>
   );
@@ -131,9 +168,18 @@ const TariffBar = ({
         {tariffTitleBlock}
         {capacityBlock}
       </View>
-      <Text style={[styles.isNotSelectedPrice, computedStyles.isNotSelectedPrice, styles.price, computedStyles.price]}>
-        {tariffPrice()}
-      </Text>
+      {isTariffsPricesLoading ? (
+        <Skeleton
+          skeletonContainerStyle={styles.skeletonTariffPrice}
+          boneColor={passengerColors.tariffsColors.tariffGroupPriceLoadingColor}
+        />
+      ) : (
+        <Text
+          style={[styles.isNotSelectedPrice, computedStyles.isNotSelectedPrice, styles.price, computedStyles.price]}
+        >
+          {tariffPrice()}
+        </Text>
+      )}
     </>
   );
 
@@ -145,11 +191,18 @@ const TariffBar = ({
           <TariffImage style={computedStyles.image} />
         </View>
         {capacityBlock}
-        <Text
-          style={[styles.isNotSelectedPrice, computedStyles.isNotSelectedPrice, styles.price, computedStyles.price]}
-        >
-          {tariffPrice()}
-        </Text>
+        {isTariffsPricesLoading ? (
+          <Skeleton
+            skeletonContainerStyle={styles.skeletonTariffPrice}
+            boneColor={passengerColors.tariffsColors.tariffGroupPriceLoadingColor}
+          />
+        ) : (
+          <Text
+            style={[styles.isNotSelectedPrice, computedStyles.isNotSelectedPrice, styles.price, computedStyles.price]}
+          >
+            {tariffPrice()}
+          </Text>
+        )}
       </>
     );
   }
@@ -178,6 +231,11 @@ const TariffBar = ({
 };
 
 const styles = StyleSheet.create({
+  skeletonTariffPrice: {
+    width: 60,
+    height: 20,
+    borderRadius: 4,
+  },
   container: {
     paddingHorizontal: 8,
     paddingBottom: 8,

@@ -33,6 +33,7 @@ export type OfferState = {
     offerRoutes: boolean;
     recentDropoffs: boolean;
     tariffsPrices: boolean;
+    phantomOffer: boolean;
   };
   errors: {
     avaliableTariffs: Nullable<NetworkErrorDetailsWithBody<any>>;
@@ -44,6 +45,7 @@ export type OfferState = {
   avaliableTariffs: Nullable<TariffWithMatching[]>;
   selectedTariff: Nullable<SelectedTariff>;
   estimatedPrice: Nullable<EstimatedPrice>;
+  zoneId: Nullable<string>;
 };
 
 export type SelectedTariff = TariffWithMatching;
@@ -124,7 +126,7 @@ export type TariffWithMatching = TariffFromAPI & { matching: Matching[]; isAvali
 
 export type GetAvaliableTariffsAPIResponse = TariffFromAPI[];
 
-export type TariffFeKeyFromAPI = 'basicx' | 'basicxl' | 'comfortplus' | 'teslax' | 'premiumx' | 'premiumxl';
+export type TariffFeKeyFromAPI = 'basicx' | 'basicxl' | 'comfortplus' | 'electric' | 'premiumx' | 'premiumxl';
 export type TariffsType = 'economy' | 'exclusive' | 'business';
 export type TariffsTypeFromAPI = 'Economy' | 'Comfort' | 'Premium';
 
@@ -165,3 +167,7 @@ export type CreateInitialOfferAPIResponse = {
 };
 
 export type CreateOfferAPIResponse = string;
+
+export type GetZoneIdByLocationAPIResponse = { id: string };
+
+export type ZoneIdFromAPI = string;

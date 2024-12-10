@@ -21,7 +21,6 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
-import { profileZoneSelector } from '../../../../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
@@ -70,7 +69,6 @@ const AddressSelect = ({
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
   const offerPoints = useSelector(offerPointsSelector);
-  const profileZone = useSelector(profileZoneSelector);
   const initialFocusedInput = defaultLocation
     ? { id: 1, value: offerPoints[1].address, focus: false }
     : { id: 0, value: offerPoints[0].address, focus: false };
@@ -118,22 +116,22 @@ const AddressSelect = ({
     if (debounceInputValue.trim() === '') {
       setAddresses([]);
     } else {
-      dispatch(searchAddress({ query: debounceInputValue, language: i18n.language }))
-        .unwrap()
-        .then(res => {
-          const mappedRes = res.map<SearchAddressFromAPI>(el => ({
-            id: el.externalId,
-            address: el.mainText,
-            fullAddress: el.secondaryText,
-            geo: {
-              latitude: 0,
-              longitude: 0,
-            },
-            totalDistanceMtr: el.distanceMtr,
-          }));
+      (async () => {
+        const result = await dispatch(searchAddress({ query: debounceInputValue, language: i18n.language })).unwrap();
 
-          setAddresses(mappedRes);
-        });
+        const mappedRes = result.map<SearchAddressFromAPI>(el => ({
+          id: el.externalId,
+          address: el.mainText,
+          fullAddress: el.secondaryText ?? el.mainText,
+          geo: {
+            latitude: 0,
+            longitude: 0,
+          },
+          totalDistanceMtr: el.distanceMtr,
+        }));
+
+        setAddresses(mappedRes);
+      })();
     }
   }, [debounceInputValue, i18n.language, dispatch]);
 
@@ -370,9 +368,9 @@ const AddressSelect = ({
             <Button
               isLoading={isAvailableTariffsLoading || isOfferRoutesLoading}
               size={ButtonSizes.S}
-              disabled={incorrectWaypoints || !profileZone}
+              disabled={incorrectWaypoints}
               onPress={onConfirm}
-              mode={!incorrectWaypoints || profileZone ? CircleButtonModes.Mode1 : CircleButtonModes.Mode4}
+              mode={!incorrectWaypoints ? CircleButtonModes.Mode1 : CircleButtonModes.Mode4}
               shape={ButtonShapes.Circle}
               style={[styles.confirmButton, computedStyles.confirmButton]}
             >

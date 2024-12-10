@@ -17,19 +17,20 @@ import {
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
-import { orderIdSelector, tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
+import { orderIdSelector, orderSelector, tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
 import {
   cancelTrip,
+  getOrderInfo,
   getTripCanceledAfterPickUpLongPolling,
   getTripSuccessfullLongPolling,
 } from '../../../../core/ride/redux/trip/thunks';
-import { Order, TripStatus } from '../../../../core/ride/redux/trip/types';
+import { TripStatus } from '../../../../core/ride/redux/trip/types';
 import { RootStackParamList } from '../../../../Navigate/props';
 import AlertInitializer from '../../../../shared/AlertInitializer';
 import HiddenPart from './HiddenPart';
 import VisiblePart from './VisiblePart';
 
-const Trip = ({ orderInfo }: { orderInfo: Order }) => {
+const Trip = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
@@ -41,8 +42,9 @@ const Trip = ({ orderInfo }: { orderInfo: Order }) => {
   const tripStatus = useSelector(tripStatusSelector);
   const orderId = useSelector(orderIdSelector);
   const [extraSum, setExtraSum] = useState(0);
+  const order = useSelector(orderSelector);
 
-  const arrivedTime = orderInfo?.info ? Date.parse(orderInfo?.info?.estimatedArriveToDropOffDate) : 0;
+  const arrivedTime = order?.info ? Date.parse(order?.info?.estimatedArriveToDropOffDate) : 0;
 
   useEffect(() => {
     if (orderId && tripStatus === TripStatus.Ride) {
@@ -64,6 +66,13 @@ const Trip = ({ orderInfo }: { orderInfo: Order }) => {
     },
   });
 
+  const onCancelTrip = async () => {
+    if (orderId) {
+      await dispatch(cancelTrip(orderId));
+      dispatch(getOrderInfo(orderId));
+    }
+  };
+
   const headerElementBlock =
     tripStatus === TripStatus.Ride ? (
       <Timer
@@ -79,7 +88,7 @@ const Trip = ({ orderInfo }: { orderInfo: Order }) => {
           <Image
             style={styles.avatar}
             source={{
-              uri: orderInfo.avatar,
+              uri: order?.avatar ?? undefined, //TODO: change to default image
             }}
           />
         </View>
@@ -103,13 +112,13 @@ const Trip = ({ orderInfo }: { orderInfo: Order }) => {
           options={'options' in alertData ? alertData.options : undefined}
         />
       ))}
-      visiblePart={<VisiblePart setExtraSum={setExtraSum} extraSum={extraSum} orderInfo={orderInfo} />}
+      visiblePart={<VisiblePart setExtraSum={setExtraSum} extraSum={extraSum} />}
       hiddenPart={<HiddenPart extraSum={extraSum} />}
       visiblePartStyle={styles.visiblePartStyle}
       hiddenPartButton={
         <SwipeButton
           mode={SwipeButtonModes.Decline}
-          onSwipeEnd={() => orderId && dispatch(cancelTrip(orderId))}
+          onSwipeEnd={onCancelTrip}
           text={t('ride_Ride_Trip_cancelRideButton')}
         />
       }

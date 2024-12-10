@@ -16,6 +16,7 @@ export type TripStatusFromAPI =
   | 'CanceledByContractor';
 
 export type OrderFromAPI = {
+  orderId: string;
   firstName: string;
   carBrand: string;
   carModel: string;
@@ -38,6 +39,8 @@ export type OrderFromAPI = {
   totalFinalPrice: number;
   tariffId: string;
   passengerId: string;
+  finishedDate: string;
+  estimatedPrice: number;
 };
 
 export type GetOrderInfoAPIResponse = OrderFromAPI;
@@ -45,7 +48,7 @@ export type GetOrdersHistoryAPIResponse = OrderFromAPI[];
 
 export type Order = {
   info: Nullable<OrderFromAPI>;
-  avatar: string;
+  avatar: Nullable<string>;
   orderId: string;
 };
 

@@ -30,7 +30,7 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: Place
             </Bar>
             <PlaceTitle place={place} style={styles.placeTitle} />
           </View>
-          {place.totalDistanceMtr && (
+          {place.totalDistanceMtr !== undefined && (
             <Text style={[styles.searchDistanceText, computedStyles.searchDistanceText]}>
               {t('ride_Ride_PlaceBar_kilometers', { count: formatDistance(place.totalDistanceMtr) })}
             </Text>

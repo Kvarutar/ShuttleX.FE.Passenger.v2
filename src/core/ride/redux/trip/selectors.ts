@@ -10,4 +10,7 @@ export const tripTipSelector = (state: AppState) => state.trip.tip;
 export const finishedTripsSelector = (state: AppState) => state.trip.finishedTrips;
 export const isTripLoadingSelector = (state: AppState) => state.trip.isLoading;
 export const orderIdSelector = (state: AppState) => state.trip.order?.orderId;
+export const orderInfoSelector = (state: AppState) => state.trip.order?.info;
+export const orderTariffIdSelector = (state: AppState) => state.trip.order?.info?.tariffId;
+export const contractorAvatarSelector = (state: AppState) => state.trip.order?.avatar;
 export const isTripCanceledSelector = (state: AppState) => state.trip.isCanceled;
