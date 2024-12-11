@@ -77,7 +77,7 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
         updateOfferPoint({
           id: route.params.orderPointId,
           address: address.address,
-          fullAdress: address.fullAddress,
+          fullAddress: address.fullAddress,
           latitude: addressCoordinates.latitude,
           longitude: addressCoordinates.longitude,
         }),

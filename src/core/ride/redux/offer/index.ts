@@ -30,8 +30,8 @@ const initialState: OfferState = {
   offerId: null,
   recentDropoffs: [],
   points: [
-    { id: 0, address: '', fullAdress: '', longitude: 0, latitude: 0 },
-    { id: 1, address: '', fullAdress: '', longitude: 0, latitude: 0 },
+    { id: 0, address: '', fullAddress: '', longitude: 0, latitude: 0 },
+    { id: 1, address: '', fullAddress: '', longitude: 0, latitude: 0 },
   ],
   offerRoutes: null,
   loading: {

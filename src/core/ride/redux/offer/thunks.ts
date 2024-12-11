@@ -274,14 +274,14 @@ export const createInitialOffer = createAppAsyncThunk<string, void>(
       },
       pickUpZoneId: offerRoutes?.waypoints[0].zoneId,
       pickUpAddress: points[0].address,
-      pickUpPlace: points[0].fullAdress ?? points[0].address,
+      pickUpPlace: points[0].fullAddress ?? points[0].address,
       dropOffGeo: {
         latitude: points[1].latitude,
         longitude: points[1].longitude,
       },
       dropOffZoneId: offerRoutes?.waypoints[0].zoneId,
       dropOffAddress: points[1].address,
-      dropOffPlace: points[1].fullAdress,
+      dropOffPlace: points[1].fullAddress,
     };
 
     try {

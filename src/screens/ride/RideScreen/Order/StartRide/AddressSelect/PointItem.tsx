@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
@@ -7,77 +7,56 @@ import { useSelector } from 'react-redux';
 import { CloseIcon, PointIcon, PointIcon2, TextInput, TextInputInputMode, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
-import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
-import { offerPointsSelector } from '../../../../../../core/ride/redux/offer/selectors';
+import { offerPointByIdSelector } from '../../../../../../core/ride/redux/offer/selectors';
 import { createPhantomOffer, getAvailableTariffs } from '../../../../../../core/ride/redux/offer/thunks';
 import { PointItemProps } from './types';
 
 const fadeAnimationDuration = 100;
 
-const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointItemProps) => {
+const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: PointItemProps) => {
   const { colors } = useTheme();
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
-  const points = useSelector(offerPointsSelector);
-  const point = points.find(el => el.id === currentPointId);
-  const defaultLocation = useSelector(geolocationCoordinatesSelector);
+  const point = useSelector(offerPointByIdSelector(currentPointId));
 
   const [inputValue, setInputValue] = useState(point?.address ?? '');
   const [isFocused, setIsFocused] = useState(false);
-  const [isInputTouched, setIsInputTouched] = useState(false);
-
-  const shadowOptions = {
-    distance: isFocused ? 8 : 0,
-    startColor: isFocused ? '#00000012' : 'transparent',
-  };
+  const hasEffectRun = useRef(false);
 
   useEffect(() => {
-    setIsInputTouched(isFocused);
-  }, [setIsInputTouched, isFocused]);
-
-  useEffect(() => {
-    if (isInputTouched) {
-      setFocusedInput({ id: currentPointId, value: inputValue, focus: isFocused });
+    if (point?.address !== inputValue) {
+      setInputValue(point?.address ?? '');
     }
-  }, [currentPointId, inputValue, isFocused, isInputTouched, setFocusedInput, defaultLocation]);
+  }, [point?.address, inputValue]);
 
   useEffect(() => {
-    if (!isInputTouched && currentPointId === 0 && point?.address) {
+    if (!hasEffectRun.current && currentPointId === 0 && point?.address) {
       (async () => {
         await dispatch(getAvailableTariffs({ latitude: point.latitude, longitude: point.longitude }));
         dispatch(createPhantomOffer());
+        hasEffectRun.current = true;
       })();
     }
-  }, [isInputTouched, currentPointId, point, dispatch]);
+  }, [currentPointId, dispatch, point]);
 
-  useEffect(() => {
-    if (point?.address && !isFocused) {
-      setInputValue(point.address);
-    }
-  }, [point?.address, isFocused]);
+  const isFocusedHandler = (state: boolean) => () => {
+    updateFocusedInput({ id: currentPointId, value: inputValue, focus: state });
+    setIsFocused(state);
+  };
 
-  //TODO: fix this effect. It should clean value input, besides when we scroll searched addresses
-  useEffect(() => {
-    if (!inputValue.length && !isFocused) {
-      if (currentPointId === 0 && defaultLocation !== null) {
-        //setInputValue(t('ride_Ride_AddressSelect_addressInputMyLocation'));
-        dispatch(
-          updateOfferPoint({
-            id: 0,
-            address: t('ride_Ride_AddressSelect_addressInputMyLocation'),
-            fullAdress: t('ride_Ride_AddressSelect_addressInputMyLocation'),
-            longitude: defaultLocation.longitude,
-            latitude: defaultLocation.latitude,
-          }),
-        );
-      } else {
-        //dispatch(updateOfferPoint({ id: currentPointId, address: '', fullAdress: '', longitude: 0, latitude: 0 }));
-      }
-      //setInputValue('');
+  const clearInputValue = () => {
+    updateFocusedInput({ id: currentPointId, value: '', focus: isFocused });
+    dispatch(updateOfferPoint({ id: currentPointId, address: '', fullAddress: '', longitude: 0, latitude: 0 }));
+  };
+
+  const handleInputChange = (value: string) => {
+    updateFocusedInput({ id: currentPointId, value: value, focus: isFocused });
+    if (point) {
+      dispatch(updateOfferPoint({ ...point, address: value, longitude: 0, latitude: 0 }));
     }
-  }, [currentPointId, dispatch, inputValue, isFocused, defaultLocation, t]);
+  };
 
   const computedStyles = StyleSheet.create({
     inputContent: {
@@ -88,6 +67,11 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
     },
   });
 
+  const shadowOptions = {
+    distance: isFocused ? 8 : 0,
+    startColor: isFocused ? colors.strongShadowColor : 'transparent',
+  };
+
   const pointIcon = ({ innerColor, outerColor }: { innerColor?: string; outerColor?: string }) => {
     if (isFocused || inputValue) {
       return <PointIcon innerColor={innerColor} outerColor={outerColor} />;
@@ -95,9 +79,6 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
 
     return <PointIcon2 />;
   };
-
-  const isFocusedHandler = (state: boolean) => () => setIsFocused(state);
-  const clearInputValue = () => setInputValue('');
 
   return (
     <Animated.View
@@ -108,7 +89,10 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
       <Shadow {...shadowOptions} style={[styles.inputContent, computedStyles.inputContent]}>
         <View style={styles.iconContainer}>
           {pointMode === 'dropOff' ? (
-            pointIcon({ innerColor: colors.backgroundSecondaryColor, outerColor: colors.errorColor })
+            pointIcon({
+              innerColor: colors.backgroundSecondaryColor,
+              outerColor: colors.errorColor,
+            })
           ) : (
             <>
               {pointIcon({})}
@@ -121,11 +105,16 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
           )}
         </View>
         <TextInput
-          placeholder={t('ride_Ride_AddressSelect_addressInputPlaceholder')}
+          placeholder={
+            currentPointId === 1
+              ? t('ride_Ride_AddressSelect_addressWhereInputPlaceholder')
+              : t('ride_Ride_AddressSelect_addressFromInputPlaceholder')
+          }
           wrapperStyle={styles.inputContainer}
+          inputStyle={{ color: isFocused || point?.latitude ? colors.textPrimaryColor : colors.errorColor }}
           containerStyle={styles.input}
           inputMode={TextInputInputMode.Text}
-          onChangeText={setInputValue}
+          onChangeText={handleInputChange}
           value={inputValue}
           onFocus={isFocusedHandler(true)}
           onBlur={isFocusedHandler(false)}

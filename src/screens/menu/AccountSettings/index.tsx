@@ -154,7 +154,6 @@ const PhotoBlock = ({ onUploadPhoto }: PhotoBlockProps) => {
 const styles = StyleSheet.create({
   wrapper: {
     gap: 24,
-    paddingTop: 8,
   },
   textTitle: {
     fontFamily: 'Inter Medium',

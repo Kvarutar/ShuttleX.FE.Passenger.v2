@@ -14,7 +14,7 @@ export type RecentDropoffsPayload = {
   amount: number;
 };
 
-export type AddressPoint = { id: number; address: string; fullAdress: string } & LatLng;
+export type AddressPoint = { id: number; address: string; fullAddress: string } & LatLng;
 
 export type Address = AddressPoint & { details?: string };
 

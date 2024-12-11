@@ -39,6 +39,9 @@ export const groupedTariffsSelector = createSelector(
   }),
 );
 
+export const offerPointByIdSelector = (id: number) =>
+  createSelector(offerPointsSelector, points => points.find(point => point.id === id));
+
 //Loadings
 export const isSearchAdressesLoadingSelector = (state: AppState) => state.offer.loading.searchAdresses;
 export const isRecentDropoffsLoadingSelector = (state: AppState) => state.offer.loading.recentDropoffs;

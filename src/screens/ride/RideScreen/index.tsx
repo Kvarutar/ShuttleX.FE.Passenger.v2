@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MenuHeader, sizes, useTheme } from 'shuttlex-integration';
 
@@ -90,9 +90,13 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   useGeolocationStartWatch();
   useNetworkConnectionStartWatch();
 
+  const androidPaddingTop = StatusBar.currentHeight
+    ? StatusBar.currentHeight.valueOf() + sizes.paddingHorizontal
+    : sizes.paddingHorizontal;
+
   const computedStyles = StyleSheet.create({
     menuStyle: {
-      paddingTop: 8,
+      paddingTop: Platform.OS === 'android' ? androidPaddingTop : 8,
       zIndex: orderStatus === OrderStatus.Confirming ? 1 : 0,
     },
     unreadNotificationsMarker: {
@@ -146,7 +150,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
         {topMenu[orderStatus]}
         {TripStatus.Accepted && orderInfo ? <Trip /> : <Order ref={orderRef} />}
       </SafeAreaView>
-      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
+      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} isStatusBarTransparent />}
       {isWinningPopupVisible && <WinningPopup setIsWinningPopupVisible={setIsWinningPopupVisible} />}
       {/*TODO: uncomment when we will need MysteryBoxPopup*/}
       {/*{isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}*/}

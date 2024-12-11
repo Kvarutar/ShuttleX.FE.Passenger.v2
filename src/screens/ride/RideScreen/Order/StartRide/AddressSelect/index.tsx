@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -48,9 +48,8 @@ import PlaceBar from '../../PlaceBar';
 import { PlaceBarModes } from '../../PlaceBar/types';
 import AddressButton from './AddressButton';
 import PointItem from './PointItem';
-import { AddressSelectProps, PointMode } from './types';
+import { AddressSelectProps, FocusedInput, PointMode } from './types';
 
-//TODO: rewrite logic for adresses. For the reference - look at yandex GO
 const AddressSelect = ({
   address,
   setIsAddressSelectVisible,
@@ -69,19 +68,16 @@ const AddressSelect = ({
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
   const offerPoints = useSelector(offerPointsSelector);
-  const initialFocusedInput = defaultLocation
-    ? { id: 1, value: offerPoints[1].address, focus: false }
-    : { id: 0, value: offerPoints[0].address, focus: false };
 
-  const [showConfirmButton, setShowConfirmButton] = useState(false);
-  const [focusedInput, setFocusedInput] = useState<{ id: number; value: string; focus: boolean }>(initialFocusedInput);
+  const [focusedInput, setFocusedInput] = useState<FocusedInput>({ id: 0, value: '', focus: false });
   const [isAddressSelected, setIsAddressSelected] = useState(false);
-  const [updateDefaultLocation, setUpdateDefaultLocation] = useState(true);
   const [addresses, setAddresses] = useState<SearchAddressFromAPI[]>([]);
   const [addressesHistory, setAddressesHistory] = useState<SearchAddressFromAPI[]>([]);
-  const [isAllOfferPointsFilled, setIsAllOfferPointsFilled] = useState(false);
   const [incorrectWaypoints, setIncorrectWaypoints] = useState(false);
   const debounceInputValue = useDebounce(focusedInput.value, 300);
+
+  const firstUpdateDefaultLocation = useRef(true);
+  const isAllOfferPointsFilled = offerPoints.every(point => point.latitude && point.longitude && point.address);
 
   const computedStyles = StyleSheet.create({
     noAddress: {
@@ -110,59 +106,44 @@ const AddressSelect = ({
 
       setAddressesHistory(addressessHistory);
     })();
-  }, [dispatch, setAddressesHistory]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (debounceInputValue.trim() === '') {
       setAddresses([]);
-    } else {
-      (async () => {
-        const result = await dispatch(searchAddress({ query: debounceInputValue, language: i18n.language })).unwrap();
-
-        const mappedRes = result.map<SearchAddressFromAPI>(el => ({
-          id: el.externalId,
-          address: el.mainText,
-          fullAddress: el.secondaryText ?? el.mainText,
-          geo: {
-            latitude: 0,
-            longitude: 0,
-          },
-          totalDistanceMtr: el.distanceMtr,
-        }));
-
-        setAddresses(mappedRes);
-      })();
+      return;
     }
+
+    (async () => {
+      const searchedAddress = await dispatch(
+        searchAddress({ query: debounceInputValue, language: i18n.language }),
+      ).unwrap();
+      const mappedRes = searchedAddress.map<SearchAddressFromAPI>(el => ({
+        id: el.externalId,
+        address: el.mainText,
+        fullAddress: el.secondaryText,
+        geo: { latitude: 0, longitude: 0 },
+        totalDistanceMtr: el.distanceMtr,
+      }));
+      setAddresses(mappedRes);
+    })();
   }, [debounceInputValue, i18n.language, dispatch]);
 
   useEffect(() => {
-    const isAllAddressesFilled = !offerPoints.some(el => el.address === '');
-    setShowConfirmButton(isAllAddressesFilled);
-  }, [offerPoints]);
-
-  useEffect(() => {
-    if (focusedInput.id === 0) {
-      setUpdateDefaultLocation(false);
-    }
-  }, [focusedInput.id]);
-
-  useEffect(() => {
-    if (
-      defaultLocation &&
-      updateDefaultLocation &&
-      offerPoints.find(el => el.address === '' && el.id === 0) !== undefined
-    ) {
+    if (firstUpdateDefaultLocation.current && defaultLocation) {
       dispatch(
         updateOfferPoint({
           id: 0,
           address: t('ride_Ride_AddressSelect_addressInputMyLocation'),
-          fullAdress: t('ride_Ride_AddressSelect_addressInputMyLocation'),
+          fullAddress: t('ride_Ride_AddressSelect_addressInputMyLocation'),
           longitude: defaultLocation.longitude,
           latitude: defaultLocation.latitude,
         }),
       );
+      setFocusedInput({ id: 1, value: offerPoints[1].address, focus: false });
+      firstUpdateDefaultLocation.current = false;
     }
-  }, [defaultLocation, dispatch, t, updateDefaultLocation, offerPoints]);
+  }, [defaultLocation, dispatch, t, offerPoints]);
 
   useEffect(() => {
     if (address) {
@@ -170,7 +151,7 @@ const AddressSelect = ({
         updateOfferPoint({
           id: 1,
           address: address.address,
-          fullAdress: address.fullAddress,
+          fullAddress: address.fullAddress,
           longitude: address.geo.longitude,
           latitude: address.geo.latitude,
         }),
@@ -189,23 +170,18 @@ const AddressSelect = ({
   }, [focusedInput.focus, focusedInput.value]);
 
   useEffect(() => {
-    setIsAllOfferPointsFilled(offerPoints.every(item => item.address.length));
-
     if (isAllOfferPointsFilled) {
       dispatch(getOfferRoutes());
     }
-  }, [dispatch, isAllOfferPointsFilled, offerPoints]);
+  }, [dispatch, isAllOfferPointsFilled]);
 
   useEffect(() => {
     if (isAllOfferPointsFilled) {
-      if (offerRoutesError && isRoutePointsLocationError(offerRoutesError)) {
-        setIncorrectWaypoints(true);
-      } else {
-        setIncorrectWaypoints(false);
-      }
-      setIsUnsupportedDestinationPopupVisible(incorrectWaypoints);
+      const isIncorrect = offerRoutesError !== null && isRoutePointsLocationError(offerRoutesError);
+      setIncorrectWaypoints(isIncorrect);
+      setIsUnsupportedDestinationPopupVisible(isIncorrect);
     }
-  }, [incorrectWaypoints, isAllOfferPointsFilled, offerRoutesError, setIsUnsupportedDestinationPopupVisible]);
+  }, [isAllOfferPointsFilled, offerRoutesError, setIsUnsupportedDestinationPopupVisible, offerPoints]);
 
   const onLocationSelectPress = () => navigation.navigate('MapAddressSelection', { orderPointId: focusedInput.id });
 
@@ -231,14 +207,13 @@ const AddressSelect = ({
       updateOfferPoint({
         id: focusedInput.id,
         address: place.address,
-        fullAdress: place.fullAddress,
+        fullAddress: place.fullAddress,
         latitude: geo.latitude,
         longitude: geo.longitude,
       }),
     );
 
     Keyboard.dismiss();
-    setIsAddressSelected(false);
   };
 
   const pointsContent = offerPoints.map((point, index) => {
@@ -264,7 +239,7 @@ const AddressSelect = ({
         key={point.id}
         pointMode={pointMode}
         currentPointId={point.id}
-        setFocusedInput={setFocusedInput}
+        updateFocusedInput={setFocusedInput}
       />
     );
   });
@@ -318,8 +293,8 @@ const AddressSelect = ({
             showsVerticalScrollIndicator={false}
             style={[styles.scrollViewSearchWrapper, computedStyles.scrollViewSearchWrapper]}
             contentContainerStyle={computedStyles.scrollViewSearchContentContainer}
-            // onScroll={Keyboard.dismiss} //TODO: do a proper keyboard hide when scroll through address search
-            // scrollEventThrottle={16} //this line is required with onScroll event
+            onScroll={Keyboard.dismiss}
+            scrollEventThrottle={16}
           >
             {isAddressSelected ? (
               searchAddresses
@@ -364,7 +339,7 @@ const AddressSelect = ({
               </>
             )}
           </ScrollView>
-          {showConfirmButton && (
+          {isAllOfferPointsFilled && (
             <Button
               isLoading={isAvailableTariffsLoading || isOfferRoutesLoading}
               size={ButtonSizes.S}
