@@ -124,7 +124,7 @@ export type TariffFromAPI = {
 
 export type TariffWithMatching = TariffFromAPI & { matching: Matching[]; isAvaliable: boolean };
 
-export type GetAvaliableTariffsAPIResponse = TariffFromAPI[];
+export type GetAvailableTariffsAPIResponse = TariffFromAPI[];
 
 export type TariffFeKeyFromAPI = 'basicx' | 'basicxl' | 'comfortplus' | 'electric' | 'premiumx' | 'premiumxl';
 export type TariffsType = 'economy' | 'exclusive' | 'business';

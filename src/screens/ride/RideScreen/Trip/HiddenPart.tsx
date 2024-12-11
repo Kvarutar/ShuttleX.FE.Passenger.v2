@@ -9,6 +9,7 @@ import {
   EmergencyServiceIcon,
   getCurrencySign,
   ReportIcon,
+  Skeleton,
   Text,
   useTariffsIcons,
   useTheme,
@@ -17,7 +18,11 @@ import {
 //TODO: take image from BE
 import imagePrize from '../../../../../assets/images/trip/imagePrize';
 import { tariffByIdSelector } from '../../../../core/ride/redux/offer/selectors';
-import { orderSelector, orderTariffIdSelector } from '../../../../core/ride/redux/trip/selectors';
+import {
+  isTripLoadingSelector,
+  orderSelector,
+  orderTariffIdSelector,
+} from '../../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../../Navigate/props';
 import passengerColors from '../../../../shared/colors/colors';
 import { ContractorInfoTestType, SquareBarProps } from './types';
@@ -70,6 +75,8 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
   const { colors } = useTheme();
   const tariffIconsData = useTariffsIcons();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>>();
+
+  const isTripLoading = useSelector(isTripLoadingSelector);
 
   const order = useSelector(orderSelector);
   const tripTariffId = useSelector(orderTariffIdSelector);
@@ -153,9 +160,11 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
           {/*  </View>*/}
           {/*</Bar>*/}
         </View>
-        {tripInfo.map((info, index) => (
-          <TripInfoBar info={info} key={index} />
-        ))}
+        {isTripLoading ? (
+          <Skeleton skeletonsAmount={tripInfo.length} skeletonContainerStyle={styles.skeletonTripInfo} />
+        ) : (
+          tripInfo.map((info, index) => <TripInfoBar info={info} key={index} />)
+        )}
         <View style={styles.squareBarWrapper}>
           <SquareBar
             mode={BarModes.Default}
@@ -177,6 +186,10 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
 };
 
 const styles = StyleSheet.create({
+  skeletonTripInfo: {
+    height: 54,
+    borderRadius: 12,
+  },
   container: {
     gap: 8,
     marginBottom: 16,

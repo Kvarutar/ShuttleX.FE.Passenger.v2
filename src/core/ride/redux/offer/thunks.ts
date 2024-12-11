@@ -16,7 +16,7 @@ import {
   CreatePhantomOfferAPIResponse,
   EnhancedSearchAddress,
   EnhanceSearchAddressAPIResponse,
-  GetAvaliableTariffsAPIResponse,
+  GetAvailableTariffsAPIResponse,
   GetOfferRoutesAPIRequest,
   GetOfferRoutesAPIResoponse,
   GetTariffsPricesAPIResponse,
@@ -166,8 +166,8 @@ export const getZoneIdByLocation = createAppAsyncThunk<ZoneIdFromAPI, LatLng>(
   },
 );
 
-export const getAvaliableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, void | LatLng>(
-  'offer/getAvaliableTariffs',
+export const getAvailableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, void | LatLng>(
+  'offer/getAvailableTariffs',
   async (payload, { rejectWithValue, configAxios, getState, dispatch }) => {
     let zoneId = profileZoneSelector(getState())?.id;
 
@@ -177,7 +177,7 @@ export const getAvaliableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, v
 
     try {
       if (zoneId) {
-        const response = await configAxios.get<GetAvaliableTariffsAPIResponse>(`/zones/${zoneId}/tariffs`);
+        const response = await configAxios.get<GetAvailableTariffsAPIResponse>(`/zones/${zoneId}/tariffs`);
 
         const tariffsWithMapedName = response.data.map<TariffFromAPI>(tariff => ({
           ...tariff,
@@ -187,7 +187,7 @@ export const getAvaliableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, v
 
         return tariffsWithMapedName;
       } else {
-        console.error(`Wrong url path. getAvaliableTariffs thunk uzes zoneId = ${zoneId}`);
+        console.error(`Wrong url path. getAvailableTariffs thunk uzes zoneId = ${zoneId}`);
         return null;
       }
     } catch (error) {

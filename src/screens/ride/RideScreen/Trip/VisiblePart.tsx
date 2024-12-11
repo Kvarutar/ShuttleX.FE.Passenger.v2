@@ -14,10 +14,12 @@ import {
   minToMilSec,
   Nullable,
   PhoneIcon,
+  Skeleton,
   StatsBlock,
   Text,
   Timer,
   TimerColorModes,
+  timerSizes,
   TimerSizesModes,
   TrafficIndicator,
   TrafficLevel,
@@ -28,12 +30,15 @@ import {
 import { tariffByIdSelector } from '../../../../core/ride/redux/offer/selectors';
 import {
   contractorAvatarSelector,
+  isTripLoadingSelector,
   orderInfoSelector,
   orderTariffIdSelector,
   tripStatusSelector,
 } from '../../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../../core/ride/redux/trip/types';
 import { TimerStateDataType, VisiblePartProps } from './types';
+
+const timerSizeMode = TimerSizesModes.S;
 
 const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -42,6 +47,7 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
   const { t } = useTranslation();
 
   const tripStatus = useSelector(tripStatusSelector);
+  const isTripLoading = useSelector(isTripLoadingSelector);
   const orderInfo = useSelector(orderInfoSelector);
   const contractorAvatar = useSelector(contractorAvatarSelector);
   const tripTariffId = useSelector(orderTariffIdSelector);
@@ -52,6 +58,10 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
   const arrivedTime = orderInfo ? Date.parse(orderInfo.estimatedArriveToDropOffDate) : 0;
 
   const computedStyles = StyleSheet.create({
+    skeletonTimer: {
+      width: timerSizes[timerSizeMode].timerSize,
+      height: timerSizes[timerSizeMode].timerSize,
+    },
     beInAndLvlAmountText: {
       color: colors.textSecondaryColor,
     },
@@ -216,17 +226,37 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
           {/*  </View>*/}
           {/*)}*/}
           <View style={styles.nameTimeContainer}>
-            <Text style={styles.nameTimeText}>{firstName} </Text>
-            {timerState?.title}
+            {isTripLoading ? (
+              <Skeleton skeletonContainerStyle={styles.skeletonNameTime} />
+            ) : (
+              <>
+                <Text style={styles.nameTimeText}>{firstName} </Text>
+                {timerState?.title}
+              </>
+            )}
           </View>
-          <StatsBlock style={styles.statsContainer} amountLikes={totalLikesCount ?? 0} amountRides={totalRidesCount} />
+          {isTripLoading ? (
+            <Skeleton skeletonContainerStyle={styles.skeletonStats} />
+          ) : (
+            <StatsBlock
+              style={styles.statsContainer}
+              amountLikes={totalLikesCount ?? 0}
+              amountRides={totalRidesCount}
+            />
+          )}
           <View style={styles.carInfoContainer}>
-            <Bar style={styles.carInfoBar}>
-              <Text style={styles.carInfoText}>{`${carBrand} ${carModel}`}</Text>
-            </Bar>
-            <Bar style={[styles.carInfoPlateNumberBar, computedStyles.carInfoPlateNumberBar]}>
-              <Text style={styles.carInfoText}>{carNumber}</Text>
-            </Bar>
+            {isTripLoading ? (
+              <Skeleton skeletonsAmount={2} skeletonContainerStyle={styles.skeletonCarInfo} />
+            ) : (
+              <>
+                <Bar style={styles.carInfoBar}>
+                  <Text style={styles.carInfoText}>{`${carBrand} ${carModel}`}</Text>
+                </Bar>
+                <Bar style={[styles.carInfoPlateNumberBar, computedStyles.carInfoPlateNumberBar]}>
+                  <Text style={styles.carInfoText}>{carNumber}</Text>
+                </Bar>
+              </>
+            )}
           </View>
         </View>
         <View style={styles.timerContainer}>
@@ -241,25 +271,29 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
             </Button>
             <Text style={[styles.buttonText, computedStyles.buttonText]}>{t('ride_Ride_Trip_call')}</Text>
           </View>
-          <View>
-            {timerState && (
-              <Timer
-                isWaiting={extraWaiting}
-                time={extraWaiting ? 0 : timerState.timerTime}
-                sizeMode={TimerSizesModes.S}
-                colorMode={timerState.mode}
-                onAfterCountdownEnds={onAfterCountdownEndsHandler}
-              />
-            )}
+          {isTripLoading ? (
+            <Skeleton skeletonContainerStyle={[styles.skeletonTimer, computedStyles.skeletonTimer]} />
+          ) : (
+            <View>
+              {timerState && (
+                <Timer
+                  isWaiting={extraWaiting}
+                  time={extraWaiting ? 0 : timerState.timerTime}
+                  sizeMode={timerSizeMode}
+                  colorMode={timerState.mode}
+                  onAfterCountdownEnds={onAfterCountdownEndsHandler}
+                />
+              )}
 
-            {timerState?.timerLabel && (
-              <View style={[styles.timerLabelContainer, computedStyles.timerLabelContainer]}>
-                <Text style={[styles.timerLabelText, computedStyles.timerLabelText]}>
-                  {extraWaiting ? `-${getCurrencySign('UAH')}${extraSum}` : timerState.timerLabel}
-                </Text>
-              </View>
-            )}
-          </View>
+              {timerState?.timerLabel && (
+                <View style={[styles.timerLabelContainer, computedStyles.timerLabelContainer]}>
+                  <Text style={[styles.timerLabelText, computedStyles.timerLabelText]}>
+                    {extraWaiting ? `-${getCurrencySign('UAH')}${extraSum}` : timerState.timerLabel}
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
           <View style={styles.buttonContainer}>
             <Bar style={styles.buttonDisable}>
               <ClockIcon color={colors.borderColor} />
@@ -275,6 +309,23 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
 };
 
 const styles = StyleSheet.create({
+  skeletonNameTime: {
+    width: '60%',
+    height: 22,
+  },
+  skeletonTimer: {
+    borderRadius: 100,
+  },
+  skeletonStats: {
+    width: '50%',
+    height: 22,
+    marginBottom: 12,
+  },
+  skeletonCarInfo: {
+    flex: 1,
+    height: 40,
+    borderRadius: 12,
+  },
   contractorInfoContainer: {
     alignItems: 'center',
     marginBottom: 16,

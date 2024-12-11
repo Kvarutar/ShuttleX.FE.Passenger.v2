@@ -6,6 +6,7 @@ import { Image, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   BottomWindowWithGesture,
+  Skeleton,
   SwipeButton,
   SwipeButtonModes,
   Timer,
@@ -17,7 +18,12 @@ import {
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
-import { orderIdSelector, orderSelector, tripStatusSelector } from '../../../../core/ride/redux/trip/selectors';
+import {
+  isTripLoadingSelector,
+  orderIdSelector,
+  orderSelector,
+  tripStatusSelector,
+} from '../../../../core/ride/redux/trip/selectors';
 import {
   cancelTrip,
   getOrderInfo,
@@ -41,6 +47,7 @@ const Trip = () => {
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
   const tripStatus = useSelector(tripStatusSelector);
   const orderId = useSelector(orderIdSelector);
+  const isTripLoading = useSelector(isTripLoadingSelector);
   const [extraSum, setExtraSum] = useState(0);
   const order = useSelector(orderSelector);
 
@@ -85,12 +92,16 @@ const Trip = () => {
       <View style={styles.imageContainer}>
         <TariffIcon style={styles.carImage} />
         <View style={[styles.avatarWrapper, computedStyles.avatarWrapper]}>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: order?.avatar ?? undefined, //TODO: change to default image
-            }}
-          />
+          {isTripLoading ? (
+            <Skeleton skeletonContainerStyle={styles.skeletonAvatar} />
+          ) : (
+            <Image
+              style={styles.avatar}
+              source={{
+                uri: order?.avatar ?? undefined, //TODO: change to default image
+              }}
+            />
+          )}
         </View>
       </View>
     );
@@ -127,6 +138,9 @@ const Trip = () => {
 };
 
 const styles = StyleSheet.create({
+  skeletonAvatar: {
+    borderRadius: 1000,
+  },
   visiblePartStyle: {
     marginBottom: 16,
     paddingTop: 5,

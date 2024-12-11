@@ -6,7 +6,7 @@ import {
   createInitialOffer,
   createOffer,
   createPhantomOffer,
-  getAvaliableTariffs,
+  getAvailableTariffs,
   getOfferRoutes,
   getRecentDropoffs,
   getTariffsPrices,
@@ -167,16 +167,16 @@ const slice = createSlice({
       .addCase(searchAddress.rejected, state => {
         state.loading.searchAdresses = false;
       })
-      .addCase(getAvaliableTariffs.pending, state => {
+      .addCase(getAvailableTariffs.pending, state => {
         state.loading.avaliableTariffs = true;
       })
-      .addCase(getAvaliableTariffs.fulfilled, (state, action) => {
+      .addCase(getAvailableTariffs.fulfilled, (state, action) => {
         if (action.payload) {
           state.avaliableTariffs = action.payload.map(tariff => ({ ...tariff, matching: [], isAvaliable: false }));
         }
         state.loading.avaliableTariffs = false;
       })
-      .addCase(getAvaliableTariffs.rejected, (state, action) => {
+      .addCase(getAvailableTariffs.rejected, (state, action) => {
         state.loading.avaliableTariffs = false;
         state.errors.avaliableTariffs = action.payload as NetworkErrorDetailsWithBody<any>;
       })

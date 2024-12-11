@@ -10,7 +10,7 @@ import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
 import { offerPointsSelector } from '../../../../../../core/ride/redux/offer/selectors';
-import { createPhantomOffer, getAvaliableTariffs } from '../../../../../../core/ride/redux/offer/thunks';
+import { createPhantomOffer, getAvailableTariffs } from '../../../../../../core/ride/redux/offer/thunks';
 import { PointItemProps } from './types';
 
 const fadeAnimationDuration = 100;
@@ -46,7 +46,7 @@ const PointItem = ({ style, pointMode, currentPointId, setFocusedInput }: PointI
   useEffect(() => {
     if (!isInputTouched && currentPointId === 0 && point?.address) {
       (async () => {
-        await dispatch(getAvaliableTariffs({ latitude: point.latitude, longitude: point.longitude }));
+        await dispatch(getAvailableTariffs({ latitude: point.latitude, longitude: point.longitude }));
         dispatch(createPhantomOffer());
       })();
     }

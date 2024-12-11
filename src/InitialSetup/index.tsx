@@ -11,7 +11,7 @@ import { getOrUpdateZone, getProfileInfo, updateProfileLanguage } from '../core/
 import { useAppDispatch } from '../core/redux/hooks';
 import { signalRThunks, updateSignalRAccessToken } from '../core/redux/signalr';
 import { geolocationCoordinatesSelector } from '../core/ride/redux/geolocation/selectors';
-import { getAvaliableTariffs, getRecentDropoffs } from '../core/ride/redux/offer/thunks';
+import { getAvailableTariffs, getRecentDropoffs } from '../core/ride/redux/offer/thunks';
 import { getFirebaseDeviceToken, setupNotifications } from '../core/utils/notifications/notificationSetup';
 import { InitialSetupProps } from './types';
 
@@ -53,7 +53,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
   useEffect(() => {
     if (locationLoaded) {
       dispatch(getOrUpdateZone());
-      dispatch(getAvaliableTariffs());
+      dispatch(getAvailableTariffs());
       dispatch(getRecentDropoffs({ amount: 10 }));
     }
   }, [locationLoaded, dispatch]);
@@ -83,7 +83,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
   }, [passengerZone, i18n.language, dispatch]);
 
   useEffect(() => {
-    dispatch(getAvaliableTariffs());
+    dispatch(getAvailableTariffs());
   }, [passengerZone, dispatch]);
 
   useEffect(() => {
