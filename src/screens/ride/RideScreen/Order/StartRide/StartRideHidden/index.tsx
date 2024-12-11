@@ -6,8 +6,6 @@ import { useSelector } from 'react-redux';
 import { Button, ButtonProps, Skeleton, Text, useTheme } from 'shuttlex-integration';
 
 import imageBonuses from '../../../../../../../assets/images/startRide/imageBonusesBackground';
-import imageCollectCapybara from '../../../../../../../assets/images/startRide/imageCollectCapybara';
-import imageStartRideCarouselCapybara from '../../../../../../../assets/images/startRide/imageStartRideCarouselCapybara';
 import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
 import imageUkraineHeart from '../../../../../../../assets/images/startRide/imageUkraineHeart';
 import { isLotteryLoadingSelector, lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
@@ -34,7 +32,8 @@ const StartRideHidden = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const isLotteryLoading = useSelector(isLotteryLoadingSelector);
 
-  const collectedCapiArr = Array.from({ length: Math.min(testData.capiAmount - 1, 4) });
+  //TODO: uncomment when we need seasons
+  // const collectedCapiArr = Array.from({ length: Math.min(testData.capiAmount - 1, 4) });
 
   const computedStyles = StyleSheet.create({
     textColor: {
@@ -63,21 +62,22 @@ const StartRideHidden = () => {
     },
   });
 
-  const collectedCapiContent = collectedCapiArr.map((_, index) => {
-    const collectedCapiBlockComputedStyles = StyleSheet.create({
-      image: {
-        zIndex: index,
-      },
-    });
-
-    return (
-      <Image
-        key={index}
-        source={imageCollectCapybara}
-        style={[styles.capiImage, styles.collectedCapiContent, collectedCapiBlockComputedStyles.image]}
-      />
-    );
-  });
+  //TODO: uncomment when we need seasons
+  // const collectedCapiContent = collectedCapiArr.map((_, index) => {
+  //   const collectedCapiBlockComputedStyles = StyleSheet.create({
+  //     image: {
+  //       zIndex: index,
+  //     },
+  //   });
+  //
+  //   return (
+  //     <Image
+  //       key={index}
+  //       source={imageCollectCapybara}
+  //       style={[styles.capiImage, styles.collectedCapiContent, collectedCapiBlockComputedStyles.image]}
+  //     />
+  //   );
+  // });
 
   // Blocks are not removed by task condition
   // TODO: Remove or update this blocks when we decide what to do with it
@@ -130,33 +130,34 @@ const StartRideHidden = () => {
       ),
       firstImgUri: passengerColors.adsBackgroundColor.prize,
     },
+    //TODO: uncomment when we need seasons
     //TODO: add logic for navigation
-    {
-      firstContent: (
-        <>
-          <AdsContent>
-            <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
-              {t('ride_Ride_StartRideHidden_adsFirstSeason')}
-            </Text>
-            <View style={styles.capiCollectWrapper}>
-              <View style={styles.capiImageContainer}>
-                <Image source={imageCollectCapybara} style={[styles.capiImage, computedStyles.capiImage]} />
-                {collectedCapiContent}
-              </View>
-              <View style={[styles.capiAmountContainer, computedStyles.capiAmountContainer]}>
-                <Text style={[styles.capiAmountText, computedStyles.capiAmountText]}>{testData.capiAmount}</Text>
-              </View>
-            </View>
-            <Text style={[styles.collectText, computedStyles.lotteryText]}>
-              {t('ride_Ride_StartRideHidden_adsFirstSeasonText')}
-            </Text>
-            <AdsButton text={t('ride_Ride_StartRideHidden_adsFirstSeasonButton')} />
-          </AdsContent>
-          <Image source={imageStartRideCarouselCapybara} style={styles.firstSeasonCapybaraImage} />
-        </>
-      ),
-      firstImgUri: passengerColors.adsBackgroundColor.firstSeason,
-    },
+    // {
+    //   firstContent: (
+    //     <>
+    //       <AdsContent>
+    //         <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
+    //           {t('ride_Ride_StartRideHidden_adsFirstSeason')}
+    //         </Text>
+    //         <View style={styles.capiCollectWrapper}>
+    //           <View style={styles.capiImageContainer}>
+    //             <Image source={imageCollectCapybara} style={[styles.capiImage, computedStyles.capiImage]} />
+    //             {collectedCapiContent}
+    //           </View>
+    //           <View style={[styles.capiAmountContainer, computedStyles.capiAmountContainer]}>
+    //             <Text style={[styles.capiAmountText, computedStyles.capiAmountText]}>{testData.capiAmount}</Text>
+    //           </View>
+    //         </View>
+    //         <Text style={[styles.collectText, computedStyles.lotteryText]}>
+    //           {t('ride_Ride_StartRideHidden_adsFirstSeasonText')}
+    //         </Text>
+    //         <AdsButton text={t('ride_Ride_StartRideHidden_adsFirstSeasonButton')} />
+    //       </AdsContent>
+    //       <Image source={imageStartRideCarouselCapybara} style={styles.firstSeasonCapybaraImage} />
+    //     </>
+    //   ),
+    //   firstImgUri: passengerColors.adsBackgroundColor.firstSeason,
+    // },
     {
       bigImagePlace: 'right',
       firstContent: (
