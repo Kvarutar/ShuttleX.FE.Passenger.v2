@@ -177,5 +177,7 @@ const styles = StyleSheet.create({
   },
   noTickets: {
     fontSize: 20,
+    fontFamily: 'Inter Medium',
+    textAlign: 'center',
   },
 });

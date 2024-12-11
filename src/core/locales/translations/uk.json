@@ -14,6 +14,7 @@
   "menu_Activity_recentAddresses": "Нещодавні",
   "menu_Activity_canceled": "Скасоване",
   "ride_Menu_ticketWallet": "Гаманець тікетів",
+  "menu_TicketWallet_noTickets": "Здійсніть першу поїздку,\nщоб отримати квиток!",
   "menu_AccountVerificateCode_firstHeader": "Введіть код, отриманий",
   "menu_AccountVerificateCode_secondHeader": "в SMS",
   "ride_Ride_StartRideVisible_buttonStartTrip": "Розпочати поїздку",
