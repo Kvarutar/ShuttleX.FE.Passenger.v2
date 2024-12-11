@@ -15,8 +15,7 @@ import {
 } from 'shuttlex-integration';
 
 //TODO: take image from BE
-import imageCapybaraBackground from '../../../../../assets/images/trip/imageCapybaraBackground';
-import imagePrizeBackground from '../../../../../assets/images/trip/imagePrizeBackground';
+import imagePrize from '../../../../../assets/images/trip/imagePrize';
 import { tariffByIdSelector } from '../../../../core/ride/redux/offer/selectors';
 import { orderSelector, orderTariffIdSelector } from '../../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../../Navigate/props';
@@ -92,6 +91,9 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
       capiAmountText: {
         color: contractorInfoTest.capiAmount ? colors.textPrimaryColor : colors.textTertiaryColor,
       },
+      prizeContainer: {
+        backgroundColor: passengerColors.lotteryColors.background,
+      },
     });
 
     const tripInfo = [
@@ -130,24 +132,26 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
         {/*  />*/}
         {/*</View>*/}
         <View style={styles.squareBarWrapper}>
-          <Bar style={styles.firstSeasonBarContainer} onPress={() => navigation.navigate('Raffle')}>
-            <ImageBackground style={StyleSheet.absoluteFill} source={imagePrizeBackground} resizeMode="cover" />
+          <Bar
+            style={[styles.firstSeasonBarContainer, styles.prizeContainer, computedStyles.prizeContainer]}
+            onPress={() => navigation.navigate('Raffle')}
+          >
+            <ImageBackground style={styles.prizeImage} source={imagePrize} />
             <Text style={[styles.firstSeasonTitleText, computedStyles.firstSeasonTitleText]}>
               {t('ride_Ride_Trip_prize')}
             </Text>
           </Bar>
-          <Bar style={styles.firstSeasonBarContainer}>
-            <ImageBackground style={StyleSheet.absoluteFill} source={imageCapybaraBackground} resizeMode="cover" />
-            <Text style={[styles.firstSeasonTitleText, computedStyles.firstSeasonTitleText]}>
-              {t('ride_Ride_Trip_firstSeason')}
-            </Text>
-            <Text style={[styles.capiText, computedStyles.capiText]}>{contractorInfoTest.capiAmount}/20</Text>
-            <View style={[styles.capiAmountContainer, computedStyles.capiAmountContainer]}>
-              <Text style={[styles.capiAmountText, computedStyles.capiAmountText]}>
-                {contractorInfoTest.capiAmount}
-              </Text>
-            </View>
-          </Bar>
+          {/*TODO: uncomment when we need seasons*/}
+          {/*<Bar style={styles.firstSeasonBarContainer}>*/}
+          {/*  <ImageBackground style={StyleSheet.absoluteFill} source={imageCapybaraBackground} resizeMode="cover" />*/}
+          {/*  <Text style={[styles.firstSeasonTitleText, computedStyles.firstSeasonTitleText]}>*/}
+          {/*    {t('ride_Ride_Trip_firstSeason')}*/}
+          {/*  </Text>*/}
+          {/*  <Text style={[styles.capiText, computedStyles.capiText]}>{contractorInfoTest.capiAmount}/20</Text>*/}
+          {/*  <View style={[styles.capiAmountContainer, computedStyles.capiAmountContainer]}>*/}
+          {/*    <Text style={[styles.capiAmountText, computedStyles.capiAmountText]}>{contractorInfoTest.capiAmount}</Text>*/}
+          {/*  </View>*/}
+          {/*</Bar>*/}
         </View>
         {tripInfo.map((info, index) => (
           <TripInfoBar info={info} key={index} />
@@ -210,6 +214,13 @@ const styles = StyleSheet.create({
   firstSeasonBarContainer: {
     flex: 1,
     padding: 16,
+    height: 82,
+  },
+  //TODO:delete extra styles when we add seasons back
+  prizeContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingRight: 100,
   },
   firstSeasonTitleText: {
     fontFamily: 'Inter Bold',
@@ -234,6 +245,14 @@ const styles = StyleSheet.create({
   capiAmountText: {
     fontFamily: 'Inter Bold',
     fontSize: 11,
+  },
+  prizeImage: {
+    width: undefined,
+    height: 52,
+    aspectRatio: 1.6,
+    position: 'absolute',
+    bottom: 0,
+    right: 30,
   },
 });
 
