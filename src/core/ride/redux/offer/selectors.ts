@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 
 import { AppState } from '../../../redux/store';
-import { GroupedTariffs, TariffWithMatching } from './types';
+import { AddressPoint, GroupedTariffs, TariffWithMatching } from './types';
 
 export const offerSelector = (state: AppState) => state.offer;
 export const offerIdSelector = (state: AppState) => state.offer.offerId;
@@ -21,6 +21,11 @@ export const tariffByIdSelector = createSelector(
   (tariffsList, tariffId): TariffWithMatching | undefined => tariffsList?.find(el => el.id === tariffId),
 );
 
+export const offerPointByIdSelector = createSelector(
+  [offerPointsSelector, (_, pointId: number) => pointId],
+  (points, pointId): AddressPoint | undefined => points.find(point => point.id === pointId),
+);
+
 export const groupedTariffsSelector = createSelector(
   [offerAvaliableTariffsSelector],
   (tariffsList): GroupedTariffs => ({
@@ -38,9 +43,6 @@ export const groupedTariffsSelector = createSelector(
     },
   }),
 );
-
-export const offerPointByIdSelector = (id: number) =>
-  createSelector(offerPointsSelector, points => points.find(point => point.id === id));
 
 //Loadings
 export const isSearchAdressesLoadingSelector = (state: AppState) => state.offer.loading.searchAdresses;

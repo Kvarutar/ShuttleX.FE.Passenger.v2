@@ -19,7 +19,7 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const point = useSelector(offerPointByIdSelector(currentPointId));
+  const point = useSelector(state => offerPointByIdSelector(state, currentPointId));
 
   const [inputValue, setInputValue] = useState(point?.address ?? '');
   const [isFocused, setIsFocused] = useState(false);

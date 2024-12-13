@@ -258,4 +258,7 @@ google-services.json
 /ios/Pods/
 /vendor/bundle/
 
+# Custom
+.vscode
+
 # End of https://www.toptal.com/developers/gitignore/api/reactnative

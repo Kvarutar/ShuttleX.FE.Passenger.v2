@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { LatLng } from 'react-native-maps';
@@ -12,8 +14,10 @@ import {
   ButtonSizes,
   CircleButtonModes,
   CloseIcon,
+  mapConstants,
   MapPinIcon,
   MapView,
+  MapViewRef,
   Nullable,
   PointIcon,
   sizes,
@@ -22,27 +26,48 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { geolocationCoordinatesSelector } from '../../../core/ride/redux/geolocation/selectors';
+import {
+  geolocationCalculatedHeadingSelector,
+  geolocationCoordinatesSelector,
+} from '../../../core/ride/redux/geolocation/selectors';
 import { convertGeoToAddress } from '../../../core/ride/redux/geolocation/thunks';
 import { updateOfferPoint } from '../../../core/ride/redux/offer';
-import { MapAddressSelectionScreenProps } from './types';
+import { RootStackParamList } from '../../../Navigate/props';
+import { EnhancedAddressInfo } from './types';
 
-type EnhancedAddressInfo = {
-  address: string;
-  fullAddress: string;
-};
+const MapAddressSelectionScreen = (): JSX.Element => {
+  const navigation = useNavigation<NativeStackScreenProps<RootStackParamList, 'MapAddressSelection'>['navigation']>();
+  const route = useRoute<NativeStackScreenProps<RootStackParamList, 'MapAddressSelection'>['route']>();
 
-const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScreenProps): JSX.Element => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
+  const safeareaInsets = useSafeAreaInsets();
 
   const geolocationCoordinates = useSelector(geolocationCoordinatesSelector);
-  const initialCoordinates: LatLng | undefined = geolocationCoordinates ?? undefined;
+  const geolocationCalculatedHeading = useSelector(geolocationCalculatedHeadingSelector);
 
   const [isLoading, setIsLoading] = useState(false);
   const [address, setAddress] = useState<Nullable<EnhancedAddressInfo>>(null);
   const [addressCoordinates, setAddressCoordinates] = useState<LatLng>({ latitude: 0, longitude: 0 });
+
+  const mapRef = useRef<MapViewRef>(null);
+  const isCameraWasSet = useRef(false);
+
+  useEffect(() => {
+    if (!isCameraWasSet.current) {
+      const initialCoordinates: Nullable<LatLng> = route.params.pointCoordinates ?? geolocationCoordinates;
+      if (initialCoordinates) {
+        mapRef.current?.setCamera({
+          zoom: mapConstants.cameraZoom - 1,
+          pitch: 0,
+          heading: 0,
+          center: initialCoordinates,
+        });
+        isCameraWasSet.current = true;
+      }
+    }
+  }, [geolocationCoordinates, route.params.pointCoordinates]);
 
   const onDragComplete = async (coordinates: LatLng) => {
     // If the new coordinates differ from the previous ones
@@ -86,8 +111,6 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
     navigation.goBack();
   };
 
-  const safeareaInsets = useSafeAreaInsets();
-
   const computedStyles = StyleSheet.create({
     closeButton: {
       left: sizes.paddingHorizontal,
@@ -103,8 +126,11 @@ const MapAddressSelectionScreen = ({ navigation, route }: MapAddressSelectionScr
   return (
     <>
       <MapView
+        ref={mapRef}
+        geolocationCoordinates={geolocationCoordinates ?? undefined}
+        geolocationCalculatedHeading={geolocationCalculatedHeading}
+        disableSetCameraOnGeolocationAvailable
         style={StyleSheet.absoluteFill}
-        geolocationCoordinates={initialCoordinates}
         onDragComplete={onDragComplete}
       />
       <View style={styles.mapPinIconContainer} pointerEvents="none">

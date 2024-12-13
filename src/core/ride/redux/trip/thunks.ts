@@ -115,9 +115,9 @@ export const getRouteInfo = createAppAsyncThunk<
 
 export const getOrderLongPolling = createAppAsyncThunk<string, string>(
   'trip/getOrderLongPolling',
-  async (offerId, { rejectWithValue, passengerAxios, dispatch }) => {
+  async (offerId, { rejectWithValue, passengerLongPollingAxios, dispatch }) => {
     try {
-      const response = await passengerAxios.get<OrderLongPollingAPIResponse>(
+      const response = await passengerLongPollingAxios.get<OrderLongPollingAPIResponse>(
         `/Offer/${offerId}/confirmed/long-polling`,
       );
       dispatch(getOrderInfo(response.data.orderId));

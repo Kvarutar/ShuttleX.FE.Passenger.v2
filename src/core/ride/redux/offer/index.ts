@@ -29,6 +29,7 @@ import {
 const initialState: OfferState = {
   offerId: null,
   recentDropoffs: [],
+  // TODO: rewrite this (need to be empty array)
   points: [
     { id: 0, address: '', fullAddress: '', longitude: 0, latitude: 0 },
     { id: 1, address: '', fullAddress: '', longitude: 0, latitude: 0 },

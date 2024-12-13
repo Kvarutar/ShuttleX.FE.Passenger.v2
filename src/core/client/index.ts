@@ -2,7 +2,6 @@ import authInstanceInitializer from './authClient';
 import authResetInstanceInitializer from './authResetClient';
 import cashieringInstanceInitializer from './casheringClient';
 import configInstanceInitializer from './configClient';
-import geomappingInstanceInitializer from './geomappingClient';
 import passengerLongPollingInstanceInitializer from './longPollingClient';
 import lotteryInstanceInitializer from './lotteryClient';
 import matchingInstanceInitializer from './matchingClient';
@@ -16,7 +15,6 @@ const axiosInitilizers = {
   authResetAxios: authResetInstanceInitializer,
   cashieringAxios: cashieringInstanceInitializer,
   configAxios: configInstanceInitializer,
-  geomappingAxios: geomappingInstanceInitializer,
   lotteryAxios: lotteryInstanceInitializer,
   matchingAxios: matchingInstanceInitializer,
   notificatorAxios: notificatorInstanceInitializer,

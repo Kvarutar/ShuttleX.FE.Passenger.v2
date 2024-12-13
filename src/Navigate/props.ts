@@ -1,3 +1,4 @@
+import { LatLng } from 'react-native-maps';
 import { CountryPhoneMaskDto } from 'shuttlex-integration';
 
 export type RootStackParamList = {
@@ -6,7 +7,7 @@ export type RootStackParamList = {
   Ride?: { openAddressSelect?: boolean };
   SignInCode: { verificationType: 'phone' | 'email'; data: string };
   AddressSelection: { orderPointId: number };
-  MapAddressSelection: { orderPointId: number };
+  MapAddressSelection: { orderPointId: number; pointCoordinates?: LatLng };
   Rating: undefined;
   Notifications: undefined;
   Wallet: undefined;

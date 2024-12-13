@@ -1,9 +1,10 @@
 import { LatLng } from 'react-native-maps';
+import { Nullable } from 'shuttlex-integration';
 
 export type UpdatePassengerGeoSignalRRequest = {
-  position: LatLng;
-  state: 'InOrder' | 'InThinking' | 'InLooking';
-  orderId: string | null;
+  position: Nullable<LatLng>;
+  state: 'InRadius' | 'InThinking' | 'InOrder';
+  orderId: Nullable<string>;
 };
 
 export type UpdatePassengerGeoSignalRResponse = {

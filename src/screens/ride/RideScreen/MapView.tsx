@@ -6,8 +6,10 @@ import {
   calculateNewMapRoute,
   decodeGooglePolyline,
   getTimeWithAbbreviation,
+  MapMarker,
   MapPolyline,
   MapView as MapViewIntegration,
+  MapViewRef,
   Nullable,
   secToMilSec,
 } from 'shuttlex-integration';
@@ -20,6 +22,9 @@ import {
 } from '../../../core/ride/redux/geolocation/selectors';
 import { setMapCameraMode } from '../../../core/ride/redux/map';
 import { mapCameraModeSelector, mapCarsSelector, mapStopPointsSelector } from '../../../core/ride/redux/map/selectors';
+import { offerPointsSelector } from '../../../core/ride/redux/offer/selectors';
+import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
+import { OrderStatus } from '../../../core/ride/redux/order/types';
 import {
   orderIdSelector,
   tripDropOffRouteSelector,
@@ -41,31 +46,104 @@ const MapView = (): JSX.Element => {
   const cameraMode = useSelector(mapCameraModeSelector);
   const cars = useSelector(mapCarsSelector);
   const orderId = useSelector(orderIdSelector);
+  const orderStatus = useSelector(orderStatusSelector);
+  const offerPoints = useSelector(offerPointsSelector);
   const tripStatus = useSelector(tripStatusSelector);
   const pickUpRoute = useSelector(tripPickUpRouteSelector);
   const dropOffRoute = useSelector(tripDropOffRouteSelector);
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const updatePassengerGeoRef = useRef<NodeJS.Timeout | null>(null);
+  const mapRef = useRef<MapViewRef>(null);
+  const geolocationCoordinatesRef = useRef<Nullable<LatLng>>(null);
+
+  useEffect(() => {
+    geolocationCoordinatesRef.current = geolocationCoordinates;
+  }, [geolocationCoordinates]);
 
   const [polyline, setPolyline] = useState<Nullable<MapPolyline>>(null);
   const [finalStopPointCoordinates, setFinalStopPointCoordinates] = useState<Nullable<LatLng>>(null);
   const [finalStopPointTimeInSec, setFinalStopPointTimeInSec] = useState<number>(0);
+  const [marker, setMarker] = useState<Nullable<MapMarker>>(null);
+  const [mapCameraCoordinates, setMapCameraCoordinates] = useState<Nullable<LatLng>>(null);
 
-  const onDragComplete = (coordinates: LatLng) => {
-    if (intervalRef.current !== null) {
-      clearInterval(intervalRef.current);
+  // Section: getting geo of contractors and send geo of passenger
+  const setUpdatePassengerGeoInterval = (callback: () => void) => {
+    if (updatePassengerGeoRef.current !== null) {
+      clearInterval(updatePassengerGeoRef.current);
     }
-    intervalRef.current = setInterval(async () => {
-      dispatch(
-        updatePassengerGeo({
-          position: coordinates,
-          state: 'InLooking',
-          orderId: orderId ?? null,
-        }),
-      );
-    }, updatePassengerGeoInterval);
+    updatePassengerGeoRef.current = setInterval(callback, updatePassengerGeoInterval);
   };
 
+  // Clear interval on dismount
+  useEffect(() => {
+    return () => {
+      if (updatePassengerGeoRef.current) {
+        clearInterval(updatePassengerGeoRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const startOfferPoint = offerPoints[0];
+    if (orderStatus === OrderStatus.Confirming) {
+      mapRef.current?.animateCamera(
+        {
+          pitch: 0,
+          heading: 0,
+          center: { latitude: startOfferPoint.latitude, longitude: startOfferPoint.longitude },
+          zoom: 10, // approximately 35km diameter
+        },
+        { duration: 1500 },
+      );
+      setMarker({
+        colorMode: 'mode1',
+        coordinates: { latitude: startOfferPoint.latitude, longitude: startOfferPoint.longitude },
+        zIndex: -1,
+      });
+    } else {
+      setMarker(null);
+    }
+  }, [orderStatus, offerPoints]);
+
+  useEffect(() => {
+    if (orderId) {
+      setUpdatePassengerGeoInterval(() => {
+        dispatch(
+          updatePassengerGeo({
+            position: geolocationCoordinatesRef.current,
+            state: 'InOrder',
+            orderId: orderId,
+          }),
+        );
+      });
+    } else if (orderStatus === OrderStatus.Confirming) {
+      setUpdatePassengerGeoInterval(() => {
+        dispatch(
+          updatePassengerGeo({
+            position: null,
+            state: 'InThinking',
+            orderId: null,
+          }),
+        );
+      });
+    }
+  }, [dispatch, orderStatus, orderId]);
+
+  useEffect(() => {
+    if (tripStatus === TripStatus.Idle && orderStatus !== OrderStatus.Confirming) {
+      setUpdatePassengerGeoInterval(() => {
+        dispatch(
+          updatePassengerGeo({
+            position: mapCameraCoordinates,
+            state: 'InRadius',
+            orderId: null,
+          }),
+        );
+      });
+    }
+  }, [dispatch, tripStatus, orderStatus, mapCameraCoordinates]);
+
+  // Section: polylines
   const resetPoints = useCallback(() => {
     setPolyline(null);
     setFinalStopPointCoordinates(null);
@@ -74,49 +152,50 @@ const MapView = (): JSX.Element => {
   useEffect(() => {
     switch (tripStatus) {
       case TripStatus.Accepted:
-        if (pickUpRoute) {
-          const type: MapPolyline['type'] = 'straight';
-          setPolyline(prev => {
-            if (prev && prev.type === type) {
-              return {
-                type,
-                options: {
-                  coordinates: calculateNewMapRoute(
-                    prev.options.coordinates,
-                    // TODO: change to coordinates of contractor from signalR (InOrder state)
-                    { latitude: 0, longitude: 0 },
-                    polylineClearPointDistanceMtr,
-                  ),
-                },
-              };
-            }
-            const coordinates = decodeGooglePolyline(pickUpRoute.geometry); // TODO: check, maybe need to reverse array
-            return { type, options: { coordinates } };
-          });
+        if (!pickUpRoute) {
+          break;
         }
+        setPolyline(prev => {
+          const type: MapPolyline['type'] = 'straight';
+          if (prev && prev.type === type && cars.length > 0) {
+            return {
+              type,
+              options: {
+                coordinates: calculateNewMapRoute(
+                  prev.options.coordinates,
+                  cars[0].coordinates,
+                  polylineClearPointDistanceMtr,
+                ),
+              },
+            };
+          }
+          const coordinates = decodeGooglePolyline(pickUpRoute.geometry); // TODO: check, maybe need to reverse array
+          return { type, options: { coordinates } };
+        });
         break;
       case TripStatus.Ride:
-        if (dropOffRoute) {
-          const type: MapPolyline['type'] = 'straight';
-          setPolyline(prev => {
-            if (prev && prev.type === type && geolocationCoordinates) {
-              return {
-                type,
-                options: {
-                  coordinates: calculateNewMapRoute(
-                    prev.options.coordinates,
-                    geolocationCoordinates,
-                    polylineClearPointDistanceMtr,
-                  ),
-                },
-              };
-            }
-            const coordinates = decodeGooglePolyline(dropOffRoute.geometry);
-            setFinalStopPointCoordinates(coordinates[coordinates.length - 1]);
-            setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
-            return { type, options: { coordinates } };
-          });
+        if (!dropOffRoute) {
+          break;
         }
+        setPolyline(prev => {
+          const type: MapPolyline['type'] = 'straight';
+          if (prev && prev.type === type && cars.length > 0) {
+            return {
+              type,
+              options: {
+                coordinates: calculateNewMapRoute(
+                  prev.options.coordinates,
+                  cars[0].coordinates,
+                  polylineClearPointDistanceMtr,
+                ),
+              },
+            };
+          }
+          const coordinates = decodeGooglePolyline(dropOffRoute.geometry);
+          setFinalStopPointCoordinates(coordinates[coordinates.length - 1]);
+          setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
+          return { type, options: { coordinates } };
+        });
         break;
       case TripStatus.Idle:
       case TripStatus.Arrived:
@@ -124,8 +203,9 @@ const MapView = (): JSX.Element => {
         break;
       default:
     }
-  }, [tripStatus, pickUpRoute, dropOffRoute, geolocationCoordinates, resetPoints]);
+  }, [tripStatus, pickUpRoute, dropOffRoute, cars, resetPoints]);
 
+  // Section: final stop point time updating
   useEffect(() => {
     const interval = setInterval(() => {
       setFinalStopPointTimeInSec(prev => {
@@ -149,6 +229,7 @@ const MapView = (): JSX.Element => {
 
   return (
     <MapViewIntegration
+      ref={mapRef}
       style={StyleSheet.absoluteFill}
       geolocationCoordinates={geolocationCoordinates ?? undefined}
       geolocationCalculatedHeading={geolocationCalculatedHeading}
@@ -167,9 +248,10 @@ const MapView = (): JSX.Element => {
           : undefined
       }
       stopPoints={stopPoints}
+      markers={marker ? [marker] : undefined}
       cameraMode={cameraMode}
       setCameraModeOnDrag={mode => dispatch(setMapCameraMode(mode))}
-      onDragComplete={onDragComplete}
+      onDragComplete={setMapCameraCoordinates}
     />
   );
 };

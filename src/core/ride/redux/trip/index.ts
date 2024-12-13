@@ -133,13 +133,9 @@ const slice = createSlice({
         });
       })
       .addCase(getOrderInfo.fulfilled, (state, action) => {
-        slice.caseReducers.setOrderInfo(state, {
-          payload: action.payload,
-          type: setOrderInfo.type,
-        });
+        state.order = action.payload;
 
         let newTripStatus: TripStatus;
-
         switch (action.payload.info?.state) {
           case 'MoveToPickUp':
             newTripStatus = TripStatus.Accepted;
@@ -154,16 +150,10 @@ const slice = createSlice({
             newTripStatus = TripStatus.Idle;
             break;
         }
+        state.status = newTripStatus;
 
-        slice.caseReducers.setTripStatus(state, {
-          payload: newTripStatus,
-          type: setTripError.type,
-        });
-
-        slice.caseReducers.setTripError(state, {
-          payload: initialState.error,
-          type: setTripError.type,
-        });
+        state.error = initialState.error;
+        state.isLoading = false;
       })
       .addCase(getOrderInfo.rejected, (state, action) => {
         slice.caseReducers.setTripIsLoading(state, {

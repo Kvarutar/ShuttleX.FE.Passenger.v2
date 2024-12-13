@@ -3,7 +3,7 @@ import { createSignalRSlice } from 'shuttlex-integration';
 
 import { setMapCars } from '../../ride/redux/map';
 import { MapState } from '../../ride/redux/map/types';
-import { AppDispatch, AppState } from '../store';
+import { AppDispatch } from '../store';
 import { UpdatePassengerGeoSignalRRequest, UpdatePassengerGeoSignalRResponse } from './types';
 
 const { slice, signalRThunks, createSignalRMethodThunk } = createSignalRSlice({
@@ -19,12 +19,7 @@ const { slice, signalRThunks, createSignalRMethodThunk } = createSignalRSlice({
   listeners: [
     {
       methodName: 'update-passenger-geo',
-      callback: (
-        // Ignoring eslint is just for showing how you can get state
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        { readOnlyState, dispatch }: { readOnlyState: AppState; dispatch: AppDispatch },
-        result: UpdatePassengerGeoSignalRResponse,
-      ) => {
+      callback: ({ dispatch }: { dispatch: AppDispatch }, result: UpdatePassengerGeoSignalRResponse) => {
         const formattedResult: MapState['cars'] = result.map(car => ({
           id: car.contractorId,
           coordinates: car.location,
@@ -36,6 +31,10 @@ const { slice, signalRThunks, createSignalRMethodThunk } = createSignalRSlice({
   ],
 });
 
+/**
+ * Should be called within setInterval with same interval and only in one "state" at the time
+ * (there should be no interference between "state")
+ */
 const updatePassengerGeo = createSignalRMethodThunk<void, UpdatePassengerGeoSignalRRequest>('update-passenger-geo');
 
 export default slice.reducer;

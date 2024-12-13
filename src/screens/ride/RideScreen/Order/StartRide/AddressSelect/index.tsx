@@ -13,6 +13,7 @@ import {
   ButtonShapes,
   ButtonSizes,
   CircleButtonModes,
+  isCoordinatesEqualZero,
   LoadingSpinner,
   SelectOnMapIcon,
   sizes,
@@ -29,6 +30,7 @@ import {
   isAvailableTariffsLoadingSelector,
   isOfferRoutesLoadingSelector,
   isSearchAdressesLoadingSelector,
+  offerPointByIdSelector,
   offerPointsSelector,
   offerRecentDropoffsSelector,
   offerRoutesErrorSelector,
@@ -74,7 +76,9 @@ const AddressSelect = ({
   const [addresses, setAddresses] = useState<SearchAddressFromAPI[]>([]);
   const [addressesHistory, setAddressesHistory] = useState<SearchAddressFromAPI[]>([]);
   const [incorrectWaypoints, setIncorrectWaypoints] = useState(false);
+
   const debounceInputValue = useDebounce(focusedInput.value, 300);
+  const focusedOfferPoint = useSelector(state => offerPointByIdSelector(state, focusedInput.id));
 
   const firstUpdateDefaultLocation = useRef(true);
   const isAllOfferPointsFilled = offerPoints.every(point => point.latitude && point.longitude && point.address);
@@ -183,7 +187,17 @@ const AddressSelect = ({
     }
   }, [isAllOfferPointsFilled, offerRoutesError, setIsUnsupportedDestinationPopupVisible, offerPoints]);
 
-  const onLocationSelectPress = () => navigation.navigate('MapAddressSelection', { orderPointId: focusedInput.id });
+  const onSelectOnMapPress = () => {
+    let coordinates: LatLng | undefined;
+    if (focusedOfferPoint) {
+      const latlng: LatLng = { latitude: focusedOfferPoint.latitude, longitude: focusedOfferPoint.longitude };
+      // TODO: remove when offerPoint will be without zero latitude and longitude
+      if (!isCoordinatesEqualZero(latlng)) {
+        coordinates = latlng;
+      }
+    }
+    navigation.navigate('MapAddressSelection', { orderPointId: focusedInput.id, pointCoordinates: coordinates });
+  };
 
   const onAddressSelect = async (place: SearchAddressFromAPI, isHistory: boolean = false) => {
     let geo: LatLng = {
@@ -283,7 +297,7 @@ const AddressSelect = ({
         <AddressButton
           icon={<SelectOnMapIcon />}
           text={t('ride_Ride_AddressSelect_addressButton_selectLocation')}
-          onPress={onLocationSelectPress}
+          onPress={onSelectOnMapPress}
         />
       </View>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
