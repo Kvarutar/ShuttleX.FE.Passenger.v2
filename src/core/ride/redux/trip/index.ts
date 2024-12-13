@@ -124,6 +124,12 @@ const slice = createSlice({
           type: setTripRouteInfo.type,
         });
       })
+      .addCase(cancelTrip.pending, state => {
+        slice.caseReducers.setTripError(state, {
+          payload: initialState.error,
+          type: setTripError.type,
+        });
+      })
       .addCase(cancelTrip.fulfilled, state => {
         slice.caseReducers.setTripIsCanceled(state, {
           payload: true,
@@ -132,6 +138,16 @@ const slice = createSlice({
         slice.caseReducers.setTripStatus(state, {
           payload: TripStatus.Finished,
           type: setTripStatus.type,
+        });
+        slice.caseReducers.setTripError(state, {
+          payload: initialState.error,
+          type: setTripError.type,
+        });
+      })
+      .addCase(cancelTrip.rejected, (state, action) => {
+        slice.caseReducers.setTripError(state, {
+          payload: action.payload as NetworkErrorDetailsWithBody<any>, //TODO: remove this cast after fix with rejectedValue
+          type: setTripError.type,
         });
       });
   },
