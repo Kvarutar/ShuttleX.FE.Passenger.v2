@@ -12,6 +12,7 @@ import { useAppDispatch } from '../core/redux/hooks';
 import { signalRThunks, updateSignalRAccessToken } from '../core/redux/signalr';
 import { geolocationCoordinatesSelector } from '../core/ride/redux/geolocation/selectors';
 import { getAvailableTariffs, getRecentDropoffs } from '../core/ride/redux/offer/thunks';
+import { getCurrentOrder } from '../core/ride/redux/trip/thunks';
 import { getFirebaseDeviceToken, setupNotifications } from '../core/utils/notifications/notificationSetup';
 import { InitialSetupProps } from './types';
 import useServerErrorHandler from './utils/useServerErrorHandler';
@@ -58,6 +59,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
       dispatch(getOrUpdateZone());
       dispatch(getAvailableTariffs());
       dispatch(getRecentDropoffs({ amount: 10 }));
+      dispatch(getCurrentOrder());
     }
   }, [locationLoaded, dispatch]);
 

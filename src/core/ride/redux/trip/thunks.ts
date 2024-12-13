@@ -1,4 +1,4 @@
-import { convertBlobToImgUri, getNetworkErrorInfo } from 'shuttlex-integration';
+import { convertBlobToImgUri, getNetworkErrorInfo, Nullable } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import { createInitialOffer } from '../offer/thunks';
@@ -7,6 +7,7 @@ import { OrderStatus } from '../order/types';
 import { endTrip, setTripIsCanceled, setTripStatus } from '.';
 import {
   FeedbackAPIRequest,
+  GetCurrentOrderAPIResponse,
   GetOrderInfoAPIResponse,
   GetOrdersHistoryAPIResponse,
   Order,
@@ -20,6 +21,40 @@ import {
   TripStatus,
   TripSuccessfullLongPollingAPIResponse,
 } from './types';
+
+//TODO: Rewrite this thunk if need
+//Some duplicate logic because I don't know what this logic will look like in the future (we are going to receive several orders).
+export const getCurrentOrder = createAppAsyncThunk<Nullable<Order>, void>(
+  'trip/getCurrentOrder',
+  async (_, { rejectWithValue, orderAxios }) => {
+    try {
+      const response = await orderAxios.get<GetCurrentOrderAPIResponse>('/current');
+
+      let avatar = null;
+
+      if (response.data) {
+        try {
+          avatar = await orderAxios.get<Blob>(
+            `/${response.data.orderId}/contractors/avatars/${response.data.avatarIds[0]}`,
+            {
+              responseType: 'blob',
+            },
+          );
+        } catch {}
+
+        return {
+          info: response.data,
+          avatar: avatar ? await convertBlobToImgUri(avatar.data) : null,
+          orderId: response.data.orderId,
+        };
+      }
+
+      return null;
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
 
 //TODO decide what to do with this thunk
 export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(

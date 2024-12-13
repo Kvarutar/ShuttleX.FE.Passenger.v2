@@ -43,6 +43,7 @@ export type OrderFromAPI = {
   estimatedPrice: number;
 };
 
+export type GetCurrentOrderAPIResponse = OrderFromAPI;
 export type GetOrderInfoAPIResponse = OrderFromAPI;
 export type GetOrdersHistoryAPIResponse = OrderFromAPI[];
 

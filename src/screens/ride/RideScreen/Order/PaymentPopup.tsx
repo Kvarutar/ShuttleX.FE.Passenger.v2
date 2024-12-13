@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import {
   ArrowIcon,
   Bar,
+  BottomWindow,
   BottomWindowWithGesture,
   BottomWindowWithGestureRef,
   Button,
@@ -130,7 +131,9 @@ const PaymentPopup = () => {
   //TODO: remove this !
   const availableTestPlans = selectedTariff!.matching.filter(item => item.durationSec !== null);
 
-  const [windowIsOpened, setWindowIsOpened] = useState(false);
+  //TODO: Add setWindowIsOpened to useState when add new payment methods
+  // Changed in Task-385
+  const [windowIsOpened] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [selectedTimeStep, setSelectedTimeStep] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(availableTestPlans.length > 1 ? 1 : 0);
@@ -144,7 +147,9 @@ const PaymentPopup = () => {
 
   const computedStyles = StyleSheet.create({
     wrapper: {
-      marginBottom: 56,
+      //TODO: Add this style when add new payment methods
+      // Changed in Task-385
+      // marginBottom: 56,
     },
     pickUpPointText: {
       color: colors.textTitleColor,
@@ -536,14 +541,21 @@ const PaymentPopup = () => {
           headerElement={<TariffIcon style={styles.image} />}
         />
       )} */}
-      <BottomWindowWithGesture
-        maxHeight={0.82}
+
+      {/* TODO: Add this BottomWindowWithGesture and remove BottomWindow when add new payment methods
+      Сhanged in the Task-385 */}
+      {/* <BottomWindowWithGesture
+        maxHeight={0.62}
         setIsOpened={setWindowIsOpened}
         visiblePart={content}
         visiblePartStyle={styles.visiblePartStyles}
         headerWrapperStyle={styles.headerWrapperStyle}
         headerElement={<TariffIcon style={styles.image} />}
-      />
+      /> */}
+      <BottomWindow>
+        <TariffIcon style={styles.image} />
+        {content}
+      </BottomWindow>
       {Platform.OS === 'ios' && isDatePickerVisible ? (
         <BottomWindowWithGesture
           withDraggable={false}
