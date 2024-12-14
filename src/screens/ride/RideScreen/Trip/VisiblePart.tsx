@@ -83,6 +83,9 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
     timerLabelText: {
       color: extraWaiting ? colors.errorColor : colors.textTertiaryColor,
     },
+    defaultAvatar: {
+      backgroundColor: colors.backgroundPrimaryColor,
+    },
     //TODO: remove comments when we will show a contractor lvl
 
     // nameTimeContainer: {
@@ -195,12 +198,19 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
           <View style={styles.driverInfoWrapper}>
             <View style={styles.driverInfoContainer}>
               {/*TODO: change to default image*/}
-              <Image
-                style={styles.driverInfoImage}
-                source={{
-                  uri: contractorAvatar ?? undefined,
-                }}
-              />
+              {contractorAvatar ? (
+                <Image
+                  style={styles.driverInfoImage}
+                  source={{
+                    uri: contractorAvatar,
+                  }}
+                />
+              ) : (
+                <Image
+                  style={[styles.driverInfoImage, computedStyles.defaultAvatar]}
+                  source={require('../../../../../assets/images/DefaultAvatar.png')}
+                />
+              )}
               <View>
                 <Text style={styles.carInfoText}>{firstName}</Text>
                 <StatsBlock amountLikes={totalLikesCount ?? 0} />
