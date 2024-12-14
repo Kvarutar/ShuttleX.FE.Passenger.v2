@@ -11,7 +11,7 @@ import { TariffGroupProps } from './types';
 
 const animationDuration = 300;
 
-const TariffGroup = ({ price, title, isSelected, onPress, style, isAvailableTariffGroup }: TariffGroupProps) => {
+const TariffGroup = ({ price, title, isSelected, onPress, style }: TariffGroupProps) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const iconsData = useTariffsIcons();
@@ -42,9 +42,6 @@ const TariffGroup = ({ price, title, isSelected, onPress, style, isAvailableTari
     price: {
       color: colors.textSecondaryColor,
     },
-    wrapper: {
-      opacity: isAvailableTariffGroup ? 1 : 0.3,
-    },
   });
 
   const animatedStyles = useAnimatedStyle(() => ({
@@ -57,10 +54,7 @@ const TariffGroup = ({ price, title, isSelected, onPress, style, isAvailableTari
   }));
 
   return (
-    <Pressable
-      style={[styles.wrapper, computedStyles.wrapper, style]}
-      onPress={isAvailableTariffGroup ? onPress : undefined}
-    >
+    <Pressable style={[styles.wrapper, style]} onPress={onPress}>
       <Animated.View style={[styles.container, animatedStyles]}>
         <Text style={[styles.title, computedStyles.title]}>{tariffsGroupImagesNames[title].title}</Text>
         {isTariffsPricesLoading ? (
@@ -73,7 +67,8 @@ const TariffGroup = ({ price, title, isSelected, onPress, style, isAvailableTari
         ) : (
           <Text style={[styles.price, computedStyles.price]}>
             {/*TODO: swap currencyCode to correct value*/}
-            {isAvailableTariffGroup ? `~${getCurrencySign('UAH')}${price}` : t('ride_Ride_TariffGroup_notAvailable')}
+            {getCurrencySign('UAH')}
+            {price}
           </Text>
         )}
         <IconComponent style={styles.img} />
@@ -112,11 +107,13 @@ const styles = StyleSheet.create({
   },
   img: {
     position: 'absolute',
-    width: '170%',
-    height: undefined,
-    aspectRatio: 3.15,
     bottom: 16,
     left: 20,
+    width: '170%',
+    height: undefined,
+    maxHeight: 80,
+    aspectRatio: 3.15,
+    resizeMode: 'contain',
   },
 });
 

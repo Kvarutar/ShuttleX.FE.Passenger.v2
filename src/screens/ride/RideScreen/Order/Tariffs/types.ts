@@ -8,7 +8,6 @@ export type TariffGroupProps = {
   isSelected?: boolean;
   style?: StyleProp<ViewStyle>;
   onPress: () => void;
-  isAvailableTariffGroup: boolean;
 };
 
 export type TariffBarProps = { tariff: TariffWithMatching } & {

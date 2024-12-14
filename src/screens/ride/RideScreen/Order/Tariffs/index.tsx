@@ -127,7 +127,6 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
     const content: ReactNode[] = [];
 
     Object.entries(groupedTariffs).forEach(([key, value]) => {
-      const isAvailableTariffGroup = value.tariffs !== undefined && value.tariffs.length > 0;
       let groupPrice = 0;
 
       if (value.tariffs !== undefined && value.tariffs.length > 0) {
@@ -137,18 +136,18 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
               accumulator + currentValue.matching.reduce((acc, el) => acc + (el.cost ?? 0), 0),
             0,
           ) / value.tariffs.length;
+        //TODO: think about smarter key?
+
+        content.push(
+          <TariffGroup
+            key={`tariff_group_${key}`}
+            price={groupPrice.toFixed(2)}
+            title={key as TariffsType}
+            onPress={() => setSelectedTariffGroup(value)}
+            isSelected={value.groupName === selectedTariffGroup?.groupName}
+          />,
+        );
       }
-      //TODO: think about smarter key?
-      content.push(
-        <TariffGroup
-          key={`tariff_group_${key}`}
-          price={groupPrice.toFixed(2)}
-          title={key as TariffsType}
-          onPress={() => setSelectedTariffGroup(value)}
-          isSelected={value.groupName === selectedTariffGroup?.groupName}
-          isAvailableTariffGroup={isAvailableTariffGroup}
-        />,
-      );
     });
 
     return content;
