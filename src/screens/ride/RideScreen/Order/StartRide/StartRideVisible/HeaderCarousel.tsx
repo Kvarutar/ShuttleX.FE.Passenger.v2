@@ -5,8 +5,8 @@ import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSelector } from 'react-redux';
 import { PassengerDefaultCarImage, sizes, Skeleton, Text, useTheme } from 'shuttlex-integration';
 
-import imageStartRideCarouselCapybara from '../../../../../../../assets/images/startRide/imageStartRideCarouselCapybara';
-import ImageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
+import imageStartRideCarouselBitcoin from '../../../../../../../assets/images/startRide/imageStartRideCarouselBitcoin';
+import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
 import { isLotteryLoadingSelector, lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
 import usePrizeTimer from '../utils/usePrizeTimer';
 import { SliderItemProps } from './types';
@@ -70,12 +70,12 @@ const HeaderCarousel = () => {
     {
       topText: t('ride_Ride_StartRideVisible_carouselSecondSlideTopText'),
       bottomText: `${hours}${t('ride_Ride_StartRide_hours')}:${minutes}${t('ride_Ride_StartRide_minutes')}:${seconds}${t('ride_Ride_StartRide_seconds')}`,
-      image: <Image source={ImageStartRideCarouselPrize} style={styles.prizeImage} />,
+      image: <Image source={imageStartRideCarouselPrize} style={styles.prizeImage} />,
     },
     {
       topText: t('ride_Ride_StartRideVisible_carouselThirdSlideTopText'),
       bottomText: t('ride_Ride_StartRideVisible_carouselThirdSlideBottomText'),
-      image: <Image source={imageStartRideCarouselCapybara} style={styles.capybaraImage} />,
+      image: <Image source={imageStartRideCarouselBitcoin} style={styles.bitcoinImage} />,
     },
   ];
 
@@ -163,10 +163,11 @@ const styles = StyleSheet.create({
     height: undefined,
     alignSelf: 'flex-end',
   },
-  capybaraImage: {
-    width: 60,
-    height: 75,
-    marginTop: -13,
+  bitcoinImage: {
+    width: 64,
+    height: 64,
+    marginTop: -10,
+    resizeMode: 'contain',
   },
   dotsContainer: {
     gap: 10,
