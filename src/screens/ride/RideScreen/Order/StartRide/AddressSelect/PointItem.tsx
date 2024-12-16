@@ -33,17 +33,26 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
 
   useEffect(() => {
     if (!hasEffectRun.current && currentPointId === 0 && point?.address) {
+      hasEffectRun.current = true;
+    }
+  }, [currentPointId, dispatch, point]);
+
+  useEffect(() => {
+    if (currentPointId === 0 && !isFocused && point?.address) {
       (async () => {
         await dispatch(getAvailableTariffs({ latitude: point.latitude, longitude: point.longitude }));
         dispatch(createPhantomOffer());
-        hasEffectRun.current = true;
       })();
     }
-  }, [currentPointId, dispatch, point]);
+  }, [isFocused, point, currentPointId, dispatch]);
 
   const isFocusedHandler = (state: boolean) => () => {
     updateFocusedInput({ id: currentPointId, value: inputValue, focus: state });
     setIsFocused(state);
+
+    if (state && point?.latitude) {
+      clearInputValue();
+    }
   };
 
   const clearInputValue = () => {

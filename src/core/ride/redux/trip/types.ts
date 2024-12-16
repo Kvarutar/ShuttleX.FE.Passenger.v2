@@ -79,10 +79,20 @@ export type RouteInfo = {
   dropOff: RouteDropOffApiResponse;
 };
 
+export type FeedbackRatingReasonsToAPI =
+  | 'BadAtmosphere'
+  | 'RudeDriver'
+  | 'BadDriving'
+  | 'DirtyCar'
+  | 'NiceAtmosphere'
+  | 'FriendlyDriver'
+  | 'GoodDriving'
+  | 'CleanCar';
+
 export type FeedbackAPIRequest = {
   isLikedByPassenger: boolean;
-  positiveFeedbacks: string[];
-  negativeFeedbacks: string[];
+  positiveFeedbacks: FeedbackRatingReasonsToAPI[];
+  negativeFeedbacks: FeedbackRatingReasonsToAPI[];
 };
 
 export type LongPollingAPIResponse = {

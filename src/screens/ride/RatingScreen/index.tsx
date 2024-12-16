@@ -30,6 +30,7 @@ import imageNiceAtmosphere from '../../../../assets/images/likeFeedback/imageNic
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { orderIdSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
 import { sendFeedback } from '../../../core/ride/redux/trip/thunks';
+import { FeedbackRatingReasonsToAPI } from '../../../core/ride/redux/trip/types';
 import { RatingScreenProps } from './types';
 
 const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
@@ -61,51 +62,61 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
     },
   });
 
-  const subMarksData: Record<FeedbackRating, { title: string; data: { image: ImageSourcePropType; text: string }[] }> =
-    {
-      dislike: {
-        title: t('ride_Rating_dislikeTitle'),
-        data: [
-          {
-            image: imageBadAtmosphere,
-            text: t('ride_Rating_badAtmosphere'),
-          },
-          {
-            image: imageRudeDriver,
-            text: t('ride_Rating_rudeDriver'),
-          },
-          {
-            image: imageBadDriving,
-            text: t('ride_Rating_badDriving'),
-          },
-          {
-            image: imageDirtyCar,
-            text: t('ride_Rating_dirtyCar'),
-          },
-        ],
-      },
-      like: {
-        title: t('ride_Rating_likeTitle'),
-        data: [
-          {
-            image: imageNiceAtmosphere,
-            text: t('ride_Rating_niceAtmosphere'),
-          },
-          {
-            image: imageFriendlyDriver,
-            text: t('ride_Rating_friendlyDriver'),
-          },
-          {
-            image: imageGoodDriving,
-            text: t('ride_Rating_goodDriving'),
-          },
-          {
-            image: imageCleanCar,
-            text: t('ride_Rating_cleanCar'),
-          },
-        ],
-      },
-    };
+  const subMarksData: Record<
+    FeedbackRating,
+    { title: string; data: { image: ImageSourcePropType; text: string; key: FeedbackRatingReasonsToAPI }[] }
+  > = {
+    dislike: {
+      title: t('ride_Rating_dislikeTitle'),
+      data: [
+        {
+          image: imageBadAtmosphere,
+          text: t('ride_Rating_badAtmosphere'),
+          key: 'BadAtmosphere',
+        },
+        {
+          image: imageRudeDriver,
+          text: t('ride_Rating_rudeDriver'),
+          key: 'RudeDriver',
+        },
+        {
+          image: imageBadDriving,
+          text: t('ride_Rating_badDriving'),
+          key: 'BadDriving',
+        },
+        {
+          image: imageDirtyCar,
+          text: t('ride_Rating_dirtyCar'),
+          key: 'DirtyCar',
+        },
+      ],
+    },
+    like: {
+      title: t('ride_Rating_likeTitle'),
+      data: [
+        {
+          image: imageNiceAtmosphere,
+          text: t('ride_Rating_niceAtmosphere'),
+          key: 'NiceAtmosphere',
+        },
+        {
+          image: imageFriendlyDriver,
+          text: t('ride_Rating_friendlyDriver'),
+          key: 'FriendlyDriver',
+        },
+        {
+          image: imageGoodDriving,
+          text: t('ride_Rating_goodDriving'),
+          key: 'GoodDriving',
+        },
+        {
+          image: imageCleanCar,
+          text: t('ride_Rating_cleanCar'),
+          key: 'CleanCar',
+        },
+      ],
+    },
+  };
 
   const onSendFeedback = () => {
     if (mark) {
@@ -113,7 +124,7 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
     }
 
     if (mark && isMarkSelected) {
-      const selectedTitles = selectedSubMarks.map(index => subMarksData[mark].data[index].text.replace(/\n/g, ' '));
+      const selectedTitles = selectedSubMarks.map(index => subMarksData[mark].data[index].key);
 
       if (orderId) {
         dispatch(

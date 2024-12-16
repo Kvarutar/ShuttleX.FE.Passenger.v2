@@ -228,6 +228,7 @@ const AddressSelect = ({
     );
 
     Keyboard.dismiss();
+    setIsAddressSelected(false);
   };
 
   const pointsContent = offerPoints.map((point, index) => {
