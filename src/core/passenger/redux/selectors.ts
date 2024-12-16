@@ -11,11 +11,13 @@ export const profileContactPhoneSelector = (state: AppState) =>
 export const profileContactEmailSelector = (state: AppState) =>
   state.passenger.profile?.emails?.find(email => email.type === 'Contact')?.value;
 export const passengerZoneSelector = (state: AppState) => state.passenger.zone;
+export const ordersHistorySelector = (state: AppState) => state.passenger.ordersHistory;
 
 //Loadings
 export const isPassengerAvatarLoadingSelector = (state: AppState) => state.passenger.loading.passengerAvatar;
 export const isPassengerInfoLoadingSelector = (state: AppState) => state.passenger.loading.passengerInfo;
 export const isPassengerGeneralLoadingSelector = (state: AppState) => state.passenger.loading.general;
+export const isOrdersHistoryLoadingSelector = (state: AppState) => state.passenger.loading.ordersHistory;
 
 //Errors
 export const passengerGeneralErrorSelector = (state: AppState) => state.passenger.error.general;

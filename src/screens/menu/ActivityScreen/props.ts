@@ -1,13 +1,5 @@
-import { TariffType } from 'shuttlex-integration';
-
-export type RecentTrip = {
-  address: string;
-  details: string;
-  status: null | number;
-  date: Date;
-  tripType: TariffType;
-};
+import { OrderFromAPI } from '../../../core/ride/redux/trip/types';
 
 export type RecentAddressesProps = {
-  trip: RecentTrip;
+  order: OrderFromAPI;
 };

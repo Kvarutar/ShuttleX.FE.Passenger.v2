@@ -90,7 +90,7 @@ export type FeedbackRatingReasonsToAPI =
   | 'CleanCar';
 
 export type FeedbackAPIRequest = {
-  isLikedByPassenger: boolean;
+  isLikedByPassenger: Nullable<boolean>;
   positiveFeedbacks: FeedbackRatingReasonsToAPI[];
   negativeFeedbacks: FeedbackRatingReasonsToAPI[];
 };

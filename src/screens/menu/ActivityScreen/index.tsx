@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
 import {
   Bar,
   MenuHeader,
   SafeAreaView,
-  TariffType,
+  sizes,
+  Skeleton,
   Text,
   TrafficIndicator,
   TrafficLevel,
@@ -16,75 +18,38 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { isOrdersHistoryLoadingSelector, ordersHistorySelector } from '../../../core/passenger/redux/selectors';
+import { getOrdersHistory } from '../../../core/passenger/redux/thunks';
+import { useAppDispatch } from '../../../core/redux/hooks';
+import { tariffByIdSelector } from '../../../core/ride/redux/offer/selectors';
+import { orderSelector } from '../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
-import { RecentTrip } from './props';
 import RecentAddressesBar from './RecentAddressesBar';
-
-//TODO: swap to correct data
-const testTripData = {
-  contractor: {
-    image:
-      'https://s3-alpha-sig.figma.com/img/a077/4174/e90e7da558343949a212b72e0498120b?Expires=1731283200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=ji8~5irXi2j4kUsLQCdTMMzNoh4LCHNfCFs7nv9~erH15T1vg7kzZrm6ljKLeWGSiSuiWvyGQMowXUDRBdsYJsfwnhJchYI8zFk8LFrKqURYqC43-UUwWb~HFlcv7tO6TSe5EZEBsuIdTYDPp-9-7KOT1TWNg8chgfWEZVNbb-Bcn1QHU0sv3JB5aWZuIepHoI5VKJA8iIeB45mnK7RLhLQLl9hIm99JflOOtrexzMi9a4-1Z79Sns0bXjPo3~DZafbIsYoScx1I-Nxi~eq6taRgnr4cGMpYy9sCr0MDAHyiTarDZ~iPHWDdLDGjRpzkZzBCL5kGohRvuNh92HlfZQ__',
-    name: 'Slava Kornilov',
-    car: {
-      model: 'Land Cruiser',
-    },
-  },
-  tripType: 'Basic' as TariffType,
-};
-
-const testRecentAddresses: RecentTrip[] = [
-  {
-    address: 'Restaurant',
-    details: 'StreetEasy: NYC Real Estate',
-    status: null,
-    date: new Date(),
-    tripType: 'Basic',
-  },
-  {
-    address: 'Restaurant',
-    details: 'StreetEasy: NYC Real Estate test',
-    status: 12,
-    date: new Date('2021-05-22T18:15:00'),
-    tripType: 'Basic',
-  },
-  {
-    address: 'Restaurant Long Long Long Long Long Long',
-    details: 'StreetEasy: NYC Real Estate',
-    status: 53,
-    date: new Date('2024-10-09T16:20:00'),
-    tripType: 'Eco',
-  },
-  {
-    address: 'Restaurant',
-    details: 'StreetEasy: NYC Real Estate Long Long Long Long Long Long',
-    status: null,
-    date: new Date('2023-01-15T09:45:00'),
-    tripType: 'Business',
-  },
-  {
-    address: 'Restaurant',
-    details: 'StreetEasy: NYC Real Estate',
-    status: 23,
-    date: new Date('2022-07-30T14:30:00'),
-    tripType: 'ComfortPlus',
-  },
-];
 
 const ActivityScreen = () => {
   const { navigation } = useNavigation<NativeStackScreenProps<RootStackParamList, 'Activity'>>();
   const tariffIconsData = useTariffsIcons();
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
-  const TariffImage = tariffIconsData[testTripData.tripType].icon;
+  const ordersHistory = useSelector(ordersHistorySelector);
+  const currentOrder = useSelector(orderSelector);
+  const tripTariff = useSelector(state => tariffByIdSelector(state, currentOrder?.info?.tariffId));
+  const isOrdersHistoryLoading = useSelector(isOrdersHistoryLoadingSelector);
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   const computedStyles = StyleSheet.create({
     text: {
       color: colors.textSecondaryColor,
+    },
+    emptyActivityText: {
+      color: colors.textSecondaryColor,
+    },
+    emptyActivityWrapper: {
+      paddingBottom: sizes.paddingHorizontal,
     },
   });
 
@@ -102,6 +67,73 @@ const ActivityScreen = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    dispatch(getOrdersHistory());
+  }, [dispatch]);
+
+  if (!ordersHistory.length && !currentOrder && !isOrdersHistoryLoading) {
+    return (
+      <View style={[styles.emptyActivityWrapper, computedStyles.emptyActivityWrapper]}>
+        <Text style={[styles.emptyActivityText, computedStyles.emptyActivityText]}>
+          {t('menu_Activity_emptyActivity')}
+        </Text>
+      </View>
+    );
+  }
+
+  const renderActiveRides = (): JSX.Element => {
+    if (isOrdersHistoryLoading) {
+      return <Skeleton skeletonContainerStyle={styles.skeletonActiveRides} />;
+    }
+    if (!tripTariff || !currentOrder || !currentOrder.info) {
+      return (
+        <View style={styles.haveNotActiveRidesWrapper}>
+          <Text style={[styles.emptyActivityText, computedStyles.emptyActivityText]}>
+            {t('menu_Activity_haveNotCurrentRides')}
+          </Text>
+        </View>
+      );
+    }
+
+    const TariffImage = tariffIconsData[tripTariff.name].icon;
+
+    return (
+      <Bar style={styles.currentTripContainer}>
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.avatar}
+            source={
+              currentOrder.avatar
+                ? { uri: currentOrder.avatar }
+                : require('../../../../assets/images/DefaultAvatar.png')
+            }
+          />
+          <TariffImage style={styles.carImage} />
+        </View>
+        <Text style={[styles.currentTripTitleText, computedStyles.text]}>{t('menu_Activity_activeOrder')}</Text>
+        <View style={styles.contractorInfoContainer}>
+          <Text style={styles.nameText}>{currentOrder.info.firstName}</Text>
+          <Text style={[styles.carModelText, computedStyles.text]}>
+            {currentOrder.info.carBrand} {currentOrder.info.carModel}
+          </Text>
+        </View>
+        {/*TODO: delete mock data*/}
+        <TrafficIndicator
+          containerStyle={styles.trafficIndicatorContainer}
+          currentPercent={`${currentDistance}%`}
+          segments={[
+            { percent: '15%', level: TrafficLevel.Low },
+            { percent: '15%', level: TrafficLevel.Average },
+            { percent: '30%', level: TrafficLevel.High },
+            { percent: '40%', level: TrafficLevel.Low },
+          ]}
+          startTime={43200}
+          endTime={45000}
+        />
+      </Bar>
+    );
+  };
+
   return (
     <>
       <SafeAreaView>
@@ -111,44 +143,23 @@ const ActivityScreen = () => {
         >
           <Text style={styles.headerText}>{t('menu_Activity_title')}</Text>
         </MenuHeader>
-        {testTripData && (
-          <Bar style={styles.currentTripContainer}>
-            <View style={styles.imageContainer}>
-              <Image style={styles.avatar} source={{ uri: testTripData.contractor.image }} />
-              <TariffImage style={styles.carImage} />
-            </View>
-            <Text style={[styles.currentTripTitleText, computedStyles.text]}>{t('menu_Activity_activeOrder')}</Text>
-            <View style={styles.contractorInfoContainer}>
-              <Text style={styles.nameText}>{testTripData.contractor.name}</Text>
-              <Text style={[styles.carModelText, computedStyles.text]}>{testTripData.contractor.car.model}</Text>
-            </View>
-            {/*TODO: delete mock data*/}
-            <TrafficIndicator
-              containerStyle={styles.trafficIndicatorContainer}
-              currentPercent={`${currentDistance}%`}
-              segments={[
-                { percent: '15%', level: TrafficLevel.Low },
-                { percent: '15%', level: TrafficLevel.Average },
-                { percent: '30%', level: TrafficLevel.High },
-                { percent: '40%', level: TrafficLevel.Low },
-              ]}
-              startTime={43200}
-              endTime={45000}
-            />
-          </Bar>
+        {renderActiveRides()}
+        {(ordersHistory.length || isOrdersHistoryLoading) && (
+          <View style={styles.recentAddressesWrapper}>
+            <Text style={[styles.recentAddressesTitleText, computedStyles.text]}>
+              {t('menu_Activity_recentAddresses')}
+            </Text>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.recentAddressesContainer}>
+                {isOrdersHistoryLoading ? (
+                  <Skeleton skeletonsAmount={5} skeletonContainerStyle={styles.skeletonRecentAdress} />
+                ) : (
+                  ordersHistory.map((order, index) => <RecentAddressesBar key={index} order={order} />)
+                )}
+              </View>
+            </ScrollView>
+          </View>
         )}
-        <View style={styles.recentAddressesWrapper}>
-          <Text style={[styles.recentAddressesTitleText, computedStyles.text]}>
-            {t('menu_Activity_recentAddresses')}
-          </Text>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.recentAddressesContainer}>
-              {testRecentAddresses.map((trip, index) => (
-                <RecentAddressesBar key={index} trip={trip} />
-              ))}
-            </View>
-          </ScrollView>
-        </View>
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
     </>
@@ -156,6 +167,15 @@ const ActivityScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  skeletonActiveRides: {
+    height: 200,
+    borderRadius: 12,
+    marginVertical: 12,
+  },
+  skeletonRecentAdress: {
+    height: 120,
+    borderRadius: 12,
+  },
   headerText: {
     fontSize: 17,
     fontFamily: 'Inter Medium',
@@ -217,6 +237,20 @@ const styles = StyleSheet.create({
   },
   trafficIndicatorContainer: {
     marginTop: 20,
+  },
+  haveNotActiveRidesWrapper: {
+    paddingVertical: 64,
+  },
+  emptyActivityWrapper: {
+    flex: 1,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyActivityText: {
+    fontSize: 14,
+    fontFamily: 'Inter Medium',
+    textAlign: 'center',
   },
 });
 

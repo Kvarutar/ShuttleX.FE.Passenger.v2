@@ -1,6 +1,8 @@
 import { LatLng } from 'react-native-maps';
 import { NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 
+import { OrderFromAPI } from '../../ride/redux/trip/types';
+
 type NameTypeFromAPI = 'Preferred';
 
 type NameFromAPI = {
@@ -59,17 +61,22 @@ export type ZoneFromAPI = {
   centerPoint: LatLng;
 };
 
+export type GetOrdersHistoryAPIResponse = OrderFromAPI[];
+
 export type PassengerState = {
   profile: Nullable<Profile>;
   zone: Nullable<ZoneFromAPI>;
+  ordersHistory: OrderFromAPI[];
   loading: {
     passengerAvatar: boolean;
     passengerInfo: boolean;
+    ordersHistory: boolean;
     general: boolean;
   };
   error: {
     passengerAvatar: Nullable<NetworkErrorDetailsWithBody<any>>;
     passengerInfo: Nullable<NetworkErrorDetailsWithBody<any>>;
+    ordersHistory: Nullable<NetworkErrorDetailsWithBody<any>>;
     general: Nullable<NetworkErrorDetailsWithBody<any>>;
   };
 };

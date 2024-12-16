@@ -44,6 +44,9 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   const [isMarkSelected, setIsMarkSelected] = useState(false);
   const [selectedSubMarks, setSelectedSubMarks] = useState<number[]>([]);
 
+  const isMarkLike = mark === 'like';
+  const isMarkDislike = mark === 'dislike';
+
   const computedStyles = StyleSheet.create({
     text: {
       color: colors.textSecondaryColor,
@@ -52,7 +55,7 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
       color: colors.textSecondaryColor,
     },
     subMarkImage: {
-      borderColor: mark === 'like' ? colors.primaryColor : colors.errorColor,
+      borderColor: isMarkLike ? colors.primaryColor : colors.errorColor,
     },
     subMarkIsNotSelected: {
       backgroundColor: colors.backgroundPrimaryColor,
@@ -124,16 +127,22 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
     }
 
     if (mark && isMarkSelected) {
-      const selectedTitles = selectedSubMarks.map(index => subMarksData[mark].data[index].key);
+      let selectedTitles: FeedbackRatingReasonsToAPI[] = [];
+      let isLikedByPassenger: boolean | null = null;
+
+      if (mark) {
+        selectedTitles = selectedSubMarks.map(index => subMarksData[mark].data[index].key);
+        isLikedByPassenger = isMarkLike;
+      }
 
       if (orderId) {
         dispatch(
           sendFeedback({
             orderId: orderId,
             payload: {
-              isLikedByPassenger: isMarkSelected,
-              positiveFeedbacks: mark === 'like' ? selectedTitles : [],
-              negativeFeedbacks: mark === 'dislike' ? selectedTitles : [],
+              isLikedByPassenger,
+              positiveFeedbacks: selectedTitles,
+              negativeFeedbacks: selectedTitles,
             },
           }),
         );
@@ -194,20 +203,20 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
             <Button
               shape={ButtonShapes.Circle}
               style={styles.markContainerStyle}
-              mode={mark === 'dislike' ? CircleButtonModes.Mode3 : CircleButtonModes.Mode4}
+              mode={isMarkDislike ? CircleButtonModes.Mode3 : CircleButtonModes.Mode4}
               circleSubContainerStyle={styles.markCircleSubContainerStyle}
               onPress={() => setMark('dislike')}
             >
-              <DislikeIcon color={mark === 'dislike' ? colors.iconTertiaryColor : undefined} />
+              <DislikeIcon color={isMarkDislike ? colors.iconTertiaryColor : undefined} />
             </Button>
             <Button
               shape={ButtonShapes.Circle}
               style={styles.markContainerStyle}
-              mode={mark === 'like' ? CircleButtonModes.Mode5 : CircleButtonModes.Mode4}
+              mode={isMarkLike ? CircleButtonModes.Mode5 : CircleButtonModes.Mode4}
               circleSubContainerStyle={styles.markCircleSubContainerStyle}
               onPress={() => setMark('like')}
             >
-              <LikeIcon color={mark === 'like' ? colors.iconTertiaryColor : undefined} />
+              <LikeIcon color={isMarkLike ? colors.iconTertiaryColor : undefined} />
             </Button>
           </View>
         </>

@@ -2,9 +2,11 @@ import { convertBlobToImgUri, getNetworkErrorInfo } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../redux/hooks';
 import { geolocationCoordinatesSelector } from '../../ride/redux/geolocation/selectors';
+import { OrderFromAPI } from '../../ride/redux/trip/types';
 import {
   AvatarFromAPI,
   AvatarWithoutValueFromAPI,
+  GetOrdersHistoryAPIResponse,
   GetOrUpdateZoneAPIResponse,
   GetProfileInfoAPIResponse,
   Profile,
@@ -13,6 +15,17 @@ import {
   UpdateProfileLanguageAPIRequest,
   ZoneFromAPI,
 } from './types';
+
+export const getOrdersHistory = createAppAsyncThunk<OrderFromAPI[], void>(
+  'passenger/getOrdersHistory',
+  async (_, { rejectWithValue, passengerAxios }) => {
+    try {
+      return (await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders')).data;
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
 
 export const getProfileInfo = createAppAsyncThunk<Profile, void>(
   'passenger/getProfileInfo',

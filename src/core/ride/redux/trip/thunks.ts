@@ -9,9 +9,7 @@ import {
   FeedbackAPIRequest,
   GetCurrentOrderAPIResponse,
   GetOrderInfoAPIResponse,
-  GetOrdersHistoryAPIResponse,
   Order,
-  OrderFromAPI,
   OrderLongPollingAPIResponse,
   RouteDropOffApiResponse,
   RoutePickUpApiResponse,
@@ -148,19 +146,6 @@ export const getOrderLongPolling = createAppAsyncThunk<string, string>(
 //   },
 // );
 
-export const getOrdersHistory = createAppAsyncThunk<OrderFromAPI[], string>(
-  'trip/getOrdersHistory',
-  async (_, { rejectWithValue, passengerAxios }) => {
-    try {
-      const data = (await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders')).data;
-
-      return data;
-    } catch (error) {
-      return rejectWithValue(getNetworkErrorInfo(error));
-    }
-  },
-);
-
 export const getTripSuccessfullLongPolling = createAppAsyncThunk<string, string>(
   'trip/getTripSuccessfullLongPolling',
   async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch }) => {
@@ -204,19 +189,6 @@ export const getTripCanceledAfterPickUpLongPolling = createAppAsyncThunk<string,
       dispatch(setTripIsCanceled(true));
       dispatch(setTripStatus(TripStatus.Finished));
       return response.data.orderId;
-    } catch (error) {
-      return rejectWithValue(getNetworkErrorInfo(error));
-    }
-  },
-);
-
-export const getActiveOrdersHistory = createAppAsyncThunk<OrderFromAPI[], string>(
-  'trip/getActiveOrdersHistory',
-  async (_, { rejectWithValue, passengerAxios }) => {
-    try {
-      const data = (await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders')).data;
-
-      return data;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

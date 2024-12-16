@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { getLocales } from 'react-native-localize';
-import { Bar, BarModes, getCurrencySign, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { useSelector } from 'react-redux';
+import { Bar, BarModes, formatCurrency, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
+import { tariffByIdSelector } from '../../../core/ride/redux/offer/selectors';
 import { RecentAddressesProps } from './props';
 
 const formatDateTime = (date: Date): string => {
@@ -21,43 +23,49 @@ const formatDateTime = (date: Date): string => {
   return `${day} ${month}, ${formattedTime}`;
 };
 
-const RecentAddressesBar = ({ trip }: RecentAddressesProps) => {
+const RecentAddressesBar = ({ order }: RecentAddressesProps) => {
   const { colors } = useTheme();
   const tariffIconsData = useTariffsIcons();
   const { t } = useTranslation();
 
-  const currencySign = getCurrencySign('UAH'); //for test
+  const tripTariff = useSelector(state => tariffByIdSelector(state, order.tariffId));
+
+  const isOrderCanceled = order.state === 'CanceledByContractor' || order.state === 'CanceledByPassenger';
 
   const computedStyles = StyleSheet.create({
     statusText: {
-      color: trip.status === null ? colors.errorColor : colors.textPrimaryColor,
+      color: isOrderCanceled ? colors.errorColor : colors.textPrimaryColor,
     },
     statusContainer: {
-      backgroundColor: trip.status === null ? colors.errorColorWithOpacity : colors.backgroundSecondaryColor,
+      backgroundColor: isOrderCanceled ? colors.errorColorWithOpacity : colors.backgroundSecondaryColor,
     },
     addressesText: {
       color: colors.textTitleColor,
     },
   });
 
-  const TariffImage = tariffIconsData[trip.tripType]?.icon;
+  const getTariffImage = (tripTariffName: TariffType) => {
+    return tariffIconsData[tripTariffName].icon({ style: styles.image });
+  };
 
   return (
-    <Bar style={styles.container} mode={trip.status === null ? BarModes.Disabled : BarModes.Default}>
+    <Bar style={styles.container} mode={isOrderCanceled ? BarModes.Disabled : BarModes.Default}>
       <View style={styles.imageContainer}>
-        <TariffImage style={styles.image} />
+        {tripTariff && getTariffImage(tripTariff.name)}
         <View style={[styles.statusContainer, computedStyles.statusContainer]}>
           <Text style={[styles.statusText, computedStyles.statusText]}>
-            {trip.status === null ? t('menu_Activity_canceled') : `${currencySign}${trip.status}`}
+            {isOrderCanceled ? t('menu_Activity_canceled') : formatCurrency(order.currencyCode, order.totalFinalPrice)}
           </Text>
         </View>
       </View>
       <View style={styles.addressWrapper}>
         <View style={styles.addressContainer}>
-          <Text style={styles.addressText}>{trip.address}</Text>
-          <Text style={[styles.addressDetailsText, computedStyles.addressesText]}>{trip.details}</Text>
+          <Text style={styles.addressText}>{order.dropOffAddress}</Text>
+          <Text style={[styles.addressDetailsText, computedStyles.addressesText]}>{order.dropOffPlace}</Text>
         </View>
-        <Text style={[styles.dateTimeText, computedStyles.addressesText]}>{formatDateTime(trip.date)}</Text>
+        <Text style={[styles.dateTimeText, computedStyles.addressesText]}>
+          {formatDateTime(new Date(order.finishedDate))}
+        </Text>
       </View>
     </Bar>
   );

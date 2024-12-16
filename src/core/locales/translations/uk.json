@@ -13,6 +13,8 @@
   "menu_Activity_activeOrder": "Поточне замовлення",
   "menu_Activity_recentAddresses": "Нещодавні",
   "menu_Activity_canceled": "Скасоване",
+  "menu_Activity_emptyActivity": "Тут буде відображатися інформація про Ваші поїздки",
+  "menu_Activity_haveNotCurrentRides": "У вас зараз немає активних поїздок",
   "ride_Menu_ticketWallet": "Гаманець тікетів",
   "menu_TicketWallet_noTickets": "Здійсніть першу поїздку,\nщоб отримати квиток!",
   "menu_AccountVerificateCode_firstHeader": "Введіть код, отриманий",

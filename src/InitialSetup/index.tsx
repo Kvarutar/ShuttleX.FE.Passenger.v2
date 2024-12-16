@@ -7,7 +7,12 @@ import { setIsLoggedIn } from '../core/auth/redux';
 import { isLoggedInSelector } from '../core/auth/redux/selectors';
 import { getAllCurrentTickets } from '../core/lottery/redux/thunks';
 import { passengerZoneSelector } from '../core/passenger/redux/selectors';
-import { getOrUpdateZone, getProfileInfo, updateProfileLanguage } from '../core/passenger/redux/thunks';
+import {
+  getOrdersHistory,
+  getOrUpdateZone,
+  getProfileInfo,
+  updateProfileLanguage,
+} from '../core/passenger/redux/thunks';
 import { useAppDispatch } from '../core/redux/hooks';
 import { signalRThunks, updateSignalRAccessToken } from '../core/redux/signalr';
 import { geolocationCoordinatesSelector } from '../core/ride/redux/geolocation/selectors';
@@ -59,6 +64,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
       dispatch(getOrUpdateZone());
       dispatch(getAvailableTariffs());
       dispatch(getRecentDropoffs({ amount: 10 }));
+      dispatch(getOrdersHistory());
       dispatch(getCurrentOrder());
     }
   }, [locationLoaded, dispatch]);
