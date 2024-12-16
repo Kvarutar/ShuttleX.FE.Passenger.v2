@@ -56,11 +56,13 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
   };
 
   const clearInputValue = () => {
+    setInputValue('');
     updateFocusedInput({ id: currentPointId, value: '', focus: isFocused });
     dispatch(updateOfferPoint({ id: currentPointId, address: '', fullAddress: '', longitude: 0, latitude: 0 }));
   };
 
   const handleInputChange = (value: string) => {
+    setInputValue(value);
     updateFocusedInput({ id: currentPointId, value: value, focus: isFocused });
     if (point) {
       dispatch(updateOfferPoint({ ...point, address: value, longitude: 0, latitude: 0 }));
