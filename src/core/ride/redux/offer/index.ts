@@ -41,6 +41,7 @@ const initialState: OfferState = {
     offerRoutes: false,
     recentDropoffs: false,
     tariffsPrices: false,
+    offerCreate: false,
     isCityAvailable: false,
     phantomOffer: false,
   },
@@ -51,6 +52,7 @@ const initialState: OfferState = {
     offerRoutes: null,
     recentDropoffs: null,
     tariffsPrices: null,
+    offerCreate: null,
   },
   selectedTariff: null,
   estimatedPrice: null,
@@ -225,22 +227,43 @@ const slice = createSlice({
         });
         state.errors.offerRoutes = action.payload as NetworkErrorDetailsWithBody<any>;
       })
+
+      // offerCreate
+      .addCase(createInitialOffer.pending, state => {
+        state.loading.offerCreate = true;
+        state.errors.offerCreate = null;
+      })
       .addCase(createInitialOffer.fulfilled, (state, action) => {
         slice.caseReducers.setOfferId(state, {
           payload: action.payload,
           type: setOfferId.type,
         });
+        state.loading.offerCreate = false;
+        state.errors.offerCreate = null;
       })
       //TODO: uncomment after payment will be done
       // .addCase(createInitialOffer.rejected, (state, action) => {
       //   store.dispatch(createOffer());
+      //   state.loading.offerCreate = false;
+      //   state.errors.offerCreate = action.payload as NetworkErrorDetailsWithBody<any>;
       // })
+      .addCase(createOffer.pending, state => {
+        state.loading.offerCreate = true;
+        state.errors.offerCreate = null;
+      })
       .addCase(createOffer.fulfilled, (state, action) => {
         slice.caseReducers.setOfferId(state, {
           payload: action.payload,
           type: setOfferId.type,
         });
+        state.loading.offerCreate = false;
+        state.errors.offerCreate = null;
       })
+      .addCase(createOffer.rejected, (state, action) => {
+        state.loading.offerCreate = false;
+        state.errors.offerCreate = action.payload as NetworkErrorDetailsWithBody<any>;
+      })
+
       .addCase(cancelTrip.fulfilled, state => {
         slice.caseReducers.clearOffer(state);
       })

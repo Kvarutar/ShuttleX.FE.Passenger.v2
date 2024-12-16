@@ -51,9 +51,11 @@ export const isRecentDropoffsLoadingSelector = (state: AppState) => state.offer.
 export const isTariffsPricesLoadingSelector = (state: AppState) => state.offer.loading.tariffsPrices;
 export const isAvailableTariffsLoadingSelector = (state: AppState) => state.offer.loading.avaliableTariffs;
 export const isOfferRoutesLoadingSelector = (state: AppState) => state.offer.loading.offerRoutes;
+export const isOfferCreateLoadingSelector = (state: AppState) => state.offer.loading.offerCreate;
 export const isCityAvailableLoadingSelector = (state: AppState) => state.offer.loading.isCityAvailable;
 
 //Errors
 export const recentDropoffsErrorSelector = (state: AppState) => state.offer.errors.recentDropoffs;
 export const tariffsPricesErrorSelector = (state: AppState) => state.offer.errors.tariffsPrices;
 export const offerRoutesErrorSelector = (state: AppState) => state.offer.errors.offerRoutes;
+export const offerCreateErrorSelector = (state: AppState) => state.offer.errors.offerCreate;

@@ -33,7 +33,12 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
-import { offerIdSelector, offerSelector } from '../../../../core/ride/redux/offer/selectors';
+import {
+  isOfferCreateLoadingSelector,
+  offerCreateErrorSelector,
+  offerIdSelector,
+  offerSelector,
+} from '../../../../core/ride/redux/offer/selectors';
 import { createInitialOffer } from '../../../../core/ride/redux/offer/thunks';
 import { setOrderStatus } from '../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
@@ -42,7 +47,7 @@ import PlanButton from '../PlanButton/PlanButton';
 import { checkPaymentStatus } from './handlePayments';
 import { DefaultPaymentMethodsType } from './types';
 
-const testPaymentMethods = [
+const testPaymentMethods: { method: DefaultPaymentMethodsType; details: string; expiresAt: string }[] = [
   {
     method: 'cash',
     details: '',
@@ -126,17 +131,19 @@ const PaymentPopup = () => {
   const { t } = useTranslation();
   const datePickerRef = useRef<BottomWindowWithGestureRef>(null);
 
-  const TariffIcon = tariffIconsData.Basic.icon;
   const { points, selectedTariff, estimatedPrice } = useSelector(offerSelector);
-  //TODO: remove this !
-  const availableTestPlans = selectedTariff!.matching.filter(item => item.durationSec !== null);
+  const isOfferCreateLoading = useSelector(isOfferCreateLoadingSelector);
+  const offerCreateError = useSelector(offerCreateErrorSelector);
+
+  const TariffIcon = selectedTariff ? tariffIconsData[selectedTariff.name].icon : null;
+  const availableTestPlans = selectedTariff ? selectedTariff.matching.filter(item => item.durationSec !== null) : null;
 
   //TODO: Add setWindowIsOpened to useState when add new payment methods
   // Changed in Task-385
   const [windowIsOpened] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [selectedTimeStep, setSelectedTimeStep] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(availableTestPlans.length > 1 ? 1 : 0);
+  const [selectedPlan, setSelectedPlan] = useState(availableTestPlans && availableTestPlans.length > 1 ? 1 : 0);
   const [selectedTime, setSelectedTime] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedPayment, setSelectedPayment] = useState<DefaultPaymentMethodsType>('cash');
@@ -210,250 +217,250 @@ const PaymentPopup = () => {
     }
   }, [selectedDate]);
 
-  const dateTimeOnConfirm = () => {
-    if (Platform.OS === 'android') {
-      setConfirmDateChecker(true);
-      setIsDatePickerVisible(false);
-    } else {
-      if (selectedTimeStep) {
+  if (TariffIcon && availableTestPlans) {
+    const dateTimeOnConfirm = () => {
+      if (Platform.OS === 'android') {
         setConfirmDateChecker(true);
         setIsDatePickerVisible(false);
       } else {
-        setSelectedTimeStep(true);
+        if (selectedTimeStep) {
+          setConfirmDateChecker(true);
+          setIsDatePickerVisible(false);
+        } else {
+          setSelectedTimeStep(true);
+        }
       }
-    }
-  };
+    };
 
-  const dateTimeOnClose = () => {
-    if (Platform.OS === 'android') {
-      setIsDatePickerVisible(false);
-    } else {
-      if (selectedTimeStep) {
-        setSelectedTimeStep(false);
-      } else {
+    const dateTimeOnClose = () => {
+      if (Platform.OS === 'android') {
         setIsDatePickerVisible(false);
+      } else {
+        if (selectedTimeStep) {
+          setSelectedTimeStep(false);
+        } else {
+          setIsDatePickerVisible(false);
+        }
       }
-    }
-  };
+    };
 
-  //TODO: rewrite this logic after we connect payment
-  const onConfirmPress = async () => {
-    const paymentId = '3456677'; //TODO: get to know from where I can get it?
-    let status = 'pending';
-    // const price = planPriceCounting(
-    //   Number(availableTestPlans[selectedPlan].durationSec),
-    //   availableTestPlans[selectedPlan].algorythm,
-    // );
+    //TODO: rewrite this logic after we connect payment
+    const onConfirmPress = async () => {
+      const paymentId = '3456677'; //TODO: get to know from where I can get it?
+      let status = 'pending';
+      // const price = planPriceCounting(
+      //   Number(availableTestPlans[selectedPlan].durationSec),
+      //   availableTestPlans[selectedPlan].algorythm,
+      // );
 
-    switch (selectedPayment) {
-      case 'cash':
-        await dispatch(createInitialOffer());
-        status = 'success';
-        break;
-      case 'card':
-        //await handleMonoPayment({ amount: price, setPaymentUrl });
-        break;
-      case 'crypto':
-        //await handleBinancePayment({ amount: price, setPaymentUrl });
-        break;
-      default:
-        console.error('Unknown payment method');
-        return;
-    }
-
-    if (selectedPayment !== 'cash') {
-      try {
-        status = await checkPaymentStatus(paymentId);
-      } catch (error) {
-        console.error('Error while checking status', error);
-        status = 'failed';
+      switch (selectedPayment) {
+        case 'cash':
+          await dispatch(createInitialOffer());
+          status = 'success';
+          break;
+        case 'card':
+          //await handleMonoPayment({ amount: price, setPaymentUrl });
+          break;
+        case 'crypto':
+          //await handleBinancePayment({ amount: price, setPaymentUrl });
+          break;
+        default:
+          console.error('Unknown payment method');
+          return;
       }
-    }
 
-    if (status === 'success') {
-      dispatch(setOrderStatus(OrderStatus.Confirming));
-      if (offerId) {
-        dispatch(getOrderLongPolling(offerId));
+      if (selectedPayment !== 'cash') {
+        try {
+          status = await checkPaymentStatus(paymentId);
+        } catch (error) {
+          status = 'failed';
+        }
       }
-    }
-  };
 
-  const reorderPaymentMethods = (selectedMethod: string) => {
-    const updatedMethods = testPaymentMethods.filter(method => method.method !== selectedMethod);
-    const selectedPaymentMethod = testPaymentMethods.find(method => method.method === selectedMethod);
-    if (selectedPaymentMethod) {
-      updatedMethods.unshift(selectedPaymentMethod);
-    }
+      if (status === 'success' && !offerCreateError) {
+        dispatch(setOrderStatus(OrderStatus.Confirming));
+        if (offerId) {
+          dispatch(getOrderLongPolling(offerId));
+        }
+      }
+    };
 
-    return updatedMethods;
-  };
+    const reorderPaymentMethods = (selectedMethod: string) => {
+      const updatedMethods = testPaymentMethods.filter(method => method.method !== selectedMethod);
+      const selectedPaymentMethod = testPaymentMethods.find(method => method.method === selectedMethod);
+      if (selectedPaymentMethod) {
+        updatedMethods.unshift(selectedPaymentMethod);
+      }
 
-  const paymentTitle: Record<DefaultPaymentMethodsType, string> = {
-    cash: t('ride_Ride_PaymentPopup_cash'),
-    // applepay: t('ride_Ride_PaymentPopup_applepay'),
-    // paypal: t('ride_Ride_PaymentPopup_paypal'),
-    crypto: t('ride_Ride_PaymentPopup_crypto'),
-    card: t('ride_Ride_PaymentPopup_card'),
-  };
+      return updatedMethods;
+    };
 
-  const selectedPaymentType = defaultPaymentMethods.includes(selectedPayment) ? selectedPayment : 'card';
+    const paymentTitle: Record<DefaultPaymentMethodsType, string> = {
+      cash: t('ride_Ride_PaymentPopup_cash'),
+      // applepay: t('ride_Ride_PaymentPopup_applepay'),
+      // paypal: t('ride_Ride_PaymentPopup_paypal'),
+      crypto: t('ride_Ride_PaymentPopup_crypto'),
+      card: t('ride_Ride_PaymentPopup_card'),
+    };
 
-  const infoText = [
-    {
-      title: t('ride_Ride_PaymentPopup_payTitle'),
-      value: paymentTitle[selectedPaymentType],
-    },
-    {
-      title: t('ride_Ride_PaymentPopup_priceTitle'),
-      // TODO: swap currencyCode to correct value
-      value: `${getCurrencySign('UAH')}${estimatedPrice?.value ? estimatedPrice?.value.toFixed(2) : 0}`,
-    },
-    {
-      title: t('ride_Ride_PaymentPopup_timeTitle'),
-      value: dateTimeTitle,
-    },
-  ];
+    const selectedPaymentType = defaultPaymentMethods.includes(selectedPayment) ? selectedPayment : 'card';
 
-  const dateTimeBlock = (
-    <View style={styles.dateTimeContainer}>
-      <Text style={[styles.dateTimeTopText, computedStyles.dateTimeTopText]}>
-        {t('ride_Ride_PaymentPopup_advanceBooking')}
-      </Text>
-      <Text style={styles.dateTimeBottomText}>
-        {selectedTimeStep ? t('ride_Ride_PaymentPopup_pickTimeTitle') : t('ride_Ride_PaymentPopup_pickDateTitle')}
-      </Text>
-      {selectedTimeStep ? (
-        <TimePicker
-          minimumTime={formatDate(new Date()) === formatDate(selectedDate) ? new Date() : undefined}
-          onTimeSelect={setSelectedTime}
-        />
-      ) : (
-        <DatePicker minimumDate={new Date()} onDateSelect={setSelectedDate} />
-      )}
-      <View style={styles.dateTimeButtonContainer}>
-        <Pressable onPress={dateTimeOnClose} style={[styles.dateTimeCloseButton, computedStyles.dateTimeCloseButton]}>
-          <CloseIcon style={styles.dateTimeCloseIcon} color={colors.errorColor} />
-        </Pressable>
-        <Button
-          withCircleModeBorder
-          shadow={ButtonShadows.Strong}
-          onPress={dateTimeOnConfirm}
-          shape={ButtonShapes.Circle}
-          size={ButtonSizes.L}
-          innerSpacing={8}
-          text={t('ride_Ride_PaymentPopup_pickDateTimeConfirm')}
-        />
-      </View>
-    </View>
-  );
+    const infoText = [
+      {
+        title: t('ride_Ride_PaymentPopup_payTitle'),
+        value: paymentTitle[selectedPaymentType],
+      },
+      {
+        title: t('ride_Ride_PaymentPopup_priceTitle'),
+        // TODO: swap currencyCode to correct value
+        value: `${getCurrencySign('UAH')}${estimatedPrice?.value ? estimatedPrice?.value.toFixed(2) : 0}`,
+      },
+      {
+        title: t('ride_Ride_PaymentPopup_timeTitle'),
+        value: dateTimeTitle,
+      },
+    ];
 
-  const androidDateTimePicker = (
-    <View style={styles.dateTimeContainer}>
-      <Text style={[styles.dateTimeTopText, computedStyles.dateTimeTopText]}>
-        {t('ride_Ride_PaymentPopup_advanceBooking')}
-      </Text>
-      <View style={styles.androidDateTimePickerWrapper}>
-        <View style={styles.androidDateTimePickerContainer}>
-          <Text style={styles.dateTimeBottomText}>{t('ride_Ride_PaymentPopup_pickDateTitle')}</Text>
-          <DatePickerV1
-            minimumDate={new Date()}
-            onDateSelect={setSelectedDate}
-            placeholder={formatDate(new Date())}
-            formatDate={formatDate}
-          />
-        </View>
-        <View style={styles.androidDateTimePickerContainer}>
-          <Text style={styles.dateTimeBottomText}>{t('ride_Ride_PaymentPopup_pickTimeTitle')}</Text>
-          <TimePickerV1
+    const iosDateTimeBlock = (
+      <View style={styles.dateTimeContainer}>
+        <Text style={[styles.dateTimeTopText, computedStyles.dateTimeTopText]}>
+          {t('ride_Ride_PaymentPopup_advanceBooking')}
+        </Text>
+        <Text style={styles.dateTimeBottomText}>
+          {selectedTimeStep ? t('ride_Ride_PaymentPopup_pickTimeTitle') : t('ride_Ride_PaymentPopup_pickDateTitle')}
+        </Text>
+        {selectedTimeStep ? (
+          <TimePicker
             minimumTime={formatDate(new Date()) === formatDate(selectedDate) ? new Date() : undefined}
-            placeholder={formatTime(new Date())}
             onTimeSelect={setSelectedTime}
-            formatTime={formatTime}
+          />
+        ) : (
+          <DatePicker minimumDate={new Date()} onDateSelect={setSelectedDate} />
+        )}
+        <View style={styles.dateTimeButtonContainer}>
+          <Pressable onPress={dateTimeOnClose} style={[styles.dateTimeCloseButton, computedStyles.dateTimeCloseButton]}>
+            <CloseIcon style={styles.dateTimeCloseIcon} color={colors.errorColor} />
+          </Pressable>
+          <Button
+            withCircleModeBorder
+            shadow={ButtonShadows.Strong}
+            onPress={dateTimeOnConfirm}
+            shape={ButtonShapes.Circle}
+            size={ButtonSizes.L}
+            innerSpacing={8}
+            text={t('ride_Ride_PaymentPopup_pickDateTimeConfirm')}
           />
         </View>
       </View>
-      <View style={styles.dateTimeButtonContainer}>
-        <Pressable onPress={dateTimeOnClose} style={[styles.dateTimeCloseButton, computedStyles.dateTimeCloseButton]}>
-          <CloseIcon style={styles.dateTimeCloseIcon} color={colors.errorColor} />
-        </Pressable>
-        <Button
-          withCircleModeBorder
-          shadow={ButtonShadows.Strong}
-          onPress={dateTimeOnConfirm}
-          shape={ButtonShapes.Circle}
-          size={ButtonSizes.L}
-          innerSpacing={8}
-          text={t('ride_Ride_PaymentPopup_pickDateTimeConfirm')}
-        />
-      </View>
-    </View>
-  );
+    );
 
-  const infoTextBlock = ({ topText, bottomText }: { topText: string; bottomText: string }) => (
-    <View key={`info_text_${topText}`} style={styles.infoTextContainer}>
-      <Text style={[styles.infoTopText, computedStyles.infoTopText]}>{topText}</Text>
-      <Animated.Text layout={FadeIn.duration(500)} numberOfLines={1} style={styles.infoBottomText}>
-        {bottomText}
-      </Animated.Text>
-    </View>
-  );
-
-  const content = (
-    <View style={[computedStyles.wrapper, styles.wrapper]}>
-      <View>
-        <View style={styles.addressTitleContainer}>
-          <Text style={[styles.pickUpPointText, computedStyles.pickUpPointText]}>
-            {t('ride_Ride_PaymentPopup_pickUpPoint')}
-          </Text>
-          <Text style={styles.addressText} numberOfLines={1}>
-            {points[0].address}
-          </Text>
+    const androidDateTimeBlock = (
+      <View style={styles.dateTimeContainer}>
+        <Text style={[styles.dateTimeTopText, computedStyles.dateTimeTopText]}>
+          {t('ride_Ride_PaymentPopup_advanceBooking')}
+        </Text>
+        <View style={styles.androidDateTimePickerWrapper}>
+          <View style={styles.androidDateTimePickerContainer}>
+            <Text style={styles.dateTimeBottomText}>{t('ride_Ride_PaymentPopup_pickDateTitle')}</Text>
+            <DatePickerV1
+              minimumDate={new Date()}
+              onDateSelect={setSelectedDate}
+              placeholder={formatDate(new Date())}
+              formatDate={formatDate}
+            />
+          </View>
+          <View style={styles.androidDateTimePickerContainer}>
+            <Text style={styles.dateTimeBottomText}>{t('ride_Ride_PaymentPopup_pickTimeTitle')}</Text>
+            <TimePickerV1
+              minimumTime={formatDate(new Date()) === formatDate(selectedDate) ? new Date() : undefined}
+              placeholder={formatTime(new Date())}
+              onTimeSelect={setSelectedTime}
+              formatTime={formatTime}
+            />
+          </View>
+        </View>
+        <View style={styles.dateTimeButtonContainer}>
+          <Pressable onPress={dateTimeOnClose} style={[styles.dateTimeCloseButton, computedStyles.dateTimeCloseButton]}>
+            <CloseIcon style={styles.dateTimeCloseIcon} color={colors.errorColor} />
+          </Pressable>
+          <Button
+            withCircleModeBorder
+            shadow={ButtonShadows.Strong}
+            onPress={dateTimeOnConfirm}
+            shape={ButtonShapes.Circle}
+            size={ButtonSizes.L}
+            innerSpacing={8}
+            text={t('ride_Ride_PaymentPopup_pickDateTimeConfirm')}
+          />
         </View>
       </View>
-      {!windowIsOpened && availableTestPlans.length !== 1 && (
-        <Animated.View
-          style={styles.plansContainer}
-          entering={FadeIn.duration(animationDuration)}
-          exiting={FadeOut.duration(animationDuration)}
-        >
-          {availableTestPlans.map((plan, index) => (
-            <PlanButton
-              plan={plan}
-              key={index}
-              withTimeShow={false}
-              onPress={() => setSelectedPlan(index)}
-              isSelected={selectedPlan === index}
-            />
-          ))}
-        </Animated.View>
-      )}
+    );
 
-      <Animated.View style={[styles.scrollViewWrapper, computedStyles.scrollViewWrapper]} layout={FadeIn}>
-        {testPaymentMethods.length > 1 ? (
-          <ScrollView
-            horizontal={!windowIsOpened}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            style={computedStyles.scrollView}
-            contentContainerStyle={styles.scrollViewContainerStyle}
+    const infoTextBlock = ({ topText, bottomText }: { topText: string; bottomText: string }) => (
+      <View key={`info_text_${topText}`} style={styles.infoTextContainer}>
+        <Text style={[styles.infoTopText, computedStyles.infoTopText]}>{topText}</Text>
+        <Animated.Text layout={FadeIn.duration(500)} numberOfLines={1} style={styles.infoBottomText}>
+          {bottomText}
+        </Animated.Text>
+      </View>
+    );
+
+    const content = (
+      <View style={[computedStyles.wrapper, styles.wrapper]}>
+        <View>
+          <View style={styles.addressTitleContainer}>
+            <Text style={[styles.pickUpPointText, computedStyles.pickUpPointText]}>
+              {t('ride_Ride_PaymentPopup_pickUpPoint')}
+            </Text>
+            <Text style={styles.addressText} numberOfLines={1}>
+              {points[0].address}
+            </Text>
+          </View>
+        </View>
+        {!windowIsOpened && availableTestPlans.length !== 1 && (
+          <Animated.View
+            style={styles.plansContainer}
+            entering={FadeIn.duration(animationDuration)}
+            exiting={FadeOut.duration(animationDuration)}
           >
-            <>
-              {reorderPaymentMethods(selectedPayment).map(method => (
-                //TODO: change method.details in key to card number
-                <Animated.View
-                  key={`${method.method}_${method.details}`}
-                  layout={LinearTransition.easing(Easing.ease).duration(200)}
-                >
-                  <PaymentBar
-                    method={method}
-                    title={paymentTitle[method.method as DefaultPaymentMethodsType]}
-                    squareShape={!windowIsOpened}
-                    onPress={() => setSelectedPayment(method.method as DefaultPaymentMethodsType)}
-                    selected={method.method === selectedPayment}
-                  />
-                </Animated.View>
-              ))}
-              {/* {windowIsOpened && (
+            {availableTestPlans.map((plan, index) => (
+              <PlanButton
+                plan={plan}
+                key={index}
+                withTimeShow={false}
+                onPress={() => setSelectedPlan(index)}
+                isSelected={selectedPlan === index}
+              />
+            ))}
+          </Animated.View>
+        )}
+
+        <Animated.View style={[styles.scrollViewWrapper, computedStyles.scrollViewWrapper]} layout={FadeIn}>
+          {testPaymentMethods.length > 1 ? (
+            <ScrollView
+              horizontal={!windowIsOpened}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              style={computedStyles.scrollView}
+              contentContainerStyle={styles.scrollViewContainerStyle}
+            >
+              <>
+                {reorderPaymentMethods(selectedPayment).map(method => (
+                  //TODO: change method.details in key to card number
+                  <Animated.View
+                    key={`${method.method}_${method.details}`}
+                    layout={LinearTransition.easing(Easing.ease).duration(200)}
+                  >
+                    <PaymentBar
+                      method={method}
+                      title={paymentTitle[method.method]}
+                      squareShape={!windowIsOpened}
+                      onPress={() => setSelectedPayment(method.method)}
+                      selected={method.method === selectedPayment}
+                    />
+                  </Animated.View>
+                ))}
+                {/* {windowIsOpened && (
               <View>
                 <Text style={[styles.addMethodLabel, computedStyles.addMethodLabel]}>
                   {t('ride_Ride_PaymentPopup_addPaymentMethod')}
@@ -469,63 +476,64 @@ const PaymentPopup = () => {
                 ))}
               </View>
             )} */}
-            </>
-          </ScrollView>
-        ) : (
-          <Animated.View
-            key={`${testPaymentMethods[0].method}_${testPaymentMethods[0].details}`}
-            layout={LinearTransition.easing(Easing.ease).duration(200)}
-          >
-            <PaymentBar
-              style={styles.paymentBar}
-              method={testPaymentMethods[0]}
-              title={paymentTitle[testPaymentMethods[0].method as DefaultPaymentMethodsType]}
-              squareShape={!windowIsOpened}
-              onPress={() => setSelectedPayment(testPaymentMethods[0].method as DefaultPaymentMethodsType)}
-              selected={testPaymentMethods[0].method === selectedPayment}
+              </>
+            </ScrollView>
+          ) : (
+            <Animated.View
+              key={`${testPaymentMethods[0].method}_${testPaymentMethods[0].details}`}
+              layout={LinearTransition.easing(Easing.ease).duration(200)}
+            >
+              <PaymentBar
+                style={styles.paymentBar}
+                method={testPaymentMethods[0]}
+                title={paymentTitle[testPaymentMethods[0].method]}
+                squareShape={!windowIsOpened}
+                onPress={() => setSelectedPayment(testPaymentMethods[0].method)}
+                selected={testPaymentMethods[0].method === selectedPayment}
+              />
+            </Animated.View>
+          )}
+        </Animated.View>
+        <View style={styles.infoWrapper}>
+          <View style={styles.buttonContainer}>
+            <Bar style={styles.button} onPress={() => dispatch(setOrderStatus(OrderStatus.ChoosingTariff))}>
+              <ArrowIcon style={styles.arrowIcon} />
+            </Bar>
+            <Button
+              isLoading={isOfferCreateLoading}
+              shape={ButtonShapes.Circle}
+              size={ButtonSizes.L}
+              innerSpacing={8}
+              text={t('ride_Ride_PaymentPopup_confirmButton')}
+              onPress={onConfirmPress}
             />
-          </Animated.View>
-        )}
-      </Animated.View>
-      <View style={styles.infoWrapper}>
-        <View style={styles.buttonContainer}>
-          <Bar style={styles.button} onPress={() => dispatch(setOrderStatus(OrderStatus.ChoosingTariff))}>
-            <ArrowIcon style={styles.arrowIcon} />
-          </Bar>
-          <Button
-            shape={ButtonShapes.Circle}
-            size={ButtonSizes.L}
-            innerSpacing={8}
-            text={t('ride_Ride_PaymentPopup_confirmButton')}
-            onPress={onConfirmPress}
-          />
 
-          {/*TODO: remove comments when we will need a planed trip */}
-          <Bar
-            style={[styles.button, computedStyles.dateTimeButton]}
-            // onPress={() => setIsDatePickerVisible(true)}
-          >
-            <ClockIcon2
-              color={
-                // dateTimeTitle === t('ride_Ride_PaymentPopup_defaultTime')
-                //   ? colors.iconPrimaryColor
-                //   : colors.iconSuccessColor
-                colors.borderColor
-              }
-            />
-            {dateTimeTitle !== t('ride_Ride_PaymentPopup_defaultTime') && <View style={styles.dateSelectedCircle} />}
-          </Bar>
-        </View>
-        <View style={styles.infoContainer}>
-          {infoText.map(info => infoTextBlock({ topText: info.title, bottomText: String(info.value) }))}
+            {/*TODO: remove comments when we will need a planed trip */}
+            <Bar
+              style={[styles.button, computedStyles.dateTimeButton]}
+              // onPress={() => setIsDatePickerVisible(true)}
+            >
+              <ClockIcon2
+                color={
+                  // dateTimeTitle === t('ride_Ride_PaymentPopup_defaultTime')
+                  //   ? colors.iconPrimaryColor
+                  //   : colors.iconSuccessColor
+                  colors.borderColor
+                }
+              />
+              {dateTimeTitle !== t('ride_Ride_PaymentPopup_defaultTime') && <View style={styles.dateSelectedCircle} />}
+            </Bar>
+          </View>
+          <View style={styles.infoContainer}>
+            {infoText.map(info => infoTextBlock({ topText: info.title, bottomText: info.value.toString() }))}
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
 
-  return (
-    <>
-      {/* {paymentUrl ? (
+    return (
+      <>
+        {/* {paymentUrl ? (
         <WebView
           source={{ uri: paymentUrl }}
           startInLoadingState={true}
@@ -542,9 +550,9 @@ const PaymentPopup = () => {
         />
       )} */}
 
-      {/* TODO: Add this BottomWindowWithGesture and remove BottomWindow when add new payment methods
+        {/* TODO: Add this BottomWindowWithGesture and remove BottomWindow when add new payment methods
       Сhanged in the Task-385 */}
-      {/* <BottomWindowWithGesture
+        {/* <BottomWindowWithGesture
         maxHeight={0.62}
         setIsOpened={setWindowIsOpened}
         visiblePart={content}
@@ -552,36 +560,37 @@ const PaymentPopup = () => {
         headerWrapperStyle={styles.headerWrapperStyle}
         headerElement={<TariffIcon style={styles.image} />}
       /> */}
-      <BottomWindow>
-        <TariffIcon style={styles.image} />
-        {content}
-      </BottomWindow>
-      {Platform.OS === 'ios' && isDatePickerVisible ? (
-        <BottomWindowWithGesture
-          withDraggable={false}
-          withShade
-          setIsOpened={setIsDatePickerVisible}
-          ref={datePickerRef}
-          withHiddenPartScroll={false}
-          hiddenPart={dateTimeBlock}
-          headerWrapperStyle={styles.headerWrapperStyle}
-          headerElement={<TariffIcon style={styles.image} />}
-        />
-      ) : (
-        isDatePickerVisible && (
+        <BottomWindow>
+          <TariffIcon style={styles.image} />
+          {content}
+        </BottomWindow>
+        {Platform.OS === 'ios' && isDatePickerVisible ? (
           <BottomWindowWithGesture
+            withDraggable={false}
             withShade
             setIsOpened={setIsDatePickerVisible}
             ref={datePickerRef}
             withHiddenPartScroll={false}
-            hiddenPart={androidDateTimePicker}
+            hiddenPart={iosDateTimeBlock}
             headerWrapperStyle={styles.headerWrapperStyle}
             headerElement={<TariffIcon style={styles.image} />}
           />
-        )
-      )}
-    </>
-  );
+        ) : (
+          isDatePickerVisible && (
+            <BottomWindowWithGesture
+              withShade
+              setIsOpened={setIsDatePickerVisible}
+              ref={datePickerRef}
+              withHiddenPartScroll={false}
+              hiddenPart={androidDateTimeBlock}
+              headerWrapperStyle={styles.headerWrapperStyle}
+              headerElement={<TariffIcon style={styles.image} />}
+            />
+          )
+        )}
+      </>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

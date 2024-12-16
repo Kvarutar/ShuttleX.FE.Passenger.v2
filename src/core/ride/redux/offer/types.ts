@@ -33,6 +33,7 @@ export type OfferState = {
     offerRoutes: boolean;
     recentDropoffs: boolean;
     tariffsPrices: boolean;
+    offerCreate: boolean;
     isCityAvailable: boolean;
     phantomOffer: boolean;
   };
@@ -41,6 +42,7 @@ export type OfferState = {
     offerRoutes: Nullable<NetworkErrorDetailsWithBody<any>>;
     recentDropoffs: Nullable<NetworkErrorDetailsWithBody<any>>;
     tariffsPrices: Nullable<NetworkErrorDetailsWithBody<any>>;
+    offerCreate: Nullable<NetworkErrorDetailsWithBody<any>>;
   };
   offerRoutes: Nullable<OfferRoutesFromAPI>;
   avaliableTariffs: Nullable<TariffWithMatching[]>;
