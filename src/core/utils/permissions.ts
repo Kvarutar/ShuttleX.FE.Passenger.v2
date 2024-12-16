@@ -1,6 +1,5 @@
-import notifee from '@notifee/react-native';
-import messaging from '@react-native-firebase/messaging';
-import { Platform } from 'react-native';
+import notifee, { AuthorizationStatus } from '@notifee/react-native';
+import { Alert, Linking, Platform } from 'react-native';
 import {
   check,
   checkLocationAccuracy,
@@ -41,9 +40,24 @@ export const checkGeolocationPermissionAndAccuracy = async (): Promise<{
 
 //notifications permission
 export const requestNotificationsPermission = async () => {
-  if (Platform.OS === 'android') {
-    await notifee.requestPermission();
-  } else {
-    await messaging().requestPermission();
+  const settings = await notifee.requestPermission();
+
+  if (
+    settings.authorizationStatus === AuthorizationStatus.DENIED ||
+    settings.authorizationStatus === AuthorizationStatus.NOT_DETERMINED
+  ) {
+    Alert.alert(
+      'Turn on notifications',
+      'Please turn on notifications to receive information about trips, new events and more',
+      [
+        {
+          text: 'Not now',
+        },
+        {
+          text: 'Settings',
+          onPress: Linking.openSettings,
+        },
+      ],
+    );
   }
 };

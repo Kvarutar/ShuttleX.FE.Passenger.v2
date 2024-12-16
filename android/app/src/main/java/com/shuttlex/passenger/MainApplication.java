@@ -1,4 +1,4 @@
-package com.newshuttlex.passenger;
+package com.shuttlexinc.passenger;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

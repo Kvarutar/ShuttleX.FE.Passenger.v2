@@ -17,12 +17,15 @@ const print = (mode: 'info' | 'error', message: string) => {
 };
 
 const prepareGoogleServices = (env: 'dev' | 'prod') => {
-  print('info', 'Preparing google-services.json');
+  const androidFileName = `google-services-${env}.json`;
+  const iosFileName = `GoogleService-Info-${env}.plist`;
 
-  fs.copyFileSync(`./scripts/google-services/google-services-${env}.json`, './android/app/google-services.json');
-  // TODO: copy google-services plist file, when ios will be connected to firebase
+  print('info', `Preparing ${androidFileName} and ${iosFileName}`);
 
-  print('info', `google-services.json for ${env} successfully prepared`);
+  fs.copyFileSync(`./scripts/google-services/${androidFileName}`, './android/app/google-services.json');
+  fs.copyFileSync(`./scripts/google-services/${iosFileName}`, './ios/GoogleService-Info.plist');
+
+  print('info', `${androidFileName} and ${iosFileName} successfully prepared`);
 };
 
 const exec = ({ unixCommand, winCommand }: ExecArgs) => {
@@ -59,9 +62,9 @@ switch (process.env.npm_lifecycle_event) {
     prepareGoogleServices('dev');
     exec({
       unixCommand:
-        'npx react-native run-android --mode=devdebug && adb shell am start -n com.newshuttlex.passenger.dev/com.newshuttlex.passenger.MainActivity',
+        'npx react-native run-android --mode=devdebug && adb shell am start -n com.shuttlexinc.passenger.dev/com.shuttlexinc.passenger.MainActivity',
       winCommand:
-        'cmd /c "npx react-native run-android --mode=devdebug & adb shell am start -n com.newshuttlex.passenger.dev/com.newshuttlex.passenger.MainActivity"',
+        'cmd /c "npx react-native run-android --mode=devdebug & adb shell am start -n com.shuttlexinc.passenger.dev/com.shuttlexinc.passenger.MainActivity"',
     });
     break;
   case 'android:prod':

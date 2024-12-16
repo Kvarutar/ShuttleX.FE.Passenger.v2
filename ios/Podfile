@@ -27,7 +27,7 @@ setup_permissions([
   # 'MediaLibrary',
   # 'Microphone',
   # 'Motion',
-  # 'Notifications',
+  'Notifications',
   'PhotoLibrary',
   # 'PhotoLibraryAddOnly',
   # 'Reminders',
@@ -70,6 +70,7 @@ abstract_target 'SharedPods' do
 
   # For firebase
   use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
 
   use_react_native!(
     :path => config[:reactNativePath],
