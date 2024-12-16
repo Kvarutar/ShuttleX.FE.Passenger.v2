@@ -6,7 +6,7 @@ import { createAxiosInstance, InitCreateAppAsyncThunkDispatch } from 'shuttlex-i
 import { AppDispatch } from '../redux/store';
 import instanceDefaultConfig from './instanceDefaultConfig';
 
-const authResetInstanceInitializer = (
+const authAccountSettingsInstanceInitializer = (
   dispatch: InitCreateAppAsyncThunkDispatch<AppState, AppDispatch>,
 ): AxiosInstance => {
   return createAxiosInstance({
@@ -15,4 +15,4 @@ const authResetInstanceInitializer = (
   });
 };
 
-export default authResetInstanceInitializer;
+export default authAccountSettingsInstanceInitializer;

@@ -3,25 +3,35 @@ import { NetworkErrorDetailsWithBody } from 'shuttlex-integration';
 type AvaliableChangeAccountContactDataMethods = 'phone' | 'email';
 
 export type AccountSettingsState = {
-  isVerificationDone: boolean;
+  verifyStatus: VerifyStatusAPIResponse;
   isLoading: boolean;
   error: NetworkErrorDetailsWithBody<any> | null;
 };
 
-export type VerifyChangeAccountContactDataCodeAPIRequest = {
+export type VerifyAccountContactDataCodeAPIRequest = {
   code: string;
   deviceId: string;
 } & ({ phone: string } | { email: string });
 
-export type VerifyChangeAccountContactDataCodeAPIResponse = {
-  accessToken: string;
-  refreshToken: string;
+export type VerifyAccountContactDataCodeAPIResponse = {
+  success: boolean;
 };
 
-export type VerifyChangeAccountContactDataCodePayload = {
-  method: AvaliableChangeAccountContactDataMethods;
+export type VerifyAccountContactDataCodePayload = {
+  mode: AvaliableChangeAccountContactDataMethods;
   code: string;
   body: string;
+};
+
+export type VerifyEmailAccountSettingsCodePayload = {
+  code: string;
+  body: string;
+};
+
+export type VerifyEmailAccountSettingsCodeAPIRequest = {
+  code: string;
+  deviceId: string;
+  email: string;
 };
 
 export type ChangeAccountContactDataAPIRequest =
@@ -29,6 +39,31 @@ export type ChangeAccountContactDataAPIRequest =
   | { oldEmail: string; newEmail: string };
 
 export type ChangeAccountContactDataPayload = {
-  method: AvaliableChangeAccountContactDataMethods;
+  mode: AvaliableChangeAccountContactDataMethods;
   data: { oldData: string; newData: string };
+};
+
+export type SendConfirmPayload = {
+  mode: AvaliableChangeAccountContactDataMethods;
+  data: string;
+};
+
+export type SendConfirmAPIRequest = {
+  deviceId: string;
+  resendAtempt?: number;
+} & ({ phone: string } | { email: string });
+
+export type AccountSettingsVerificationConfirmType =
+  | {
+      phone: string;
+    }
+  | {
+      email: string;
+    };
+
+export type VerifyStatusAPIResponse = {
+  phoneInfo: string;
+  isPhoneVerified: boolean;
+  emailInfo: string;
+  isEmailVerified: boolean;
 };

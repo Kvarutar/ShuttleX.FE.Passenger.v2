@@ -5,12 +5,15 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { CodeVerificationScreen, isLockedError, milSecToTime, SafeAreaView } from 'shuttlex-integration';
 
-import { setIsAccountSettingsVerificationDone } from '../../../core/menu/redux/accountSettings';
 import {
   accountSettingsErrorSelector,
   isAccountSettingsLoadingSelector,
 } from '../../../core/menu/redux/accountSettings/selectors';
-import { changeAccountContactData, verifyChangeAccountDataCode } from '../../../core/menu/redux/accountSettings/thunks';
+import {
+  changeAccountContactData,
+  requestAccountSettingsChangeDataVerificationCode,
+  verifyAccountSettingsDataCode,
+} from '../../../core/menu/redux/accountSettings/thunks';
 import { profileContactEmailSelector, profileContactPhoneSelector } from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { RootStackParamList } from '../../../Navigate/props';
@@ -18,7 +21,7 @@ import { RootStackParamList } from '../../../Navigate/props';
 const AccountVerificateCodeScreen = (): JSX.Element => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'AccountVerificateCode'>>();
-  const { mode, newValue } = route.params;
+  const { mode, newValue, method } = route.params || {};
 
   const dispatch = useAppDispatch();
   const [isBlocked, setIsBlocked] = useState(false);
@@ -34,14 +37,26 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
 
   const { t } = useTranslation();
 
+  const defineMode = mode === 'email' ? contactEmail : contactPhone;
+
   const handleCodeChange = useCallback(
     (newCode: string) => {
       if (newCode.length === 4) {
-        dispatch(verifyChangeAccountDataCode({ method: mode, code: newCode, body: newValue }));
+        if (method === 'change' && newValue) {
+          dispatch(verifyAccountSettingsDataCode({ mode, code: newCode, body: newValue }));
+        } else if (defineMode) {
+          dispatch(verifyAccountSettingsDataCode({ mode, code: newCode, body: defineMode }));
+        }
       }
     },
-    [dispatch, mode, newValue],
+    [dispatch, mode, newValue, method, defineMode],
   );
+
+  useEffect(() => {
+    if (!changeDataError && !isLoading) {
+      navigation.goBack();
+    }
+  }, [changeDataError, navigation, isLoading]);
 
   useEffect(() => {
     if (changeDataError) {
@@ -57,19 +72,14 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
     } else {
       setIsIncorrectCode(false);
     }
-  }, [changeDataError]);
-
-  useEffect(() => {
-    if (!isLoading && !changeDataError) {
-      dispatch(setIsAccountSettingsVerificationDone(true));
-      navigation.goBack();
-    }
-  }, [changeDataError, navigation, isLoading, dispatch]);
-
-  const isOldData = mode === 'phone' ? contactPhone : contactEmail;
+  }, [changeDataError, method]);
 
   const handleRequestAgain = () => {
-    dispatch(changeAccountContactData({ method: mode, data: { oldData: isOldData ?? '', newData: newValue } }));
+    if (method === 'change' && newValue && defineMode) {
+      dispatch(changeAccountContactData({ mode, data: { oldData: defineMode, newData: newValue } }));
+    } else if (defineMode) {
+      dispatch(requestAccountSettingsChangeDataVerificationCode({ mode, data: defineMode }));
+    }
   };
 
   const onBannedAgainPress = () => {

@@ -18,7 +18,7 @@ export type RootStackParamList = {
   LockOut: undefined;
   AccountSettings: undefined;
   PromocodesScreen: undefined;
-  AccountVerificateCode: { mode: 'phone' | 'email'; newValue: string };
+  AccountVerificateCode: { mode: 'phone' | 'email'; newValue?: string; method?: 'change' | 'verify' };
   Activity: undefined;
   Raffle: undefined;
   TicketWallet: undefined;
