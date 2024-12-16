@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
@@ -23,7 +23,6 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
 
   const [inputValue, setInputValue] = useState(point?.address ?? '');
   const [isFocused, setIsFocused] = useState(false);
-  const hasEffectRun = useRef(false);
 
   useEffect(() => {
     if (point?.address !== inputValue) {
@@ -32,13 +31,7 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
   }, [point?.address, inputValue]);
 
   useEffect(() => {
-    if (!hasEffectRun.current && currentPointId === 0 && point?.address) {
-      hasEffectRun.current = true;
-    }
-  }, [currentPointId, dispatch, point]);
-
-  useEffect(() => {
-    if (currentPointId === 0 && !isFocused && point?.address) {
+    if (currentPointId === 0 && !isFocused && point?.latitude && point?.longitude) {
       (async () => {
         await dispatch(getAvailableTariffs({ latitude: point.latitude, longitude: point.longitude }));
         dispatch(createPhantomOffer());

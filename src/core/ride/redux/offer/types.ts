@@ -33,6 +33,7 @@ export type OfferState = {
     offerRoutes: boolean;
     recentDropoffs: boolean;
     tariffsPrices: boolean;
+    isCityAvailable: boolean;
     phantomOffer: boolean;
   };
   errors: {
@@ -45,6 +46,7 @@ export type OfferState = {
   avaliableTariffs: Nullable<TariffWithMatching[]>;
   selectedTariff: Nullable<SelectedTariff>;
   estimatedPrice: Nullable<EstimatedPrice>;
+  isCityAvailable: Nullable<boolean>;
   zoneId: Nullable<string>;
 };
 
@@ -168,6 +170,6 @@ export type CreateInitialOfferAPIResponse = {
 
 export type CreateOfferAPIResponse = string;
 
-export type GetZoneIdByLocationAPIResponse = { id: string };
+export type GetZoneIdByLocationAPIResponse = { id: Nullable<string> };
 
-export type ZoneIdFromAPI = string;
+export type ZoneIdFromAPI = Nullable<string>;

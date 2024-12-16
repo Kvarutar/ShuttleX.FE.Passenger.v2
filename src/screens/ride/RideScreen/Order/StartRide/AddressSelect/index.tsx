@@ -28,6 +28,7 @@ import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
 import { isRoutePointsLocationError } from '../../../../../../core/ride/redux/offer/errors';
 import {
   isAvailableTariffsLoadingSelector,
+  isCityAvailableSelector,
   isOfferRoutesLoadingSelector,
   isSearchAdressesLoadingSelector,
   offerPointByIdSelector,
@@ -66,6 +67,7 @@ const AddressSelect = ({
   const isAvailableTariffsLoading = useSelector(isAvailableTariffsLoadingSelector);
   const isOfferRoutesLoading = useSelector(isOfferRoutesLoadingSelector);
 
+  const isCityAvailable = useSelector(isCityAvailableSelector);
   const offerRoutesError = useSelector(offerRoutesErrorSelector);
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
@@ -144,6 +146,7 @@ const AddressSelect = ({
           latitude: defaultLocation.latitude,
         }),
       );
+
       setFocusedInput({ id: 1, value: offerPoints[1].address, focus: false });
       firstUpdateDefaultLocation.current = false;
     }
@@ -358,9 +361,9 @@ const AddressSelect = ({
             <Button
               isLoading={isAvailableTariffsLoading || isOfferRoutesLoading}
               size={ButtonSizes.S}
-              disabled={incorrectWaypoints}
+              disabled={incorrectWaypoints || !isCityAvailable}
               onPress={onConfirm}
-              mode={!incorrectWaypoints ? CircleButtonModes.Mode1 : CircleButtonModes.Mode4}
+              mode={!incorrectWaypoints || isCityAvailable ? CircleButtonModes.Mode1 : CircleButtonModes.Mode4}
               shape={ButtonShapes.Circle}
               style={[styles.confirmButton, computedStyles.confirmButton]}
             >

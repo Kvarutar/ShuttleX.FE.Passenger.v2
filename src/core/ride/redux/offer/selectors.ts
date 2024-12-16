@@ -15,6 +15,7 @@ export const offerRecentDropoffsSelector = (state: AppState) => state.offer.rece
 export const offerPointsSelector = (state: AppState) => state.offer.points;
 export const offerSelectedTariffSelector = (state: AppState) => state.offer.selectedTariff;
 export const offerAvaliableTariffsSelector = (state: AppState) => state.offer.avaliableTariffs;
+export const isCityAvailableSelector = (state: AppState) => state.offer.isCityAvailable;
 
 export const tariffByIdSelector = createSelector(
   [offerAvaliableTariffsSelector, (_, tariffId: string | undefined) => tariffId],
@@ -50,6 +51,7 @@ export const isRecentDropoffsLoadingSelector = (state: AppState) => state.offer.
 export const isTariffsPricesLoadingSelector = (state: AppState) => state.offer.loading.tariffsPrices;
 export const isAvailableTariffsLoadingSelector = (state: AppState) => state.offer.loading.avaliableTariffs;
 export const isOfferRoutesLoadingSelector = (state: AppState) => state.offer.loading.offerRoutes;
+export const isCityAvailableLoadingSelector = (state: AppState) => state.offer.loading.isCityAvailable;
 
 //Errors
 export const recentDropoffsErrorSelector = (state: AppState) => state.offer.errors.recentDropoffs;

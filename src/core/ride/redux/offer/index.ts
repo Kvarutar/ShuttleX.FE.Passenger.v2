@@ -41,6 +41,7 @@ const initialState: OfferState = {
     offerRoutes: false,
     recentDropoffs: false,
     tariffsPrices: false,
+    isCityAvailable: false,
     phantomOffer: false,
   },
   zoneId: null,
@@ -53,6 +54,7 @@ const initialState: OfferState = {
   },
   selectedTariff: null,
   estimatedPrice: null,
+  isCityAvailable: null,
 };
 
 const slice = createSlice({
@@ -242,11 +244,20 @@ const slice = createSlice({
       .addCase(cancelTrip.fulfilled, state => {
         slice.caseReducers.clearOffer(state);
       })
+      .addCase(getZoneIdByLocation.pending, state => {
+        state.loading.isCityAvailable = true;
+      })
       .addCase(getZoneIdByLocation.fulfilled, (state, action) => {
         slice.caseReducers.setOfferZoneId(state, {
           payload: action.payload,
           type: setOfferZoneId.type,
         });
+
+        state.isCityAvailable = action.payload !== null;
+        state.loading.isCityAvailable = false;
+      })
+      .addCase(getZoneIdByLocation.rejected, state => {
+        state.loading.isCityAvailable = false;
       })
       .addCase(createPhantomOffer.pending, state => {
         slice.caseReducers.setPhantomOfferLoading(state, {

@@ -1,11 +1,19 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { BottomWindowWithGesture, BottomWindowWithGestureRef, UnsupportedCityPopup } from 'shuttlex-integration';
+import {
+  BottomWindowWithGesture,
+  BottomWindowWithGestureRef,
+  Nullable,
+  UnsupportedCityPopup,
+} from 'shuttlex-integration';
 
-import { profileZoneSelector } from '../../../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
+import {
+  isCityAvailableLoadingSelector,
+  isCityAvailableSelector,
+} from '../../../../../core/ride/redux/offer/selectors';
 import { SearchAddressFromAPI } from '../../../../../core/ride/redux/offer/types';
 import AlertInitializer from '../../../../../shared/AlertInitializer';
 import UnsupportedDestinationPopup from '../../popups/UnsupportedDestinationPopup';
@@ -20,10 +28,11 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
     const dispatch = useAppDispatch();
 
     const alerts = useSelector(twoHighestPriorityAlertsSelector);
-    const profileZone = useSelector(profileZoneSelector);
+    const isCityAvailable = useSelector(isCityAvailableSelector);
+    const isCityAvailableLoading = useSelector(isCityAvailableLoadingSelector);
 
     const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
-    const [fastAddressSelect, setFastAddressSelect] = useState<SearchAddressFromAPI | null>(null);
+    const [fastAddressSelect, setFastAddressSelect] = useState<Nullable<SearchAddressFromAPI>>(null);
     const [isUnsupportedCityPopupVisible, setIsUnsupportedCityPopupVisible] = useState<boolean>(false);
     const [isUnsupportedDestinationPopupVisible, setIsUnsupportedDestinationPopupVisible] = useState<boolean>(false);
 
@@ -35,10 +44,6 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
     }));
 
     useEffect(() => {
-      setIsUnsupportedCityPopupVisible(!profileZone && isAddressSelectVisible);
-    }, [isAddressSelectVisible, profileZone]);
-
-    useEffect(() => {
       if (isAddressSelectVisible) {
         addressSelectRef.current?.openWindow();
       } else {
@@ -47,6 +52,12 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
         setFastAddressSelect(null);
       }
     }, [dispatch, isAddressSelectVisible]);
+
+    useEffect(() => {
+      if (isCityAvailable !== null && !isCityAvailableLoading) {
+        setIsUnsupportedCityPopupVisible(!isCityAvailable);
+      }
+    }, [isCityAvailable, isCityAvailableLoading]);
 
     return (
       <>
@@ -76,8 +87,8 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
           <BottomWindowWithGesture
             hiddenPart={
               <AddressSelect
-                setIsAddressSelectVisible={setIsAddressSelectVisible}
                 address={fastAddressSelect}
+                setIsAddressSelectVisible={setIsAddressSelectVisible}
                 setIsUnsupportedDestinationPopupVisible={setIsUnsupportedDestinationPopupVisible}
               />
             }

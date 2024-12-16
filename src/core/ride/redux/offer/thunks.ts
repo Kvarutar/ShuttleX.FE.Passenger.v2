@@ -169,7 +169,7 @@ export const getZoneIdByLocation = createAppAsyncThunk<ZoneIdFromAPI, LatLng>(
 export const getAvailableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, void | LatLng>(
   'offer/getAvailableTariffs',
   async (payload, { rejectWithValue, configAxios, getState, dispatch }) => {
-    let zoneId = profileZoneSelector(getState())?.id;
+    let zoneId = profileZoneSelector(getState())?.id ?? null;
 
     if (payload) {
       zoneId = await dispatch(getZoneIdByLocation(payload)).unwrap();
