@@ -1,5 +1,5 @@
 import { LatLng } from 'react-native-maps';
-import { NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
+import { NetworkErrorDetailsWithBody, Nullable, TariffType } from 'shuttlex-integration';
 
 export type SearchAddressFromAPI = {
   id: string;
@@ -116,7 +116,7 @@ export type GetOfferRoutesAPIRequest = {
 
 export type TariffFromAPI = {
   id: string;
-  name: 'Basic' | 'BasicXL' | 'ComfortPlus' | 'Business' | 'Eco';
+  name: TariffType;
   feKey: TariffFeKeyFromAPI;
   currencyCode: string;
   freeWaitingTimeMin: number;

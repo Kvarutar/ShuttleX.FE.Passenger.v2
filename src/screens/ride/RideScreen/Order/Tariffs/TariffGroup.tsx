@@ -21,7 +21,7 @@ const TariffGroup = ({ price, title, isSelected, onPress, style }: TariffGroupPr
   const tariffsGroupImagesNames: Record<TariffsType, { title: TariffsType; image: TariffType }> = {
     economy: {
       title: t('ride_Ride_TariffGroup_economy'),
-      image: 'Eco',
+      image: 'Electric',
     },
     exclusive: {
       title: t('ride_Ride_TariffGroup_exclusive'),

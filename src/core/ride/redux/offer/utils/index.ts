@@ -6,7 +6,7 @@ export const tariffsNamesByFeKey: Record<TariffFeKeyFromAPI, TariffType> = {
   basicx: 'Basic',
   basicxl: 'BasicXL',
   comfortplus: 'ComfortPlus',
-  electric: 'Eco',
+  electric: 'Electric',
   premiumx: 'Business',
   premiumxl: 'Business',
 };
