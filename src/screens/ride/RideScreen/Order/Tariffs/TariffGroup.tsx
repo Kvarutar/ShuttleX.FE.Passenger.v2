@@ -21,10 +21,10 @@ const TariffGroup = ({ price, title, isSelected, onPress, style }: TariffGroupPr
   const tariffsGroupImagesNames: Record<TariffsType, { title: TariffsType; image: TariffType }> = {
     economy: {
       title: t('ride_Ride_TariffGroup_economy'),
-      image: 'Electric',
+      image: 'Basic',
     },
-    exclusive: {
-      title: t('ride_Ride_TariffGroup_exclusive'),
+    comfort: {
+      title: t('ride_Ride_TariffGroup_comfort'),
       image: 'ComfortPlus',
     },
     business: {
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     left: 20,
     width: '170%',
     height: undefined,
-    maxHeight: 80,
+    maxHeight: 75,
     aspectRatio: 3.15,
     resizeMode: 'contain',
   },

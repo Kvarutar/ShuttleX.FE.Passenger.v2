@@ -131,7 +131,7 @@ export type TariffWithMatching = TariffFromAPI & { matching: Matching[]; isAvali
 export type GetAvailableTariffsAPIResponse = TariffFromAPI[];
 
 export type TariffFeKeyFromAPI = 'basicx' | 'basicxl' | 'comfortplus' | 'electric' | 'premiumx' | 'premiumxl';
-export type TariffsType = 'economy' | 'exclusive' | 'business';
+export type TariffsType = 'economy' | 'comfort' | 'business';
 export type TariffsTypeFromAPI = 'Economy' | 'Comfort' | 'Premium';
 
 export type TariffCategory = { groupName: TariffsType } & { tariffs: TariffWithMatching[] | undefined };

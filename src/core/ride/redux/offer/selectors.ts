@@ -34,8 +34,8 @@ export const groupedTariffsSelector = createSelector(
       groupName: 'economy',
       tariffs: tariffsList?.filter(tariff => tariff.type === 'Economy'),
     },
-    exclusive: {
-      groupName: 'exclusive',
+    comfort: {
+      groupName: 'comfort',
       tariffs: tariffsList?.filter(tariff => tariff.type === 'Comfort'),
     },
     business: {

@@ -112,7 +112,7 @@
   "ride_Ride_Tariffs_minutes": "{{count}} min",
   "ride_Ride_TariffBar_notAvailable": "Not available",
   "ride_Ride_TariffGroup_economy": "Economy",
-  "ride_Ride_TariffGroup_exclusive": "Exclusive",
+  "ride_Ride_TariffGroup_comfort": "Comfort",
   "ride_Ride_TariffGroup_business": "Business",
   "ride_Ride_MapAddressSelect_placeholder": "Choose an address",
   "ride_Rating_willYouLike": "Will you like ",
