@@ -19,12 +19,6 @@ const slice = createSlice({
   name: 'trip',
   initialState,
   reducers: {
-    setTripIsLoading(state, action: PayloadAction<boolean>) {
-      state.isLoading = action.payload;
-    },
-    setTripError(state, action: PayloadAction<TripState['error']>) {
-      state.error = action.payload;
-    },
     setTripIsCanceled(state, action: PayloadAction<boolean>) {
       state.isCanceled = action.payload;
     },
@@ -68,14 +62,8 @@ const slice = createSlice({
       //TODO: Rewrite getCurrentOrder cases if need
       //Some duplicate logic because I don't know what this logic will look like in the future (we are going to receive several orders).
       .addCase(getCurrentOrder.pending, state => {
-        slice.caseReducers.setTripIsLoading(state, {
-          payload: true,
-          type: setTripIsLoading.type,
-        });
-        slice.caseReducers.setTripError(state, {
-          payload: initialState.error,
-          type: setTripError.type,
-        });
+        state.isLoading = true;
+        state.error = null;
       })
       .addCase(getCurrentOrder.fulfilled, (state, action) => {
         if (action.payload) {
@@ -107,30 +95,16 @@ const slice = createSlice({
           });
         }
 
-        slice.caseReducers.setTripError(state, {
-          payload: initialState.error,
-          type: setTripError.type,
-        });
+        state.isLoading = false;
+        state.error = null;
       })
       .addCase(getCurrentOrder.rejected, (state, action) => {
-        slice.caseReducers.setTripIsLoading(state, {
-          payload: false,
-          type: setTripIsLoading.type,
-        });
-        slice.caseReducers.setTripError(state, {
-          payload: action.payload as NetworkErrorDetailsWithBody<any>, //TODO: remove this cast after fix with rejectedValue
-          type: setTripError.type,
-        });
+        state.isLoading = false;
+        state.error = action.payload as NetworkErrorDetailsWithBody<any>;
       })
       .addCase(getOrderInfo.pending, state => {
-        slice.caseReducers.setTripIsLoading(state, {
-          payload: true,
-          type: setTripIsLoading.type,
-        });
-        slice.caseReducers.setTripError(state, {
-          payload: initialState.error,
-          type: setTripError.type,
-        });
+        state.isLoading = true;
+        state.error = null;
       })
       .addCase(getOrderInfo.fulfilled, (state, action) => {
         state.order = action.payload;
@@ -152,18 +126,12 @@ const slice = createSlice({
         }
         state.status = newTripStatus;
 
-        state.error = initialState.error;
         state.isLoading = false;
+        state.error = null;
       })
       .addCase(getOrderInfo.rejected, (state, action) => {
-        slice.caseReducers.setTripIsLoading(state, {
-          payload: false,
-          type: setTripIsLoading.type,
-        });
-        slice.caseReducers.setTripError(state, {
-          payload: action.payload as NetworkErrorDetailsWithBody<any>, //TODO: remove this cast after fix with rejectedValue
-          type: setTripError.type,
-        });
+        state.isLoading = false;
+        state.error = action.payload as NetworkErrorDetailsWithBody<any>; //TODO: remove this cast after fix with rejectedValue
       })
       .addCase(getRouteInfo.fulfilled, (state, action) => {
         slice.caseReducers.setTripRouteInfo(state, {
@@ -172,10 +140,7 @@ const slice = createSlice({
         });
       })
       .addCase(cancelTrip.pending, state => {
-        slice.caseReducers.setTripError(state, {
-          payload: initialState.error,
-          type: setTripError.type,
-        });
+        state.error = null;
       })
       .addCase(cancelTrip.fulfilled, state => {
         slice.caseReducers.setTripIsCanceled(state, {
@@ -186,24 +151,16 @@ const slice = createSlice({
           payload: TripStatus.Finished,
           type: setTripStatus.type,
         });
-        slice.caseReducers.setTripError(state, {
-          payload: initialState.error,
-          type: setTripError.type,
-        });
+        state.error = null;
       })
       .addCase(cancelTrip.rejected, (state, action) => {
-        slice.caseReducers.setTripError(state, {
-          payload: action.payload as NetworkErrorDetailsWithBody<any>, //TODO: remove this cast after fix with rejectedValue
-          type: setTripError.type,
-        });
+        state.error = action.payload as NetworkErrorDetailsWithBody<any>; //TODO: remove this cast after fix with rejectedValue;
       });
   },
 });
 
 export const {
   setTripRouteInfo,
-  setTripIsLoading,
-  setTripError,
   setTripStatus,
   setOrderInfo,
   setTip,
