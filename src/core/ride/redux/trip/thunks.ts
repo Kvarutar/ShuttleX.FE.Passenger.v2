@@ -120,8 +120,6 @@ export const getOrderLongPolling = createAppAsyncThunk<string, string>(
       );
       dispatch(getOrderInfo(response.data.orderId));
       dispatch(getRouteInfo(response.data.orderId));
-      //TODO check this case
-      dispatch(setTripStatus(TripStatus.Accepted));
       return response.data.orderId;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));

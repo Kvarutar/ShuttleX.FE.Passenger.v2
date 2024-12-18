@@ -106,7 +106,6 @@ const TicketWalletScreen = () => {
       <SafeAreaView containerStyle={[styles.wrapper, computedStyles.wrapper]}>
         <MenuHeader
           onMenuPress={() => setIsMenuVisible(true)}
-          onNotificationPress={() => navigation.navigate('Notifications')}
           rightButton={
             <Button
               mode={CircleButtonModes.Mode2}

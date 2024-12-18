@@ -146,6 +146,22 @@ export type TripState = {
   tip: Nullable<number>;
   finishedTrips: number;
   isCanceled: boolean;
-  isLoading: boolean;
-  error: Nullable<NetworkErrorDetailsWithBody<any>>;
+  loading: {
+    orderInfo: boolean;
+    currentOrder: boolean;
+    orderLongpolling: boolean;
+    cancelTrip: boolean;
+    cancelBeforePickUpLongPolling: boolean;
+    cancelAfterPickUpLongPolling: boolean;
+    tripSuccessfullLongPolling: boolean;
+  };
+  error: {
+    orderInfo: Nullable<NetworkErrorDetailsWithBody<any>>;
+    currentOrder: Nullable<NetworkErrorDetailsWithBody<any>>;
+    orderLongpolling: Nullable<NetworkErrorDetailsWithBody<any>>;
+    cancelTrip: Nullable<NetworkErrorDetailsWithBody<any>>;
+    cancelBeforePickUpLongPolling: Nullable<NetworkErrorDetailsWithBody<any>>;
+    cancelAfterPickUpLongPolling: Nullable<NetworkErrorDetailsWithBody<any>>;
+    tripSuccessfullLongPolling: Nullable<NetworkErrorDetailsWithBody<any>>;
+  };
 };

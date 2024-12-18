@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { NetworkErrorDetailsWithBody } from 'shuttlex-integration';
 
 import {
@@ -16,8 +16,18 @@ const initialState: AccountSettingsState = {
     emailInfo: '',
     isEmailVerified: false,
   },
-  isLoading: false,
-  error: null,
+  loading: {
+    changeData: false,
+    verify: false,
+    requestCode: false,
+    getVerifyStatus: false,
+  },
+  error: {
+    changeData: null,
+    verify: null,
+    requestCode: null,
+    getVerifyStatus: null,
+  },
 };
 
 const slice = createSlice({
@@ -27,152 +37,74 @@ const slice = createSlice({
     setAccountSettingsVerifyStatus(state, action) {
       state.verifyStatus = action.payload;
     },
-    setAccountSettingsIsLoading(state, action: PayloadAction<boolean>) {
-      state.isLoading = action.payload;
-    },
-    setAccountSettingsError(state, action: PayloadAction<AccountSettingsState['error']>) {
-      state.error = action.payload;
-    },
     resetAccountSettingsVerification(state) {
-      state.error = initialState.error;
-      state.isLoading = initialState.isLoading;
+      state.error.verify = initialState.error.verify;
+      state.loading.verify = initialState.loading.verify;
     },
   },
   extraReducers: builder => {
     builder
+      //ChangeData
       .addCase(changeAccountContactData.pending, state => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: true,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: initialState.error,
-          type: setAccountSettingsError.type,
-        });
+        state.loading.changeData = true;
+        state.loading.verify = true;
+        state.error.changeData = null;
       })
       .addCase(changeAccountContactData.fulfilled, state => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: false,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: initialState.error,
-          type: setAccountSettingsError.type,
-        });
+        state.loading.changeData = false;
+        state.error.changeData = null;
       })
       .addCase(changeAccountContactData.rejected, (state, action) => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: false,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: action.payload as NetworkErrorDetailsWithBody<any>, //TODO: remove this cast after fix with rejectedValue
-          type: setAccountSettingsError.type,
-        });
+        state.loading.changeData = false;
+        state.error.changeData = action.payload as NetworkErrorDetailsWithBody<any>;
         console.error(changeAccountContactData.typePrefix, action.payload);
       })
+
+      //VerifyData
       .addCase(verifyAccountSettingsDataCode.pending, state => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: true,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: initialState.error,
-          type: setAccountSettingsError.type,
-        });
+        state.loading.verify = true;
+        state.error.verify = null;
       })
       .addCase(verifyAccountSettingsDataCode.fulfilled, state => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: false,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: initialState.error,
-          type: setAccountSettingsError.type,
-        });
+        state.loading.verify = false;
+        state.error.verify = null;
       })
       .addCase(verifyAccountSettingsDataCode.rejected, (state, action) => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: false,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: action.payload as NetworkErrorDetailsWithBody<any>, //TODO: remove this cast after fix with rejectedValue
-          type: setAccountSettingsError.type,
-        });
-      })
-      .addCase(requestAccountSettingsChangeDataVerificationCode.pending, state => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: true,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: initialState.error,
-          type: setAccountSettingsError.type,
-        });
-      })
-      .addCase(requestAccountSettingsChangeDataVerificationCode.fulfilled, state => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: false,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: initialState.error,
-          type: setAccountSettingsError.type,
-        });
-      })
-      .addCase(requestAccountSettingsChangeDataVerificationCode.rejected, (state, action) => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: false,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: action.payload as NetworkErrorDetailsWithBody<any>, //TODO: remove this cast after fix with rejectedValue
-          type: setAccountSettingsError.type,
-        });
+        state.loading.verify = false;
+        state.error.verify = action.payload as NetworkErrorDetailsWithBody<any>;
       })
 
+      //RequestCode
+      .addCase(requestAccountSettingsChangeDataVerificationCode.pending, state => {
+        state.loading.requestCode = true;
+        state.loading.verify = true;
+        state.error.requestCode = null;
+      })
+      .addCase(requestAccountSettingsChangeDataVerificationCode.fulfilled, state => {
+        state.loading.requestCode = false;
+        state.error.requestCode = null;
+      })
+      .addCase(requestAccountSettingsChangeDataVerificationCode.rejected, (state, action) => {
+        state.loading.requestCode = false;
+        state.error.requestCode = action.payload as NetworkErrorDetailsWithBody<any>;
+      })
+
+      //VerifyStatus
       .addCase(getAccountSettingsVerifyStatus.pending, state => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: true,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: initialState.error,
-          type: setAccountSettingsError.type,
-        });
+        state.loading.getVerifyStatus = true;
+        state.error.getVerifyStatus = null;
       })
       .addCase(getAccountSettingsVerifyStatus.fulfilled, (state, action) => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: false,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: initialState.error,
-          type: setAccountSettingsError.type,
-        });
-        slice.caseReducers.setAccountSettingsVerifyStatus(state, {
-          payload: action.payload,
-          type: setAccountSettingsVerifyStatus.type,
-        });
+        state.loading.getVerifyStatus = false;
+        state.error.getVerifyStatus = null;
+        state.verifyStatus = action.payload;
       })
       .addCase(getAccountSettingsVerifyStatus.rejected, (state, action) => {
-        slice.caseReducers.setAccountSettingsIsLoading(state, {
-          payload: false,
-          type: setAccountSettingsIsLoading.type,
-        });
-        slice.caseReducers.setAccountSettingsError(state, {
-          payload: action.payload as NetworkErrorDetailsWithBody<any>, //TODO: remove this cast after fix with rejectedValue
-          type: setAccountSettingsError.type,
-        });
+        state.loading.getVerifyStatus = false;
+        state.error.getVerifyStatus = action.payload as NetworkErrorDetailsWithBody<any>;
       });
   },
 });
 
-export const {
-  setAccountSettingsIsLoading,
-  setAccountSettingsVerifyStatus,
-  resetAccountSettingsVerification,
-  setAccountSettingsError,
-} = slice.actions;
+export const { setAccountSettingsVerifyStatus, resetAccountSettingsVerification } = slice.actions;
 export default slice.reducer;

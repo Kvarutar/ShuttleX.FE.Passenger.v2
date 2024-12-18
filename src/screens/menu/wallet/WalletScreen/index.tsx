@@ -25,11 +25,10 @@ import {
 } from '../../../../core/menu/redux/wallet/selectors';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import Menu from '../../../ride/Menu';
-import { WalletScreenProps } from './props';
 
 const isDefaultMethods = ['cash', 'applepay', 'paypal', 'crypto'];
 
-const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
+const WalletScreen = () => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -86,10 +85,7 @@ const WalletScreen = ({ navigation }: WalletScreenProps): JSX.Element => {
       <SafeAreaView containerStyle={styles.container}>
         <ScrollViewWithCustomScroll contentContainerStyle={styles.containerScroll}>
           <View>
-            <MenuHeader
-              onMenuPress={() => setIsMenuVisible(true)}
-              onNotificationPress={() => navigation.navigate('Notifications')}
-            >
+            <MenuHeader onMenuPress={() => setIsMenuVisible(true)}>
               <Text style={styles.headerTitle}>{t('menu_Wallet_title')}</Text>
             </MenuHeader>
             <View style={styles.paymentsGap}>

@@ -1,11 +1,21 @@
-import { NetworkErrorDetailsWithBody } from 'shuttlex-integration';
+import { NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 
 type AvaliableChangeAccountContactDataMethods = 'phone' | 'email';
 
 export type AccountSettingsState = {
+  loading: {
+    changeData: boolean;
+    verify: boolean;
+    requestCode: boolean;
+    getVerifyStatus: boolean;
+  };
+  error: {
+    changeData: Nullable<NetworkErrorDetailsWithBody<any>>;
+    verify: Nullable<NetworkErrorDetailsWithBody<any>>;
+    requestCode: Nullable<NetworkErrorDetailsWithBody<any>>;
+    getVerifyStatus: Nullable<NetworkErrorDetailsWithBody<any>>;
+  };
   verifyStatus: VerifyStatusAPIResponse;
-  isLoading: boolean;
-  error: NetworkErrorDetailsWithBody<any> | null;
 };
 
 export type VerifyAccountContactDataCodeAPIRequest = {
@@ -17,7 +27,7 @@ export type VerifyAccountContactDataCodeAPIResponse = {
   success: boolean;
 };
 
-export type VerifyAccountContactDataCodePayload = {
+export type VerifyAccountSettingsDataCodePayload = {
   mode: AvaliableChangeAccountContactDataMethods;
   code: string;
   body: string;

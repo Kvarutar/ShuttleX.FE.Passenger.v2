@@ -1,7 +1,6 @@
 import DeviceInfo from 'react-native-device-info';
 import { formatPhone, getNetworkErrorInfo } from 'shuttlex-integration';
 
-import { getProfileInfo } from '../../../passenger/redux/thunks';
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import {
   AccountSettingsVerificationConfirmType,
@@ -11,11 +10,11 @@ import {
   SendConfirmPayload,
   VerifyAccountContactDataCodeAPIRequest,
   VerifyAccountContactDataCodeAPIResponse,
-  VerifyAccountContactDataCodePayload,
+  VerifyAccountSettingsDataCodePayload,
   VerifyStatusAPIResponse,
 } from './types';
 
-export const verifyAccountSettingsDataCode = createAppAsyncThunk<void, VerifyAccountContactDataCodePayload>(
+export const verifyAccountSettingsDataCode = createAppAsyncThunk<void, VerifyAccountSettingsDataCodePayload>(
   'accountSettings/verifyAccountSettingsDataCode',
   async (payload, { rejectWithValue, authAccountSettingsAxios, dispatch }) => {
     const deviceId = await DeviceInfo.getUniqueId();
@@ -37,7 +36,7 @@ export const verifyAccountSettingsDataCode = createAppAsyncThunk<void, VerifyAcc
         code: payload.code,
         deviceId,
       } as VerifyAccountContactDataCodeAPIRequest);
-      await dispatch(getProfileInfo());
+      await dispatch(getAccountSettingsVerifyStatus());
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

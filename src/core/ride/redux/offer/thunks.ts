@@ -6,6 +6,7 @@ import { createAppAsyncThunk } from '../../../redux/hooks';
 import { geolocationCoordinatesSelector } from '../geolocation/selectors';
 import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
+import { setOrderLongpollingLoading } from '../trip';
 import { getOfferNetworkErrorInfo } from './errors';
 import { setIsAvaliableTariff, updateTariffMatching } from './index';
 import { offerSelector } from './selectors';
@@ -259,7 +260,7 @@ export const getTariffsPrices = createAppAsyncThunk<GetTariffsPricesThunkResult,
 
 export const createInitialOffer = createAppAsyncThunk<string, void>(
   'offer/createInitialOffer',
-  async (_, { rejectWithValue, passengerAxios, getState }) => {
+  async (_, { rejectWithValue, passengerAxios, getState, dispatch }) => {
     const { points, selectedTariff, offerRoutes } = offerSelector(getState());
 
     //todo: change payment method to real one
@@ -286,6 +287,9 @@ export const createInitialOffer = createAppAsyncThunk<string, void>(
 
     try {
       const response = await passengerAxios.post<CreateInitialOfferAPIResponse>('/Offer/create/initial', bodyPart);
+
+      //starting lonpolling
+      dispatch(setOrderLongpollingLoading(true));
 
       return response.data.id;
     } catch (error) {

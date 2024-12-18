@@ -21,21 +21,15 @@ import {
 import { signOut } from '../../../core/auth/redux/thunks';
 import { resetAccountSettingsVerification } from '../../../core/menu/redux/accountSettings';
 import {
-  accountSettingsErrorSelector,
+  accountSettingsChangeDataErrorSelector,
   accountSettingsVerifyStatusSelector,
-  isAccountSettingsLoadingSelector,
+  isAccountSettingsChangeDataLoadingSelector,
 } from '../../../core/menu/redux/accountSettings/selectors';
 import {
   changeAccountContactData,
-  getAccountSettingsVerifyStatus,
   requestAccountSettingsChangeDataVerificationCode,
 } from '../../../core/menu/redux/accountSettings/thunks';
-import {
-  profileContactEmailSelector,
-  profileContactPhoneSelector,
-  profilePrefferedNameSelector,
-  profileSelectedPhotoSelector,
-} from '../../../core/passenger/redux/selectors';
+import { profilePrefferedNameSelector, profileSelectedPhotoSelector } from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
@@ -51,27 +45,25 @@ const AccountSettings = (): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const prefferedName = useSelector(profilePrefferedNameSelector);
-  const contactEmail = useSelector(profileContactEmailSelector);
-  const contactPhone = useSelector(profileContactPhoneSelector);
-  const changeDataError = useSelector(accountSettingsErrorSelector);
-  const isLoading = useSelector(isAccountSettingsLoadingSelector);
+  const changeDataError = useSelector(accountSettingsChangeDataErrorSelector);
+  const isChangeDataLoading = useSelector(isAccountSettingsChangeDataLoadingSelector);
   const verifiedStatus = useSelector(accountSettingsVerifyStatusSelector);
 
   useEffect(() => {
-    dispatch(getAccountSettingsVerifyStatus());
     dispatch(resetAccountSettingsVerification());
-  }, [changeDataError, dispatch]);
+  }, [dispatch]);
 
   const handleOpenVerification = async (mode: 'phone' | 'email', newValue: string, method: 'change' | 'verify') => {
-    if (!isLoading && !changeDataError) {
+    if (!isChangeDataLoading && !changeDataError) {
       let oldData: string | undefined;
 
       switch (mode) {
         case 'phone':
-          oldData = contactPhone;
+          //TODO change it when back will synchronize profile
+          oldData = verifiedStatus.phoneInfo;
           break;
         case 'email':
-          oldData = contactEmail;
+          oldData = verifiedStatus.emailInfo;
           break;
       }
 
@@ -101,19 +93,18 @@ const AccountSettings = (): JSX.Element => {
   return (
     <>
       <SafeAreaView containerStyle={styles.wrapper}>
-        <MenuHeader
-          onMenuPress={() => setIsMenuVisible(true)}
-          onNotificationPress={() => navigation.navigate('Notifications')}
-        >
+        <MenuHeader onMenuPress={() => setIsMenuVisible(true)}>
           <Text style={styles.textTitle}>{t('ride_Menu_navigationAccountSettings')}</Text>
         </MenuHeader>
         <AccountSettingsScreen
+          isChangeDataLoading={isChangeDataLoading}
           onSignOut={() => dispatch(signOut())}
           handleOpenVerification={handleOpenVerification}
           profile={{
             fullName: prefferedName ?? '',
-            email: contactEmail ?? '',
-            phone: contactPhone ?? '',
+            //TODO change it when back will synchronize profile
+            email: verifiedStatus.emailInfo ?? '',
+            phone: verifiedStatus.phoneInfo ?? '',
           }}
           verifiedStatus={verifiedStatus}
           photoBlock={<PhotoBlock onUploadPhoto={onUploadPhoto} />}

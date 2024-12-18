@@ -36,13 +36,11 @@ import { useAppDispatch } from '../../../../core/redux/hooks';
 import {
   isOfferCreateLoadingSelector,
   offerCreateErrorSelector,
-  offerIdSelector,
   offerSelector,
 } from '../../../../core/ride/redux/offer/selectors';
 import { createInitialOffer } from '../../../../core/ride/redux/offer/thunks';
 import { setOrderStatus } from '../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../core/ride/redux/order/types';
-import { getOrderLongPolling } from '../../../../core/ride/redux/trip/thunks';
 import PlanButton from '../PlanButton/PlanButton';
 import { checkPaymentStatus } from './handlePayments';
 import { DefaultPaymentMethodsType } from './types';
@@ -149,7 +147,6 @@ const PaymentPopup = () => {
   const [selectedPayment, setSelectedPayment] = useState<DefaultPaymentMethodsType>('cash');
   const [dateTimeTitle, setDateTimeTitle] = useState(t('ride_Ride_PaymentPopup_defaultTime'));
   const [confirmDateChecker, setConfirmDateChecker] = useState(false);
-  const offerId = useSelector(offerIdSelector);
   //const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
   const computedStyles = StyleSheet.create({
@@ -279,9 +276,6 @@ const PaymentPopup = () => {
 
       if (status === 'success' && !offerCreateError) {
         dispatch(setOrderStatus(OrderStatus.Confirming));
-        if (offerId) {
-          dispatch(getOrderLongPolling(offerId));
-        }
       }
     };
 

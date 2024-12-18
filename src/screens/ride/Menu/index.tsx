@@ -1,7 +1,7 @@
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   LotteryIcon,
@@ -81,8 +81,7 @@ const Menu = ({ onClose, isStatusBarTransparent }: MenuProps) => {
     // },
     becomeDriver: {
       navFunc: () => {
-        navigation.navigate('Wallet');
-        //TODO go to page becomeDriver
+        Linking.openURL('https://www.shuttlex.com/contractor.html');
         onClose();
       },
       title: t('ride_Menu_navigationBecomeDriver'),
@@ -96,9 +95,9 @@ const Menu = ({ onClose, isStatusBarTransparent }: MenuProps) => {
     },
     help: {
       navFunc: () => {
-        navigation.navigate('Wallet');
+        // navigation.navigate('Wallet');
         //TODO Create help page
-        onClose();
+        // onClose();
       },
       title: t('ride_Menu_navigationHelp'),
     },

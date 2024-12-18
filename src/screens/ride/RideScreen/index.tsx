@@ -8,12 +8,18 @@ import {
   getCurrentUpcomingLottery,
   getPreviousLottery,
 } from '../../../core/lottery/redux/thunks';
+import { getAccountSettingsVerifyStatus } from '../../../core/menu/redux/accountSettings/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
+import { offerIdSelector } from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
-import { orderIdSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
-import { getTripCanceledBeforePickUpLongPolling } from '../../../core/ride/redux/trip/thunks';
+import {
+  isOrderLongPollingLoadingSelector,
+  orderIdSelector,
+  orderSelector,
+} from '../../../core/ride/redux/trip/selectors';
+import { getOrderLongPolling, getTripCanceledBeforePickUpLongPolling } from '../../../core/ride/redux/trip/thunks';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
 import MapView from './MapView';
@@ -23,7 +29,7 @@ import WinningPopup from './popups/WinningPopup';
 import Trip from './Trip';
 import { RideScreenProps } from './types';
 
-const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
+const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();
   const orderRef = useRef<OrderRef>(null);
   const dispatch = useAppDispatch();
@@ -37,6 +43,14 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
 
   const orderInfo = useSelector(orderSelector);
   const orderId = useSelector(orderIdSelector);
+  const offerId = useSelector(offerIdSelector);
+  const isOrderLngPollLoading = useSelector(isOrderLongPollingLoadingSelector);
+
+  useEffect(() => {
+    if (offerId && orderStatus === 'confirming' && isOrderLngPollLoading) {
+      dispatch(getOrderLongPolling(offerId));
+    }
+  }, [dispatch, offerId, orderStatus, isOrderLngPollLoading]);
 
   //for test
   // useEffect(() => {
@@ -46,7 +60,10 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   // }, []);
 
   useEffect(() => {
-    //TODO get to know if this is the best place for this longpolling
+    dispatch(getAccountSettingsVerifyStatus());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (orderId) {
       dispatch(getTripCanceledBeforePickUpLongPolling(orderId));
     }
@@ -127,11 +144,7 @@ const RideScreen = ({ navigation, route }: RideScreenProps): JSX.Element => {
   // }
 
   const topMenuHeader = () => (
-    <MenuHeader
-      onMenuPress={() => setIsMenuVisible(true)}
-      onNotificationPress={() => navigation.navigate('Notifications')}
-      style={[styles.menuStyle, computedStyles.menuStyle]}
-    />
+    <MenuHeader onMenuPress={() => setIsMenuVisible(true)} style={[styles.menuStyle, computedStyles.menuStyle]} />
   );
 
   const topMenu: Record<OrderStatus, ReactNode | null> = {

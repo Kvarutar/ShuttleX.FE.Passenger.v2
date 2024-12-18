@@ -1,19 +1,14 @@
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, SafeAreaView, StyleSheet, View } from 'react-native';
 import { MenuHeader, sizes, Text, TextInput, TextInputInputMode, useTheme } from 'shuttlex-integration';
 
-import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
 
 const windowSizes = Dimensions.get('window');
 const isPhoneSmall = windowSizes.height < 700;
 
 const PromocodesScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -42,10 +37,7 @@ const PromocodesScreen = () => {
   return (
     <SafeAreaView style={[styles.safeArea, computedStyles.safeArea]}>
       <View style={styles.menuHeader}>
-        <MenuHeader
-          onMenuPress={() => setIsMenuVisible(true)}
-          onNotificationPress={() => navigation.navigate('Notifications')}
-        >
+        <MenuHeader onMenuPress={() => setIsMenuVisible(true)}>
           <Text>{t('ride_Menu_navigationPromocodes')}</Text>
         </MenuHeader>
       </View>

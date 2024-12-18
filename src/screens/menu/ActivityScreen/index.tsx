@@ -155,7 +155,7 @@ const ActivityScreen = () => {
   return (
     <>
       <SafeAreaView>
-        <MenuHeader onMenuPress={() => setIsMenuVisible(true)} onNotificationPress={() => {}}>
+        <MenuHeader onMenuPress={() => setIsMenuVisible(true)}>
           <Text style={styles.headerText}>{t('menu_Activity_title')}</Text>
         </MenuHeader>
         {content}
