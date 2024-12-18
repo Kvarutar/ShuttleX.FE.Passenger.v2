@@ -163,7 +163,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
         {topMenu[orderStatus]}
         {TripStatus.Accepted && orderInfo ? <Trip /> : <Order ref={orderRef} />}
       </SafeAreaView>
-      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} isStatusBarTransparent />}
+      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
       {isWinningPopupVisible && <WinningPopup setIsWinningPopupVisible={setIsWinningPopupVisible} />}
       {/*TODO: uncomment when we will need MysteryBoxPopup*/}
       {/*{isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}*/}
