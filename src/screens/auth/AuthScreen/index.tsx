@@ -5,6 +5,7 @@ import {
   CustomKeyboardAvoidingView,
   isIncorrectFieldsError,
   isLockedError,
+  KeyboardAvoidingViewMode,
   milSecToTime,
   SafeAreaView,
   SignInMethod,
@@ -64,7 +65,14 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
 
   const handleSendingSignUpData = (dataForm: SignUpForm) => {
     setData(dataForm.phone);
-    dispatch(signUp({ email: dataForm.email, firstName: dataForm.firstName, phone: dataForm.phone, method: 'phone' }));
+    dispatch(
+      signUp({
+        email: dataForm.email,
+        firstName: dataForm.firstName,
+        phone: dataForm.phone,
+        method: 'phone',
+      }),
+    );
   };
 
   const handleSendingSignInData = (body: string) => {
@@ -72,8 +80,15 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
     dispatch(signIn({ method: signMethod, data: body }));
   };
 
+  const [isPanelPhoneSelectVisible, setIsPanelPhoneSelectVisible] = useState<boolean>(false);
+  const [keyboardMode, setKeyboardMode] = useState<KeyboardAvoidingViewMode>('normal');
+
+  useEffect(() => {
+    setKeyboardMode(isPanelPhoneSelectVisible ? 'inverted' : 'normal');
+  }, [isPanelPhoneSelectVisible]);
+
   return (
-    <CustomKeyboardAvoidingView>
+    <CustomKeyboardAvoidingView mode={keyboardMode}>
       <SafeAreaView>
         <TitleWithCloseButton
           title={isSignIn ? t('auth_Auth_signInTitle') : t('auth_Auth_signUpTitle')}
@@ -86,6 +101,7 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
             isLoading={isLoading}
             signMethod={signMethod}
             setSignMethod={setSignMethod}
+            setPanelPhoneVisible={setIsPanelPhoneSelectVisible}
           />
         ) : (
           <SignUpScreen
@@ -94,6 +110,7 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
             navigateToTerms={() => navigation.navigate('Terms')}
             onSubmit={handleSendingSignUpData}
             isLoading={isLoading}
+            setPanelPhoneVisible={setIsPanelPhoneSelectVisible}
           />
         )}
       </SafeAreaView>
