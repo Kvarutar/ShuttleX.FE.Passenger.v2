@@ -1,5 +1,3 @@
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
@@ -23,12 +21,10 @@ import { getOrdersHistory } from '../../../core/passenger/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { tariffByIdSelector } from '../../../core/ride/redux/offer/selectors';
 import { orderSelector } from '../../../core/ride/redux/trip/selectors';
-import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
 import RecentAddressesBar from './RecentAddressesBar';
 
 const ActivityScreen = () => {
-  const { navigation } = useNavigation<NativeStackScreenProps<RootStackParamList, 'Activity'>>();
   const tariffIconsData = useTariffsIcons();
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -70,16 +66,6 @@ const ActivityScreen = () => {
   useEffect(() => {
     dispatch(getOrdersHistory());
   }, [dispatch]);
-
-  if (!ordersHistory.length && !currentOrder && !isOrdersHistoryLoading) {
-    return (
-      <View style={[styles.emptyActivityWrapper, computedStyles.emptyActivityWrapper]}>
-        <Text style={[styles.emptyActivityText, computedStyles.emptyActivityText]}>
-          {t('menu_Activity_emptyActivity')}
-        </Text>
-      </View>
-    );
-  }
 
   const renderActiveRides = (): JSX.Element => {
     if (isOrdersHistoryLoading) {
@@ -134,32 +120,45 @@ const ActivityScreen = () => {
     );
   };
 
+  let content = (
+    <>
+      {renderActiveRides()}
+      {(ordersHistory.length || isOrdersHistoryLoading) && (
+        <View style={styles.recentAddressesWrapper}>
+          <Text style={[styles.recentAddressesTitleText, computedStyles.text]}>
+            {t('menu_Activity_recentAddresses')}
+          </Text>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.recentAddressesContainer}>
+              {isOrdersHistoryLoading ? (
+                <Skeleton skeletonsAmount={5} skeletonContainerStyle={styles.skeletonRecentAdress} />
+              ) : (
+                ordersHistory.map((order, index) => <RecentAddressesBar key={index} order={order} />)
+              )}
+            </View>
+          </ScrollView>
+        </View>
+      )}
+    </>
+  );
+
+  if (!ordersHistory.length && !currentOrder && !isOrdersHistoryLoading) {
+    content = (
+      <View style={[styles.emptyActivityWrapper, computedStyles.emptyActivityWrapper]}>
+        <Text style={[styles.emptyActivityText, computedStyles.emptyActivityText]}>
+          {t('menu_Activity_emptyActivity')}
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <>
       <SafeAreaView>
-        <MenuHeader
-          onMenuPress={() => setIsMenuVisible(true)}
-          onNotificationPress={() => navigation.navigate('Notifications')}
-        >
+        <MenuHeader onMenuPress={() => setIsMenuVisible(true)} onNotificationPress={() => {}}>
           <Text style={styles.headerText}>{t('menu_Activity_title')}</Text>
         </MenuHeader>
-        {renderActiveRides()}
-        {(ordersHistory.length || isOrdersHistoryLoading) && (
-          <View style={styles.recentAddressesWrapper}>
-            <Text style={[styles.recentAddressesTitleText, computedStyles.text]}>
-              {t('menu_Activity_recentAddresses')}
-            </Text>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={styles.recentAddressesContainer}>
-                {isOrdersHistoryLoading ? (
-                  <Skeleton skeletonsAmount={5} skeletonContainerStyle={styles.skeletonRecentAdress} />
-                ) : (
-                  ordersHistory.map((order, index) => <RecentAddressesBar key={index} order={order} />)
-                )}
-              </View>
-            </ScrollView>
-          </View>
-        )}
+        {content}
       </SafeAreaView>
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
     </>
@@ -248,7 +247,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyActivityText: {
-    fontSize: 14,
+    fontSize: 20,
     fontFamily: 'Inter Medium',
     textAlign: 'center',
   },

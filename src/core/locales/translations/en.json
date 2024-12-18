@@ -172,7 +172,7 @@
   "menu_Activity_activeOrder": "Active order",
   "menu_Activity_recentAddresses": "Recent addresses",
   "menu_Activity_canceled": "Canceled",
-  "menu_Activity_emptyActivity": "This will display information about your rides",
+  "menu_Activity_emptyActivity": "This will display\ninformation about your\nrides",
   "menu_Activity_haveNotCurrentRides": "You don't have any active rides at the moment",
   "menu_AccountVerificateCode_firstHeader": "Enter the Four-digit Code You Received",
   "menu_AccountVerificateCode_secondHeader": "in Message",
