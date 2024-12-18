@@ -7,7 +7,7 @@ import { setOrderStatus } from '../../ride/redux/order';
 import { OrderStatus } from '../../ride/redux/order/types';
 import { addFinishedTrips, endTrip, setTripIsCanceled, setTripStatus } from '../../ride/redux/trip';
 import { orderInfoSelector } from '../../ride/redux/trip/selectors';
-import { getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
+import { getCurrentOrder, getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { NotificationPayload, NotificationRemoteMessage, NotificationType } from './types';
 
@@ -43,7 +43,7 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     }
   },
   [NotificationType.DriverArrived]: async () => {
-    store.dispatch(setTripStatus(TripStatus.Arrived));
+    store.dispatch(getCurrentOrder());
   },
   //when trip started and driver canceled trip - go to receipt screen
   [NotificationType.DriverCanceled]: async () => {
@@ -63,7 +63,7 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     store.dispatch(setOrderStatus(OrderStatus.Confirming));
   },
   [NotificationType.TripStarted]: async () => {
-    store.dispatch(setTripStatus(TripStatus.Ride));
+    store.dispatch(getCurrentOrder());
   },
 };
 
