@@ -21,14 +21,16 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
 
   const point = useSelector(state => offerPointByIdSelector(state, currentPointId));
 
-  const [inputValue, setInputValue] = useState(point?.address ?? '');
+  const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
-    if (point?.address !== inputValue) {
-      setInputValue(point?.address ?? '');
+    if (point) {
+      const isPresentAddressInFullAddress = point.fullAddress.includes(point.address);
+      const content = isPresentAddressInFullAddress ? point.fullAddress : `${point.address}, ${point.fullAddress}`;
+      setInputValue(content);
     }
-  }, [point?.address, inputValue]);
+  }, [point]);
 
   useEffect(() => {
     if (currentPointId === 0 && !isFocused && point?.latitude && point?.longitude) {
@@ -58,7 +60,7 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
     setInputValue(value);
     updateFocusedInput({ id: currentPointId, value: value, focus: isFocused });
     if (point) {
-      dispatch(updateOfferPoint({ ...point, address: value, longitude: 0, latitude: 0 }));
+      dispatch(updateOfferPoint({ ...point, fullAddress: value, longitude: 0, latitude: 0 }));
     }
   };
 

@@ -4,6 +4,7 @@ import { getNetworkErrorInfo } from 'shuttlex-integration';
 import { profileZoneSelector } from '../../../passenger/redux/selectors';
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import { geolocationCoordinatesSelector } from '../geolocation/selectors';
+import { convertGeoToAddress } from '../geolocation/thunks';
 import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
 import { setOrderLongpollingLoading } from '../trip';
@@ -265,17 +266,32 @@ export const createInitialOffer = createAppAsyncThunk<string, void>(
 
     //todo: change payment method to real one
     //todo: ask backend to do endpoint for currency
+
+    let pickUpPoint = points[0];
+
+    if (pickUpPoint.address === '') {
+      const addressWithFullInfo = await dispatch(
+        convertGeoToAddress({ longitude: pickUpPoint.longitude, latitude: pickUpPoint.latitude }),
+      ).unwrap();
+
+      pickUpPoint = {
+        ...pickUpPoint,
+        address: addressWithFullInfo.place,
+        fullAddress: addressWithFullInfo.fullAddress,
+      };
+    }
+
     const bodyPart = {
       routeId: offerRoutes?.routeId,
       tariffId: selectedTariff?.id,
       paymentMethod: 'Cash',
       pickUpGeo: {
-        latitude: points[0].latitude,
-        longitude: points[0].longitude,
+        latitude: pickUpPoint.latitude,
+        longitude: pickUpPoint.longitude,
       },
       pickUpZoneId: offerRoutes?.waypoints[0].zoneId,
-      pickUpAddress: points[0].address,
-      pickUpPlace: points[0].fullAddress ?? points[0].address,
+      pickUpAddress: pickUpPoint.address,
+      pickUpPlace: pickUpPoint.fullAddress ?? pickUpPoint.address,
       dropOffGeo: {
         latitude: points[1].latitude,
         longitude: points[1].longitude,

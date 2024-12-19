@@ -83,7 +83,7 @@ const AddressSelect = ({
   const focusedOfferPoint = useSelector(state => offerPointByIdSelector(state, focusedInput.id));
 
   const firstUpdateDefaultLocation = useRef(true);
-  const isAllOfferPointsFilled = offerPoints.every(point => point.latitude && point.longitude && point.address);
+  const isAllOfferPointsFilled = offerPoints.every(point => point.latitude && point.longitude && point.fullAddress);
 
   const computedStyles = StyleSheet.create({
     noAddress: {
@@ -140,7 +140,7 @@ const AddressSelect = ({
       dispatch(
         updateOfferPoint({
           id: 0,
-          address: t('ride_Ride_AddressSelect_addressInputMyLocation'),
+          address: '',
           fullAddress: t('ride_Ride_AddressSelect_addressInputMyLocation'),
           longitude: defaultLocation.longitude,
           latitude: defaultLocation.latitude,

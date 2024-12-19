@@ -10,6 +10,7 @@ import {
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
+import { cleanOfferPoints } from '../../../../../core/ride/redux/offer';
 import {
   isCityAvailableLoadingSelector,
   isCityAvailableSelector,
@@ -47,8 +48,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
       if (isAddressSelectVisible) {
         addressSelectRef.current?.openWindow();
       } else {
-        //TODO: now offer poins are cleaning after we press green button in address select
-        //dispatch(cleanOfferPoints());
+        dispatch(cleanOfferPoints());
         setFastAddressSelect(null);
       }
     }, [dispatch, isAddressSelectVisible]);
