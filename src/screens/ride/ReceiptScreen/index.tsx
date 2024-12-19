@@ -15,7 +15,6 @@ import {
   formatTime,
   getCurrencySign,
   getPaymentIcon,
-  minToMilSec,
   PointIcon2,
   SafeAreaView,
   ShareIcon,
@@ -51,6 +50,17 @@ const ReceiptScreen = () => {
   const addresses = useSelector(offerPointsSelector);
   const isTripCanceled = useSelector(isTripCanceledSelector);
   const ticket = useSelector(lotteryTicketAfterRideSelector);
+
+  const finalPrice = () => {
+    if (orderInfo?.info) {
+      // TODO: ask back about sign(currencyCode), not code
+      const { currencyCode, totalFinalPrice, estimatedPrice } = orderInfo.info;
+      const currencySign = getCurrencySign(currencyCode as CurrencyType);
+      const price = (totalFinalPrice ?? estimatedPrice).toFixed(0);
+
+      return `${currencySign}${price}`;
+    }
+  };
 
   const computedStyles = StyleSheet.create({
     textSecondaryColor: {
@@ -135,13 +145,11 @@ const ReceiptScreen = () => {
   const roadTimeData = [
     {
       title: t('ride_Receipt_start'),
-      //TODO get to know where can we get this time
-      value: formatTime(new Date()),
+      value: formatTime(new Date(orderInfo?.info?.estimatedArriveToPickUpDate ?? 0)),
     },
     {
       title: t('ride_Receipt_finish'),
-      //TODO get to know where can we get this time
-      value: formatTime(new Date(Date.now() + minToMilSec(78))),
+      value: formatTime(new Date(orderInfo?.info?.estimatedArriveToDropOffDate ?? 0)),
     },
     {
       title: t('ride_Receipt_time'),
@@ -200,11 +208,7 @@ const ReceiptScreen = () => {
         </Text>
         <View style={styles.priceContainer}>
           <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
-          <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
-            {/*TODO: ask back about sign, not code*/}
-            {getCurrencySign(orderInfo?.info?.currencyCode as CurrencyType)}
-            {orderInfo?.info?.totalFinalPrice}
-          </Text>
+          <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>{finalPrice()}</Text>
         </View>
       </View>
     </Bar>
@@ -257,16 +261,6 @@ const ReceiptScreen = () => {
                 <Text style={[styles.cancelledTripTitleText, computedStyles.cancelledTripTitleText]}>
                   {t('ride_Receipt_cancelledTrip')}
                 </Text>
-                {Boolean(orderInfo?.info) && (
-                  <View style={styles.priceContainer}>
-                    <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_cash')}</Text>
-                    <Text style={[styles.headerAndPaymentText, computedStyles.textSecondaryColor]}>
-                      {/*TODO: ask back about sign, not code*/}
-                      {getCurrencySign(orderInfo?.info?.currencyCode as CurrencyType)}{' '}
-                      {orderInfo?.info?.totalFinalPrice}
-                    </Text>
-                  </View>
-                )}
               </View>
               {Boolean(orderInfo?.info) && paymentBarBlock}
             </View>

@@ -72,7 +72,6 @@ const slice = createSlice({
       }
     },
     endTrip(state) {
-      state.routeInfo = null;
       state.status = initialState.status;
       state.order = initialState.order;
       state.isCanceled = initialState.isCanceled;
@@ -162,10 +161,13 @@ const slice = createSlice({
 
       //RouteInfo
       .addCase(getRouteInfo.fulfilled, (state, action) => {
-        if (state.routeInfo) {
-          state.routeInfo.dropOff = action.payload.dropOffData;
-          state.routeInfo.pickUp = action.payload.pickUpData;
-        }
+        slice.caseReducers.setTripRouteInfo(state, {
+          payload: {
+            pickUpData: action.payload.pickUpData,
+            dropOffData: action.payload.dropOffData,
+          },
+          type: setTripRouteInfo.type,
+        });
       })
 
       //CancelTrip
