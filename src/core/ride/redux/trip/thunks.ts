@@ -1,7 +1,6 @@
 import { convertBlobToImgUri, getNetworkErrorInfo, Nullable } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../../redux/hooks';
-import { cleanOfferPoints } from '../offer';
 import { createInitialOffer } from '../offer/thunks';
 import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
@@ -120,7 +119,6 @@ export const getOrderLongPolling = createAppAsyncThunk<string, string>(
         `/Offer/${offerId}/confirmed/long-polling`,
       );
       dispatch(getOrderInfo(response.data.orderId));
-      dispatch(cleanOfferPoints());
       dispatch(getRouteInfo(response.data.orderId));
       return response.data.orderId;
     } catch (error) {

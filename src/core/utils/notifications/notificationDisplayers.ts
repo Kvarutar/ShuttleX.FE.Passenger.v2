@@ -2,7 +2,6 @@ import notifee, { AndroidColor } from '@notifee/react-native';
 
 import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
-import { cleanOfferPoints } from '../../ride/redux/offer';
 import { createInitialOffer } from '../../ride/redux/offer/thunks';
 import { setOrderStatus } from '../../ride/redux/order';
 import { OrderStatus } from '../../ride/redux/order/types';
@@ -21,7 +20,6 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
   [NotificationType.DriverAccepted]: async payload => {
     if (payload?.orderId) {
       await store.dispatch(getOrderInfo(payload.orderId));
-      store.dispatch(cleanOfferPoints());
       await store.dispatch(getRouteInfo(payload.orderId));
       store.dispatch(setTripStatus(TripStatus.Accepted));
     }
