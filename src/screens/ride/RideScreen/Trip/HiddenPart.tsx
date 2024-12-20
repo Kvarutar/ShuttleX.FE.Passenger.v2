@@ -170,14 +170,15 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
             mode={BarModes.Default}
             icon={<EmergencyServiceIcon />}
             text={t('ride_Ride_Trip_contactEmergency')}
-            onPress={() => Linking.openURL('tel:911')}
+            //TODO: Rewrite with a correct link on phone number
+            onPress={() => Linking.openURL('https://t.me/ShuttleX_Support')}
           />
           <SquareBar
             mode={BarModes.Default}
             icon={<ReportIcon />}
             text={t('ride_Ride_Trip_reportIssue')}
             //TODO: navigate to report
-            onPress={() => true}
+            onPress={() => Linking.openURL('https://t.me/ShuttleX_Support')}
           />
         </View>
       </View>
