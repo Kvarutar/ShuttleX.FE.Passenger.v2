@@ -16,6 +16,7 @@ import {
   TripCanceledAfterPickupLongPollingAPIResponse,
   TripCanceledBeforePickupLongPollingAPIResponse,
   TripInfo,
+  TripInPickupLongPollingAPIResponse,
   TripStatus,
   TripSuccessfullLongPollingAPIResponse,
 } from './types';
@@ -118,6 +119,7 @@ export const getOrderLongPolling = createAppAsyncThunk<string, string>(
       const response = await passengerLongPollingAxios.get<OrderLongPollingAPIResponse>(
         `/Offer/${offerId}/confirmed/long-polling`,
       );
+
       dispatch(getOrderInfo(response.data.orderId));
       dispatch(getRouteInfo(response.data.orderId));
       return response.data.orderId;
@@ -186,6 +188,7 @@ export const getTripCanceledAfterPickUpLongPolling = createAppAsyncThunk<string,
         `/Order/${orderId}/canceled/after-pickup/long-polling`,
       );
       dispatch(setTripIsCanceled(true));
+      dispatch(getOrderInfo(orderId));
       dispatch(setTripStatus(TripStatus.Finished));
       return response.data.orderId;
     } catch (error) {
@@ -193,6 +196,50 @@ export const getTripCanceledAfterPickUpLongPolling = createAppAsyncThunk<string,
     }
   },
 );
+
+export const getInPickUpLongPolling = createAppAsyncThunk<TripInPickupLongPollingAPIResponse, string>(
+  'trip/getInPickUpLongPolling',
+  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch }) => {
+    try {
+      const response = await passengerLongPollingAxios.get<TripInPickupLongPollingAPIResponse>(
+        `/Order/${orderId}/in-pick-up/long-polling`,
+      );
+      dispatch(getCurrentOrder());
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
+
+// TODO for now we dont have logic for this
+// export const getInStopPointLongPolling = createAppAsyncThunk<TripInStopPointAPIResponse, string>(
+//   'trip/getInStopPointLongPolling',
+//   async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch }) => {
+//     try {
+//       const response = await passengerLongPollingAxios.get<TripInStopPointAPIResponse>(
+//         `/Order/${orderId}/in-stop-point/long-polling`,
+//       );
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(getNetworkErrorInfo(error));
+//     }
+//   },
+// );
+
+// export const getInDropOffLongPolling = createAppAsyncThunk<TripInDropOffAPIResponse, string>(
+//   'trip/getInDropOffLongPolling',
+//   async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch }) => {
+//     try {
+//       const response = await passengerLongPollingAxios.get<TripInDropOffAPIResponse>(
+//         `/Order/${orderId}/in-drop-off/long-polling`,
+//       );
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(getNetworkErrorInfo(error));
+//     }
+//   },
+// );
 
 export const sendFeedback = createAppAsyncThunk<FeedbackAPIRequest, { orderId: string; payload: FeedbackAPIRequest }>(
   'trip/sendFeedback',

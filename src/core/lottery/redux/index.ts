@@ -11,7 +11,7 @@ import {
   getTicketAfterRide,
   getWinnerAvatar,
 } from './thunks';
-import { LotteryState, TicketFromAPI } from './types';
+import { LotteryState, TicketFromAPI, WinnerPrizesAPIResponse } from './types';
 
 const initialState: LotteryState = {
   lottery: {
@@ -22,6 +22,10 @@ const initialState: LotteryState = {
   },
   previousLottery: null,
   prizes: [],
+  winnerPrizes: {
+    ticket: '',
+    prizeIds: [],
+  },
   previousPrizes: [],
   tickets: [],
   ticketAfterRide: null,
@@ -60,6 +64,9 @@ const slice = createSlice({
     //TODO call when lottery is done
     clearTicketList(state) {
       state.tickets = [];
+    },
+    setWinnerPrizes(state, action: PayloadAction<Nullable<WinnerPrizesAPIResponse>>) {
+      state.winnerPrizes = action.payload;
     },
   },
   extraReducers: builder => {
@@ -197,6 +204,6 @@ const slice = createSlice({
   },
 });
 
-export const { clearPrizes, addTicket, setTicketAfterRide } = slice.actions;
+export const { clearPrizes, addTicket, setTicketAfterRide, setWinnerPrizes } = slice.actions;
 
 export default slice.reducer;

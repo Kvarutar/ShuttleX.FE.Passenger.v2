@@ -20,7 +20,6 @@ import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
 import {
   isTripLoadingSelector,
-  isTripSuccessLongPollingLoadingSelector,
   orderIdSelector,
   orderSelector,
   tripStatusSelector,
@@ -51,22 +50,19 @@ const Trip = () => {
   const isTripLoading = useSelector(isTripLoadingSelector);
   const [extraSum, setExtraSum] = useState(0);
   const order = useSelector(orderSelector);
-  const isTripSuccessLngPollLoading = useSelector(isTripSuccessLongPollingLoadingSelector);
 
   const arrivedTime = order?.info ? Date.parse(order?.info?.estimatedArriveToDropOffDate) : 0;
 
   useEffect(() => {
     if (orderId && tripStatus === TripStatus.Ride) {
-      if (isTripSuccessLngPollLoading) {
-        dispatch(getTripSuccessfullLongPolling(orderId));
-      }
+      dispatch(getTripSuccessfullLongPolling(orderId));
       dispatch(getTripCanceledAfterPickUpLongPolling(orderId));
     }
 
     if (tripStatus === TripStatus.Finished) {
       navigation.navigate('Rating');
     }
-  }, [tripStatus, navigation, orderId, dispatch, isTripSuccessLngPollLoading]);
+  }, [tripStatus, navigation, orderId, dispatch]);
 
   const TariffIcon = tariffIconsData.Basic.icon;
 

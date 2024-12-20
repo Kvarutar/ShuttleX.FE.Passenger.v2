@@ -20,5 +20,6 @@ export enum NotificationType {
 
 export type NotificationPayload = {
   orderId?: string;
-  prizeId?: string;
+  prizeIds?: string[];
+  ticketNumber?: string;
 };

@@ -133,6 +133,7 @@ const slice = createSlice({
       .addCase(getOrderInfo.fulfilled, (state, action) => {
         state.order = action.payload;
         state.loading.tripSuccessfullLongPolling = true;
+        state.loading.orderLongpolling = false;
 
         let newTripStatus: TripStatus;
         switch (action.payload.info?.state) {

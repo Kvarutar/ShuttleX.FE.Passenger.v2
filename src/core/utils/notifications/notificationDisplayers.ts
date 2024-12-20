@@ -1,5 +1,6 @@
 import notifee, { AndroidColor } from '@notifee/react-native';
 
+import { setWinnerPrizes } from '../../lottery/redux';
 import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
 import { createInitialOffer } from '../../ride/redux/offer/thunks';
@@ -37,30 +38,34 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     store.dispatch(setTripStatus(TripStatus.Finished));
   },
   [NotificationType.WinnerFounded]: async payload => {
-    if (payload?.prizeId) {
-      console.log(payload.prizeId);
-      // TODO: add handler to redux
+    if (payload?.prizeIds && payload.ticketNumber) {
+      store.dispatch(
+        setWinnerPrizes({
+          ticket: payload.ticketNumber,
+          prizeIds: payload.prizeIds,
+        }),
+      );
     }
   },
   [NotificationType.DriverArrived]: async () => {
     store.dispatch(getCurrentOrder());
   },
-  //when trip started and driver canceled trip - go to receipt screen
-  [NotificationType.DriverCanceled]: async () => {
-    store.dispatch(setTripIsCanceled(true));
 
+  // BeforePickup when trip doesnt start and driver rejected - go to search driver again
+  [NotificationType.DriverCanceled]: async () => {
+    store.dispatch(endTrip());
+    store.dispatch(createInitialOffer());
+    store.dispatch(setOrderStatus(OrderStatus.Confirming));
+  },
+
+  //AfterPickUp when trip started and driver canceled trip - go to receipt screen
+  [NotificationType.DriverRejected]: async () => {
+    store.dispatch(setTripIsCanceled(true));
     const orderInfo = orderInfoSelector(store.getState());
     if (orderInfo) {
       store.dispatch(getOrderInfo(orderInfo.orderId));
     }
-
     store.dispatch(setTripStatus(TripStatus.Finished));
-  },
-  //when trip doesnt start and driver rejected - go to search driver again
-  [NotificationType.DriverRejected]: async () => {
-    store.dispatch(endTrip());
-    store.dispatch(createInitialOffer());
-    store.dispatch(setOrderStatus(OrderStatus.Confirming));
   },
   [NotificationType.TripStarted]: async () => {
     store.dispatch(getCurrentOrder());

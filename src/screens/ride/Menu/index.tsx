@@ -26,7 +26,7 @@ import {
 import { RootStackParamList } from '../../../Navigate/props';
 import { MenuProps } from './types';
 
-const Menu = ({ onClose }: MenuProps) => {
+const Menu = ({ onClose, isStatusBarTranslucent }: MenuProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const { t } = useTranslation();
@@ -108,7 +108,8 @@ const Menu = ({ onClose }: MenuProps) => {
       userImageUri={selectedPhoto}
       userName={prefferedName}
       menuNavigation={menuNavigation}
-      additionalButton={<TicketWalletButton />}
+      isStatusBarTranslucent={isStatusBarTranslucent}
+      additionalButton={<TicketWalletButton onClose={onClose} />}
       style={styles.menu}
       currentRoute={currentRoute}
       loading={{
@@ -119,7 +120,7 @@ const Menu = ({ onClose }: MenuProps) => {
   );
 };
 
-const TicketWalletButton = () => {
+const TicketWalletButton = ({ onClose }: { onClose: () => void }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -133,7 +134,10 @@ const TicketWalletButton = () => {
   return (
     <Pressable
       style={[computedStyles.additionalButton, styles.additionalButton]}
-      onPress={() => navigation.navigate('TicketWallet')}
+      onPress={() => {
+        navigation.navigate('TicketWallet');
+        onClose();
+      }}
     >
       <View style={styles.itemsWrapper}>
         <LotteryIcon />

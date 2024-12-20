@@ -4,6 +4,7 @@ export type LotteryState = {
   lottery: Nullable<LotteryAPIResponse>;
   previousLottery: Nullable<LotteryAPIResponse>;
   prizes: Prize[];
+  winnerPrizes: Nullable<WinnerPrizesAPIResponse>;
   previousPrizes: Prize[];
   tickets: TicketFromAPI[];
   ticketAfterRide: Nullable<TicketFromAPI>;
@@ -54,6 +55,11 @@ export type TicketAPIResponse = TicketFromAPI[];
 export type WinnerAvatarAPIResponse = string;
 
 export type WinnerAvatarAPIRequest = { prizeId: string; winnerId: string };
+
+export type WinnerPrizesAPIResponse = {
+  ticket: string;
+  prizeIds: string[];
+};
 
 export type LotteryFilterOptions = {
   amount?: number;

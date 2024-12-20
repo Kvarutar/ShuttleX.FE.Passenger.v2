@@ -99,10 +99,18 @@ export type LongPollingAPIResponse = {
   orderId: string;
 };
 
+export type LongPollingInSomePointAPIResponse = {
+  orderId: string;
+  date: string;
+};
+
 export type OrderLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripSuccessfullLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripCanceledBeforePickupLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripCanceledAfterPickupLongPollingAPIResponse = LongPollingAPIResponse;
+export type TripInPickupLongPollingAPIResponse = LongPollingInSomePointAPIResponse;
+export type TripInStopPointAPIResponse = LongPollingInSomePointAPIResponse;
+export type TripInDropOffAPIResponse = LongPollingInSomePointAPIResponse;
 
 //TODO do something with this type
 type RouteInfoOld = {

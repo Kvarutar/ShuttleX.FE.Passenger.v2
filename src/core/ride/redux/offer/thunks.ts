@@ -7,7 +7,6 @@ import { geolocationCoordinatesSelector } from '../geolocation/selectors';
 import { convertGeoToAddress } from '../geolocation/thunks';
 import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
-import { setOrderLongpollingLoading } from '../trip';
 import { getOfferNetworkErrorInfo } from './errors';
 import { setIsAvaliableTariff, updateTariffMatching } from './index';
 import { offerSelector } from './selectors';
@@ -303,9 +302,6 @@ export const createInitialOffer = createAppAsyncThunk<string, void>(
 
     try {
       const response = await passengerAxios.post<CreateInitialOfferAPIResponse>('/Offer/create/initial', bodyPart);
-
-      //starting lonpolling
-      dispatch(setOrderLongpollingLoading(true));
 
       return response.data.id;
     } catch (error) {

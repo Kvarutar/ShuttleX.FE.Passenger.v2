@@ -141,8 +141,8 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
             orderId: orderId,
             payload: {
               isLikedByPassenger,
-              positiveFeedbacks: selectedTitles,
-              negativeFeedbacks: selectedTitles,
+              positiveFeedbacks: isMarkLike ? selectedTitles : [],
+              negativeFeedbacks: isMarkDislike ? selectedTitles : [],
             },
           }),
         );

@@ -14,12 +14,12 @@ import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../
 import { offerIdSelector } from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
+import { orderIdSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
 import {
-  isOrderLongPollingLoadingSelector,
-  orderIdSelector,
-  orderSelector,
-} from '../../../core/ride/redux/trip/selectors';
-import { getOrderLongPolling, getTripCanceledBeforePickUpLongPolling } from '../../../core/ride/redux/trip/thunks';
+  getInPickUpLongPolling,
+  getOrderLongPolling,
+  getTripCanceledBeforePickUpLongPolling,
+} from '../../../core/ride/redux/trip/thunks';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
 import MapView from './MapView';
@@ -44,13 +44,12 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   const orderInfo = useSelector(orderSelector);
   const orderId = useSelector(orderIdSelector);
   const offerId = useSelector(offerIdSelector);
-  const isOrderLngPollLoading = useSelector(isOrderLongPollingLoadingSelector);
 
   useEffect(() => {
-    if (offerId && orderStatus === 'confirming' && isOrderLngPollLoading) {
+    if (offerId && orderStatus === OrderStatus.Confirming) {
       dispatch(getOrderLongPolling(offerId));
     }
-  }, [dispatch, offerId, orderStatus, isOrderLngPollLoading]);
+  }, [dispatch, offerId, orderStatus]);
 
   //for test
   // useEffect(() => {
@@ -66,6 +65,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   useEffect(() => {
     if (orderId) {
       dispatch(getTripCanceledBeforePickUpLongPolling(orderId));
+      dispatch(getInPickUpLongPolling(orderId));
     }
   }, [orderId, dispatch]);
 
@@ -163,7 +163,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
         {topMenu[orderStatus]}
         {TripStatus.Accepted && orderInfo ? <Trip /> : <Order ref={orderRef} />}
       </SafeAreaView>
-      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
+      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} isStatusBarTranslucent />}
       {isWinningPopupVisible && <WinningPopup setIsWinningPopupVisible={setIsWinningPopupVisible} />}
       {/*TODO: uncomment when we will need MysteryBoxPopup*/}
       {/*{isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}*/}
