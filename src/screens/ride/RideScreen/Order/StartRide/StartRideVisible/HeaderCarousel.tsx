@@ -5,7 +5,7 @@ import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSelector } from 'react-redux';
 import { PassengerDefaultCarImage, sizes, Skeleton, Text, useTheme } from 'shuttlex-integration';
 
-import imageStartRideCarouselBitcoin from '../../../../../../../assets/images/startRide/imageStartRideCarouselBitcoin';
+import imageStartRideCarouselBinance from '../../../../../../../assets/images/startRide/imageStartRideCarouselBinance';
 import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
 import { isLotteryLoadingSelector, lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
 import usePrizeTimer from '../utils/usePrizeTimer';
@@ -75,7 +75,7 @@ const HeaderCarousel = () => {
     {
       topText: t('ride_Ride_StartRideVisible_carouselThirdSlideTopText'),
       bottomText: t('ride_Ride_StartRideVisible_carouselThirdSlideBottomText'),
-      image: <Image source={imageStartRideCarouselBitcoin} style={styles.bitcoinImage} />,
+      image: <Image source={imageStartRideCarouselBinance} style={styles.bitcoinImage} />,
     },
   ];
 
