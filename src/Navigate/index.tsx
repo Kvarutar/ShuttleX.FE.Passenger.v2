@@ -52,7 +52,12 @@ const Navigate = (): JSX.Element => {
             <Stack.Screen
               name="MapAddressSelection"
               component={MapAddressSelectionScreen}
-              options={{ animation: 'none' }}
+              options={{
+                animation: 'none',
+                statusBarTranslucent: true,
+                statusBarStyle: 'dark',
+                statusBarColor: 'transparent',
+              }}
             />
             <Stack.Screen name="Rating" component={RatingScreen} />
             <Stack.Screen name="Notifications" component={NotificationsScreen} />

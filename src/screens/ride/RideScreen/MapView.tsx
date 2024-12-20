@@ -22,7 +22,7 @@ import {
 } from '../../../core/ride/redux/geolocation/selectors';
 import { setMapCameraMode } from '../../../core/ride/redux/map';
 import { mapCameraModeSelector, mapCarsSelector, mapStopPointsSelector } from '../../../core/ride/redux/map/selectors';
-import { offerPointsSelector } from '../../../core/ride/redux/offer/selectors';
+import { offerPointsSelector, offerRoutesSelector } from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
 import {
@@ -48,6 +48,7 @@ const MapView = (): JSX.Element => {
   const orderId = useSelector(orderIdSelector);
   const orderStatus = useSelector(orderStatusSelector);
   const offerPoints = useSelector(offerPointsSelector);
+  const offerRoutes = useSelector(offerRoutesSelector);
   const tripStatus = useSelector(tripStatusSelector);
   const pickUpRoute = useSelector(tripPickUpRouteSelector);
   const dropOffRoute = useSelector(tripDropOffRouteSelector);
@@ -60,11 +61,11 @@ const MapView = (): JSX.Element => {
     geolocationCoordinatesRef.current = geolocationCoordinates;
   }, [geolocationCoordinates]);
 
-  const [polyline, setPolyline] = useState<Nullable<MapPolyline>>(null);
-  const [finalStopPointCoordinates, setFinalStopPointCoordinates] = useState<Nullable<LatLng>>(null);
+  const [polyline, setPolyline] = useState<MapPolyline | null>(null);
+  const [finalStopPointCoordinates, setFinalStopPointCoordinates] = useState<LatLng | null>(null);
   const [finalStopPointTimeInSec, setFinalStopPointTimeInSec] = useState<number>(0);
-  const [marker, setMarker] = useState<Nullable<MapMarker>>(null);
-  const [mapCameraCoordinates, setMapCameraCoordinates] = useState<Nullable<LatLng>>(null);
+  const [markers, setMarkers] = useState<MapMarker[]>([]);
+  const [mapCameraCoordinates, setMapCameraCoordinates] = useState<LatLng | null>(null);
 
   // Section: getting geo of contractors and send geo of passenger
   const setUpdatePassengerGeoInterval = (callback: () => void) => {
@@ -82,28 +83,6 @@ const MapView = (): JSX.Element => {
       }
     };
   }, []);
-
-  useEffect(() => {
-    const startOfferPoint = offerPoints[0];
-    if (orderStatus === OrderStatus.Confirming) {
-      mapRef.current?.animateCamera(
-        {
-          pitch: 0,
-          heading: 0,
-          center: { latitude: startOfferPoint.latitude, longitude: startOfferPoint.longitude },
-          zoom: 10, // approximately 35km diameter
-        },
-        { duration: 1500 },
-      );
-      setMarker({
-        colorMode: 'mode1',
-        coordinates: { latitude: startOfferPoint.latitude, longitude: startOfferPoint.longitude },
-        zIndex: -1,
-      });
-    } else {
-      setMarker(null);
-    }
-  }, [orderStatus, offerPoints]);
 
   useEffect(() => {
     if (orderId) {
@@ -170,6 +149,7 @@ const MapView = (): JSX.Element => {
             };
           }
           const coordinates = decodeGooglePolyline(pickUpRoute.geometry); // TODO: check, maybe need to reverse array
+          setMarkers([{ colorMode: 'mode1', coordinates: coordinates[coordinates.length - 1] }]);
           return { type, options: { coordinates } };
         });
         break;
@@ -199,11 +179,49 @@ const MapView = (): JSX.Element => {
         break;
       case TripStatus.Idle:
       case TripStatus.Arrived:
+        if (orderStatus === OrderStatus.ChoosingTariff || orderStatus === OrderStatus.Payment) {
+          break;
+        }
         resetPoints();
         break;
       default:
     }
-  }, [tripStatus, pickUpRoute, dropOffRoute, cars, resetPoints]);
+  }, [tripStatus, orderStatus, pickUpRoute, dropOffRoute, cars, resetPoints]);
+
+  // Section: Markers
+  useEffect(() => {
+    const startOfferPoint = offerPoints[0];
+    if (orderStatus === OrderStatus.Confirming && tripStatus === TripStatus.Idle) {
+      mapRef.current?.animateCamera(
+        {
+          pitch: 0,
+          heading: 0,
+          center: { latitude: startOfferPoint.latitude, longitude: startOfferPoint.longitude },
+          zoom: 12, // approximately 9km diameter
+        },
+        { duration: 1500 },
+      );
+      setMarkers([
+        {
+          colorMode: 'mode1',
+          coordinates: { latitude: startOfferPoint.latitude, longitude: startOfferPoint.longitude },
+          zIndex: -1,
+        },
+      ]);
+    } else if ((orderStatus === OrderStatus.ChoosingTariff || orderStatus === OrderStatus.Payment) && offerRoutes) {
+      const pickUpPoint = offerRoutes.waypoints[0].geo;
+      const dropOffPoint = offerRoutes.waypoints[offerRoutes.waypoints.length - 1].geo;
+
+      setPolyline({ type: 'straight', options: { coordinates: decodeGooglePolyline(offerRoutes.geometry) } });
+      setMarkers([
+        { colorMode: 'mode1', coordinates: pickUpPoint },
+        { colorMode: 'mode2', coordinates: dropOffPoint },
+      ]);
+      //TODO: make camera animate to route, or (better) to resize MapView according to bottomwindow
+    } else {
+      setMarkers([]);
+    }
+  }, [orderStatus, offerPoints, offerRoutes, tripStatus]);
 
   // Section: final stop point time updating
   useEffect(() => {
@@ -233,10 +251,10 @@ const MapView = (): JSX.Element => {
       style={StyleSheet.absoluteFill}
       geolocationCoordinates={geolocationCoordinates ?? undefined}
       geolocationCalculatedHeading={geolocationCalculatedHeading}
-      // TODO: * 0.7 - temporary solution, need to make smart waiting of finishing previous animation and then start next
+      // TODO: * 0.85 - temporary solution, need to make smart waiting of finishing previous animation and then start next
       // (maybe drop few animations if queue is too big)
       // or alternatively do the next request when animation is done (or few miliseconds before ending)
-      cars={{ data: cars, animationDuration: updatePassengerGeoInterval * 0.7 }}
+      cars={{ data: cars, animationDuration: updatePassengerGeoInterval * 0.85 }}
       polylines={polyline ? [polyline] : undefined}
       finalStopPoint={
         finalStopPointCoordinates
@@ -248,7 +266,7 @@ const MapView = (): JSX.Element => {
           : undefined
       }
       stopPoints={stopPoints}
-      markers={marker ? [marker] : undefined}
+      markers={markers}
       cameraMode={cameraMode}
       setCameraModeOnDrag={mode => dispatch(setMapCameraMode(mode))}
       onDragComplete={setMapCameraCoordinates}

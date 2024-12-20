@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Share from 'react-native-share';
@@ -14,7 +15,10 @@ import {
   Fog,
   formatTime,
   getCurrencySign,
+  getDistanceBetweenPoints,
   getPaymentIcon,
+  MapView,
+  MapViewRef,
   PointIcon2,
   SafeAreaView,
   ShareIcon,
@@ -35,7 +39,6 @@ import {
 } from '../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import passengerColors from '../../../shared/colors/colors';
-import MapView from '../RideScreen/MapView';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -50,6 +53,8 @@ const ReceiptScreen = () => {
   const addresses = useSelector(offerPointsSelector);
   const isTripCanceled = useSelector(isTripCanceledSelector);
   const ticket = useSelector(lotteryTicketAfterRideSelector);
+
+  const mapRef = useRef<MapViewRef>(null);
 
   const finalPrice = () => {
     if (orderInfo?.info) {
@@ -214,9 +219,41 @@ const ReceiptScreen = () => {
     </Bar>
   );
 
+  const startPoint = routeInfo?.waypoints[0].geo;
+  const endPoint = routeInfo?.waypoints[routeInfo.waypoints.length - 1].geo;
+
+  const onMapLayout = useCallback(() => {
+    if (mapRef.current && startPoint && endPoint) {
+      const delta = getDistanceBetweenPoints(startPoint, endPoint) / 40000;
+
+      mapRef.current.animateToRegion(
+        {
+          latitude: (startPoint.latitude + endPoint.latitude) / 2,
+          longitude: (startPoint.longitude + endPoint.longitude) / 2,
+          latitudeDelta: delta,
+          longitudeDelta: delta,
+        },
+        0,
+      );
+    }
+  }, [startPoint, endPoint]);
+
   return (
     <>
-      <MapView />
+      <MapView
+        ref={mapRef}
+        onLayout={onMapLayout}
+        style={StyleSheet.absoluteFill}
+        markers={
+          startPoint && endPoint
+            ? [
+                { colorMode: 'mode1', coordinates: startPoint },
+                { colorMode: 'mode2', coordinates: endPoint },
+              ]
+            : undefined
+        }
+        polylines={startPoint && endPoint ? [{ type: 'arc', options: { startPoint, endPoint } }] : undefined}
+      />
       <Fog widthInPercents={`${windowHeight / 9.5}%`} />
       <SafeAreaView containerStyle={styles.container} withTransparentBackground>
         <View>
