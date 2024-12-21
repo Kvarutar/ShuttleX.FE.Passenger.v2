@@ -7,11 +7,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { LatLng } from 'react-native-maps';
 import { useSelector } from 'react-redux';
 import {
-  ArrowIcon,
   Bar,
   Button,
-  ButtonShapes,
-  ButtonSizes,
   CircleButtonModes,
   isCoordinatesEqualZero,
   LoadingSpinner,
@@ -92,9 +89,6 @@ const AddressSelect = ({
     title: {
       color: colors.textSecondaryColor,
     },
-    confirmButton: {
-      bottom: sizes.paddingVertical + 5,
-    },
     scrollViewSearchContentContainer: {
       paddingBottom: sizes.paddingVertical,
     },
@@ -134,6 +128,14 @@ const AddressSelect = ({
       setAddresses(mappedRes);
     })();
   }, [debounceInputValue, i18n.language, dispatch]);
+
+  // TODO: Maybe will be added later
+  // useEffect(() => {
+  //   if (addresses.length > 0 && !focusedInput.focus) {
+  //     onAddressSelect(addresses[0]);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [focusedInput.focus]);
 
   useEffect(() => {
     if (firstUpdateDefaultLocation.current && defaultLocation) {
@@ -357,19 +359,14 @@ const AddressSelect = ({
               </>
             )}
           </ScrollView>
-          {isAllOfferPointsFilled && (
-            <Button
-              isLoading={isAvailableTariffsLoading || isOfferRoutesLoading}
-              size={ButtonSizes.S}
-              disabled={incorrectWaypoints || !isCityAvailable}
-              onPress={onConfirm}
-              mode={!incorrectWaypoints || isCityAvailable ? CircleButtonModes.Mode1 : CircleButtonModes.Mode4}
-              shape={ButtonShapes.Circle}
-              style={[styles.confirmButton, computedStyles.confirmButton]}
-            >
-              <ArrowIcon />
-            </Button>
-          )}
+          <Button
+            isLoading={isAvailableTariffsLoading || isOfferRoutesLoading}
+            disabled={incorrectWaypoints || !isCityAvailable}
+            onPress={onConfirm}
+            mode={isAllOfferPointsFilled ? CircleButtonModes.Mode1 : CircleButtonModes.Mode5}
+            containerStyle={styles.confirmButtonContainer}
+            text={t('ride_Ride_AddressSelect_confirmButton')}
+          />
         </View>
       </TouchableWithoutFeedback>
     </>
@@ -411,9 +408,8 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     marginBottom: 10,
   },
-  confirmButton: {
-    position: 'absolute',
-    right: 0,
+  confirmButtonContainer: {
+    paddingVertical: 20,
   },
 });
 

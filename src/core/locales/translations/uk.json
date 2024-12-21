@@ -70,6 +70,7 @@
   "ride_Ride_AddressSelect_addressWhereInputPlaceholder": "Куди їдемо?",
   "ride_Ride_AddressSelect_addressFromInputPlaceholder": "Звідки їдемо?",
   "ride_Ride_AddressSelect_addressInputMyLocation": "Моя локація",
+  "ride_Ride_AddressSelect_confirmButton": "Далі",
   "ride_Ride_MysteryBoxPopup_firstTitle": "Ваш водій\nвручить вам",
   "ride_Ride_MysteryBoxPopup_secondTitle": "Таємну\nкоробку No123!",
   "ride_Ride_MysteryBoxPopup_description": "Вітаємо! Ви отримали унікальну\nподарункову коробку. Подивіться,\nщо на вас чекає сьогодні!",

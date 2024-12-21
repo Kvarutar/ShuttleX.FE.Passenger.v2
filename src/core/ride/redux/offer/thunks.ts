@@ -9,7 +9,7 @@ import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
 import { getOfferNetworkErrorInfo } from './errors';
 import { setIsAvaliableTariff, updateTariffMatching } from './index';
-import { offerSelector } from './selectors';
+import { offerPointsSelector, offerSelector } from './selectors';
 import {
   AddressSearchPayload,
   CreateInitialOfferAPIResponse,
@@ -61,12 +61,14 @@ export const getRecentDropoffs = createAppAsyncThunk<SearchAddressFromAPI[], Rec
 export const searchAddress = createAppAsyncThunk<SearchAddressAPIResponse, SearchAddressPayload>(
   'offer/searchAddress',
   async (payload, { rejectWithValue, passengerAxios, getState }) => {
-    const currentLocation = geolocationCoordinatesSelector(getState());
+    const pickUp = offerPointsSelector(getState())[0].latitude
+      ? offerPointsSelector(getState())[0]
+      : geolocationCoordinatesSelector(getState());
 
     let urlPart = '';
 
-    if (currentLocation) {
-      urlPart = `${urlPart}&Latitude=${currentLocation.latitude}&Longitude=${currentLocation.longitude}`;
+    if (pickUp) {
+      urlPart = `${urlPart}&Latitude=${pickUp.latitude}&Longitude=${pickUp.longitude}`;
     }
     try {
       const response = await passengerAxios.get<SearchAddressAPIResponse>(
