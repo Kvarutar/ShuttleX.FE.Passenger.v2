@@ -62,10 +62,12 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
   useEffect(() => {
     if (locationLoaded) {
       dispatch(getOrUpdateZone());
-      dispatch(getAvailableTariffs());
       dispatch(getRecentDropoffs({ amount: 10 }));
+      (async () => {
+        await dispatch(getCurrentOrder());
+        dispatch(getAvailableTariffs());
+      })();
       dispatch(getOrdersHistory());
-      dispatch(getCurrentOrder());
     }
   }, [locationLoaded, dispatch]);
 
@@ -94,7 +96,10 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
   }, [passengerZone, i18n.language, dispatch]);
 
   useEffect(() => {
-    dispatch(getAvailableTariffs());
+    (async () => {
+      await dispatch(getCurrentOrder());
+      dispatch(getAvailableTariffs());
+    })();
   }, [passengerZone, dispatch]);
 
   useEffect(() => {

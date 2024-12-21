@@ -1,5 +1,5 @@
 import { LatLng } from 'react-native-maps';
-import { getNetworkErrorInfo } from 'shuttlex-integration';
+import { getNetworkErrorInfo, Nullable } from 'shuttlex-integration';
 
 import { profileZoneSelector } from '../../../passenger/redux/selectors';
 import { createAppAsyncThunk } from '../../../redux/hooks';
@@ -7,6 +7,7 @@ import { geolocationCoordinatesSelector } from '../geolocation/selectors';
 import { convertGeoToAddress } from '../geolocation/thunks';
 import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
+import { orderSelector } from '../trip/selectors';
 import { getOfferNetworkErrorInfo } from './errors';
 import { setIsAvaliableTariff, updateTariffMatching } from './index';
 import { offerPointsSelector, offerSelector } from './selectors';
@@ -172,7 +173,16 @@ export const getZoneIdByLocation = createAppAsyncThunk<ZoneIdFromAPI, LatLng>(
 export const getAvailableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, void | LatLng>(
   'offer/getAvailableTariffs',
   async (payload, { rejectWithValue, configAxios, getState, dispatch }) => {
-    let zoneId = profileZoneSelector(getState())?.id ?? null;
+    let zoneId: Nullable<string> = null;
+
+    const profileZoneId = profileZoneSelector(getState())?.id;
+    const acceptedOfferZoneId = orderSelector(getState())?.info?.acceptedOfferZoneId;
+
+    if (profileZoneId) {
+      zoneId = profileZoneId;
+    } else if (acceptedOfferZoneId) {
+      zoneId = acceptedOfferZoneId;
+    }
 
     if (payload) {
       zoneId = await dispatch(getZoneIdByLocation(payload)).unwrap();

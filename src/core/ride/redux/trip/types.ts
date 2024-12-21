@@ -41,6 +41,7 @@ export type OrderFromAPI = {
   passengerId: string;
   finishedDate: string;
   estimatedPrice: number;
+  acceptedOfferZoneId: string;
 };
 
 export type GetCurrentOrderAPIResponse = OrderFromAPI;
