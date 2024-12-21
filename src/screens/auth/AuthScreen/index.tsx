@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Linking } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   CustomKeyboardAvoidingView,
@@ -107,7 +108,7 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
           <SignUpScreen
             ref={signUpRef}
             navigateToSignIn={() => setIsisSignIn(true)}
-            navigateToTerms={() => navigation.navigate('Terms')}
+            navigateToTerms={() => Linking.openURL('https://www.shuttlex.com/Privacy%20Policy%20ShuttleX.pdf')}
             onSubmit={handleSendingSignUpData}
             isLoading={isLoading}
             setPanelPhoneVisible={setIsPanelPhoneSelectVisible}
