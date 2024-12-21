@@ -141,7 +141,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
         content.push(
           <TariffGroup
             key={`tariff_group_${key}`}
-            price={groupPrice.toFixed(2)}
+            price={groupPrice}
             title={key as TariffsType}
             onPress={() => setSelectedTariffGroup(value)}
             isSelected={value.groupName === selectedTariffGroup?.groupName}

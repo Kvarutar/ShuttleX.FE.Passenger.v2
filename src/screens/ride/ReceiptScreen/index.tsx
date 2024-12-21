@@ -61,7 +61,7 @@ const ReceiptScreen = () => {
       // TODO: ask back about sign(currencyCode), not code
       const { currencyCode, totalFinalPrice, estimatedPrice } = orderInfo.info;
       const currencySign = getCurrencySign(currencyCode as CurrencyType);
-      const price = (totalFinalPrice ?? estimatedPrice).toFixed(0);
+      const price = totalFinalPrice ?? estimatedPrice;
 
       return `${currencySign}${price}`;
     }

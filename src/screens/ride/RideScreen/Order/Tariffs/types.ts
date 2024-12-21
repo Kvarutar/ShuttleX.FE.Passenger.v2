@@ -3,7 +3,7 @@ import { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native';
 import { TariffsType, TariffWithMatching } from '../../../../../core/ride/redux/offer/types';
 
 export type TariffGroupProps = {
-  price: string;
+  price: number;
   title: TariffsType;
   isSelected?: boolean;
   style?: StyleProp<ViewStyle>;

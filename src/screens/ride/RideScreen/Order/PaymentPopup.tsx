@@ -307,7 +307,7 @@ const PaymentPopup = () => {
       {
         title: t('ride_Ride_PaymentPopup_priceTitle'),
         // TODO: swap currencyCode to correct value
-        value: `${getCurrencySign('UAH')}${estimatedPrice?.value ? estimatedPrice?.value.toFixed(2) : 0}`,
+        value: `${getCurrencySign('UAH')}${estimatedPrice?.value ?? 0}`,
       },
       {
         title: t('ride_Ride_PaymentPopup_timeTitle'),

@@ -152,7 +152,7 @@ const TariffBar = ({
     if (isAvailableTariff) {
       if (showPriceAndTime && availablePlans[defaultPlanIndex]) {
         //TODO: swap currencyCode to correct value
-        return `${getCurrencySign('UAH')}${availablePlans[defaultPlanIndex].cost !== null ? availablePlans[defaultPlanIndex].cost?.toFixed(2) : 0}`;
+        return `${getCurrencySign('UAH')}${availablePlans[defaultPlanIndex].cost !== null ? availablePlans[defaultPlanIndex].cost : 0}`;
       }
     } else {
       return t('ride_Ride_TariffBar_notAvailable');
