@@ -7,3 +7,4 @@ export const geolocationAccuracySelector = (state: AppState) => state.geolocatio
 export const geolocationCalculatedHeadingSelector = (state: AppState) =>
   state.geolocation.calculatedHeading.headingExtended;
 export const geolocationErrorSelector = (state: AppState) => state.geolocation.error;
+export const isGeolocationCoordinatesLoadedSelector = (state: AppState) => state.geolocation.isGeolocationLoaded;

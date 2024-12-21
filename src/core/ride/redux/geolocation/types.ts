@@ -8,6 +8,7 @@ export type GeolocationState = {
   isPermissionGranted: boolean;
   isLocationEnabled: boolean;
   accuracy: LocationAccuracy;
+  isGeolocationLoaded: boolean;
   calculatedHeading: {
     headingExtended: number;
     current: number;

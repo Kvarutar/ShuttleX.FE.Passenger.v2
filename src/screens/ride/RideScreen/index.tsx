@@ -11,6 +11,7 @@ import {
 import { getAccountSettingsVerifyStatus } from '../../../core/menu/redux/accountSettings/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
+import { isGeolocationCoordinatesLoadedSelector } from '../../../core/ride/redux/geolocation/selectors';
 import { offerIdSelector } from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
@@ -22,6 +23,7 @@ import {
 } from '../../../core/ride/redux/trip/thunks';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
+import Loading from './Loading';
 import MapView from './MapView';
 import Order from './Order';
 import { OrderRef } from './Order/types';
@@ -38,12 +40,16 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isWinningPopupVisible, setIsWinningPopupVisible] = useState(false);
+
   //TODO: uncomment when we will need MysteryBoxPopup
   // const [isMysteryBoxPopupVisible, setIsMysteryBoxPopupVisible] = useState(false);
 
   const orderInfo = useSelector(orderSelector);
   const orderId = useSelector(orderIdSelector);
   const offerId = useSelector(offerIdSelector);
+  const isGeolocationCoordinatesLoaded = useSelector(isGeolocationCoordinatesLoadedSelector);
+
+  const [isLoading, setIsLoading] = useState(!isGeolocationCoordinatesLoaded);
 
   useEffect(() => {
     if (offerId && orderStatus === OrderStatus.Confirming) {
@@ -156,8 +162,13 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
     rideUnavailable: null,
   };
 
+  useEffect(() => {
+    setTimeout(() => setIsLoading(!isGeolocationCoordinatesLoaded), 2000);
+  }, [isGeolocationCoordinatesLoaded]);
+
   return (
     <>
+      {isLoading && <Loading />}
       <SafeAreaView style={styles.wrapper}>
         <MapView />
         {topMenu[orderStatus]}
