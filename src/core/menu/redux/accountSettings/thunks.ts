@@ -56,6 +56,7 @@ export const changeAccountContactData = createAppAsyncThunk<void, ChangeAccountC
     try {
       await authAccountSettingsAxios.post(`/reset/${mode}`, requestData);
       await dispatch(requestAccountSettingsChangeDataVerificationCode({ mode, data: data.newData }));
+      await dispatch(getAccountSettingsVerifyStatus());
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

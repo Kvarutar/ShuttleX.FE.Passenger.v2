@@ -22,6 +22,7 @@ import { signOut } from '../../../core/auth/redux/thunks';
 import { resetAccountSettingsVerification } from '../../../core/menu/redux/accountSettings';
 import {
   accountSettingsChangeDataErrorSelector,
+  accountSettingsVerifyErrorSelector,
   accountSettingsVerifyStatusSelector,
   isAccountSettingsChangeDataLoadingSelector,
 } from '../../../core/menu/redux/accountSettings/selectors';
@@ -47,11 +48,12 @@ const AccountSettings = (): JSX.Element => {
   const prefferedName = useSelector(profilePrefferedNameSelector);
   const changeDataError = useSelector(accountSettingsChangeDataErrorSelector);
   const isChangeDataLoading = useSelector(isAccountSettingsChangeDataLoadingSelector);
+  const verifyDataError = useSelector(accountSettingsVerifyErrorSelector);
   const verifiedStatus = useSelector(accountSettingsVerifyStatusSelector);
 
   useEffect(() => {
     dispatch(resetAccountSettingsVerification());
-  }, [dispatch]);
+  }, [verifyDataError, changeDataError, dispatch]);
 
   const handleOpenVerification = async (mode: 'phone' | 'email', newValue: string, method: 'change' | 'verify') => {
     if (!isChangeDataLoading && !changeDataError) {

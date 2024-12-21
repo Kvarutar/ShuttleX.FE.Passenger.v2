@@ -38,6 +38,8 @@ const slice = createSlice({
       state.verifyStatus = action.payload;
     },
     resetAccountSettingsVerification(state) {
+      state.error.changeData = initialState.error.changeData;
+      state.loading.changeData = initialState.loading.changeData;
       state.error.verify = initialState.error.verify;
       state.loading.verify = initialState.loading.verify;
     },

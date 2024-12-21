@@ -17,6 +17,7 @@ import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
 import { orderIdSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
 import {
+  getArrivedLongPolling,
   getInPickUpLongPolling,
   getOrderLongPolling,
   getTripCanceledBeforePickUpLongPolling,
@@ -72,6 +73,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
     if (orderId) {
       dispatch(getTripCanceledBeforePickUpLongPolling(orderId));
       dispatch(getInPickUpLongPolling(orderId));
+      dispatch(getArrivedLongPolling(orderId));
     }
   }, [orderId, dispatch]);
 

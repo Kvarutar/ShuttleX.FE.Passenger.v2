@@ -13,6 +13,7 @@ import {
   OrderLongPollingAPIResponse,
   RouteDropOffApiResponse,
   RoutePickUpApiResponse,
+  TripArivedLongPollingAPIResponse,
   TripCanceledAfterPickupLongPollingAPIResponse,
   TripCanceledBeforePickupLongPollingAPIResponse,
   TripInfo,
@@ -203,6 +204,21 @@ export const getInPickUpLongPolling = createAppAsyncThunk<TripInPickupLongPollin
     try {
       const response = await passengerLongPollingAxios.get<TripInPickupLongPollingAPIResponse>(
         `/Order/${orderId}/in-pick-up/long-polling`,
+      );
+      dispatch(getCurrentOrder());
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
+
+export const getArrivedLongPolling = createAppAsyncThunk<TripArivedLongPollingAPIResponse, string>(
+  'trip/getArrivedLongPolling',
+  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch }) => {
+    try {
+      const response = await passengerLongPollingAxios.get<TripArivedLongPollingAPIResponse>(
+        `/Order/${orderId}/arrived/long-polling`,
       );
       dispatch(getCurrentOrder());
       return response.data;

@@ -109,6 +109,7 @@ export type OrderLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripSuccessfullLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripCanceledBeforePickupLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripCanceledAfterPickupLongPollingAPIResponse = LongPollingAPIResponse;
+export type TripArivedLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripInPickupLongPollingAPIResponse = LongPollingInSomePointAPIResponse;
 export type TripInStopPointAPIResponse = LongPollingInSomePointAPIResponse;
 export type TripInDropOffAPIResponse = LongPollingInSomePointAPIResponse;

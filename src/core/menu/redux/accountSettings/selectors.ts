@@ -8,3 +8,4 @@ export const isAccountSettingsPhoneVerifiedSelector = (state: AppState) =>
 export const isAccountSettingsChangeDataLoadingSelector = (state: AppState) => state.accountSettings.loading.changeData;
 export const isAccountSettingsVerifyLoadingSelector = (state: AppState) => state.accountSettings.loading.verify;
 export const accountSettingsChangeDataErrorSelector = (state: AppState) => state.accountSettings.error.changeData;
+export const accountSettingsVerifyErrorSelector = (state: AppState) => state.accountSettings.error.verify;
