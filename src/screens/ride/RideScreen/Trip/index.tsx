@@ -121,7 +121,7 @@ const Trip = () => {
         />
       ))}
       visiblePart={<VisiblePart setExtraSum={setExtraSum} extraSum={extraSum} />}
-      hiddenPart={<HiddenPart extraSum={extraSum} />}
+      hiddenPart={<HiddenPart />}
       visiblePartStyle={styles.visiblePartStyle}
       hiddenPartButton={
         <SwipeButton

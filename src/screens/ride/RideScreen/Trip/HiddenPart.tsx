@@ -70,7 +70,7 @@ const TripInfoBar = ({ info }: { info: { text: string; value: string; barMode?: 
   );
 };
 
-const HiddenPart = ({ extraSum }: { extraSum: number }) => {
+const HiddenPart = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const tariffIconsData = useTariffsIcons();
@@ -117,7 +117,7 @@ const HiddenPart = ({ extraSum }: { extraSum: number }) => {
       {
         text: t('ride_Ride_Trip_totalForRide'),
         //TODO: swap currencyCode to correct value
-        value: `${getCurrencySign('UAH')}${order.info.estimatedPrice + extraSum}`,
+        value: `${getCurrencySign('UAH')}${order.info.estimatedPrice}`,
       },
     ];
 

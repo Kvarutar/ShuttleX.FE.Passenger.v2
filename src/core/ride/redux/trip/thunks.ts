@@ -26,7 +26,7 @@ import {
 //Some duplicate logic because I don't know what this logic will look like in the future (we are going to receive several orders).
 export const getCurrentOrder = createAppAsyncThunk<Nullable<Order>, void>(
   'trip/getCurrentOrder',
-  async (_, { rejectWithValue, orderAxios }) => {
+  async (_, { rejectWithValue, orderAxios, dispatch }) => {
     try {
       const response = await orderAxios.get<GetCurrentOrderAPIResponse>('/current');
 
@@ -34,6 +34,7 @@ export const getCurrentOrder = createAppAsyncThunk<Nullable<Order>, void>(
 
       if (response.data) {
         try {
+          dispatch(getRouteInfo(response.data.orderId));
           avatar = await orderAxios.get<Blob>(
             `/${response.data.orderId}/contractors/avatars/${response.data.avatarIds[0]}`,
             {
