@@ -27,6 +27,7 @@ import {
   OfferRoutesFromAPI,
   RecentAddressAPIResponse,
   RecentDropoffsAPIResponse,
+  RecentDropoffsFromAPI,
   RecentDropoffsPayload,
   SearchAddressAPIResponse,
   SearchAddressFromAPI,
@@ -36,9 +37,9 @@ import {
 } from './types';
 import { algorythmTypeParser, tariffsNamesByFeKey } from './utils';
 
-export const getRecentDropoffs = createAppAsyncThunk<SearchAddressFromAPI[], RecentDropoffsPayload>(
+export const getRecentDropoffs = createAppAsyncThunk<RecentDropoffsFromAPI[], RecentDropoffsPayload>(
   'offer/getRecentDropoffs',
-  async (payload, { rejectWithValue, passengerAxios, getState }) => {
+  async (payload, { rejectWithValue, passengerAxios, getState, dispatch }) => {
     const currentLocation = geolocationCoordinatesSelector(getState());
 
     let urlPart = '';
@@ -49,10 +50,29 @@ export const getRecentDropoffs = createAppAsyncThunk<SearchAddressFromAPI[], Rec
 
     try {
       const response = await passengerAxios.get<RecentDropoffsAPIResponse>(
-        `/Ride/recent-dropoffs?Amount=${payload.amount}${urlPart}`,
+        `/Ride/dropoffs-recent?Amount=${payload.amount}${urlPart}`,
+      );
+      const recentDropoffs = response.data;
+      const coordinates = recentDropoffs.map(el => el.dropoffGeo);
+
+      const fullAddresses = await Promise.all(
+        coordinates.map(geo =>
+          dispatch(
+            convertGeoToAddress({
+              latitude: geo.latitude,
+              longitude: geo.longitude,
+            }),
+          ).unwrap(),
+        ),
       );
 
-      return response.data;
+      const enrichedDropoffs = recentDropoffs.map((dropoff, index) => ({
+        ...dropoff,
+        fullAddress: fullAddresses[index].fullAddress,
+        id: dropoff.id,
+      }));
+
+      return enrichedDropoffs;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }
@@ -75,7 +95,6 @@ export const searchAddress = createAppAsyncThunk<SearchAddressAPIResponse, Searc
       const response = await passengerAxios.get<SearchAddressAPIResponse>(
         `/Ride/places/?placeOrAddress=${payload.query}&Language=${payload.language}${urlPart}`,
       );
-
       return response.data;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
@@ -104,9 +123,8 @@ export const getAddressSearchHistory = createAppAsyncThunk<SearchAddressFromAPI[
 
       return response.data.map<SearchAddressFromAPI>(el => ({
         fullAddress: el.fullAddress,
-        id: '',
-        address: el.place,
-        geo: el.geo,
+        dropoffAddress: el.place,
+        dropoffGeo: el.geo,
       }));
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));

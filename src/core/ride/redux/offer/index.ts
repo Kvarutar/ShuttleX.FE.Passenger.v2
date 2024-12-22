@@ -20,7 +20,7 @@ import {
   MatchingFromAPI,
   OfferRoutesFromAPI,
   OfferState,
-  SearchAddressFromAPI,
+  RecentDropoffsAPIResponse,
   SelectedTariff,
   TariffsPricesFromAPI,
   ZoneIdFromAPI,
@@ -66,8 +66,8 @@ const slice = createSlice({
     setOfferId(state, action: PayloadAction<string>) {
       state.offerId = action.payload;
     },
-    addRecentDropoff(state, action: PayloadAction<SearchAddressFromAPI>) {
-      state.recentDropoffs.unshift(action.payload);
+    addRecentDropoff(state, action: PayloadAction<RecentDropoffsAPIResponse>) {
+      state.recentDropoffs.unshift(...action.payload);
     },
     setTripTariff(state, action: PayloadAction<SelectedTariff>) {
       state.selectedTariff = action.payload;

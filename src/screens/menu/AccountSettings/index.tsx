@@ -47,8 +47,8 @@ const AccountSettings = (): JSX.Element => {
 
   const prefferedName = useSelector(profilePrefferedNameSelector);
   const changeDataError = useSelector(accountSettingsChangeDataErrorSelector);
-  const isChangeDataLoading = useSelector(isAccountSettingsChangeDataLoadingSelector);
   const verifyDataError = useSelector(accountSettingsVerifyErrorSelector);
+  const isChangeDataLoading = useSelector(isAccountSettingsChangeDataLoadingSelector);
   const verifiedStatus = useSelector(accountSettingsVerifyStatusSelector);
 
   useEffect(() => {

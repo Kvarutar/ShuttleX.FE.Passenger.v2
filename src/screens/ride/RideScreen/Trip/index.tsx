@@ -26,7 +26,6 @@ import {
 } from '../../../../core/ride/redux/trip/selectors';
 import {
   cancelTrip,
-  getOrderInfo,
   getTripCanceledAfterPickUpLongPolling,
   getTripSuccessfullLongPolling,
 } from '../../../../core/ride/redux/trip/thunks';
@@ -75,7 +74,6 @@ const Trip = () => {
   const onCancelTrip = async () => {
     if (orderId) {
       await dispatch(cancelTrip(orderId));
-      dispatch(getOrderInfo(orderId));
     }
   };
 

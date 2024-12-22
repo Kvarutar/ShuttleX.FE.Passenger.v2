@@ -1,4 +1,4 @@
-import { SearchAddressFromAPI } from './../../../../../../core/ride/redux/offer/types';
+import { RecentDropoffsFromAPI } from './../../../../../../core/ride/redux/offer/types';
 
 export type SliderItemProps = {
   topText: string;
@@ -9,6 +9,6 @@ export type SliderItemProps = {
 
 export type StartRideVisibleProps = {
   openAddressSelect: (state: boolean) => void;
-  setFastAddressSelect: (address: SearchAddressFromAPI) => void;
+  setFastAddressSelect: (address: RecentDropoffsFromAPI) => void;
   isBottomWindowOpen: boolean;
 };

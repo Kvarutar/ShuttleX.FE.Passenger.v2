@@ -40,7 +40,7 @@ import {
   saveSearchResult,
   searchAddress,
 } from '../../../../../../core/ride/redux/offer/thunks';
-import { SearchAddressFromAPI } from '../../../../../../core/ride/redux/offer/types';
+import { RecentDropoffsFromAPI, SearchAddressFromAPI } from '../../../../../../core/ride/redux/offer/types';
 import { setOrderStatus } from '../../../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../../../core/ride/redux/order/types';
 import { RootStackParamList } from '../../../../../../Navigate/props';
@@ -73,7 +73,7 @@ const AddressSelect = ({
   const [focusedInput, setFocusedInput] = useState<FocusedInput>({ id: 0, value: '', focus: false });
   const [isAddressSelected, setIsAddressSelected] = useState(false);
   const [addresses, setAddresses] = useState<SearchAddressFromAPI[]>([]);
-  const [addressesHistory, setAddressesHistory] = useState<SearchAddressFromAPI[]>([]);
+  const [addressesHistory, setAddressesHistory] = useState<RecentDropoffsFromAPI[]>([]);
   const [incorrectWaypoints, setIncorrectWaypoints] = useState(false);
 
   const debounceInputValue = useDebounce(focusedInput.value, 300);
@@ -103,7 +103,6 @@ const AddressSelect = ({
   useEffect(() => {
     (async () => {
       const addressessHistory = await dispatch(getAddressSearchHistory({ amount: 10 })).unwrap();
-
       setAddressesHistory(addressessHistory);
     })();
   }, [dispatch]);
@@ -111,22 +110,24 @@ const AddressSelect = ({
   useEffect(() => {
     if (debounceInputValue.trim() === '') {
       setAddresses([]);
-      return;
-    }
+    } else {
+      (async () => {
+        const result = await dispatch(searchAddress({ query: debounceInputValue, language: i18n.language })).unwrap();
 
-    (async () => {
-      const searchedAddress = await dispatch(
-        searchAddress({ query: debounceInputValue, language: i18n.language }),
-      ).unwrap();
-      const mappedRes = searchedAddress.map<SearchAddressFromAPI>(el => ({
-        id: el.externalId,
-        address: el.mainText,
-        fullAddress: el.secondaryText,
-        geo: { latitude: 0, longitude: 0 },
-        totalDistanceMtr: el.distanceMtr,
-      }));
-      setAddresses(mappedRes);
-    })();
+        const mappedRes = result.map<SearchAddressFromAPI>(el => ({
+          id: el.externalId,
+          dropoffAddress: el.mainText,
+          fullAddress: el.secondaryText ?? el.mainText,
+          dropoffGeo: {
+            latitude: 0,
+            longitude: 0,
+          },
+          totalDistanceMtr: el.distanceMtr,
+        }));
+
+        setAddresses(mappedRes);
+      })();
+    }
   }, [debounceInputValue, i18n.language, dispatch]);
 
   // TODO: Maybe will be added later
@@ -159,10 +160,10 @@ const AddressSelect = ({
       dispatch(
         updateOfferPoint({
           id: 1,
-          address: address.address,
+          address: address.dropoffAddress,
           fullAddress: address.fullAddress,
-          longitude: address.geo.longitude,
-          latitude: address.geo.latitude,
+          longitude: address.dropoffGeo.longitude,
+          latitude: address.dropoffGeo.latitude,
         }),
       );
     }
@@ -206,13 +207,12 @@ const AddressSelect = ({
 
   const onAddressSelect = async (place: SearchAddressFromAPI, isHistory: boolean = false) => {
     let geo: LatLng = {
-      latitude: place.geo.latitude,
-      longitude: place.geo.longitude,
+      latitude: place.dropoffGeo.latitude,
+      longitude: place.dropoffGeo.longitude,
     };
 
     if (!isHistory) {
       const enhancedAddress = await dispatch(enhanceAddress(place)).unwrap();
-
       dispatch(saveSearchResult(enhancedAddress));
       setAddressesHistory(prev => [place, ...prev]);
 
@@ -225,7 +225,7 @@ const AddressSelect = ({
     dispatch(
       updateOfferPoint({
         id: focusedInput.id,
-        address: place.address,
+        address: place.dropoffAddress,
         fullAddress: place.fullAddress,
         latitude: geo.latitude,
         longitude: geo.longitude,
@@ -334,7 +334,7 @@ const AddressSelect = ({
                           key={index}
                           mode={PlaceBarModes.Save}
                           place={item}
-                          onPress={() => onAddressSelect(item)}
+                          onPress={() => onAddressSelect(item, true)}
                           style={styles.recentPlaceBar}
                         />
                       ))}

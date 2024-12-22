@@ -19,6 +19,7 @@ import {
   getPaymentIcon,
   MapView,
   MapViewRef,
+  mtrToKm,
   PointIcon2,
   SafeAreaView,
   ShareIcon,
@@ -136,16 +137,8 @@ const ReceiptScreen = () => {
     return t('ride_Receipt_minutes', { count: minutes });
   };
 
-  const formatDistance = (distanceInMeters: number) => {
-    if (distanceInMeters > 1000) {
-      const distanceInKm = (distanceInMeters / 1000).toFixed(1);
-      return { amount: distanceInKm, title: t('ride_Receipt_kilometers') };
-    }
-
-    return { amount: distanceInMeters, title: t('ride_Receipt_meters') };
-  };
-
-  const distance = formatDistance(routeInfo?.totalDistanceMtr ?? 0);
+  const distance = mtrToKm(routeInfo?.totalDistanceMtr ?? 0);
+  const isKilometres = routeInfo && routeInfo?.totalDistanceMtr > 1000;
 
   const roadTimeData = [
     {
@@ -182,8 +175,10 @@ const ReceiptScreen = () => {
         ))}
       </View>
       <View style={[styles.timeContainer, computedStyles.timeContainer]}>
-        <Text style={styles.separatorDistanceText}>{distance.amount}</Text>
-        <Text style={[styles.separatorDistanceText, computedStyles.separatorDistanceText]}>{distance.title}</Text>
+        <Text style={styles.separatorDistanceText}>{distance}</Text>
+        <Text style={[styles.separatorDistanceText, computedStyles.separatorDistanceText]}>
+          {isKilometres ? t('ride_Receipt_kilometers') : t('ride_Receipt_meters')}
+        </Text>
       </View>
       <View style={styles.separatorCircleContainer}>
         {Array.from({ length: 3 }).map((_, index) => (

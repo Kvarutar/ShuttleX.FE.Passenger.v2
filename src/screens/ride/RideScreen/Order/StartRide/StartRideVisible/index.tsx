@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { Bar, BarModes, SearchIcon, sizes, Text, useTheme } from 'shuttlex-integration';
 
 import { offerRecentDropoffsSelector } from '../../../../../../core/ride/redux/offer/selectors';
-import { SearchAddressFromAPI } from '../../../../../../core/ride/redux/offer/types';
+import { RecentDropoffsFromAPI } from '../../../../../../core/ride/redux/offer/types';
 import PlaceBar from '../../PlaceBar';
 import HeaderCarousel from './HeaderCarousel';
 import { StartRideVisibleProps } from './types';
@@ -27,7 +27,6 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
   const isRecentDropoffsExist = useMemo(() => recentDropoffs.length > 0, [recentDropoffs]);
 
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(true);
-
   const computedStyles = StyleSheet.create({
     textTitle: {
       color: colors.textPrimaryColor,
@@ -59,7 +58,7 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
 
   const openAddressSelectHandler = () => openAddressSelect(true);
 
-  const onFastAddressSelectHandler = (place: SearchAddressFromAPI) => () => {
+  const onFastAddressSelectHandler = (place: RecentDropoffsFromAPI) => () => {
     setFastAddressSelect(place);
     openAddressSelect(true);
   };
@@ -114,7 +113,7 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
             {searchBar}
             {recentDropoffs.map((place, index) => (
               <PlaceBar
-                key={`${place.address}_${index}`}
+                key={`${place.dropoffAddress}_${index}`}
                 style={styles.placeBar}
                 place={place}
                 onPress={onFastAddressSelectHandler(place)}

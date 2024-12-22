@@ -72,6 +72,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   useEffect(() => {
     if (orderId) {
       dispatch(getTripCanceledBeforePickUpLongPolling(orderId));
+      dispatch(getArrivedLongPolling(orderId));
       dispatch(getInPickUpLongPolling(orderId));
       dispatch(getArrivedLongPolling(orderId));
     }

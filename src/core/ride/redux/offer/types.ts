@@ -2,14 +2,23 @@ import { LatLng } from 'react-native-maps';
 import { NetworkErrorDetailsWithBody, Nullable, TariffType } from 'shuttlex-integration';
 
 export type SearchAddressFromAPI = {
-  id: string;
-  address: string;
-  totalDistanceMtr?: number;
-  geo: LatLng;
+  id?: string;
   fullAddress: string;
+  dropoffGeo: LatLng;
+  dropoffAddress: string;
+  totalDistanceMtr?: number;
 };
 
-export type RecentDropoffsAPIResponse = SearchAddressFromAPI[];
+export type RecentDropoffsFromAPI = {
+  id?: string;
+  fullAddress: string;
+  dropoffGeo: LatLng;
+  dropoffAddress: string;
+  totalDistanceMtr?: number;
+};
+
+export type RecentDropoffsAPIResponse = RecentDropoffsFromAPI[];
+
 export type RecentDropoffsPayload = {
   amount: number;
 };
@@ -25,7 +34,7 @@ export type EstimatedPrice = {
 
 export type OfferState = {
   offerId: Nullable<string>;
-  recentDropoffs: SearchAddressFromAPI[];
+  recentDropoffs: RecentDropoffsFromAPI[];
   points: AddressPoint[];
   loading: {
     searchAdresses: boolean;

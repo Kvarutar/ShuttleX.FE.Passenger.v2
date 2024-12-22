@@ -1,14 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Bar, BarModes, ClockIcon, LocationIcon, Text, useTheme } from 'shuttlex-integration';
+import { Bar, BarModes, ClockIcon, LocationIcon, mtrToKm, Text, useTheme } from 'shuttlex-integration';
 
 import PlaceTitle from './PlaceTitle';
 import { PlaceBarModes, PlaceBarProps } from './types';
-
-//TODO: move to integration and name it mtrToKm. Add additional function kmToMtr if we need
-const formatDistance = (distance: number) => {
-  return parseFloat((distance / 1000).toFixed(1));
-};
 
 const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: PlaceBarProps) => {
   const { colors } = useTheme();
@@ -32,7 +27,7 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: Place
           </View>
           {place.totalDistanceMtr !== undefined && (
             <Text style={[styles.searchDistanceText, computedStyles.searchDistanceText]}>
-              {t('ride_Ride_PlaceBar_kilometers', { count: formatDistance(place.totalDistanceMtr) })}
+              {t('ride_Ride_PlaceBar_kilometers', { count: mtrToKm(place.totalDistanceMtr) })}
             </Text>
           )}
         </Pressable>
@@ -49,7 +44,7 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: Place
               <Bar style={styles.fullDistancePosition}>
                 <Text style={styles.fullDistanceText}>
                   {place.totalDistanceMtr &&
-                    t('ride_Ride_PlaceBar_kilometers', { count: formatDistance(place.totalDistanceMtr) })}
+                    t('ride_Ride_PlaceBar_kilometers', { count: mtrToKm(place.totalDistanceMtr) })}
                 </Text>
               </Bar>
             </View>

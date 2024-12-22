@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { PickUpIcon, Text, useTheme } from 'shuttlex-integration';
+import { mtrToKm, PickUpIcon, Text, useTheme } from 'shuttlex-integration';
 
 import { PlaceTitleProps } from './types';
 
@@ -22,12 +22,12 @@ const PlaceTitle = ({ withDistance, place, style }: PlaceTitleProps) => {
   return (
     <View style={[styles.wrapper, style]}>
       <View style={styles.container}>
-        <Text style={[styles.address, computedStyles.address]}>{place.address}</Text>
+        <Text style={[styles.address, computedStyles.address]}>{place.dropoffAddress}</Text>
         {withDistance && (
           <View style={styles.distanceContainer}>
             <PickUpIcon style={styles.icon} color={colors.iconSecondaryColor} />
             <Text style={[styles.distance, computedStyles.distance]}>
-              {place.totalDistanceMtr && t('ride_Ride_PlaceBar_kilometers', { count: Number(place.totalDistanceMtr) })}
+              {place.totalDistanceMtr && t('ride_Ride_PlaceBar_kilometers', { count: mtrToKm(place.totalDistanceMtr) })}
             </Text>
           </View>
         )}

@@ -15,7 +15,7 @@ import {
   isCityAvailableLoadingSelector,
   isCityAvailableSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
-import { SearchAddressFromAPI } from '../../../../../core/ride/redux/offer/types';
+import { RecentDropoffsFromAPI } from '../../../../../core/ride/redux/offer/types';
 import AlertInitializer from '../../../../../shared/AlertInitializer';
 import UnsupportedDestinationPopup from '../../popups/UnsupportedDestinationPopup';
 import AddressSelect from './AddressSelect';
@@ -33,7 +33,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
     const isCityAvailableLoading = useSelector(isCityAvailableLoadingSelector);
 
     const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
-    const [fastAddressSelect, setFastAddressSelect] = useState<Nullable<SearchAddressFromAPI>>(null);
+    const [fastAddressSelect, setFastAddressSelect] = useState<Nullable<RecentDropoffsFromAPI>>(null);
     const [isUnsupportedCityPopupVisible, setIsUnsupportedCityPopupVisible] = useState<boolean>(false);
     const [isUnsupportedDestinationPopupVisible, setIsUnsupportedDestinationPopupVisible] = useState<boolean>(false);
 

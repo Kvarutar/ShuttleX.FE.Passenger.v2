@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
+import { Nullable } from 'shuttlex-integration';
 
-import { SearchAddressFromAPI } from '../../../../../../core/ride/redux/offer/types';
+import { RecentDropoffsFromAPI } from '../../../../../../core/ride/redux/offer/types';
 
 export type PointMode = 'pickUp' | 'default' | 'dropOff';
 
@@ -27,7 +28,7 @@ export type AddressButtonProps = {
 };
 
 export type AddressSelectProps = {
-  address?: SearchAddressFromAPI | null;
+  address?: Nullable<RecentDropoffsFromAPI>;
   setIsAddressSelectVisible: (state: boolean) => void;
   setIsUnsupportedDestinationPopupVisible: (state: boolean) => void;
 };
