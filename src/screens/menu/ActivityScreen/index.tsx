@@ -11,7 +11,7 @@ import {
   Skeleton,
   Text,
   TrafficIndicator,
-  TrafficLevel,
+  TrafficIndicatorProps,
   useTariffsIcons,
   useTheme,
 } from 'shuttlex-integration';
@@ -19,8 +19,11 @@ import {
 import { isOrdersHistoryLoadingSelector, ordersHistorySelector } from '../../../core/passenger/redux/selectors';
 import { getOrdersHistory } from '../../../core/passenger/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
+import { mapRidePercentFromPolylinesSelector, mapRouteTrafficSelector } from '../../../core/ride/redux/map/selectors';
 import { tariffByIdSelector } from '../../../core/ride/redux/offer/selectors';
-import { orderSelector } from '../../../core/ride/redux/trip/selectors';
+import { orderSelector, tripStatusSelector } from '../../../core/ride/redux/trip/selectors';
+import { TripStatus } from '../../../core/ride/redux/trip/types';
+import { trafficLoadFromAPIToTrafficLevel } from '../../../core/utils';
 import Menu from '../../ride/Menu';
 import RecentAddressesBar from './RecentAddressesBar';
 
@@ -34,8 +37,13 @@ const ActivityScreen = () => {
   const currentOrder = useSelector(orderSelector);
   const tripTariff = useSelector(state => tariffByIdSelector(state, currentOrder?.info?.tariffId));
   const isOrdersHistoryLoading = useSelector(isOrdersHistoryLoadingSelector);
+  const tripStatus = useSelector(tripStatusSelector);
+  const ridePercentFromPolylines = useSelector(mapRidePercentFromPolylinesSelector);
+  const routeTraffic = useSelector(mapRouteTrafficSelector);
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [routeStartDate, setRouteStartDate] = useState<Date | undefined>(undefined);
+  const [routeEndDate, setRouteEndDate] = useState<Date | undefined>(undefined);
 
   const computedStyles = StyleSheet.create({
     text: {
@@ -49,19 +57,30 @@ const ActivityScreen = () => {
     },
   });
 
-  //TODO: For test, delete after connect with back
-  const [currentDistance, setCurrentDistance] = useState(0);
-  const totalDistance = 100;
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentDistance(prevDistance => {
-        const newDistance = prevDistance + 10;
-        return Math.min(newDistance, totalDistance);
+  const trafficSegments: TrafficIndicatorProps['segments'] = [];
+  if (routeTraffic !== null) {
+    const lastRouteIndex = routeTraffic[routeTraffic.length - 1].polylineEndIndex;
+    routeTraffic.forEach(elem => {
+      trafficSegments.push({
+        level: trafficLoadFromAPIToTrafficLevel[elem.trafficLoad],
+        percent: `${(1 - (elem.polylineEndIndex - elem.polylineStartIndex) / lastRouteIndex) * 100}%`,
       });
-    }, 500);
+    });
+  }
 
-    return () => clearInterval(interval);
-  }, []);
+  useEffect(() => {
+    if (!currentOrder?.info) {
+      return;
+    }
+
+    if (tripStatus === TripStatus.Accepted) {
+      setRouteStartDate(new Date(currentOrder.info.createdDate));
+      setRouteEndDate(new Date(currentOrder.info.estimatedArriveToPickUpDate));
+    } else if (tripStatus === TripStatus.Ride) {
+      setRouteStartDate(new Date(currentOrder.info.pickUpDate));
+      setRouteEndDate(new Date(currentOrder.info.estimatedArriveToDropOffDate));
+    }
+  }, [tripStatus, currentOrder?.info]);
 
   useEffect(() => {
     dispatch(getOrdersHistory());
@@ -103,19 +122,15 @@ const ActivityScreen = () => {
             {currentOrder.info.carBrand} {currentOrder.info.carModel}
           </Text>
         </View>
-        {/*TODO: delete mock data*/}
-        <TrafficIndicator
-          containerStyle={styles.trafficIndicatorContainer}
-          currentPercent={`${currentDistance}%`}
-          segments={[
-            { percent: '15%', level: TrafficLevel.Low },
-            { percent: '15%', level: TrafficLevel.Average },
-            { percent: '30%', level: TrafficLevel.High },
-            { percent: '40%', level: TrafficLevel.Low },
-          ]}
-          startTime={43200}
-          endTime={45000}
-        />
+        {trafficSegments.length !== 0 && (
+          <TrafficIndicator
+            containerStyle={styles.trafficIndicatorContainer}
+            currentPercent={ridePercentFromPolylines}
+            segments={trafficSegments}
+            startDate={routeStartDate}
+            endDate={routeEndDate}
+          />
+        )}
       </Bar>
     );
   };

@@ -29,6 +29,8 @@ export type OrderFromAPI = {
   phoneNumber: string;
   estimatedArriveToPickUpDate: string;
   estimatedArriveToDropOffDate: string;
+  arrivedToPickUpDate: string;
+  finishedDate: string;
   dropOffRouteId: string;
   pickUpRouteId: string;
   pickUpAddress: string;
@@ -40,8 +42,8 @@ export type OrderFromAPI = {
   totalFinalPrice: number;
   tariffId: string;
   passengerId: string;
-  finishedDate: string;
   estimatedPrice: number;
+  createdDate: string;
   acceptedOfferZoneId: string;
 };
 
@@ -55,6 +57,8 @@ export type Order = {
   orderId: string;
 };
 
+export type TrafficLoadFromAPI = 'Low' | 'Average' | 'High';
+
 export type RouteInfoApiResponse = {
   routeId: string;
   totalDistanceMtr: number;
@@ -66,7 +70,7 @@ export type RouteInfoApiResponse = {
   accurateGeometries: {
     polylineStartIndex: number;
     polylineEndIndex: number;
-    trafficLoad: string;
+    trafficLoad: TrafficLoadFromAPI;
   }[];
   geometry: string;
   trafficLoad: string;

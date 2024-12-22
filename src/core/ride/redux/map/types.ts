@@ -1,6 +1,8 @@
 import { LatLng } from 'react-native-maps';
 import { MapCameraMode, MapViewProps } from 'shuttlex-integration';
 
+import { RouteInfoApiResponse } from '../trip/types';
+
 export type MapState = {
   cameraMode: MapCameraMode;
   cars: {
@@ -10,4 +12,6 @@ export type MapState = {
   }[];
   polylines: Exclude<MapViewProps['polylines'], undefined>;
   stopPoints: LatLng[];
+  ridePercentFromPolylines: string;
+  routeTraffic: RouteInfoApiResponse['accurateGeometries'] | null;
 };

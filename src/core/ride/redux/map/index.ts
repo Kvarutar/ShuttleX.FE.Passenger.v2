@@ -7,6 +7,8 @@ const initialState: MapState = {
   cars: [],
   polylines: [],
   stopPoints: [],
+  ridePercentFromPolylines: '0%',
+  routeTraffic: null,
 };
 
 const slice = createSlice({
@@ -19,9 +21,15 @@ const slice = createSlice({
     setMapCars(state, action: PayloadAction<MapState['cars']>) {
       state.cars = action.payload;
     },
+    setMapRidePercentFromPolylines(state, action: PayloadAction<MapState['ridePercentFromPolylines']>) {
+      state.ridePercentFromPolylines = action.payload;
+    },
+    setMapRouteTraffic(state, action: PayloadAction<MapState['routeTraffic']>) {
+      state.routeTraffic = action.payload;
+    },
   },
 });
 
-export const { setMapCameraMode, setMapCars } = slice.actions;
+export const { setMapCameraMode, setMapCars, setMapRidePercentFromPolylines, setMapRouteTraffic } = slice.actions;
 
 export default slice.reducer;

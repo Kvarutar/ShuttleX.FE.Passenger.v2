@@ -1,6 +1,8 @@
 import { LatLng } from 'react-native-maps';
 import { NetworkErrorDetailsWithBody, Nullable, TariffType } from 'shuttlex-integration';
 
+import { TrafficLoadFromAPI } from '../trip/types';
+
 export type SearchAddressFromAPI = {
   id?: string;
   fullAddress: string;
@@ -111,7 +113,7 @@ export type OfferRoutesFromAPI = {
   accurateGeometries: {
     polylineStartIndex: number;
     polylineEndIndex: number;
-    trafficLoad: string;
+    trafficLoad: TrafficLoadFromAPI;
   }[];
   geometry: string;
   trafficLoad: string;

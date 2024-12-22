@@ -20,7 +20,7 @@ import {
   geolocationCalculatedHeadingSelector,
   geolocationCoordinatesSelector,
 } from '../../../core/ride/redux/geolocation/selectors';
-import { setMapCameraMode } from '../../../core/ride/redux/map';
+import { setMapCameraMode, setMapRidePercentFromPolylines, setMapRouteTraffic } from '../../../core/ride/redux/map';
 import { mapCameraModeSelector, mapCarsSelector, mapStopPointsSelector } from '../../../core/ride/redux/map/selectors';
 import { offerPointsSelector, offerRoutesSelector } from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
@@ -35,7 +35,7 @@ import { TripStatus } from '../../../core/ride/redux/trip/types';
 
 const updatePassengerGeoInterval = 1000;
 const finalStopPointUpdateIntervalInSec = 30;
-const polylineClearPointDistanceMtr = 15;
+const polylineClearPointDistanceMtr = 20;
 
 const MapView = (): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -62,6 +62,7 @@ const MapView = (): JSX.Element => {
   }, [geolocationCoordinates]);
 
   const [polyline, setPolyline] = useState<MapPolyline | null>(null);
+  const [routePolylinePointsCount, setRoutePolylinePointsCount] = useState<number>(0);
   const [finalStopPointCoordinates, setFinalStopPointCoordinates] = useState<LatLng | null>(null);
   const [finalStopPointTimeInSec, setFinalStopPointTimeInSec] = useState<number>(0);
   const [markers, setMarkers] = useState<MapMarker[]>([]);
@@ -135,21 +136,19 @@ const MapView = (): JSX.Element => {
           break;
         }
         setPolyline(prev => {
-          const type: MapPolyline['type'] = 'straight';
+          const type: MapPolyline['type'] = 'dashed';
           if (prev && prev.type === type && cars.length > 0) {
-            return {
-              type,
-              options: {
-                coordinates: calculateNewMapRoute(
-                  prev.options.coordinates,
-                  cars[0].coordinates,
-                  polylineClearPointDistanceMtr,
-                ),
-              },
-            };
+            const newCoordinates = calculateNewMapRoute(
+              prev.options.coordinates,
+              cars[0].coordinates,
+              polylineClearPointDistanceMtr,
+            );
+            return { type, options: { coordinates: newCoordinates, color: '#ABC736' } };
           }
           const coordinates = decodeGooglePolyline(pickUpRoute.geometry); // TODO: check, maybe need to reverse array
+          setRoutePolylinePointsCount(coordinates.length);
           setMarkers([{ colorMode: 'mode1', coordinates: coordinates[coordinates.length - 1] }]);
+          dispatch(setMapRouteTraffic(pickUpRoute.accurateGeometries));
           return { type, options: { coordinates } };
         });
         break;
@@ -160,20 +159,18 @@ const MapView = (): JSX.Element => {
         setPolyline(prev => {
           const type: MapPolyline['type'] = 'straight';
           if (prev && prev.type === type && cars.length > 0) {
-            return {
-              type,
-              options: {
-                coordinates: calculateNewMapRoute(
-                  prev.options.coordinates,
-                  cars[0].coordinates,
-                  polylineClearPointDistanceMtr,
-                ),
-              },
-            };
+            const newCoordinates = calculateNewMapRoute(
+              prev.options.coordinates,
+              cars[0].coordinates,
+              polylineClearPointDistanceMtr,
+            );
+            return { type, options: { coordinates: newCoordinates } };
           }
           const coordinates = decodeGooglePolyline(dropOffRoute.geometry);
+          setRoutePolylinePointsCount(coordinates.length);
           setFinalStopPointCoordinates(coordinates[coordinates.length - 1]);
           setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
+          dispatch(setMapRouteTraffic(dropOffRoute.accurateGeometries));
           return { type, options: { coordinates } };
         });
         break;
@@ -186,7 +183,17 @@ const MapView = (): JSX.Element => {
         break;
       default:
     }
-  }, [tripStatus, orderStatus, pickUpRoute, dropOffRoute, cars, resetPoints]);
+  }, [dispatch, tripStatus, orderStatus, pickUpRoute, dropOffRoute, cars, resetPoints]);
+
+  useEffect(() => {
+    if (polyline && polyline.type !== 'arc') {
+      dispatch(
+        setMapRidePercentFromPolylines(
+          `${Math.floor((1 - polyline.options.coordinates.length / routePolylinePointsCount) * 100)}%`,
+        ),
+      );
+    }
+  }, [dispatch, polyline, routePolylinePointsCount]);
 
   // Section: Markers
   useEffect(() => {
@@ -212,12 +219,16 @@ const MapView = (): JSX.Element => {
       const pickUpPoint = offerRoutes.waypoints[0].geo;
       const dropOffPoint = offerRoutes.waypoints[offerRoutes.waypoints.length - 1].geo;
 
-      setPolyline({ type: 'straight', options: { coordinates: decodeGooglePolyline(offerRoutes.geometry) } });
+      setPolyline({
+        type: 'dashed',
+        options: { coordinates: decodeGooglePolyline(offerRoutes.geometry), color: '#ABC736' },
+      });
       setMarkers([
-        { colorMode: 'mode1', coordinates: pickUpPoint },
-        { colorMode: 'mode2', coordinates: dropOffPoint },
+        { colorMode: 'mode1', coordinates: pickUpPoint, zIndex: -1 },
+        { colorMode: 'mode2', coordinates: dropOffPoint, zIndex: -1 },
       ]);
-      //TODO: make camera animate to route, or (better) to resize MapView according to bottomwindow
+      //TODO: make camera animate to route (not just 1 point), or (better) to resize MapView according to bottomwindow
+      mapRef.current?.animateCamera({ pitch: 0, heading: 0, center: pickUpPoint, zoom: 15 }, { duration: 700 });
     } else {
       setMarkers([]);
     }
@@ -249,7 +260,12 @@ const MapView = (): JSX.Element => {
     <MapViewIntegration
       ref={mapRef}
       style={StyleSheet.absoluteFill}
-      geolocationCoordinates={geolocationCoordinates ?? undefined}
+      // Hide current geolocation if in Accepted or Ride status
+      geolocationCoordinates={
+        tripStatus === TripStatus.Accepted || tripStatus === TripStatus.Ride
+          ? undefined
+          : geolocationCoordinates ?? undefined
+      }
       geolocationCalculatedHeading={geolocationCalculatedHeading}
       // TODO: * 0.85 - temporary solution, need to make smart waiting of finishing previous animation and then start next
       // (maybe drop few animations if queue is too big)
