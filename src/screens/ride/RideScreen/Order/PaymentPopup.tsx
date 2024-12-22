@@ -407,7 +407,7 @@ const PaymentPopup = () => {
               {t('ride_Ride_PaymentPopup_pickUpPoint')}
             </Text>
             <Text style={styles.addressText} numberOfLines={1}>
-              {points[0].address}
+              {points[0].address.length ? points[0].address : points[0].fullAddress}
             </Text>
           </View>
         </View>

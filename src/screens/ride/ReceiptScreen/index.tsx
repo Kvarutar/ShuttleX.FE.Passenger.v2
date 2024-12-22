@@ -3,7 +3,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import Share from 'react-native-share';
 import { useSelector } from 'react-redux';
 import {
   Bar,
@@ -17,12 +16,13 @@ import {
   getCurrencySign,
   getDistanceBetweenPoints,
   getPaymentIcon,
+  LoadingSpinner,
+  LoadingSpinnerIconModes,
   MapView,
   MapViewRef,
   mtrToKm,
   PointIcon2,
   SafeAreaView,
-  ShareIcon,
   Text,
   useTheme,
 } from 'shuttlex-integration';
@@ -30,7 +30,6 @@ import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/curr
 
 import { lotteryTicketAfterRideSelector } from '../../../core/lottery/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
-import { offerPointsSelector } from '../../../core/ride/redux/offer/selectors';
 import { cleanOrder } from '../../../core/ride/redux/order';
 import { endTrip } from '../../../core/ride/redux/trip';
 import {
@@ -51,7 +50,6 @@ const ReceiptScreen = () => {
 
   const routeInfo = useSelector(tripDropOffRouteSelector);
   const orderInfo = useSelector(orderSelector);
-  const addresses = useSelector(offerPointsSelector);
   const isTripCanceled = useSelector(isTripCanceledSelector);
   const ticket = useSelector(lotteryTicketAfterRideSelector);
 
@@ -107,34 +105,34 @@ const ReceiptScreen = () => {
     navigation.navigate('Ride');
   };
 
-  const shareFile = async () => {
-    const options = {
-      title: 'Share File',
-      url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf ',
-      message: 'Check out this file!',
-    };
+  //TODO: return when we need to shareButton
+  // const shareFile = async () => {
+  //   const options = {
+  //     title: 'Share File',
+  //     url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf ',
+  //     message: 'Check out this file!',
+  //   };
+  //
+  //   try {
+  //     await Share.open(options);
+  //   } catch (error) {
+  //     console.log('Error while sharing the file:', error);
+  //   }
+  // };
 
-    try {
-      await Share.open(options);
-    } catch (error) {
-      console.log('Error while sharing the file:', error);
-    }
-  };
+  const tripTimeDuration = () => {
+    const [pickUpTime, finishedTime] = [
+      new Date(orderInfo?.info?.pickUpDate ?? new Date()),
+      new Date(orderInfo?.info?.finishedDate ?? new Date()),
+    ].map(date => date.getTime());
 
-  const formatTimeDuration = (time: number) => {
-    const totalMinutes = Math.floor(time / 60000);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
+    const duration = finishedTime - pickUpTime;
+    const totalMinutes = Math.floor(duration / 60000);
+    const [hours, minutes] = [Math.floor(totalMinutes / 60), totalMinutes % 60];
 
-    if (hours > 0 && minutes > 0) {
-      return `${t('ride_Receipt_hours', { count: hours })} ${t('ride_Receipt_minutes', { count: minutes })}`;
-    }
-
-    if (hours > 0) {
-      return t('ride_Receipt_hours', { count: hours });
-    }
-
-    return t('ride_Receipt_minutes', { count: minutes });
+    return hours && minutes
+      ? `${t('ride_Receipt_hours', { count: hours })} ${t('ride_Receipt_minutes', { count: minutes })}`
+      : t(hours ? 'ride_Receipt_hours' : 'ride_Receipt_minutes', { count: hours || minutes });
   };
 
   const distance = mtrToKm(routeInfo?.totalDistanceMtr ?? 0);
@@ -143,15 +141,15 @@ const ReceiptScreen = () => {
   const roadTimeData = [
     {
       title: t('ride_Receipt_start'),
-      value: formatTime(new Date(orderInfo?.info?.estimatedArriveToPickUpDate ?? 0)),
+      value: formatTime(new Date(orderInfo?.info?.pickUpDate ?? 0)),
     },
     {
       title: t('ride_Receipt_finish'),
-      value: formatTime(new Date(orderInfo?.info?.estimatedArriveToDropOffDate ?? 0)),
+      value: formatTime(new Date(orderInfo?.info?.finishedDate ?? 0)),
     },
     {
       title: t('ride_Receipt_time'),
-      value: formatTimeDuration(routeInfo?.totalDurationSec ?? 0),
+      value: tripTimeDuration(),
     },
   ];
 
@@ -160,10 +158,9 @@ const ReceiptScreen = () => {
       <Button onPress={onEndTrip} shape={ButtonShapes.Circle} mode={CircleButtonModes.Mode2}>
         <CloseIcon />
       </Button>
-      <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_check')}</Text>
-      <Button onPress={shareFile} shape={ButtonShapes.Circle} mode={CircleButtonModes.Mode2}>
-        <ShareIcon />
-      </Button>
+      <View style={styles.headerTitleContainer}>
+        <Text style={styles.headerAndPaymentText}>{t('ride_Receipt_check')}</Text>
+      </View>
     </View>
   );
 
@@ -190,12 +187,16 @@ const ReceiptScreen = () => {
 
   const roadTimeBlock = (
     <View style={styles.roadTimeWrapper}>
-      {roadTimeData.map(time => (
-        <View key={time.title} style={styles.roadTimeContainer}>
-          <Text style={[styles.roadTimeTitleText, computedStyles.textTitleColor]}>{time.title}</Text>
-          <Text style={styles.roadTimeValueText}>{time.value}</Text>
-        </View>
-      ))}
+      {orderInfo?.info?.pickUpDate && orderInfo?.info?.finishedDate ? (
+        roadTimeData.map(time => (
+          <View key={time.title} style={styles.roadTimeContainer}>
+            <Text style={[styles.roadTimeTitleText, computedStyles.textTitleColor]}>{time.title}</Text>
+            <Text style={styles.roadTimeValueText}>{time.value}</Text>
+          </View>
+        ))
+      ) : (
+        <LoadingSpinner iconMode={LoadingSpinnerIconModes.Mini} style={styles.roadTimeBlockLoader} />
+      )}
     </View>
   );
 
@@ -271,8 +272,7 @@ const ReceiptScreen = () => {
           <View style={styles.addressContainer}>
             <View style={styles.placeContainer}>
               <Text numberOfLines={2} style={[styles.addressDetailsText, computedStyles.textTitleColor]}>
-                {/*{TODO check this data}*/}
-                {addresses[0].address}
+                {orderInfo?.info?.pickUpAddress}
               </Text>
             </View>
             <View style={styles.placeContainer}>
@@ -280,8 +280,7 @@ const ReceiptScreen = () => {
                 numberOfLines={2}
                 style={[styles.addressDetailsText, computedStyles.textTitleColor, styles.placeTextRight]}
               >
-                {/*{TODO check this data}*/}
-                {addresses[1].address}
+                {orderInfo?.info?.dropOffAddress}
               </Text>
             </View>
           </View>
@@ -332,7 +331,6 @@ const styles = StyleSheet.create({
   },
   topButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 24,
   },
@@ -459,6 +457,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter Medium',
     fontSize: 17,
     lineHeight: 22,
+  },
+  roadTimeBlockLoader: {
+    marginBottom: 16,
+  },
+  headerTitleContainer: {
+    flex: 1,
+    alignItems: 'center',
+    marginRight: 44,
   },
 });
 

@@ -48,7 +48,7 @@ const TariffBar = ({
   );
   const defaultPlanIndex = availablePlans.length > 1 ? 1 : 0;
   const showPriceAndTime = !isPlanSelected || availablePlans.length < 2;
-  const isAvailableTariff = availablePlans[defaultPlanIndex].durationSec !== 0;
+  const isAvailableTariff = availablePlans[defaultPlanIndex]?.durationSec !== 0;
 
   const computedStyles = StyleSheet.create({
     capacityColor: {

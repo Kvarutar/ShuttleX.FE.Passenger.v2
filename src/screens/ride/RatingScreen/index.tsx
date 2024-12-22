@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, ImageSourcePropType, Pressable, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -29,7 +29,7 @@ import imageGoodDriving from '../../../../assets/images/likeFeedback/imageGoodDr
 import imageNiceAtmosphere from '../../../../assets/images/likeFeedback/imageNiceAtmosphere';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { orderIdSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
-import { sendFeedback } from '../../../core/ride/redux/trip/thunks';
+import { getOrderInfo, sendFeedback } from '../../../core/ride/redux/trip/thunks';
 import { FeedbackRatingReasonsToAPI } from '../../../core/ride/redux/trip/types';
 import { RatingScreenProps } from './types';
 
@@ -64,6 +64,12 @@ const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
       color: mark ? colors.textPrimaryColor : colors.textQuadraticColor,
     },
   });
+
+  useEffect(() => {
+    if (orderId) {
+      dispatch(getOrderInfo(orderId));
+    }
+  }, [dispatch, orderId]);
 
   const subMarksData: Record<
     FeedbackRating,
