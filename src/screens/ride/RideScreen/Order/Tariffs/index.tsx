@@ -42,8 +42,9 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   const [tariff, setTariff] = useState<SelectedTariff | null>(null);
   const [windowIsOpened, setWindowIsOpened] = useState(false);
 
-  const isAvailableSelectedTariffGroup = Boolean(selectedTariffGroup?.tariffs);
-
+  const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs?.some(trf =>
+    trf.matching.some(item => item.durationSec !== null && item.durationSec !== 0),
+  );
   const computedStyles = StyleSheet.create({
     confirmText: {
       color: isAvailableSelectedTariffGroup ? colors.textPrimaryColor : colors.textQuadraticColor,

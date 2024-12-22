@@ -5,9 +5,13 @@ import { Image, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Button, ButtonProps, Skeleton, Text, useTheme } from 'shuttlex-integration';
 
-import imageBonuses from '../../../../../../../assets/images/startRide/imageBonusesBackground';
+//TODO: Add this import when we need block "Bonuses"
+//Removed in Task-418
+//import imageBonuses from '../../../../../../../assets/images/startRide/imageBonusesBackground';
 import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
-import imageUkraineHeart from '../../../../../../../assets/images/startRide/imageUkraineHeart';
+//TODO: Add this import when we need block "Support Ukraine"
+//Removed in Task-418
+//import imageUkraineHeart from '../../../../../../../assets/images/startRide/imageUkraineHeart';
 import { isLotteryLoadingSelector, lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
 import { RootStackParamList } from '../../../../../../Navigate/props';
 import passengerColors from '../../../../../../shared/colors/colors';
@@ -158,31 +162,33 @@ const StartRideHidden = () => {
     //   ),
     //   firstImgUri: passengerColors.adsBackgroundColor.firstSeason,
     // },
-    {
-      bigImagePlace: 'right',
-      firstContent: (
-        <AdsContent buttonProps={{ text: t('ride_Ride_StartRideHidden_adsBonusesButton') }}>
-          <Text style={[styles.textMediumSecond, styles.fontStyle, computedStyles.textColor]}>
-            {t('ride_Ride_StartRideHidden_adsBonuses')}
-          </Text>
-        </AdsContent>
-      ),
-      firstImgUri: imageBonuses,
-      secondContent: (
-        <>
-          <AdsContent
-            style={styles.supportUkraineBlock}
-            buttonProps={{ text: t('ride_Ride_StartRideHidden_adsSupportButton') }}
-          >
-            <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
-              {t('ride_Ride_StartRideHidden_adsSupport')}
-            </Text>
-          </AdsContent>
-          <Image source={imageUkraineHeart} style={styles.ukraineHeartImage} />
-        </>
-      ),
-      secondImgUri: passengerColors.adsBackgroundColor.helpUkraine,
-    },
+    //TODO: Add this import when we need blocks "Bonuses" and Support Ukraine
+    //Removed in Task-418
+    // {
+    //   bigImagePlace: 'right',
+    //   firstContent: (
+    //     <AdsContent buttonProps={{ text: t('ride_Ride_StartRideHidden_adsBonusesButton') }}>
+    //       <Text style={[styles.textMediumSecond, styles.fontStyle, computedStyles.textColor]}>
+    //         {t('ride_Ride_StartRideHidden_adsBonuses')}
+    //       </Text>
+    //     </AdsContent>
+    //   ),
+    //   firstImgUri: imageBonuses,
+    //   secondContent: (
+    //     <>
+    //       <AdsContent
+    //         style={styles.supportUkraineBlock}
+    //         buttonProps={{ text: t('ride_Ride_StartRideHidden_adsSupportButton') }}
+    //       >
+    //         <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
+    //           {t('ride_Ride_StartRideHidden_adsSupport')}
+    //         </Text>
+    //       </AdsContent>
+    //       <Image source={imageUkraineHeart} style={styles.ukraineHeartImage} />
+    //     </>
+    //   ),
+    //   secondImgUri: passengerColors.adsBackgroundColor.helpUkraine,
+    // },
     // {
     //   bigImagePlace: 'left',
     //   firstContent: (

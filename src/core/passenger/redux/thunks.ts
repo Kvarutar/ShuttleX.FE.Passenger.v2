@@ -20,7 +20,10 @@ export const getOrdersHistory = createAppAsyncThunk<OrderFromAPI[], void>(
   'passenger/getOrdersHistory',
   async (_, { rejectWithValue, passengerAxios }) => {
     try {
-      return (await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders')).data;
+      //TODO: Rewrite sorting using BE params (it doesn't work for now)
+      return (await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders')).data.sort(
+        (a, b) => Date.parse(b.finishedDate) - Date.parse(a.finishedDate),
+      );
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }
