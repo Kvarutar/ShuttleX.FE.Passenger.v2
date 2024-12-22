@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { CloseIcon, PointIcon, PointIcon2, TextInput, TextInputInputMode, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
+import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
 import { offerPointByIdSelector } from '../../../../../../core/ride/redux/offer/selectors';
 import { createPhantomOffer, getAvailableTariffs } from '../../../../../../core/ride/redux/offer/thunks';
@@ -20,17 +21,32 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
   const dispatch = useAppDispatch();
 
   const point = useSelector(state => offerPointByIdSelector(state, currentPointId));
+  const defaultLocation = useSelector(geolocationCoordinatesSelector);
 
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
-    if (point) {
+    if (point && !isFocused && point.latitude) {
       const isPresentAddressInFullAddress = point.fullAddress.includes(point.address);
       const content = isPresentAddressInFullAddress ? point.fullAddress : `${point.address}, ${point.fullAddress}`;
       setInputValue(content);
     }
-  }, [point]);
+  }, [point, isFocused]);
+
+  useEffect(() => {
+    if (currentPointId === 0 && inputValue === '' && !isFocused && defaultLocation) {
+      dispatch(
+        updateOfferPoint({
+          id: 0,
+          address: '',
+          fullAddress: t('ride_Ride_AddressSelect_addressInputMyLocation'),
+          longitude: defaultLocation.longitude,
+          latitude: defaultLocation.latitude,
+        }),
+      );
+    }
+  }, [currentPointId, defaultLocation, dispatch, inputValue, isFocused, t]);
 
   useEffect(() => {
     if (currentPointId === 0 && !isFocused && point?.latitude && point?.longitude) {
@@ -45,7 +61,7 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
     updateFocusedInput({ id: currentPointId, value: inputValue, focus: state });
     setIsFocused(state);
 
-    if (state && point?.latitude) {
+    if (state && point?.id === 0 && point.fullAddress === t('ride_Ride_AddressSelect_addressInputMyLocation')) {
       clearInputValue();
     }
   };
@@ -117,7 +133,7 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
               : t('ride_Ride_AddressSelect_addressFromInputPlaceholder')
           }
           wrapperStyle={styles.inputContainer}
-          inputStyle={{ color: isFocused || point?.latitude ? colors.textPrimaryColor : colors.errorColor }}
+          inputStyle={{ color: colors.textPrimaryColor }}
           containerStyle={styles.input}
           inputMode={TextInputInputMode.Text}
           onChangeText={handleInputChange}

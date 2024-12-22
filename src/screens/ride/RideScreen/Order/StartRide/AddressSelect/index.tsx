@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -20,7 +20,6 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
-import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
 import { isRoutePointsLocationError } from '../../../../../../core/ride/redux/offer/errors';
 import {
@@ -66,11 +65,9 @@ const AddressSelect = ({
 
   const isCityAvailable = useSelector(isCityAvailableSelector);
   const offerRoutesError = useSelector(offerRoutesErrorSelector);
-  const defaultLocation = useSelector(geolocationCoordinatesSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
   const offerPoints = useSelector(offerPointsSelector);
-
-  const [focusedInput, setFocusedInput] = useState<FocusedInput>({ id: 0, value: '', focus: false });
+  const [focusedInput, setFocusedInput] = useState<FocusedInput>({ id: 1, value: '', focus: false });
   const [isAddressSelected, setIsAddressSelected] = useState(false);
   const [addresses, setAddresses] = useState<SearchAddressFromAPI[]>([]);
   const [addressesHistory, setAddressesHistory] = useState<RecentDropoffsFromAPI[]>([]);
@@ -79,7 +76,6 @@ const AddressSelect = ({
   const debounceInputValue = useDebounce(focusedInput.value, 300);
   const focusedOfferPoint = useSelector(state => offerPointByIdSelector(state, focusedInput.id));
 
-  const firstUpdateDefaultLocation = useRef(true);
   const isAllOfferPointsFilled = offerPoints.every(point => point.latitude && point.longitude && point.fullAddress);
 
   const computedStyles = StyleSheet.create({
@@ -129,31 +125,6 @@ const AddressSelect = ({
       })();
     }
   }, [debounceInputValue, i18n.language, dispatch]);
-
-  // TODO: Maybe will be added later
-  // useEffect(() => {
-  //   if (addresses.length > 0 && !focusedInput.focus) {
-  //     onAddressSelect(addresses[0]);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [focusedInput.focus]);
-
-  useEffect(() => {
-    if (firstUpdateDefaultLocation.current && defaultLocation) {
-      dispatch(
-        updateOfferPoint({
-          id: 0,
-          address: '',
-          fullAddress: t('ride_Ride_AddressSelect_addressInputMyLocation'),
-          longitude: defaultLocation.longitude,
-          latitude: defaultLocation.latitude,
-        }),
-      );
-
-      setFocusedInput({ id: 1, value: offerPoints[1].address, focus: false });
-      firstUpdateDefaultLocation.current = false;
-    }
-  }, [defaultLocation, dispatch, t, offerPoints]);
 
   useEffect(() => {
     if (address) {
@@ -317,7 +288,12 @@ const AddressSelect = ({
             scrollEventThrottle={16}
           >
             {isAddressSelected ? (
-              searchAddresses
+              <>
+                <Text style={[computedStyles.title, styles.searchAddressesText]}>
+                  {t('ride_Ride_AddressSelect_chooseAddress')}
+                </Text>
+                {searchAddresses}
+              </>
             ) : (
               <>
                 {recentDropoffs.length > 0 && (
@@ -410,6 +386,10 @@ const styles = StyleSheet.create({
   },
   confirmButtonContainer: {
     paddingVertical: 20,
+  },
+  searchAddressesText: {
+    marginTop: 20,
+    alignSelf: 'flex-start',
   },
 });
 
