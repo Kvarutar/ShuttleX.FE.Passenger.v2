@@ -1,4 +1,4 @@
-import { getNetworkErrorInfo, Nullable } from 'shuttlex-integration';
+import { convertBlobToImgUri, getNetworkErrorInfo, Nullable } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../redux/hooks';
 import { orderIdSelector } from '../../ride/redux/trip/selectors';
@@ -50,7 +50,7 @@ export const getPreviousLottery = createAppAsyncThunk<Nullable<LotteryAPIRespons
       const result = await lotteryAxios.get<LotteryAPIResponse[]>('/events', {
         params: {
           filterBy: 'State::eq::Previous',
-          sortBy: 'startTime:desc',
+          sortBy: 'startTime:asc',
         },
       });
 
@@ -99,11 +99,11 @@ export const getWinnerAvatar = createAppAsyncThunk<WinnerAvatarAPIResponse, Winn
   'lottery/getWinnerAvatar',
   async (payload, { rejectWithValue, lotteryAxios }) => {
     try {
-      const result = await lotteryAxios.get<WinnerAvatarAPIResponse>(
-        `/prizes/${payload.prizeId}/avatars/${payload.winnerId}`,
-      );
+      const avatar = await lotteryAxios.get<Blob>(`/prizes/${payload.prizeId}/avatars/${payload.winnerId}`, {
+        responseType: 'blob',
+      });
 
-      return result.data;
+      return avatar ? await convertBlobToImgUri(avatar.data) : null;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

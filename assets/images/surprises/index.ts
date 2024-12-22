@@ -1,25 +1,29 @@
 import { ImageSourcePropType } from 'react-native';
 
-const firstSurprise: ImageSourcePropType = require('./16_pro.png');
-const secondSurprise: ImageSourcePropType = require('./16.png');
-const thirdSurprise: ImageSourcePropType = require('./15.png');
-const fourthSurprise: ImageSourcePropType = require('./nothing_ear_2.png');
-const fifthSurprise: ImageSourcePropType = require('./ear.png');
-const sixthSurprise: ImageSourcePropType = require('./ear_2.png');
-const seventhSurprise: ImageSourcePropType = require('./air_pods.png');
-const eighthSurprise: ImageSourcePropType = require('./air_pods.png');
-const ninthSurprise: ImageSourcePropType = require('./air_pods.png');
-const tenthSurprises: ImageSourcePropType = require('./ear(open).png');
+const iPhone16ProImage: ImageSourcePropType = require('./iphone-16-pro.png');
+const AirPodsMaxImage: ImageSourcePropType = require('./air-pods-max.png');
+const AirPodsProImage: ImageSourcePropType = require('./air-pods-pro.png');
+const AirPodsImage: ImageSourcePropType = require('./air-pods.png');
+const AirTagImage: ImageSourcePropType = require('./airtag.png');
+const BottleImage: ImageSourcePropType = require('./bottle.png');
+const DeskLampImage: ImageSourcePropType = require('./desklamp.png');
+const HoodieImage: ImageSourcePropType = require('./hoodie.png');
+const TshirtImage: ImageSourcePropType = require('./tshirt.png');
+const MugImage: ImageSourcePropType = require('./mug.png');
+const BagImage: ImageSourcePropType = require('./tote-bag.png');
+const ToteBagImage: ImageSourcePropType = require('./tote-bag.png');
 
 export {
-  firstSurprise,
-  secondSurprise,
-  thirdSurprise,
-  fourthSurprise,
-  fifthSurprise,
-  sixthSurprise,
-  seventhSurprise,
-  eighthSurprise,
-  ninthSurprise,
-  tenthSurprises,
+  iPhone16ProImage,
+  AirPodsMaxImage,
+  AirPodsProImage,
+  AirPodsImage,
+  AirTagImage,
+  BottleImage,
+  DeskLampImage,
+  HoodieImage,
+  TshirtImage,
+  MugImage,
+  BagImage,
+  ToteBagImage,
 };

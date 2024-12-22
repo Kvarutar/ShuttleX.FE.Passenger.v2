@@ -3,7 +3,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Confetti, InputXIcon, SafeAreaView, Text, UploadIcon, useTheme } from 'shuttlex-integration';
+import { Confetti, InputXIcon, SafeAreaView, Text, useTheme } from 'shuttlex-integration';
 
 import { RootStackParamList } from '../../Navigate/props';
 import Lottery from './Lottery';
@@ -44,13 +44,16 @@ const RaffleScreen = (): JSX.Element => {
               //TODO will be add later
             }}
           /> */}
-          <Text>{t('raffle_Raffle_winnersTitle')}</Text>
-          <SmallButton
-            icon={<UploadIcon />}
-            onPress={() => {
-              console.log('TODO: onSharePress');
-            }}
-          />
+          <View style={styles.headerTitleContainer}>
+            <Text>{t('raffle_Raffle_winnersTitle')}</Text>
+          </View>
+          {/*TODO will be add later*/}
+          {/*<SmallButton*/}
+          {/*  icon={<UploadIcon />}*/}
+          {/*  onPress={() => {*/}
+          {/*    console.log('TODO: onSharePress');*/}
+          {/*  }}*/}
+          {/*/>*/}
         </View>
       </SafeAreaView>
 
@@ -73,6 +76,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  headerTitleContainer: {
+    flex: 1,
+    alignItems: 'center',
+    marginRight: 44,
   },
 });
 

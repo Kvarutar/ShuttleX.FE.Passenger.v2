@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
@@ -15,13 +16,10 @@ const getPrizeByPlace = (prizes: Prize[], place: number) => {
   return prizes.find(prize => prize.index + 1 === place);
 };
 
-//TODO: add ImageComponent with default image
-const defaultImage =
-  'https://s3-alpha-sig.figma.com/img/9446/d564/bd2ec06179682d62415780b8d0976216?Expires=1733097600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=asXkku9hzOkD4gS295RqStzvF937gRSwT~REzBfzcaGAh8NoH97Mc5SPoaPWSutgbYwoqaDTMZMH6P-WaoQdTEnfPjtdh5esnXPpGcrBFEQsFkPRVlqsmicS-Qi2Bf5bUP~I4pA7rtlrd0dBGipsXdIo8sUVClkDBOWqnJi7JnA2VQ-oP9MbzV82Vifdgm~WZA1tra2t5syPQwZ0Drk3o9LeKnAVx6D11fpYZ7ziwd~ror22dnHNibb0zrGg4Hbe7yu3-V1nP-NS3zG89aT75lZFBIJYKCQLLfwWrtwVdhicqxCgzwVgNcjnqsUBJF~YMILZ1OPHPT5N4i86sHYTCQ__';
-
 const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const firstPrize = getPrizeByPlace(prizes, 1);
   const secondPrize = getPrizeByPlace(prizes, 2);
@@ -58,7 +56,6 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
     }
   }, [dispatch, thirdPrize?.prizes, thirdPrize?.winnerId]);
 
-  //TODO: change prizes data with the real one
   return (
     <View style={styles.container}>
       <View style={styles.prizes}>
@@ -66,20 +63,18 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         <View style={[styles.prizeBox, styles.secondPlace]}>
           {secondPrize && (
             <>
-              <Image source={prizesData['iPhone 16'].image} style={styles.prizeImage} />
+              <Image source={prizesData[secondPrize.prizes[0].feKey].image} style={styles.subPrizeImage} />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text style={[styles.surpriseTitle, computedStyles.surpriseTitle]} numberOfLines={1}>
-                  {secondPrize?.winnerId ? secondPrize?.winnerFirstName : prizesData['iPhone 16'].name}
+                  {secondPrize?.winnerId
+                    ? secondPrize?.winnerFirstName
+                    : t(prizesData[secondPrize.prizes[0].feKey].name)}
                 </Text>
               </View>
             </>
           )}
-          {secondPrize?.winnerId && (
-            <Animated.Image
-              entering={FadeIn}
-              source={{ uri: secondPrizeAvatar ?? defaultImage }}
-              style={styles.userImageSecondPlace}
-            />
+          {secondPrize?.winnerId && secondPrizeAvatar && (
+            <Animated.Image entering={FadeIn} source={{ uri: secondPrizeAvatar }} style={styles.userImageSecondPlace} />
           )}
         </View>
 
@@ -87,20 +82,19 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         <View style={[styles.prizeBox, styles.firstPlace]}>
           {firstPrize && (
             <>
-              <Image source={prizesData['iPhone 16'].image} style={[styles.prizeImage, styles.firstPlacePrize]} />
+              <Image
+                source={prizesData[firstPrize.prizes[0].feKey].image}
+                style={[styles.mainPrizeImage, styles.firstPlacePrize]}
+              />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text style={[styles.surpriseTitle, computedStyles.surpriseTitle]} numberOfLines={1}>
-                  {firstPrize?.winnerId ? firstPrize?.winnerFirstName : prizesData['iPhone 16'].name}
+                  {firstPrize?.winnerId ? firstPrize?.winnerFirstName : t(prizesData[firstPrize.prizes[0].feKey].name)}
                 </Text>
               </View>
             </>
           )}
-          {firstPrize?.winnerId && (
-            <Animated.Image
-              entering={FadeIn}
-              source={{ uri: firstPrizeAvatar ?? defaultImage }}
-              style={styles.userImageFirstPlace}
-            />
+          {firstPrize?.winnerId && firstPrizeAvatar && (
+            <Animated.Image entering={FadeIn} source={{ uri: firstPrizeAvatar }} style={styles.userImageFirstPlace} />
           )}
         </View>
 
@@ -108,24 +102,20 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         <View style={[styles.prizeBox, styles.thirdPlace]}>
           {thirdPrize && (
             <>
-              <Image source={prizesData['iPhone 16'].image} style={styles.prizeImage} />
+              <Image source={prizesData[thirdPrize.prizes[0].feKey].image} style={styles.subPrizeImage} />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text
                   style={[styles.surpriseTitle, computedStyles.surpriseTitle]}
                   elipsizeMode={TextElipsizeMode.Clip}
                   numberOfLines={1}
                 >
-                  {thirdPrize?.winnerId ? thirdPrize?.winnerFirstName : prizesData['iPhone 16'].name}
+                  {thirdPrize?.winnerId ? thirdPrize?.winnerFirstName : t(prizesData[thirdPrize.prizes[0].feKey].name)}
                 </Text>
               </View>
             </>
           )}
-          {thirdPrize?.winnerId && (
-            <Animated.Image
-              entering={FadeIn}
-              source={{ uri: thirdPrizeAvatar ?? defaultImage }}
-              style={styles.userImageThirdPlace}
-            />
+          {thirdPrize?.winnerId && thirdPrizeAvatar && (
+            <Animated.Image entering={FadeIn} source={{ uri: thirdPrizeAvatar }} style={styles.userImageThirdPlace} />
           )}
         </View>
       </View>
@@ -157,10 +147,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 6,
   },
-  prizeImage: {
-    width: 60,
-    height: undefined,
-    aspectRatio: '0.5',
+  mainPrizeImage: {
+    width: 100,
+    maxWidth: 200,
+    height: 200,
+    aspectRatio: 1,
+    resizeMode: 'contain',
+  },
+  subPrizeImage: {
+    width: undefined,
+    maxWidth: 110,
+    height: 130,
+    aspectRatio: 0.7,
+    resizeMode: 'contain',
   },
   firstPlacePrize: {
     width: 75,
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
   userImageFirstPlace: {
     position: 'absolute',
     bottom: 32,
-    right: -22,
+    right: 20,
     width: 64,
     height: 64,
     borderRadius: 32,
@@ -176,7 +175,7 @@ const styles = StyleSheet.create({
   userImageSecondPlace: {
     position: 'absolute',
     bottom: 32,
-    left: -22,
+    left: -12,
     width: 44,
     height: 44,
     borderRadius: 22,
@@ -184,7 +183,7 @@ const styles = StyleSheet.create({
   userImageThirdPlace: {
     position: 'absolute',
     bottom: 32,
-    right: -22,
+    right: 0,
     width: 44,
     height: 44,
     borderRadius: 22,

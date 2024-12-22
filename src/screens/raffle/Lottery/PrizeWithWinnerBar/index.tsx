@@ -10,10 +10,6 @@ import { getWinnerAvatar } from '../../../../core/lottery/redux/thunks';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { PrizeWithWinnerBarProps } from './types';
 
-//TODO: add ImageComponent with default image
-const defaultImage =
-  'https://s3-alpha-sig.figma.com/img/9446/d564/bd2ec06179682d62415780b8d0976216?Expires=1733097600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=asXkku9hzOkD4gS295RqStzvF937gRSwT~REzBfzcaGAh8NoH97Mc5SPoaPWSutgbYwoqaDTMZMH6P-WaoQdTEnfPjtdh5esnXPpGcrBFEQsFkPRVlqsmicS-Qi2Bf5bUP~I4pA7rtlrd0dBGipsXdIo8sUVClkDBOWqnJi7JnA2VQ-oP9MbzV82Vifdgm~WZA1tra2t5syPQwZ0Drk3o9LeKnAVx6D11fpYZ7ziwd~ror22dnHNibb0zrGg4Hbe7yu3-V1nP-NS3zG89aT75lZFBIJYKCQLLfwWrtwVdhicqxCgzwVgNcjnqsUBJF~YMILZ1OPHPT5N4i86sHYTCQ__';
-
 const PrizeWithWinnerBar = ({
   prizeId,
   winnerId,
@@ -58,7 +54,10 @@ const PrizeWithWinnerBar = ({
               <LoadingSpinner iconMode={LoadingSpinnerIconModes.Mini} startColor={colors.backgroundPrimaryColor} />
             </View>
           ) : (
-            <Image source={{ uri: winnerAvatar ?? defaultImage }} style={styles.winnerImage} />
+            <Image
+              source={winnerAvatar ? { uri: winnerAvatar } : require('../../../../../assets/images/DefaultAvatar.png')}
+              style={styles.winnerImage}
+            />
           )}
           <View style={styles.contentText}>
             <Text style={[styles.text, styles.winnerName, computedStyles.winnerName]}>

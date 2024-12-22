@@ -3,6 +3,7 @@ import { Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MenuHeader, sizes, useTheme } from 'shuttlex-integration';
 
+import { lotteryWinnerSelector } from '../../../core/lottery/redux/selectors';
 import {
   getCurrentActiveLottery,
   getCurrentUpcomingLottery,
@@ -38,6 +39,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const orderStatus = useSelector(orderStatusSelector);
+  const lotteryWinner = useSelector(lotteryWinnerSelector);
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isWinningPopupVisible, setIsWinningPopupVisible] = useState(false);
@@ -58,12 +60,11 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
     }
   }, [dispatch, offerId, orderStatus]);
 
-  //for test
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setIsWinningPopupVisible(true);
-  //   }, 2000);
-  // }, []);
+  useEffect(() => {
+    if (lotteryWinner?.ticket.length !== 0) {
+      setIsWinningPopupVisible(true);
+    }
+  }, [lotteryWinner]);
 
   useEffect(() => {
     dispatch(getAccountSettingsVerifyStatus());

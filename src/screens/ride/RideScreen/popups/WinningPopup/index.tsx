@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, SafeAreaView, StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import {
   BigHeader,
   BottomWindowWithGesture,
@@ -10,17 +11,19 @@ import {
   SquareButtonModes,
 } from 'shuttlex-integration';
 
-//TODO: take image from BE
-import imageWinningPrize from '../../../../../../assets/images/imageWinningPrize';
+import { lotteryPrizesSelector, lotteryWinnerSelector } from '../../../../../core/lottery/redux/selectors';
+import { prizesData } from '../../../../raffle/Lottery/prizesData';
 import { WinningPopupProps } from './types';
 
 const windowHeight = Dimensions.get('window').height;
 
-//TODO: replace to correct winTicket number
-const winTicket = 12345678;
-
 const WinningPopup = ({ setIsWinningPopupVisible }: WinningPopupProps) => {
   const { t } = useTranslation();
+
+  const lotteryWinner = useSelector(lotteryWinnerSelector);
+  const lotteryPrizes = useSelector(lotteryPrizesSelector);
+
+  const winner = lotteryPrizes.find(item => item.ticketNumber === lotteryWinner?.ticket);
 
   const bottomWindowRef = useRef<BottomWindowWithGestureRef>(null);
 
@@ -36,45 +39,50 @@ const WinningPopup = ({ setIsWinningPopupVisible }: WinningPopupProps) => {
     closeWindow?.();
     setIsWinningPopupVisible(false);
   };
-
-  const hiddenPartContent = (
-    <View>
-      <BigHeader
-        windowTitle={t('ride_Ride_WinningPopup_subTitle')}
-        firstHeaderTitle={t('ride_Ride_WinningPopup_firstTitle')}
-        secondHeaderTitle={t('ride_Ride_WinningPopup_secondTitle', { ticketNumber: winTicket })}
-        description={t('ride_Ride_WinningPopup_description')}
-      />
-      <View style={styles.imageContainer}>
-        <Image source={imageWinningPrize} style={styles.image} resizeMode="contain" />
+  if (winner) {
+    const hiddenPartContent = (
+      <View>
+        <BigHeader
+          windowTitle={t('ride_Ride_WinningPopup_subTitle')}
+          firstHeaderTitle={t('ride_Ride_WinningPopup_firstTitle')}
+          secondHeaderTitle={t('ride_Ride_WinningPopup_secondTitle', { ticketNumber: lotteryWinner?.ticket })}
+          description={t('ride_Ride_WinningPopup_description', { place: winner.index + 1 })}
+        />
+        <View style={styles.imageContainer}>
+          <Image source={prizesData[winner.prizes[0].feKey].image} style={styles.image} resizeMode="contain" />
+        </View>
+        <View style={styles.buttonsContainer}>
+          <Button
+            containerStyle={styles.button}
+            text={t('ride_Ride_WinningPopup_greatButton')}
+            onPress={onPressGreat}
+          />
+          <Button
+            containerStyle={styles.button}
+            text={t('ride_Ride_WinningPopup_moreInfoButton')}
+            mode={SquareButtonModes.Mode5}
+            onPress={onPressMoreInfo}
+          />
+        </View>
       </View>
-      <View style={styles.buttonsContainer}>
-        <Button containerStyle={styles.button} text={t('ride_Ride_WinningPopup_greatButton')} onPress={onPressGreat} />
-        <Button
-          containerStyle={styles.button}
-          text={t('ride_Ride_WinningPopup_moreInfoButton')}
-          mode={SquareButtonModes.Mode5}
-          onPress={onPressMoreInfo}
+    );
+
+    return (
+      <View style={StyleSheet.absoluteFill}>
+        <SafeAreaView style={styles.confettiContainer}>
+          <Confetti showConfetti />
+        </SafeAreaView>
+        <BottomWindowWithGesture
+          ref={bottomWindowRef}
+          withShade
+          setIsOpened={setIsWinningPopupVisible}
+          opened={true}
+          hiddenPart={hiddenPartContent}
+          hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
         />
       </View>
-    </View>
-  );
-
-  return (
-    <View style={StyleSheet.absoluteFill}>
-      <SafeAreaView style={styles.confettiContainer}>
-        <Confetti showConfetti />
-      </SafeAreaView>
-      <BottomWindowWithGesture
-        ref={bottomWindowRef}
-        withShade
-        setIsOpened={setIsWinningPopupVisible}
-        opened={true}
-        hiddenPart={hiddenPartContent}
-        hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
-      />
-    </View>
-  );
+    );
+  }
 };
 
 const styles = StyleSheet.create({

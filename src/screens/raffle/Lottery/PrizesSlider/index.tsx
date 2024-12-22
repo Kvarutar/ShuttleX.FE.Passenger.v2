@@ -1,6 +1,7 @@
 import { memo, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, Modal, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
 import { InputXIcon, sizes, Text, useTheme } from 'shuttlex-integration';
 
@@ -12,6 +13,7 @@ import { PrizesSliderProps } from './types';
 const windowWidth = Dimensions.get('window').width;
 const carouselAutoPlayInterval = 2000;
 
+//TODO: fix bounce
 const PrizesSlider = memo(({ visible, onClose, selectedItemIndex, listItem }: PrizesSliderProps): JSX.Element => {
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -36,19 +38,21 @@ const PrizesSlider = memo(({ visible, onClose, selectedItemIndex, listItem }: Pr
     },
   });
 
-  //TODO: change prizes data with the real one
   const renderItem = useCallback(
     ({ item }: { item: Prize }) => {
+      const feKey = item.prizes[0].feKey;
       return (
         <View style={[styles.item, computedStyles.item]} onLayout={e => setItemHeight(e.nativeEvent.layout.height)}>
-          <Image source={prizesData['iPhone 16'].image} style={styles.itemImage} />
+          <Image source={prizesData[feKey].image} style={styles.itemImage} />
           <Text style={[styles.itemPosition, computedStyles.itemPosition]}>
             {t('raffle_Lottery_PrizesSlider_position', { pos: item.index + 1 })}
           </Text>
-          <Text style={styles.itemTitle}>{prizesData['iPhone 16'].name}</Text>
-          <Text style={[styles.itemDescription, computedStyles.itemDescription]}>
-            {prizesData['iPhone 16'].description}
-          </Text>
+          <Text style={styles.itemTitle}>{t(prizesData[feKey].name)}</Text>
+          <ScrollView style={styles.scrollView}>
+            <Text style={[styles.itemDescription, computedStyles.itemDescription]}>
+              {t(prizesData[feKey].description ?? '')}
+            </Text>
+          </ScrollView>
         </View>
       );
     },
@@ -121,6 +125,9 @@ const styles = StyleSheet.create({
   itemDescription: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  scrollView: {
+    maxHeight: 60,
   },
 });
 

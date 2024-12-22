@@ -17,7 +17,7 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
-import { clearPrizes } from '../../../core/lottery/redux';
+import { clearPrizes, setLotterySelectedMode } from '../../../core/lottery/redux';
 import {
   isPreviousPrizesLoadingSelector,
   isPrizesLoadingSelector,
@@ -65,6 +65,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
   const isPreviousPrizesLoading = useSelector(isPreviousPrizesLoadingSelector);
 
   const [isPrizeSelected, setIsPrizeSelected] = useState(true);
+  const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
   const [allWinners, setAllWinners] = useState<Prize[]>([]);
@@ -150,6 +151,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
 
   const onGroupedButtonsPress = (state: boolean) => {
     setIsPrizeSelected(state);
+    dispatch(setLotterySelectedMode(state ? 'current' : 'history'));
     if (lotteryPreviousPrizes.length === 0) {
       dispatch(getPreviousPrizes());
     }
@@ -166,27 +168,29 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
     noWinnersExistText: {
       color: colors.textTitleColor,
     },
+    visiblePartStyle: {
+      paddingBottom: isBottomWindowOpen ? 10 : 70,
+    },
   });
 
-  //TODO: change prizes data with the real one
   const renderContent = () => (
     <View style={[styles.renderContainer, computedStyles.renderContainer]}>
       {isPrizeSelected ? (
         !isWinnersExist && lotteryState === 'CurrentActive' ? (
-          <View style={styles.noWinnersExistContainer}>
-            <Text style={[styles.noWinnersExistText, computedStyles.noWinnersExistText]}>
-              {t('raffle_Lottery_raffleBegins')}
-            </Text>
-          </View>
+          <Text style={[styles.noWinnersExistText, computedStyles.noWinnersExistText]}>
+            {t('raffle_Lottery_raffleBegins')}
+          </Text>
         ) : (
           otherPrizes.map(item => {
             const isWinner = allWinners.some(prize => prize.index === item.index);
+            const feKey = item.prizes[0].feKey;
+
             return lotteryState === 'CurrentActive' ? (
               isWinner && (
                 <PrizeWithWinnerBar
                   key={item.prizes[0].prizeId}
-                  prizeImage={prizesData['iPhone 16'].image}
-                  prizeTitle={prizesData['iPhone 16'].name}
+                  prizeImage={prizesData[feKey].image}
+                  prizeTitle={t(prizesData[feKey].name)}
                   prizeId={item.prizes[0].prizeId}
                   winnerId={item.winnerId}
                   ticketCode={item.ticketNumber}
@@ -205,8 +209,8 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
         otherPrizes.map(item => (
           <PrizeWithWinnerBar
             key={item.prizes[0].prizeId}
-            prizeImage={prizesData['Iphone 16'].image}
-            prizeTitle={prizesData['iPhone 16'].name}
+            prizeImage={prizesData[item.prizes[0].feKey].image}
+            prizeTitle={t(prizesData[item.prizes[0].feKey].name)}
             prizeId={item.prizes[0].prizeId}
             winnerId={item.winnerId}
             ticketCode={item.ticketNumber}
@@ -257,6 +261,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
         maxHeight={0.85}
         minHeight={bottomWindowMinHeight}
         withVisiblePartScroll
+        setIsOpened={setIsBottomWindowOpen}
         headerElement={
           previousLotteryId && (
             <GroupedButtons
@@ -270,7 +275,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
           )
         }
         containerStyle={styles.bottomWindowContainer}
-        visiblePartStyle={styles.visiblePartStyle}
+        visiblePartStyle={[styles.visiblePartStyle, computedStyles.visiblePartStyle]}
       />
 
       <PrizesSlider
@@ -299,7 +304,7 @@ const styles = StyleSheet.create({
   },
   visiblePartStyle: {
     paddingTop: 18,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   renderContainer: {
     flexWrap: 'wrap',
@@ -319,13 +324,11 @@ const styles = StyleSheet.create({
   prizesErrorText: {
     alignSelf: 'center',
   },
-  noWinnersExistContainer: {
-    flex: 1,
-    alignItems: 'center',
-    marginTop: 16,
-  },
   noWinnersExistText: {
+    width: '100%',
+    marginTop: 16,
     fontSize: 22,
+    textAlign: 'center',
   },
 });
 

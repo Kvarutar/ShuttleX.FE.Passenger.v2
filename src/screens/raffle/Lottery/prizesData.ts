@@ -1,74 +1,78 @@
 import {
-  eighthSurprise,
-  fifthSurprise,
-  firstSurprise,
-  fourthSurprise,
-  ninthSurprise,
-  secondSurprise,
-  seventhSurprise,
-  sixthSurprise,
-  tenthSurprises,
-  thirdSurprise,
+  AirPodsImage,
+  AirPodsMaxImage,
+  AirPodsProImage,
+  AirTagImage,
+  BagImage,
+  BottleImage,
+  DeskLampImage,
+  HoodieImage,
+  iPhone16ProImage,
+  MugImage,
+  ToteBagImage,
+  TshirtImage,
 } from '../../../../assets/images/surprises';
 import { PrizeData } from './types';
 
 export const prizesData: Record<string, PrizeData> = {
-  'iPhone 16 Pro': {
-    name: 'iPhone 16 Pro',
-    image: firstSurprise,
-    description: null,
+  iPhone16Pro: {
+    name: 'raffle_Lottery_prizeiPhone16Pro',
+    image: iPhone16ProImage,
+    description: 'raffle_Lottery_prizeiPhone16ProDesc',
   },
-  'iPhone 16': {
-    name: 'iPhone 16',
-    image: secondSurprise,
-    description:
-      'The iPhone 16 display has rounded corners that follow a beautiful curved design, and these corners are within a standard rectangle.',
+  AirPods: {
+    name: 'raffle_Lottery_prizeAirPods',
+    image: AirPodsImage,
+    description: 'raffle_Lottery_prizeAirPodsDesc',
   },
-  'iPhone 15': {
-    name: 'iPhone 15',
-    image: thirdSurprise,
-    description: null,
+  AirPodsMax: {
+    name: 'raffle_Lottery_prizeAirPodsMax',
+    image: AirPodsMaxImage,
+    description: 'raffle_Lottery_prizeAirPodsMaxDesc',
   },
-  'Nothing Ear (2)': {
-    name: 'Nothing Ear (2)',
-    image: fourthSurprise,
-    description:
-      'The Nothing Ear (a) Yellow are made for all parts of the day. The unique transparent design and slim rectangular size make the Ear (a) earplugs ideal for the music lover.',
+  AirPodsPro: {
+    name: 'raffle_Lottery_prizeAirPodsPro',
+    image: AirPodsProImage,
+    description: 'raffle_Lottery_prizeAirPodsProDesc',
   },
-  'Nothing Ear (3)': {
-    name: 'Nothing Ear (3)',
-    image: fifthSurprise,
-    description:
-      'The Nothing Ear (a) Yellow are made for all parts of the day. The unique transparent design and slim rectangular size make the Ear (a) earplugs ideal for the music lover.',
+  AirTag: {
+    name: 'raffle_Lottery_prizeAirTag',
+    image: AirTagImage,
+    description: 'raffle_Lottery_prizeAirTagDesc',
   },
-  'Nothing Ear A': {
-    name: 'Nothing Ear A',
-    image: sixthSurprise,
-    description:
-      'The Nothing Ear (a) Yellow are made for all parts of the day. The unique transparent design and slim rectangular size make the Ear (a) earplugs ideal for the music lover.',
+  Bottle: {
+    name: 'raffle_Lottery_prizeBottle',
+    image: BottleImage,
+    description: 'raffle_Lottery_prizeBottleDesc',
   },
-  'AirPods 1': {
-    name: 'AirPods 1',
-    image: seventhSurprise,
-    description:
-      'The Nothing Ear (a) Yellow are made for all parts of the day. The unique transparent design and slim rectangular size make the Ear (a) earplugs ideal for the music lover.',
+  DeskLamp: {
+    name: 'raffle_Lottery_prizeDeskLamp',
+    image: DeskLampImage,
+    description: 'raffle_Lottery_prizeDeskLampDesc',
   },
-  'Ear (open2)': {
-    name: 'Ear (open2)',
-    image: eighthSurprise,
-    description:
-      'The Nothing Ear (a) Yellow are made for all parts of the day. The unique transparent design and slim rectangular size make the Ear (a) earplugs ideal for the music lover.',
+  Hoodie: {
+    name: 'raffle_Lottery_prizeHoodie',
+    image: HoodieImage,
+    description: 'raffle_Lottery_prizeHoodieDesc',
   },
-  'Ear (open3)': {
-    name: 'Ear (open3)',
-    image: ninthSurprise,
-    description:
-      'The Nothing Ear (a) Yellow are made for all parts of the day. The unique transparent design and slim rectangular size make the Ear (a) earplugs ideal for the music lover.',
+  Tshirt: {
+    name: 'raffle_Lottery_prizeTshirt',
+    image: TshirtImage,
+    description: 'raffle_Lottery_prizeTshirtDesc',
   },
-  'Ear (open)': {
-    name: 'Ear (open)',
-    image: tenthSurprises,
-    description:
-      'The Nothing Ear (a) Yellow are made for all parts of the day. The unique transparent design and slim rectangular size make the Ear (a) earplugs ideal for the music lover.',
+  Mug: {
+    name: 'raffle_Lottery_prizeMug',
+    image: MugImage,
+    description: 'raffle_Lottery_prizeMugDesc',
+  },
+  Bag: {
+    name: 'raffle_Lottery_prizeBag',
+    image: BagImage,
+    description: 'raffle_Lottery_prizeBagDesc',
+  },
+  ToteBag: {
+    name: 'raffle_Lottery_prizeToteBag',
+    image: ToteBagImage,
+    description: 'raffle_Lottery_prizeToteBagDesc',
   },
 };

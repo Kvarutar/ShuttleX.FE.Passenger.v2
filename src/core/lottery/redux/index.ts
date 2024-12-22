@@ -11,7 +11,7 @@ import {
   getTicketAfterRide,
   getWinnerAvatar,
 } from './thunks';
-import { LotteryState, TicketFromAPI, WinnerPrizesAPIResponse } from './types';
+import { LotteryMode, LotteryState, TicketFromAPI, WinnerPrizesAPIResponse } from './types';
 
 const initialState: LotteryState = {
   lottery: {
@@ -22,6 +22,7 @@ const initialState: LotteryState = {
   },
   previousLottery: null,
   prizes: [],
+  selectedMode: 'current',
   winnerPrizes: {
     ticket: '',
     prizeIds: [],
@@ -50,6 +51,9 @@ const slice = createSlice({
   name: 'lottery',
   initialState,
   reducers: {
+    setLotterySelectedMode: (state, action: PayloadAction<LotteryMode>) => {
+      state.selectedMode = action.payload;
+    },
     clearPrizes: state => {
       state.prizes = initialState.prizes;
       state.previousPrizes = initialState.previousPrizes;
@@ -173,7 +177,10 @@ const slice = createSlice({
       //WinnerAvatar
       .addCase(getWinnerAvatar.pending, (state, action) => {
         const { winnerId } = action.meta.arg;
-        const prize = state.prizes.find(item => item.winnerId === winnerId);
+        const selectedPrizes = state.selectedMode === 'history' ? state.previousPrizes : state.prizes;
+
+        const prize = selectedPrizes.find(item => item.winnerId === winnerId);
+
         if (prize) {
           prize.avatar = {
             imageUrl: null,
@@ -183,7 +190,9 @@ const slice = createSlice({
       })
       .addCase(getWinnerAvatar.fulfilled, (state, action) => {
         const { winnerId } = action.meta.arg;
-        const prize = state.prizes.find(item => item.winnerId === winnerId);
+        const selectedPrizes = state.selectedMode === 'history' ? state.previousPrizes : state.prizes;
+        const prize = selectedPrizes.find(item => item.winnerId === winnerId);
+
         if (prize) {
           prize.avatar = {
             imageUrl: action.payload,
@@ -193,7 +202,9 @@ const slice = createSlice({
       })
       .addCase(getWinnerAvatar.rejected, (state, action) => {
         const { winnerId } = action.meta.arg;
-        const prize = state.prizes.find(item => item.winnerId === winnerId);
+        const selectedPrizes = state.selectedMode === 'history' ? state.previousPrizes : state.prizes;
+        const prize = selectedPrizes.find(item => item.winnerId === winnerId);
+
         if (prize && prize.avatar) {
           prize.avatar = {
             imageUrl: null,
@@ -204,6 +215,6 @@ const slice = createSlice({
   },
 });
 
-export const { clearPrizes, addTicket, setTicketAfterRide, setWinnerPrizes } = slice.actions;
+export const { setLotterySelectedMode, clearPrizes, addTicket, setTicketAfterRide, setWinnerPrizes } = slice.actions;
 
 export default slice.reducer;
