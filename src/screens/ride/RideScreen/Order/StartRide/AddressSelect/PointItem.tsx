@@ -9,19 +9,20 @@ import { CloseIcon, PointIcon, PointIcon2, TextInput, TextInputInputMode, useThe
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
-import { offerPointByIdSelector } from '../../../../../../core/ride/redux/offer/selectors';
+import { offerPointByIdSelector, offerPointsSelector } from '../../../../../../core/ride/redux/offer/selectors';
 import { createPhantomOffer, getAvailableTariffs } from '../../../../../../core/ride/redux/offer/thunks';
 import { PointItemProps } from './types';
 
 const fadeAnimationDuration = 100;
 
-const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: PointItemProps) => {
+const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput, isInFocus }: PointItemProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const point = useSelector(state => offerPointByIdSelector(state, currentPointId));
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
+  const offerPoints = useSelector(offerPointsSelector);
 
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -29,13 +30,13 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
   useEffect(() => {
     if (point && !isFocused && point.latitude) {
       const isPresentAddressInFullAddress = point.fullAddress.includes(point.address);
-      const content = isPresentAddressInFullAddress ? point.fullAddress : `${point.address}, ${point.fullAddress}`;
+      const content = isPresentAddressInFullAddress ? point.fullAddress : point.address;
       setInputValue(content);
     }
   }, [point, isFocused]);
 
   useEffect(() => {
-    if (currentPointId === 0 && inputValue === '' && !isFocused && defaultLocation) {
+    if (currentPointId === 0 && !isInFocus && defaultLocation && point?.fullAddress === '') {
       dispatch(
         updateOfferPoint({
           id: 0,
@@ -45,8 +46,13 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
           latitude: defaultLocation.latitude,
         }),
       );
+
+      const newFocusedPoint = offerPoints.find(el => el.id !== 0 && el.address === '');
+      if (newFocusedPoint) {
+        updateFocusedInput({ id: newFocusedPoint.id, value: '', focus: false });
+      }
     }
-  }, [currentPointId, defaultLocation, dispatch, inputValue, isFocused, t]);
+  }, [currentPointId, defaultLocation, dispatch, isInFocus, point, t, offerPoints, updateFocusedInput]);
 
   useEffect(() => {
     if (currentPointId === 0 && !isFocused && point?.latitude && point?.longitude) {
@@ -58,6 +64,12 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
   }, [isFocused, point, currentPointId, dispatch]);
 
   const isFocusedHandler = (state: boolean) => () => {
+    if (!state && point && !point?.address) {
+      dispatch(updateOfferPoint({ id: point?.id, address: '', fullAddress: '', longitude: 0, latitude: 0 }));
+      if (!defaultLocation) {
+        setInputValue('');
+      }
+    }
     updateFocusedInput({ id: currentPointId, value: inputValue, focus: state });
     setIsFocused(state);
 
@@ -80,9 +92,17 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
     }
   };
 
+  const getColorInput = () => {
+    if (isInFocus) {
+      return colors.backgroundPrimaryColor;
+    }
+
+    return colors.backgroundSecondaryColor;
+  };
+
   const computedStyles = StyleSheet.create({
     inputContent: {
-      backgroundColor: isFocused || inputValue ? colors.backgroundPrimaryColor : colors.backgroundSecondaryColor,
+      backgroundColor: getColorInput(),
     },
     dots: {
       backgroundColor: colors.iconSecondaryColor,
@@ -90,16 +110,24 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
   });
 
   const shadowOptions = {
-    distance: isFocused ? 8 : 0,
-    startColor: isFocused ? colors.strongShadowColor : 'transparent',
+    distance: isInFocus ? 8 : 0,
+    startColor: isInFocus ? colors.strongShadowColor : 'transparent',
   };
 
   const pointIcon = ({ innerColor, outerColor }: { innerColor?: string; outerColor?: string }) => {
-    if (isFocused || inputValue) {
-      return <PointIcon innerColor={innerColor} outerColor={outerColor} />;
+    if (isInFocus || inputValue) {
+      return (
+        <Animated.View>
+          <PointIcon innerColor={innerColor} outerColor={outerColor} />
+        </Animated.View>
+      );
     }
 
-    return <PointIcon2 />;
+    return (
+      <Animated.View entering={FadeIn.duration(200)} exiting={FadeIn.duration(200)}>
+        <PointIcon2 />
+      </Animated.View>
+    );
   };
 
   return (
@@ -141,7 +169,7 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput }: Poi
           onFocus={isFocusedHandler(true)}
           onBlur={isFocusedHandler(false)}
         />
-        {inputValue && isFocused && (
+        {inputValue && isInFocus && (
           <Pressable onPress={clearInputValue} style={styles.cleanInputIcon} hitSlop={20}>
             <CloseIcon color={colors.textSecondaryColor} />
           </Pressable>

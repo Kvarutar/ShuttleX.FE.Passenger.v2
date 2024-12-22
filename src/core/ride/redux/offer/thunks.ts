@@ -119,7 +119,9 @@ export const getAddressSearchHistory = createAppAsyncThunk<SearchAddressFromAPI[
   'offer/getAddressSearchHistory',
   async (payload, { rejectWithValue, passengerAxios }) => {
     try {
-      const response = await passengerAxios.get<RecentAddressAPIResponse>(`/Ride/search?Amount=${payload.amount}`);
+      const response = await passengerAxios.get<RecentAddressAPIResponse>(
+        `/Ride/search?Amount=${payload.amount}&SortBy=createdDate:desc`,
+      );
 
       return response.data.map<SearchAddressFromAPI>(el => ({
         fullAddress: el.fullAddress,

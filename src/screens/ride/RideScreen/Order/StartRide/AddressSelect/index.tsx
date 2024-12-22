@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -20,6 +20,7 @@ import {
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
+import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
 import { isRoutePointsLocationError } from '../../../../../../core/ride/redux/offer/errors';
 import {
@@ -67,11 +68,17 @@ const AddressSelect = ({
   const offerRoutesError = useSelector(offerRoutesErrorSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
   const offerPoints = useSelector(offerPointsSelector);
-  const [focusedInput, setFocusedInput] = useState<FocusedInput>({ id: 1, value: '', focus: false });
   const [isAddressSelected, setIsAddressSelected] = useState(false);
   const [addresses, setAddresses] = useState<SearchAddressFromAPI[]>([]);
   const [addressesHistory, setAddressesHistory] = useState<RecentDropoffsFromAPI[]>([]);
   const [incorrectWaypoints, setIncorrectWaypoints] = useState(false);
+
+  const defaultLocation = useSelector(geolocationCoordinatesSelector);
+  const [focusedInput, setFocusedInput] = useState<FocusedInput>({
+    id: defaultLocation ? 1 : 0,
+    value: '',
+    focus: false,
+  });
 
   const debounceInputValue = useDebounce(focusedInput.value, 300);
   const focusedOfferPoint = useSelector(state => offerPointByIdSelector(state, focusedInput.id));
@@ -96,12 +103,14 @@ const AddressSelect = ({
     },
   });
 
+  const getSearchHistory = useCallback(async () => {
+    const addressessHistory = await dispatch(getAddressSearchHistory({ amount: 10 })).unwrap();
+    setAddressesHistory(addressessHistory);
+  }, [setAddressesHistory, dispatch]);
+
   useEffect(() => {
-    (async () => {
-      const addressessHistory = await dispatch(getAddressSearchHistory({ amount: 10 })).unwrap();
-      setAddressesHistory(addressessHistory);
-    })();
-  }, [dispatch]);
+    getSearchHistory();
+  }, [dispatch, getSearchHistory]);
 
   useEffect(() => {
     if (debounceInputValue.trim() === '') {
@@ -184,8 +193,14 @@ const AddressSelect = ({
 
     if (!isHistory) {
       const enhancedAddress = await dispatch(enhanceAddress(place)).unwrap();
-      dispatch(saveSearchResult(enhancedAddress));
-      setAddressesHistory(prev => [place, ...prev]);
+
+      dispatch(
+        saveSearchResult({
+          ...enhancedAddress,
+          place: place.dropoffAddress,
+          fullAddress: place.fullAddress,
+        }),
+      );
 
       geo = {
         latitude: enhancedAddress.geo.latitude,
@@ -203,8 +218,15 @@ const AddressSelect = ({
       }),
     );
 
+    const newFocusedPoint = offerPoints.find(el => el.id !== focusedInput.id && el.address === '');
+    //TODO: delay only bacause of state updateOfferPoint update
+    if (newFocusedPoint) {
+      setTimeout(() => setFocusedInput({ id: newFocusedPoint.id, value: '', focus: false }), 300);
+    }
+
     Keyboard.dismiss();
     setIsAddressSelected(false);
+    getSearchHistory();
   };
 
   const pointsContent = offerPoints.map((point, index) => {
@@ -230,6 +252,7 @@ const AddressSelect = ({
         key={point.id}
         pointMode={pointMode}
         currentPointId={point.id}
+        isInFocus={focusedInput.id === point.id}
         updateFocusedInput={setFocusedInput}
       />
     );
@@ -266,6 +289,11 @@ const AddressSelect = ({
     setIsAddressSelectVisible(false);
     dispatch(setOrderStatus(OrderStatus.ChoosingTariff));
   };
+
+  const isButtonDisabled =
+    incorrectWaypoints ||
+    !isCityAvailable ||
+    (offerRoutesError !== null && isRoutePointsLocationError(offerRoutesError));
 
   return (
     <>
@@ -337,9 +365,9 @@ const AddressSelect = ({
           </ScrollView>
           <Button
             isLoading={isAvailableTariffsLoading || isOfferRoutesLoading}
-            disabled={incorrectWaypoints || !isCityAvailable}
+            disabled={isButtonDisabled}
             onPress={onConfirm}
-            mode={isAllOfferPointsFilled ? CircleButtonModes.Mode1 : CircleButtonModes.Mode5}
+            mode={isAllOfferPointsFilled && !isButtonDisabled ? CircleButtonModes.Mode1 : CircleButtonModes.Mode5}
             containerStyle={styles.confirmButtonContainer}
             text={t('ride_Ride_AddressSelect_confirmButton')}
           />

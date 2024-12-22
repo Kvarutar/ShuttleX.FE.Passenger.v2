@@ -47,6 +47,9 @@ const slice = createSlice({
       state.isPermissionGranted = action.payload;
     },
     setGeolocationIsLocationEnabled(state, action: PayloadAction<GeolocationState['isLocationEnabled']>) {
+      if (!action.payload) {
+        state.isGeolocationLoaded = true;
+      }
       state.isLocationEnabled = action.payload;
     },
     setGeolocationAccuracy(state, action: PayloadAction<GeolocationState['accuracy']>) {
@@ -55,6 +58,9 @@ const slice = createSlice({
     setGeolocationError(state, action: PayloadAction<GeolocationState['error']>) {
       state.isGeolocationLoaded = true;
       state.error = action.payload;
+    },
+    setIsGeolocationLoaded(state, action: PayloadAction<boolean>) {
+      state.isGeolocationLoaded = action.payload;
     },
   },
   extraReducers: builder => {
@@ -70,6 +76,7 @@ export const {
   setGeolocationIsLocationEnabled,
   setGeolocationAccuracy,
   setGeolocationError,
+  setIsGeolocationLoaded,
 } = slice.actions;
 
 export default slice.reducer;
