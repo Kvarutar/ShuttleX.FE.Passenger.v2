@@ -21,7 +21,7 @@ import { getOrdersHistory } from '../../../core/passenger/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { mapRidePercentFromPolylinesSelector, mapRouteTrafficSelector } from '../../../core/ride/redux/map/selectors';
 import { tariffByIdSelector } from '../../../core/ride/redux/offer/selectors';
-import { orderSelector, tripStatusSelector } from '../../../core/ride/redux/trip/selectors';
+import { orderInfoSelector, orderSelector, tripStatusSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import { trafficLoadFromAPIToTrafficLevel } from '../../../core/utils';
 import Menu from '../../ride/Menu';
@@ -34,8 +34,9 @@ const ActivityScreen = () => {
   const dispatch = useAppDispatch();
 
   const ordersHistory = useSelector(ordersHistorySelector);
-  const currentOrder = useSelector(orderSelector);
-  const tripTariff = useSelector(state => tariffByIdSelector(state, currentOrder?.info?.tariffId));
+  const order = useSelector(orderSelector);
+  const orderInfo = useSelector(orderInfoSelector);
+  const tripTariff = useSelector(state => tariffByIdSelector(state, orderInfo?.tariffId));
   const isOrdersHistoryLoading = useSelector(isOrdersHistoryLoadingSelector);
   const tripStatus = useSelector(tripStatusSelector);
   const ridePercentFromPolylines = useSelector(mapRidePercentFromPolylinesSelector);
@@ -69,18 +70,18 @@ const ActivityScreen = () => {
   }
 
   useEffect(() => {
-    if (!currentOrder?.info) {
+    if (!orderInfo) {
       return;
     }
 
     if (tripStatus === TripStatus.Accepted) {
-      setRouteStartDate(new Date(currentOrder.info.createdDate));
-      setRouteEndDate(new Date(currentOrder.info.estimatedArriveToPickUpDate));
+      setRouteStartDate(new Date(orderInfo.createdDate));
+      setRouteEndDate(new Date(orderInfo.estimatedArriveToPickUpDate));
     } else if (tripStatus === TripStatus.Ride) {
-      setRouteStartDate(new Date(currentOrder.info.pickUpDate));
-      setRouteEndDate(new Date(currentOrder.info.estimatedArriveToDropOffDate));
+      setRouteStartDate(new Date(orderInfo.pickUpDate));
+      setRouteEndDate(new Date(orderInfo.estimatedArriveToDropOffDate));
     }
-  }, [tripStatus, currentOrder?.info]);
+  }, [tripStatus, orderInfo]);
 
   useEffect(() => {
     dispatch(getOrdersHistory());
@@ -90,7 +91,7 @@ const ActivityScreen = () => {
     if (isOrdersHistoryLoading) {
       return <Skeleton skeletonContainerStyle={styles.skeletonActiveRides} />;
     }
-    if (!tripTariff || !currentOrder || !currentOrder.info) {
+    if (!tripTariff || !order || !orderInfo) {
       return (
         <View style={styles.haveNotActiveRidesWrapper}>
           <Text style={[styles.emptyActivityText, computedStyles.emptyActivityText]}>
@@ -107,19 +108,15 @@ const ActivityScreen = () => {
         <View style={styles.imageContainer}>
           <Image
             style={styles.avatar}
-            source={
-              currentOrder.avatar
-                ? { uri: currentOrder.avatar }
-                : require('../../../../assets/images/DefaultAvatar.png')
-            }
+            source={order.avatar ? { uri: order.avatar } : require('../../../../assets/images/DefaultAvatar.png')}
           />
           <TariffImage style={styles.carImage} />
         </View>
         <Text style={[styles.currentTripTitleText, computedStyles.text]}>{t('menu_Activity_activeOrder')}</Text>
         <View style={styles.contractorInfoContainer}>
-          <Text style={styles.nameText}>{currentOrder.info.firstName}</Text>
+          <Text style={styles.nameText}>{orderInfo.firstName}</Text>
           <Text style={[styles.carModelText, computedStyles.text]}>
-            {currentOrder.info.carBrand} {currentOrder.info.carModel}
+            {orderInfo.carBrand} {orderInfo.carModel}
           </Text>
         </View>
         {trafficSegments.length !== 0 && (
@@ -148,7 +145,7 @@ const ActivityScreen = () => {
               {isOrdersHistoryLoading ? (
                 <Skeleton skeletonsAmount={5} skeletonContainerStyle={styles.skeletonRecentAdress} />
               ) : (
-                ordersHistory.map((order, index) => <RecentAddressesBar key={index} order={order} />)
+                ordersHistory.map((value, index) => <RecentAddressesBar key={index} order={value} />)
               )}
             </View>
           </ScrollView>
@@ -157,7 +154,7 @@ const ActivityScreen = () => {
     </>
   );
 
-  if (!ordersHistory.length && !currentOrder && !isOrdersHistoryLoading) {
+  if (!ordersHistory.length && !order && !isOrdersHistoryLoading) {
     content = (
       <View style={[styles.emptyActivityWrapper, computedStyles.emptyActivityWrapper]}>
         <Text style={[styles.emptyActivityText, computedStyles.emptyActivityText]}>

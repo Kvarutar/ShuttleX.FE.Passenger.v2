@@ -22,10 +22,14 @@ import {
   timerSizes,
   TimerSizesModes,
   TrafficIndicator,
-  TrafficLevel,
+  TrafficIndicatorProps,
   useTheme,
 } from 'shuttlex-integration';
 
+import {
+  mapRidePercentFromPolylinesSelector,
+  mapRouteTrafficSelector,
+} from '../../../../core/ride/redux/map/selectors';
 //TODO: rewrite strange logic with timers
 import { tariffByIdSelector } from '../../../../core/ride/redux/offer/selectors';
 import {
@@ -36,6 +40,7 @@ import {
   tripStatusSelector,
 } from '../../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../../core/ride/redux/trip/types';
+import { trafficLoadFromAPIToTrafficLevel } from '../../../../core/utils';
 import { TimerStateDataType, VisiblePartProps } from './types';
 
 const timerSizeMode = TimerSizesModes.S;
@@ -52,9 +57,14 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
   const contractorAvatar = useSelector(contractorAvatarSelector);
   const tripTariffId = useSelector(orderTariffIdSelector);
   const tripTariff = useSelector(state => tariffByIdSelector(state, tripTariffId));
+  const ridePercentFromPolylines = useSelector(mapRidePercentFromPolylinesSelector);
+  const routeTraffic = useSelector(mapRouteTrafficSelector);
 
   const [isWaiting, setIsWaiting] = useState(false);
   const [extraWaiting, setExtraWaiting] = useState(false);
+  const [routeStartDate, setRouteStartDate] = useState<Date | undefined>(undefined);
+  const [routeEndDate, setRouteEndDate] = useState<Date | undefined>(undefined);
+
   const arrivedTime = orderInfo ? Date.parse(orderInfo.estimatedArriveToDropOffDate) : 0;
 
   const computedStyles = StyleSheet.create({
@@ -110,6 +120,21 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
       intervalRef.current && clearInterval(intervalRef.current);
     };
   }, [extraWaiting, setExtraSum, tripTariff]);
+
+  useEffect(() => {
+    if (!orderInfo) {
+      return;
+    }
+
+    // TODO: make redux state that saves all information about current route, to delete many comparisons of tripStatus in code base
+    if (tripStatus === TripStatus.Accepted) {
+      setRouteStartDate(new Date(orderInfo.createdDate));
+      setRouteEndDate(new Date(orderInfo.estimatedArriveToPickUpDate));
+    } else if (tripStatus === TripStatus.Ride) {
+      setRouteStartDate(new Date(orderInfo.pickUpDate));
+      setRouteEndDate(new Date(orderInfo.estimatedArriveToDropOffDate));
+    }
+  }, [tripStatus, orderInfo]);
 
   if (orderInfo && tripTariff) {
     const {
@@ -174,6 +199,17 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
       }
     };
 
+    const trafficSegments: TrafficIndicatorProps['segments'] = [];
+    if (routeTraffic !== null) {
+      const lastRouteIndex = routeTraffic[routeTraffic.length - 1].polylineEndIndex;
+      routeTraffic.forEach(elem => {
+        trafficSegments.push({
+          level: trafficLoadFromAPIToTrafficLevel[elem.trafficLoad],
+          percent: `${(1 - (elem.polylineEndIndex - elem.polylineStartIndex) / lastRouteIndex) * 100}%`,
+        });
+      });
+    }
+
     if (tripStatus === TripStatus.Ride) {
       return (
         <>
@@ -184,17 +220,15 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
             <Text style={styles.nameTimeText}>{formatTime(new Date(arrivedTime))}</Text>
           </View>
           <Text style={[styles.carInfoText, styles.carNameAlign]}>{`${carBrand} ${carModel}`}</Text>
-          {/*TODO: delete mock data*/}
-          <TrafficIndicator
-            containerStyle={styles.trafficIndicatorContainer}
-            currentPercent={`${70}%`}
-            segments={[
-              { percent: '15%', level: TrafficLevel.Low },
-              { percent: '15%', level: TrafficLevel.Average },
-              { percent: '30%', level: TrafficLevel.High },
-              { percent: '40%', level: TrafficLevel.Low },
-            ]}
-          />
+          {trafficSegments.length !== 0 && (
+            <TrafficIndicator
+              containerStyle={styles.trafficIndicatorContainer}
+              currentPercent={ridePercentFromPolylines}
+              segments={trafficSegments}
+              startDate={routeStartDate}
+              endDate={routeEndDate}
+            />
+          )}
           <View style={styles.driverInfoWrapper}>
             <View style={styles.driverInfoContainer}>
               {/*TODO: change to default image*/}
