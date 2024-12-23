@@ -33,6 +33,8 @@ const SignInCodeScreen = ({ navigation, route }: SignInCodeScreenProps): JSX.Ele
     (newCode: string) => {
       if (newCode.length === 4) {
         dispatch(verifyCode({ method: verificationType, code: newCode, body: data }));
+      } else {
+        setIsIncorrectCode(false);
       }
     },
     [dispatch, verificationType, data],
