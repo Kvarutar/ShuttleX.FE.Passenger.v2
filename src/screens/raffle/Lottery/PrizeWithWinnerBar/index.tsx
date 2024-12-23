@@ -61,10 +61,12 @@ const PrizeWithWinnerBar = ({
           )}
           <View style={styles.contentText}>
             <Text style={[styles.text, styles.winnerName, computedStyles.winnerName]}>
-              {t('raffle_Lottery_PrizeWithWinnerBar_name', {
-                name: winnerName,
-                ticketCode: ticketCode ?? '...',
-              })}
+              {ticketCode
+                ? t('raffle_Lottery_PrizeWithWinnerBar_name', {
+                    name: winnerName,
+                    ticketCode: ticketCode ?? '...',
+                  })
+                : t('raffle_Lottery_noWinner')}
             </Text>
             <Text style={[styles.text, styles.prizeTitle, computedStyles.prizeTitle]}>{prizeTitle}</Text>
           </View>

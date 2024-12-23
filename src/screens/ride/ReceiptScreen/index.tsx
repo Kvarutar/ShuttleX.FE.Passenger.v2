@@ -124,11 +124,19 @@ const ReceiptScreen = () => {
     const [pickUpTime, finishedTime] = [
       new Date(orderInfo?.info?.pickUpDate ?? new Date()),
       new Date(orderInfo?.info?.finishedDate ?? new Date()),
-    ].map(date => date.getTime());
+    ].map(date => {
+      date.setSeconds(0, 0);
+      return date.getTime();
+    });
 
     const duration = finishedTime - pickUpTime;
+
     const totalMinutes = Math.floor(duration / 60000);
     const [hours, minutes] = [Math.floor(totalMinutes / 60), totalMinutes % 60];
+
+    if (duration < 60000) {
+      return `>${t('ride_Receipt_minutes', { count: 1 })}`;
+    }
 
     return hours && minutes
       ? `${t('ride_Receipt_hours', { count: hours })} ${t('ride_Receipt_minutes', { count: minutes })}`

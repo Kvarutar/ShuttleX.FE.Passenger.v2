@@ -12,6 +12,7 @@ import {
   minToMilSec,
   Nullable,
   SafeAreaView,
+  secToMilSec,
   sizes,
   Text,
   useTheme,
@@ -110,7 +111,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
         intervalRef.current = setInterval(() => {
           triggerConfetti();
           dispatch(getCurrentPrizes());
-        }, minToMilSec(1));
+        }, secToMilSec(30));
       }
     }
 

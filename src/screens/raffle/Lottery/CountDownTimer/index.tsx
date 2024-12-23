@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Nullable, useTheme } from 'shuttlex-integration';
+import { Nullable, secToMilSec, useTheme } from 'shuttlex-integration';
 
 import { lotteryStateSelector } from '../../../../core/lottery/redux/selectors';
 import { getCurrentActiveLottery } from '../../../../core/lottery/redux/thunks';
@@ -42,7 +42,7 @@ const CountdownTimer = ({ startDate }: CountDownTimerProps) => {
     if (countdown <= 0 && (!lotteryState || lotteryState === 'CurrentUpcoming')) {
       interval = setInterval(() => {
         dispatch(getCurrentActiveLottery());
-      }, 5000);
+      }, secToMilSec(10));
     }
 
     return () => {

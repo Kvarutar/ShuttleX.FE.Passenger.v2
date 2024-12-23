@@ -6,6 +6,7 @@ import { MenuHeader, sizes, useTheme } from 'shuttlex-integration';
 import { lotteryWinnerSelector } from '../../../core/lottery/redux/selectors';
 import {
   getCurrentActiveLottery,
+  getCurrentPrizes,
   getCurrentUpcomingLottery,
   getPreviousLottery,
 } from '../../../core/lottery/redux/thunks';
@@ -87,6 +88,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
         dispatch(getCurrentUpcomingLottery());
       }
       dispatch(getPreviousLottery());
+      dispatch(getCurrentPrizes());
     })();
   }, [dispatch]);
 
