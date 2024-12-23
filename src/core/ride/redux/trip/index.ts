@@ -196,7 +196,6 @@ const slice = createSlice({
       .addCase(getOrderLongPolling.fulfilled, state => {
         state.loading.orderLongpolling = false;
         state.error.orderLongpolling = null;
-        state.status = TripStatus.Accepted;
       })
       .addCase(getOrderLongPolling.rejected, (state, action) => {
         state.loading.orderLongpolling = false;

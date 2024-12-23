@@ -7,7 +7,7 @@ import { createInitialOffer } from '../../ride/redux/offer/thunks';
 import { setOrderStatus } from '../../ride/redux/order';
 import { OrderStatus } from '../../ride/redux/order/types';
 import { addFinishedTrips, endTrip, setTripIsCanceled, setTripStatus } from '../../ride/redux/trip';
-import { orderInfoSelector } from '../../ride/redux/trip/selectors';
+import { orderInfoSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
 import { getCurrentOrder, getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { NotificationPayload, NotificationRemoteMessage, NotificationType } from './types';
@@ -19,7 +19,10 @@ const isValidNotificationType = (key: string): key is NotificationType => {
 
 const notificationHandlers: Record<NotificationType, (payload: NotificationPayload | undefined) => Promise<void>> = {
   [NotificationType.DriverAccepted]: async payload => {
-    if (payload?.orderId) {
+    const tripStatus = tripStatusSelector(store.getState());
+
+    //Check trip status because longpolling can get information earlier
+    if (payload?.orderId && tripStatus !== TripStatus.Accepted) {
       await store.dispatch(getOrderInfo(payload.orderId));
       await store.dispatch(getRouteInfo(payload.orderId));
       store.dispatch(setTripStatus(TripStatus.Accepted));

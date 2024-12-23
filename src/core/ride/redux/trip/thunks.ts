@@ -5,6 +5,7 @@ import { createInitialOffer } from '../offer/thunks';
 import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
 import { endTrip, setTripIsCanceled, setTripStatus } from '.';
+import { tripStatusSelector } from './selectors';
 import {
   FeedbackAPIRequest,
   GetCurrentOrderAPIResponse,
@@ -116,14 +117,21 @@ export const getRouteInfo = createAppAsyncThunk<
 
 export const getOrderLongPolling = createAppAsyncThunk<string, string>(
   'trip/getOrderLongPolling',
-  async (offerId, { rejectWithValue, passengerLongPollingAxios, dispatch }) => {
+  async (offerId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState }) => {
     try {
       const response = await passengerLongPollingAxios.get<OrderLongPollingAPIResponse>(
         `/Offer/${offerId}/confirmed/long-polling`,
       );
 
-      dispatch(getOrderInfo(response.data.orderId));
-      dispatch(getRouteInfo(response.data.orderId));
+      const tripStatus = tripStatusSelector(getState());
+
+      //Check trip status because notifications can get information earlier
+      if (tripStatus !== TripStatus.Accepted) {
+        dispatch(getOrderInfo(response.data.orderId));
+        dispatch(getRouteInfo(response.data.orderId));
+        dispatch(setTripStatus(TripStatus.Accepted));
+      }
+
       return response.data.orderId;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
