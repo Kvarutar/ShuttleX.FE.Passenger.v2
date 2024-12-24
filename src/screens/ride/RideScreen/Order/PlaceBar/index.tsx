@@ -25,7 +25,7 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: Place
             </Bar>
             <PlaceTitle place={place} style={styles.placeTitle} />
           </View>
-          {place.totalDistanceMtr !== undefined && (
+          {place.totalDistanceMtr !== undefined && place.totalDistanceMtr !== null && (
             <Text style={[styles.searchDistanceText, computedStyles.searchDistanceText]}>
               {t('ride_Ride_PlaceBar_kilometers', { count: mtrToKm(place.totalDistanceMtr) })}
             </Text>
@@ -41,12 +41,13 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: Place
               <Bar mode={BarModes.Disabled} style={styles.circleIconContainer}>
                 <ClockIcon color={colors.iconPrimaryColor} />
               </Bar>
-              <Bar style={styles.fullDistancePosition}>
-                <Text style={styles.fullDistanceText}>
-                  {place.totalDistanceMtr &&
-                    t('ride_Ride_PlaceBar_kilometers', { count: mtrToKm(place.totalDistanceMtr) })}
-                </Text>
-              </Bar>
+              {place.totalDistanceMtr !== undefined && place.totalDistanceMtr !== null && (
+                <Bar style={styles.fullDistancePosition}>
+                  <Text style={styles.fullDistanceText}>
+                    {t('ride_Ride_PlaceBar_kilometers', { count: mtrToKm(place.totalDistanceMtr) })}
+                  </Text>
+                </Bar>
+              )}
             </View>
           </View>
           <PlaceTitle place={place} style={styles.fullTitleContainer} />

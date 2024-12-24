@@ -165,7 +165,23 @@ const VisiblePart = () => {
 
     const getTimerStateData = (status: TripStatus | 'waiting'): Nullable<TimerStateDataType> => {
       switch (status) {
+        case TripStatus.Idle: {
+          //TODO: do estimatedArriveToPickUpDate check
+          return {
+            timerTime: new Date(estimatedArriveToPickUpDate).getTime(),
+            mode: TimerColorModes.Mode1,
+            title: (
+              <>
+                <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>
+                  {t('ride_Ride_Trip_beIn')}{' '}
+                </Text>
+                <Text style={styles.nameTimeText}>{formatTime(new Date(estimatedArriveToPickUpDate!))}</Text>
+              </>
+            ),
+          };
+        }
         case TripStatus.Accepted: {
+          //TODO: do estimatedArriveToPickUpDate check
           return {
             timerTime: new Date(estimatedArriveToPickUpDate).getTime(), //TODO change to real data
             mode: TimerColorModes.Mode1,
