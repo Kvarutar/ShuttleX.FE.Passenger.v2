@@ -3,7 +3,7 @@ import notifee, { AndroidColor } from '@notifee/react-native';
 import { setWinnerPrizes } from '../../lottery/redux';
 import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
-import { createInitialOffer } from '../../ride/redux/offer/thunks';
+import { createInitialOffer, getRecentDropoffs } from '../../ride/redux/offer/thunks';
 import { setOrderStatus } from '../../ride/redux/order';
 import { orderStatusSelector } from '../../ride/redux/order/selectors';
 import { OrderStatus } from '../../ride/redux/order/types';
@@ -38,6 +38,10 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
       store.dispatch(getTicketAfterRide());
       store.dispatch(setTripStatus(TripStatus.Finished));
     }
+
+    store.dispatch(getRecentDropoffs({ amount: 10 }));
+
+    store.dispatch(setTripStatus(TripStatus.Finished));
   },
   [NotificationType.WinnerFounded]: async payload => {
     if (payload?.prizeIds && payload.ticketNumber) {

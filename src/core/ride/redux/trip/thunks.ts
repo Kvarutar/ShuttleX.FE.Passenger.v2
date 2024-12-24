@@ -2,7 +2,7 @@ import { convertBlobToImgUri, getNetworkErrorInfo, Nullable } from 'shuttlex-int
 
 import { getTicketAfterRide } from '../../../lottery/redux/thunks';
 import { createAppAsyncThunk } from '../../../redux/hooks';
-import { createInitialOffer } from '../offer/thunks';
+import { createInitialOffer, getRecentDropoffs } from '../offer/thunks';
 import { setOrderStatus } from '../order';
 import { orderStatusSelector } from '../order/selectors';
 import { OrderStatus } from '../order/types';
@@ -150,6 +150,7 @@ export const getTripSuccessfullLongPolling = createAppAsyncThunk<string, string>
       );
       const tripStatus = tripStatusSelector(getState());
 
+      dispatch(getRecentDropoffs({ amount: 10 }));
       if (tripStatus !== TripStatus.Finished) {
         dispatch(addFinishedTrips());
         //TODO go to rating page
