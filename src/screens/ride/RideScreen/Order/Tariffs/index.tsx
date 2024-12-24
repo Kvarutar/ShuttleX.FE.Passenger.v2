@@ -105,7 +105,9 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 
   useEffect(() => {
     if (selectedTariffGroup) {
-      const foundAvailableTariffIdx = selectedTariffGroup?.tariffs?.findIndex(el => el !== undefined);
+      const foundAvailableTariffIdx = selectedTariffGroup?.tariffs?.findIndex(el =>
+        el?.matching.some(item => item.durationSec !== null && item.durationSec !== 0),
+      );
 
       if (foundAvailableTariffIdx !== undefined && foundAvailableTariffIdx !== -1) {
         setSelectedPlanIndex(foundAvailableTariffIdx);

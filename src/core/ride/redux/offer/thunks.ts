@@ -198,10 +198,10 @@ export const getAvailableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, v
     const profileZoneId = profileZoneSelector(getState())?.id;
     const acceptedOfferZoneId = orderSelector(getState())?.info?.acceptedOfferZoneId;
 
-    if (profileZoneId) {
-      zoneId = profileZoneId;
-    } else if (acceptedOfferZoneId) {
+    if (acceptedOfferZoneId) {
       zoneId = acceptedOfferZoneId;
+    } else if (profileZoneId) {
+      zoneId = profileZoneId;
     }
 
     if (payload) {
@@ -210,7 +210,11 @@ export const getAvailableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, v
 
     try {
       if (zoneId) {
-        const response = await configAxios.get<GetAvailableTariffsAPIResponse>(`/zones/${zoneId}/tariffs`);
+        const response = await configAxios.get<GetAvailableTariffsAPIResponse>(`/zones/${zoneId}/tariffs`, {
+          params: {
+            SortBy: 'index:asc',
+          },
+        });
 
         const tariffsWithMapedName = response.data.map<TariffFromAPI>(tariff => ({
           ...tariff,
@@ -271,6 +275,7 @@ export const getTariffsPrices = createAppAsyncThunk<GetTariffsPricesThunkResult,
   async (_, { rejectWithValue, cashieringAxios, getState }) => {
     const state = getState();
 
+    //TODO: Add offer zoneId from BE
     const zoneId = state.offer.zoneId ?? state.passenger.zone?.id;
 
     try {

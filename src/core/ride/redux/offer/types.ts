@@ -135,6 +135,7 @@ export type TariffFromAPI = {
   maxSeatsCount: number;
   maxLuggagesCount: number;
   type: TariffsTypeFromAPI;
+  index: number;
 };
 
 export type TariffWithMatching = TariffFromAPI & { matching: Matching[]; isAvaliable: boolean };
