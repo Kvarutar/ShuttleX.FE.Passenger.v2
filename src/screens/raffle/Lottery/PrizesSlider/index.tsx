@@ -13,7 +13,6 @@ import { PrizesSliderProps } from './types';
 const windowWidth = Dimensions.get('window').width;
 const carouselAutoPlayInterval = 2000;
 
-//TODO: fix bounce
 const PrizesSlider = memo(({ visible, onClose, selectedItemIndex, listItem }: PrizesSliderProps): JSX.Element => {
   const { colors } = useTheme();
   const { t } = useTranslation();

@@ -42,7 +42,7 @@ const CountdownTimer = ({ startDate }: CountDownTimerProps) => {
     if (countdown <= 0 && (!lotteryState || lotteryState === 'CurrentUpcoming')) {
       interval = setInterval(() => {
         dispatch(getCurrentActiveLottery());
-      }, secToMilSec(10));
+      }, secToMilSec(5));
     }
 
     return () => {

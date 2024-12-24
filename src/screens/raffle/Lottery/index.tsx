@@ -102,14 +102,14 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
     }
 
     if (lotteryState === 'CurrentActive') {
+      if (lotteryPrizes.length === 0) {
+        dispatch(getCurrentPrizes());
+      }
+
       if (allWinners.find(prize => prize.index === 0)) {
-        setTimeout(() => {
-          triggerConfetti();
-        }, 1500);
         intervalRef.current && clearInterval(intervalRef.current);
       } else {
         intervalRef.current = setInterval(() => {
-          triggerConfetti();
           dispatch(getCurrentPrizes());
         }, secToMilSec(30));
       }
@@ -118,7 +118,13 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
     return () => {
       intervalRef.current && clearInterval(intervalRef.current);
     };
-  }, [allWinners, dispatch, lotteryPrizes.length, lotteryState, triggerConfetti]);
+  }, [allWinners, dispatch, lotteryPrizes.length, lotteryState]);
+
+  useEffect(() => {
+    if (lotteryState === 'CurrentActive') {
+      triggerConfetti();
+    }
+  }, [triggerConfetti, allWinners.length, lotteryState]);
 
   useEffect(() => {
     setAllWinners(lotteryPrizes.filter(prize => prize.winnerId !== null));
@@ -142,7 +148,9 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
       return;
     }
 
-    dispatch(clearPrizes());
+    if (lotteryId) {
+      dispatch(clearPrizes());
+    }
   }, [dispatch, lotteryId]);
 
   const handleSurprisesPress = useCallback((prize: Prize) => {
