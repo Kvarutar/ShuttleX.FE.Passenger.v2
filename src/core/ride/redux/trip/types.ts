@@ -29,7 +29,7 @@ export type OrderFromAPI = {
   phoneNumber: string;
   estimatedArriveToPickUpDate: string;
   estimatedArriveToDropOffDate: string;
-  arrivedToPickUpDate: string;
+  arrivedToPickUpDate: Nullable<string>;
   finishedDate: string;
   dropOffRouteId: string;
   pickUpRouteId: string;
@@ -45,6 +45,9 @@ export type OrderFromAPI = {
   estimatedPrice: number;
   createdDate: string;
   acceptedOfferZoneId: string;
+  waitingTimeInMilSec: number;
+  freeWaitingTimeMin: number;
+  paidWaitingTimeFeePricePerMin: number;
 };
 
 export type GetCurrentOrderAPIResponse = OrderFromAPI;

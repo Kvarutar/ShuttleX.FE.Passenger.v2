@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -47,7 +47,6 @@ const Trip = () => {
   const tripStatus = useSelector(tripStatusSelector);
   const orderId = useSelector(orderIdSelector);
   const isTripLoading = useSelector(isTripLoadingSelector);
-  const [extraSum, setExtraSum] = useState(0);
   const order = useSelector(orderSelector);
 
   const arrivedTime = order?.info ? Date.parse(order?.info?.estimatedArriveToDropOffDate) : 0;
@@ -120,7 +119,7 @@ const Trip = () => {
           options={'options' in alertData ? alertData.options : undefined}
         />
       ))}
-      visiblePart={<VisiblePart setExtraSum={setExtraSum} extraSum={extraSum} />}
+      visiblePart={<VisiblePart />}
       hiddenPart={<HiddenPart />}
       visiblePartStyle={styles.visiblePartStyle}
       hiddenPartButton={

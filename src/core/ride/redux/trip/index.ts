@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { NetworkErrorDetailsWithBody } from 'shuttlex-integration';
+import { minToMilSec, NetworkErrorDetailsWithBody } from 'shuttlex-integration';
 
 import { cancelOffer } from '../offer/thunks';
 import {
@@ -95,7 +95,16 @@ const slice = createSlice({
         state.error.currentOrder = null;
       })
       .addCase(getCurrentOrder.fulfilled, (state, action) => {
-        if (action.payload) {
+        if (action.payload && action.payload.info) {
+          const { info } = action.payload;
+
+          const { arrivedToPickUpDate } = action.payload.info;
+
+          if (arrivedToPickUpDate) {
+            const timeDifferenceInMilSec = Date.now() - Date.parse(arrivedToPickUpDate);
+            info.waitingTimeInMilSec = minToMilSec(info.freeWaitingTimeMin) - timeDifferenceInMilSec;
+          }
+
           state.order = action.payload;
 
           let newTripStatus: TripStatus;

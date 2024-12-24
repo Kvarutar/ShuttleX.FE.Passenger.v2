@@ -9,8 +9,8 @@ import {
   ButtonSizes,
   CircleButtonModes,
   ClockIcon,
+  formatCurrency,
   formatTime,
-  getCurrencySign,
   minToMilSec,
   Nullable,
   PhoneIcon,
@@ -41,11 +41,11 @@ import {
 } from '../../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../../core/ride/redux/trip/types';
 import { trafficLoadFromAPIToTrafficLevel } from '../../../../core/utils';
-import { TimerStateDataType, VisiblePartProps } from './types';
+import { TimerStateDataType } from './types';
 
 const timerSizeMode = TimerSizesModes.S;
 
-const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
+const VisiblePart = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const { colors } = useTheme();
@@ -64,6 +64,8 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
   const [extraWaiting, setExtraWaiting] = useState(false);
   const [routeStartDate, setRouteStartDate] = useState<Date | undefined>(undefined);
   const [routeEndDate, setRouteEndDate] = useState<Date | undefined>(undefined);
+  const [extraWaitingTimeInSec, setExtraWaitingTimeInSec] = useState<number>(0);
+  const [extraSum, setExtraSum] = useState(0);
 
   const arrivedTime = orderInfo ? Date.parse(orderInfo.estimatedArriveToDropOffDate) : 0;
 
@@ -136,6 +138,16 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
     }
   }, [tripStatus, orderInfo]);
 
+  useEffect(() => {
+    if (orderInfo && orderInfo.waitingTimeInMilSec < 0) {
+      const waitingTimeInMin = Math.floor(Math.abs(orderInfo.waitingTimeInMilSec) / minToMilSec(60));
+
+      setExtraWaiting(true);
+      setExtraSum(waitingTimeInMin * orderInfo.paidWaitingTimeFeePricePerMin);
+      setExtraWaitingTimeInSec(waitingTimeInMin * 60);
+    }
+  }, [orderInfo]);
+
   if (orderInfo && tripTariff) {
     const {
       estimatedArriveToPickUpDate,
@@ -146,6 +158,7 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
       carNumber,
       totalRidesCount,
       phoneNumber,
+      currencyCode,
     } = orderInfo;
 
     const waitingTimeMin = tripTariff.freeWaitingTimeMin;
@@ -322,17 +335,18 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
               {timerState && (
                 <Timer
                   isWaiting={extraWaiting}
-                  time={extraWaiting ? 0 : timerState.timerTime}
+                  time={extraWaiting ? extraWaitingTimeInSec : timerState.timerTime}
                   sizeMode={timerSizeMode}
                   colorMode={timerState.mode}
                   onAfterCountdownEnds={onAfterCountdownEndsHandler}
+                  countingForwardStartTime={extraWaitingTimeInSec}
                 />
               )}
 
               {timerState?.timerLabel && (
                 <View style={[styles.timerLabelContainer, computedStyles.timerLabelContainer]}>
                   <Text style={[styles.timerLabelText, computedStyles.timerLabelText]}>
-                    {extraWaiting ? `-${getCurrencySign('UAH')}${extraSum}` : timerState.timerLabel}
+                    {extraWaiting ? `-${formatCurrency(currencyCode, extraSum)}` : timerState.timerLabel}
                   </Text>
                 </View>
               )}

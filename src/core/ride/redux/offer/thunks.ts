@@ -51,6 +51,11 @@ export const getRecentDropoffs = createAppAsyncThunk<RecentDropoffsFromAPI[], Re
     try {
       const response = await passengerAxios.get<RecentDropoffsAPIResponse>(
         `/Ride/dropoffs-recent?Amount=${payload.amount}${urlPart}`,
+        {
+          params: {
+            SortBy: 'createdDate:desc',
+          },
+        },
       );
       const recentDropoffs = response.data;
       const coordinates = recentDropoffs.map(el => el.dropoffGeo);

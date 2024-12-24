@@ -8,11 +8,6 @@ export type SquareBarProps = {
   mode?: BarModes;
 };
 
-export type VisiblePartProps = {
-  extraSum: number;
-  setExtraSum: (value: number | ((prev: number) => number)) => void;
-};
-
 export type TimerStateDataType = {
   timerTime: number;
   mode: TimerColorModes;
