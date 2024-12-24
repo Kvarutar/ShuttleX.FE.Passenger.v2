@@ -133,12 +133,20 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
       let groupPrice = 0;
 
       if (value.tariffs !== undefined && value.tariffs.length > 0) {
+        const filteredTariffs = value.tariffs?.filter(trf =>
+          trf.matching.some(el => el.durationSec !== null && el.durationSec !== 0),
+        );
+
         groupPrice =
-          value.tariffs?.reduce(
-            (accumulator, currentValue) =>
-              accumulator + currentValue.matching.reduce((acc, el) => acc + (el.cost ?? 0), 0),
+          filteredTariffs?.reduce(
+            (accumulator, trf) =>
+              accumulator +
+              trf.matching.reduce(
+                (acc, el) => acc + (el.durationSec !== null && el.durationSec !== 0 ? el.cost ?? 0 : 0),
+                0,
+              ),
             0,
-          ) / value.tariffs.length;
+          ) / filteredTariffs?.length;
         //TODO: think about smarter key?
 
         content.push(
