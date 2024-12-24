@@ -154,7 +154,7 @@ const VisiblePart = ({ setExtraSum, extraSum }: VisiblePartProps) => {
       switch (status) {
         case TripStatus.Accepted: {
           return {
-            timerTime: new Date(estimatedArriveToPickUpDate).getTime(), //change to real data
+            timerTime: new Date(estimatedArriveToPickUpDate).getTime(), //TODO change to real data
             mode: TimerColorModes.Mode1,
             title: (
               <>

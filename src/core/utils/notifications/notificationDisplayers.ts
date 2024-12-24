@@ -5,6 +5,7 @@ import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
 import { createInitialOffer } from '../../ride/redux/offer/thunks';
 import { setOrderStatus } from '../../ride/redux/order';
+import { orderStatusSelector } from '../../ride/redux/order/selectors';
 import { OrderStatus } from '../../ride/redux/order/types';
 import { addFinishedTrips, endTrip, setTripIsCanceled, setTripStatus } from '../../ride/redux/trip';
 import { orderInfoSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
@@ -29,16 +30,14 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     }
   },
   [NotificationType.TripEnded]: async () => {
-    store.dispatch(addFinishedTrips());
-    //TODO go to rating page
-    store.dispatch(getTicketAfterRide());
+    const tripStatus = tripStatusSelector(store.getState());
 
-    const orderInfo = orderInfoSelector(store.getState());
-    if (orderInfo) {
-      store.dispatch(getOrderInfo(orderInfo.orderId));
+    if (tripStatus !== TripStatus.Finished) {
+      store.dispatch(addFinishedTrips());
+      //TODO go to rating page
+      store.dispatch(getTicketAfterRide());
+      store.dispatch(setTripStatus(TripStatus.Finished));
     }
-
-    store.dispatch(setTripStatus(TripStatus.Finished));
   },
   [NotificationType.WinnerFounded]: async payload => {
     if (payload?.prizeIds && payload.ticketNumber) {
@@ -51,27 +50,42 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     }
   },
   [NotificationType.DriverArrived]: async () => {
-    store.dispatch(getCurrentOrder());
+    const tripStatus = tripStatusSelector(store.getState());
+    if (tripStatus !== TripStatus.Arrived) {
+      store.dispatch(getCurrentOrder());
+    }
   },
 
   // BeforePickup when trip doesnt start and driver rejected - go to search driver again
   [NotificationType.DriverCanceled]: async () => {
-    store.dispatch(endTrip());
-    store.dispatch(createInitialOffer());
-    store.dispatch(setOrderStatus(OrderStatus.Confirming));
+    const orderStatus = orderStatusSelector(store.getState());
+
+    if (orderStatus !== OrderStatus.Confirming) {
+      store.dispatch(endTrip());
+      store.dispatch(createInitialOffer());
+      store.dispatch(setOrderStatus(OrderStatus.Confirming));
+    }
   },
 
   //AfterPickUp when trip started and driver canceled trip - go to receipt screen
   [NotificationType.DriverRejected]: async () => {
     store.dispatch(setTripIsCanceled(true));
     const orderInfo = orderInfoSelector(store.getState());
-    if (orderInfo) {
-      store.dispatch(getOrderInfo(orderInfo.orderId));
+    const tripStatus = tripStatusSelector(store.getState());
+
+    if (tripStatus !== TripStatus.Finished) {
+      if (orderInfo) {
+        store.dispatch(getOrderInfo(orderInfo.orderId));
+      }
+      store.dispatch(setTripStatus(TripStatus.Finished));
     }
-    store.dispatch(setTripStatus(TripStatus.Finished));
   },
+
   [NotificationType.TripStarted]: async () => {
-    store.dispatch(getCurrentOrder());
+    const tripStatus = tripStatusSelector(store.getState());
+    if (tripStatus !== TripStatus.Ride) {
+      store.dispatch(getCurrentOrder());
+    }
   },
 };
 
