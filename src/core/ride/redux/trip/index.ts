@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { minToMilSec, NetworkErrorDetailsWithBody } from 'shuttlex-integration';
+import { minToMilSec, NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 
 import { cancelOffer } from '../offer/thunks';
 import {
@@ -66,7 +66,7 @@ const slice = createSlice({
     setTripStatus(state, action: PayloadAction<TripStatus>) {
       state.status = action.payload;
     },
-    setTip(state, action: PayloadAction<number | null>) {
+    setTip(state, action: PayloadAction<Nullable<number>>) {
       if (state.routeInfo) {
         state.tip = action.payload;
       }

@@ -46,13 +46,13 @@ const ActivityScreen = () => {
   const [routeStartDate, setRouteStartDate] = useState<Date | undefined>(undefined);
   const [routeEndDate, setRouteEndDate] = useState<Date | undefined>(undefined);
 
-  //TODO: Rewrite with excluding excess statuses
-  const feRideStatusesByOrderStatus: Record<TripStatus, string> = {
-    idle: '',
+  const feRideStatusesByOrderStatus: Record<
+    Extract<TripStatus, TripStatus.Accepted | TripStatus.Arrived | TripStatus.Ride>,
+    string
+  > = {
     accepted: 'menu_Activity_Enroute',
     arrived: 'menu_Activity_Arrived',
     ride: 'menu_Activity_Driving',
-    finished: '',
   };
 
   const computedStyles = StyleSheet.create({
@@ -106,7 +106,7 @@ const ActivityScreen = () => {
     if (isOrdersHistoryLoading) {
       return <Skeleton skeletonContainerStyle={styles.skeletonActiveRides} />;
     }
-    if (!tripTariff || !order || !orderInfo) {
+    if (!tripTariff || !order || !orderInfo || tripStatus === TripStatus.Idle || tripStatus === TripStatus.Finished) {
       return (
         <View style={styles.haveNotActiveRidesWrapper}>
           <Text style={[styles.emptyActivityText, computedStyles.emptyActivityText]}>
@@ -131,7 +131,7 @@ const ActivityScreen = () => {
           <Text style={[styles.currentTripTitleText, computedStyles.text]}>{t('menu_Activity_activeOrder')}</Text>
           <View style={[styles.statusContainer, computedStyles.statusContainer]}>
             <Text style={[styles.statusText, computedStyles.statusText]}>
-              {feRideStatusesByOrderStatus[tripStatus] && t(feRideStatusesByOrderStatus[tripStatus])}
+              {t(feRideStatusesByOrderStatus[tripStatus])}
             </Text>
           </View>
         </View>

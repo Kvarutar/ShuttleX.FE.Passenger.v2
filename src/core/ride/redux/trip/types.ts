@@ -3,7 +3,7 @@ import { NetworkErrorDetailsWithBody, Nullable, TariffType } from 'shuttlex-inte
 
 import { AddressPoint } from '../offer/types';
 
-export type TripStatusFromAPI =
+export type TripStateFromAPI =
   | 'None'
   | 'InPreviousOrder'
   | 'MoveToPickUp'
@@ -38,7 +38,7 @@ export type OrderFromAPI = {
   pickUpDate: string;
   dropOffAddress: string;
   dropOffPlace: string;
-  state: TripStatusFromAPI;
+  state: TripStateFromAPI;
   totalFinalPrice: number;
   tariffId: string;
   passengerId: string;

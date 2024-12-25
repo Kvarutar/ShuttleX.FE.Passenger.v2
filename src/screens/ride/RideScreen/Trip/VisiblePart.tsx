@@ -14,6 +14,7 @@ import {
   minToMilSec,
   Nullable,
   PhoneIcon,
+  secToMilSec,
   Skeleton,
   StatsBlock,
   Text,
@@ -140,7 +141,7 @@ const VisiblePart = () => {
 
   useEffect(() => {
     if (orderInfo && orderInfo.waitingTimeInMilSec < 0) {
-      const waitingTimeInMin = Math.floor(Math.abs(orderInfo.waitingTimeInMilSec) / minToMilSec(60));
+      const waitingTimeInMin = Math.floor(Math.abs(orderInfo.waitingTimeInMilSec) / minToMilSec(1));
 
       setExtraWaiting(true);
       setExtraSum(waitingTimeInMin * orderInfo.paidWaitingTimeFeePricePerMin);
@@ -159,9 +160,8 @@ const VisiblePart = () => {
       totalRidesCount,
       phoneNumber,
       currencyCode,
+      waitingTimeInMilSec,
     } = orderInfo;
-
-    const waitingTimeMin = tripTariff.freeWaitingTimeMin;
 
     const getTimerStateData = (status: TripStatus | 'waiting'): Nullable<TimerStateDataType> => {
       switch (status) {
@@ -197,7 +197,8 @@ const VisiblePart = () => {
         }
         case TripStatus.Arrived: {
           return {
-            timerTime: Date.now() + minToMilSec(waitingTimeMin),
+            //TODO: Remove "secToMilSec(1)" when fix a timer
+            timerTime: Date.now() + waitingTimeInMilSec - secToMilSec(1), // For correct time rendering in timer
             mode: TimerColorModes.Mode2,
             timerLabel: t('ride_Ride_Trip_timerLabelArrived'),
             title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleArrived')}</Text>,
