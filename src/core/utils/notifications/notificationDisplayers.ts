@@ -1,5 +1,6 @@
 import notifee, { AndroidColor } from '@notifee/react-native';
 
+import { logger } from '../../../App';
 import { setWinnerPrizes } from '../../lottery/redux';
 import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
@@ -98,7 +99,7 @@ export const displayNotificationForAll = async (remoteMessage: NotificationRemot
   console.log('displayNotificationForAll', remoteMessage);
 
   if (!isValidNotificationType(key)) {
-    console.error(`Invalid notification type: ${key}`);
+    logger.error(`Invalid notification type: ${key}`);
     return;
   }
 
@@ -109,7 +110,7 @@ export const displayNotificationForAll = async (remoteMessage: NotificationRemot
       try {
         payloadData = JSON.parse(payload);
       } catch (parseError) {
-        console.error(`Error parsing payload of notification ${remoteMessage}:`);
+        logger.error(`Error parsing payload of notification ${remoteMessage}:`);
       }
     }
 
@@ -136,6 +137,6 @@ export const displayNotificationForAll = async (remoteMessage: NotificationRemot
       },
     });
   } catch (error) {
-    console.error('Error processing notification:', error);
+    logger.error('Error processing notification:', error);
   }
 };

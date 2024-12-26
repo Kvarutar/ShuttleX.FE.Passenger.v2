@@ -1,6 +1,7 @@
 import notifee, { AndroidImportance, AndroidVisibility } from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
 
+import { logger } from '../../../App';
 import { sendFirebaseToken } from '../../notificator/thunks';
 import { store } from '../../redux/store';
 import { requestNotificationsPermission } from '../permissions';
@@ -38,7 +39,7 @@ export const getFirebaseDeviceToken = async () => {
 
     store.dispatch(sendFirebaseToken(token));
   } catch (error) {
-    console.error('Cannot get firebase device token:', error);
+    logger.error('Cannot get firebase device token:', error);
   }
 };
 

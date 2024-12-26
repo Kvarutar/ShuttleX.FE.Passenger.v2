@@ -1,4 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import * as Sentry from '@sentry/react-native';
 
 import reactotron from '../../../ReactotronConfig';
 import authReducer from '../auth/redux';
@@ -31,9 +32,13 @@ const rootReducer = combineReducers({
   lottery: lotteryReducer,
 });
 
+const sentryReduxEnhancer = Sentry.createReduxEnhancer();
+
+const devEnhancers = __DEV__ ? [reactotron.createEnhancer!()] : [];
+
 export const store = configureStore({
   reducer: rootReducer,
-  enhancers: __DEV__ ? [reactotron.createEnhancer!()] : [],
+  enhancers: [...devEnhancers, sentryReduxEnhancer],
 });
 
 export type AppState = ReturnType<typeof store.getState>;

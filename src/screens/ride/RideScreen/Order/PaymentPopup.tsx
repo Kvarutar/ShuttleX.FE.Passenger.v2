@@ -32,6 +32,7 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { logger } from '../../../../App';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import {
   isOfferCreateLoadingSelector,
@@ -262,7 +263,7 @@ const PaymentPopup = () => {
           //await handleBinancePayment({ amount: price, setPaymentUrl });
           break;
         default:
-          console.error('Unknown payment method');
+          logger.error('Unknown payment method', selectedPayment);
           return;
       }
 
