@@ -37,7 +37,7 @@ const updatePassengerGeoInterval = 1000;
 const finalStopPointUpdateIntervalInSec = 30;
 const polylineClearPointDistanceMtr = 20;
 
-const MapView = (): JSX.Element => {
+const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationComplete: () => void }): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const geolocationCoordinates = useSelector(geolocationCoordinatesSelector);
@@ -286,6 +286,7 @@ const MapView = (): JSX.Element => {
       cameraMode={cameraMode}
       setCameraModeOnDrag={mode => dispatch(setMapCameraMode(mode))}
       onDragComplete={setMapCameraCoordinates}
+      onFirstCameraAnimationComplete={onFirstCameraAnimationComplete}
     />
   );
 };
