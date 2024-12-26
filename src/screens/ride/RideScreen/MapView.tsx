@@ -35,7 +35,7 @@ import { TripStatus } from '../../../core/ride/redux/trip/types';
 
 const updatePassengerGeoInterval = 1000;
 const finalStopPointUpdateIntervalInSec = 30;
-const polylineClearPointDistanceMtr = 20;
+const polylineClearPointDistanceMtr = 25;
 
 const MapView = (): JSX.Element => {
   const dispatch = useAppDispatch();
