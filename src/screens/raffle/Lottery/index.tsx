@@ -79,11 +79,11 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
 
   const isWinnersExist = allWinners.some(prize => prize.winnerId !== null);
 
-  const { mainPrizes, otherPrizes } = useMemo(() => {
+  const { mainPrizes, otherPrizes, sortedPrizes } = useMemo(() => {
     const prizes = isPrizeSelected ? lotteryPrizes : lotteryPreviousPrizes;
     const sortedPrizes = [...prizes].sort((a, b) => a.index - b.index);
 
-    return sortedPrizes.reduce<{ mainPrizes: Prize[]; otherPrizes: Prize[] }>(
+    const { mainPrizes, otherPrizes } = sortedPrizes.reduce<{ mainPrizes: Prize[]; otherPrizes: Prize[] }>(
       (acc, prize) => {
         if (prize.index >= 0 && prize.index <= 2) {
           acc.mainPrizes.push(prize);
@@ -94,6 +94,8 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
       },
       { mainPrizes: [], otherPrizes: [] },
     );
+
+    return { mainPrizes, otherPrizes, sortedPrizes };
   }, [isPrizeSelected, lotteryPreviousPrizes, lotteryPrizes]);
 
   useEffect(() => {
@@ -108,22 +110,24 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
 
       if (allWinners.find(prize => prize.index === 0)) {
         intervalRef.current && clearInterval(intervalRef.current);
-      } else {
+      } else if (intervalRef.current === null) {
         intervalRef.current = setInterval(() => {
           dispatch(getCurrentPrizes());
         }, secToMilSec(30));
       }
     }
-
-    return () => {
-      intervalRef.current && clearInterval(intervalRef.current);
-    };
   }, [allWinners, dispatch, lotteryPrizes.length, lotteryState]);
 
   useEffect(() => {
-    if (lotteryState === 'CurrentActive') {
+    return () => {
+      intervalRef.current && clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
       triggerConfetti();
-    }
+    }, 1000);
   }, [triggerConfetti, allWinners.length, lotteryState]);
 
   useEffect(() => {
@@ -260,7 +264,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
             {lotteryState === 'CurrentUpcoming' && timeUntilLottery && isPrizeSelected && (
               <CountdownTimer startDate={new Date(timeUntilLottery)} />
             )}
-            <PrizePodium prizes={mainPrizes} />
+            <PrizePodium prizes={mainPrizes} handleSurprisesPress={handleSurprisesPress} />
           </View>
         </View>
       </SafeAreaView>
@@ -284,14 +288,14 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
           )
         }
         containerStyle={styles.bottomWindowContainer}
-        visiblePartStyle={[styles.visiblePartStyle, computedStyles.visiblePartStyle]}
+        visiblePartStyle={[styles.visiblePartStyle, previousLotteryId ? computedStyles.visiblePartStyle : {}]}
       />
 
       <PrizesSlider
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        selectedItemIndex={otherPrizes.findIndex(item => item.prizes[0].prizeId === selectedPrize?.prizes[0].prizeId)}
-        listItem={otherPrizes}
+        selectedItemIndex={sortedPrizes.findIndex(item => item.prizes[0].prizeId === selectedPrize?.prizes[0].prizeId)}
+        listItem={sortedPrizes}
       />
     </>
   );

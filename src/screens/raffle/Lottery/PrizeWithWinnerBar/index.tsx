@@ -39,10 +39,10 @@ const PrizeWithWinnerBar = ({
   });
 
   useEffect(() => {
-    if (winnerId) {
+    if (winnerId && !winnerAvatar) {
       dispatch(getWinnerAvatar({ winnerId: winnerId, prizeId: prizeId }));
     }
-  }, [dispatch, prizeId, winnerId]);
+  }, [dispatch, prizeId, winnerAvatar, winnerId]);
 
   return (
     <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.wrapper}>

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import { PrizePedestalIcon, Text, TextElipsizeMode, useTheme } from 'shuttlex-integration';
@@ -11,12 +11,13 @@ import { Prize } from '../../../core/lottery/redux/types';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import passengerColors from '../../../shared/colors/colors';
 import { prizesData } from './prizesData';
+import { PrizePodiumProps } from './types';
 
 const getPrizeByPlace = (prizes: Prize[], place: number) => {
   return prizes.find(prize => prize.index + 1 === place);
 };
 
-const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
+const PrizePodium = ({ prizes, handleSurprisesPress }: PrizePodiumProps) => {
   const { colors } = useTheme();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -39,22 +40,22 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
   });
 
   useEffect(() => {
-    if (firstPrize?.winnerId) {
+    if (firstPrize?.winnerId && !firstPrizeAvatar) {
       dispatch(getWinnerAvatar({ winnerId: firstPrize.winnerId, prizeId: firstPrize.prizes[0].prizeId }));
     }
-  }, [dispatch, firstPrize?.prizes, firstPrize?.winnerId]);
+  }, [dispatch, firstPrize?.prizes, firstPrize?.winnerId, firstPrizeAvatar]);
 
   useEffect(() => {
-    if (secondPrize?.winnerId) {
+    if (secondPrize?.winnerId && !secondPrizeAvatar) {
       dispatch(getWinnerAvatar({ winnerId: secondPrize.winnerId, prizeId: secondPrize.prizes[0].prizeId }));
     }
-  }, [dispatch, secondPrize?.prizes, secondPrize?.winnerId]);
+  }, [dispatch, secondPrize?.prizes, secondPrize?.winnerId, secondPrizeAvatar]);
 
   useEffect(() => {
-    if (thirdPrize?.winnerId) {
+    if (thirdPrize?.winnerId && !thirdPrizeAvatar) {
       dispatch(getWinnerAvatar({ winnerId: thirdPrize.winnerId, prizeId: thirdPrize.prizes[0].prizeId }));
     }
-  }, [dispatch, thirdPrize?.prizes, thirdPrize?.winnerId]);
+  }, [dispatch, thirdPrize?.prizes, thirdPrize?.winnerId, thirdPrizeAvatar]);
 
   return (
     <View style={styles.container}>
@@ -62,7 +63,7 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         {/* 2nd Place */}
         <View style={[styles.prizeBox, styles.secondPlace]}>
           {secondPrize && (
-            <>
+            <Pressable onPress={() => handleSurprisesPress(secondPrize)}>
               <Image source={prizesData[secondPrize.prizes[0].feKey].image} style={styles.subPrizeImage} />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text style={[styles.surpriseTitle, computedStyles.surpriseTitle]} numberOfLines={1}>
@@ -71,7 +72,7 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
                     : t(prizesData[secondPrize.prizes[0].feKey].name)}
                 </Text>
               </View>
-            </>
+            </Pressable>
           )}
           {secondPrize?.winnerId && secondPrizeAvatar && (
             <Animated.Image entering={FadeIn} source={{ uri: secondPrizeAvatar }} style={styles.userImageSecondPlace} />
@@ -81,7 +82,7 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         {/* 1st Place */}
         <View style={[styles.prizeBox, styles.firstPlace]}>
           {firstPrize && (
-            <>
+            <Pressable onPress={() => handleSurprisesPress(firstPrize)}>
               <Image
                 source={prizesData[firstPrize.prizes[0].feKey].image}
                 style={[styles.mainPrizeImage, styles.firstPlacePrize]}
@@ -91,7 +92,7 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
                   {firstPrize?.winnerId ? firstPrize?.winnerFirstName : t(prizesData[firstPrize.prizes[0].feKey].name)}
                 </Text>
               </View>
-            </>
+            </Pressable>
           )}
           {firstPrize?.winnerId && firstPrizeAvatar && (
             <Animated.Image entering={FadeIn} source={{ uri: firstPrizeAvatar }} style={styles.userImageFirstPlace} />
@@ -101,7 +102,7 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
         {/* 3rd Place */}
         <View style={[styles.prizeBox, styles.thirdPlace]}>
           {thirdPrize && (
-            <>
+            <Pressable onPress={() => handleSurprisesPress(thirdPrize)}>
               <Image source={prizesData[thirdPrize.prizes[0].feKey].image} style={styles.subPrizeImage} />
               <View style={[styles.surpriseTitleContainer, computedStyles.surpriseTitleContainer]}>
                 <Text
@@ -112,7 +113,7 @@ const PrizePodium = ({ prizes }: { prizes: Prize[] }) => {
                   {thirdPrize?.winnerId ? thirdPrize?.winnerFirstName : t(prizesData[thirdPrize.prizes[0].feKey].name)}
                 </Text>
               </View>
-            </>
+            </Pressable>
           )}
           {thirdPrize?.winnerId && thirdPrizeAvatar && (
             <Animated.Image entering={FadeIn} source={{ uri: thirdPrizeAvatar }} style={styles.userImageThirdPlace} />
@@ -142,14 +143,15 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   prizeBox: {
+    flex: 1,
     itemPosition: 'relative',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 6,
   },
   mainPrizeImage: {
-    width: 100,
-    maxWidth: 200,
+    width: undefined,
+    maxWidth: 180,
     height: 200,
     aspectRatio: 1,
     resizeMode: 'contain',
@@ -167,7 +169,7 @@ const styles = StyleSheet.create({
   userImageFirstPlace: {
     position: 'absolute',
     bottom: 32,
-    right: 20,
+    right: -10,
     width: 64,
     height: 64,
     borderRadius: 32,
@@ -189,6 +191,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
   },
   surpriseTitleContainer: {
+    alignSelf: 'center',
     borderRadius: 6,
     marginTop: -15,
     paddingHorizontal: 8,
