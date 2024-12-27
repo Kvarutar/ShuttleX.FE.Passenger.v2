@@ -13,7 +13,6 @@ import {
 import { getAccountSettingsVerifyStatus } from '../../../core/menu/redux/accountSettings/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
-import { isGeolocationCoordinatesLoadedSelector } from '../../../core/ride/redux/geolocation/selectors';
 import { offerIdSelector } from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
@@ -51,9 +50,8 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   const orderInfo = useSelector(orderSelector);
   const orderId = useSelector(orderIdSelector);
   const offerId = useSelector(offerIdSelector);
-  const isGeolocationCoordinatesLoaded = useSelector(isGeolocationCoordinatesLoadedSelector);
 
-  const [isLoading, setIsLoading] = useState(!isGeolocationCoordinatesLoaded);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (offerId && orderStatus === OrderStatus.Confirming) {
@@ -168,15 +166,11 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
     rideUnavailable: null,
   };
 
-  useEffect(() => {
-    setTimeout(() => setIsLoading(!isGeolocationCoordinatesLoaded), 2000);
-  }, [isGeolocationCoordinatesLoaded]);
-
   return (
     <>
       {isLoading && <Loading />}
       <SafeAreaView style={styles.wrapper}>
-        <MapView />
+        <MapView onFirstCameraAnimationComplete={() => setIsLoading(false)} />
         {topMenu[orderStatus]}
         {TripStatus.Accepted && orderInfo ? <Trip /> : <Order ref={orderRef} />}
       </SafeAreaView>
