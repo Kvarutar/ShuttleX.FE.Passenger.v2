@@ -19,3 +19,5 @@ export const orderTariffIdSelector = (state: AppState) => state.trip.order?.info
 export const contractorAvatarSelector = (state: AppState) => state.trip.order?.avatar;
 export const isTripCanceledSelector = (state: AppState) => state.trip.isCanceled;
 export const orderInfoErrorSelector = (state: AppState) => state.trip.error.orderInfo;
+
+export const isTripCanceledLoadingSelector = (state: AppState) => state.trip.loading.cancelTrip;
