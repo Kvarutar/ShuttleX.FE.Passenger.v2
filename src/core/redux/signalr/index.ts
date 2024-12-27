@@ -1,6 +1,7 @@
 import Config from 'react-native-config';
 import { createSignalRSlice } from 'shuttlex-integration';
 
+import { logger } from '../../../App';
 import { setMapCars } from '../../ride/redux/map';
 import { MapState } from '../../ride/redux/map/types';
 import { AppDispatch } from '../store';
@@ -10,7 +11,7 @@ const { slice, signalRThunks, createSignalRMethodThunk } = createSignalRSlice({
   options: {
     url: (() => {
       if (Config.SIGNALR_URL === undefined) {
-        console.error('SIGNALR_URL is not specified in config!');
+        logger.error('SIGNALR_URL is not specified in config!');
         return '';
       }
       return Config.SIGNALR_URL;

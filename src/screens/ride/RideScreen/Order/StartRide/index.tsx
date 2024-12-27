@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Keyboard, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   BottomWindowWithGesture,
@@ -17,6 +17,7 @@ import {
 } from '../../../../../core/ride/redux/offer/selectors';
 import { RecentDropoffsFromAPI } from '../../../../../core/ride/redux/offer/types';
 import AlertInitializer from '../../../../../shared/AlertInitializer';
+import MapCameraModeButton from '../../MapCameraModeButton';
 import UnsupportedDestinationPopup from '../../popups/UnsupportedDestinationPopup';
 import AddressSelect from './AddressSelect';
 import StartRideHidden from './StartRideHidden';
@@ -59,6 +60,15 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
       }
     }, [isCityAvailable, isCityAvailableLoading]);
 
+    useEffect(() => {
+      if (!isUnsupportedCityPopupVisible) {
+        return;
+      }
+
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', Keyboard.dismiss);
+      return keyboardDidShowListener.remove;
+    }, [isUnsupportedCityPopupVisible]);
+
     return (
       <>
         <BottomWindowWithGesture
@@ -73,6 +83,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
           hiddenPart={<StartRideHidden />}
           hiddenPartStyle={styles.hiddenPartStyle}
           hiddenPartWrapperStyle={styles.hiddenPartWrapper}
+          additionalTopContent={<MapCameraModeButton />}
           alerts={alerts.map(alertData => (
             <AlertInitializer
               key={alertData.id}

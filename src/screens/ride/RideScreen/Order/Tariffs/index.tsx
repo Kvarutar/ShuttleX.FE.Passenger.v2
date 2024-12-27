@@ -24,6 +24,7 @@ import { getTariffsPrices } from '../../../../../core/ride/redux/offer/thunks';
 import { SelectedTariff, TariffCategory, TariffsType } from '../../../../../core/ride/redux/offer/types';
 import { setOrderStatus } from '../../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../../core/ride/redux/order/types';
+import MapCameraModeButton from '../../MapCameraModeButton';
 import TariffBar from './TariffBar';
 import TariffGroup from './TariffGroup';
 import { TariffsProps } from './types';
@@ -205,10 +206,13 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
     <BottomWindowWithGesture
       setIsOpened={setWindowIsOpened}
       minHeight={0.6}
-      alerts={
-        <Button onPress={onBackPress} mode={CircleButtonModes.Mode2} shape={ButtonShapes.Circle} withBorder={false}>
-          <ArrowIcon style={styles.backIcon} />
-        </Button>
+      additionalTopContent={
+        <View style={styles.additionalTopContent}>
+          <Button onPress={onBackPress} mode={CircleButtonModes.Mode2} shape={ButtonShapes.Circle} withBorder={false}>
+            <ArrowIcon style={styles.backIcon} />
+          </Button>
+          <MapCameraModeButton />
+        </View>
       }
       visiblePartStyle={styles.visiblePartStyle}
       visiblePart={content}
@@ -217,13 +221,17 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 };
 
 const styles = StyleSheet.create({
+  additionalTopContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  backIcon: {
+    transform: [{ rotate: '180deg' }],
+  },
   visiblePartStyle: {
     flexShrink: 1,
     marginTop: 20,
     paddingBottom: 0,
-  },
-  backIcon: {
-    transform: [{ rotate: '180deg' }],
   },
   container: {
     marginHorizontal: -8,

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { logger } from '../../../../App';
+
 type handleMonoPaymentProps = {
   amount: number;
   setPaymentUrl: React.Dispatch<React.SetStateAction<string | null>>;
@@ -16,7 +18,7 @@ export const handleMonoPayment = async ({ amount, setPaymentUrl }: handleMonoPay
     const paymentUrl = response.data.url; // URL for redirecting
     setPaymentUrl(paymentUrl);
   } catch (error) {
-    console.error('Error creating payment:', error);
+    logger.error('Error creating payment:', error);
   }
 };
 
@@ -32,7 +34,7 @@ export const handleBinancePayment = async ({ amount, setPaymentUrl }: handleMono
     const paymentUrl = response.data.url; // URL for redirecting
     setPaymentUrl(paymentUrl);
   } catch (error) {
-    console.error('Error creating payment:', error);
+    logger.error('Error creating payment:', error);
   }
 };
 
@@ -42,6 +44,6 @@ export const checkPaymentStatus = async (paymentId: string) => {
     const response = await axios.get(`/payment-status/${paymentId}`);
     return response.data.status; // 'success' or 'failed'
   } catch (error) {
-    console.error('Error fetching payment status:', error);
+    logger.error('Error fetching payment status:', error);
   }
 };

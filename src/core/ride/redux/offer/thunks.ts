@@ -1,6 +1,7 @@
 import { LatLng } from 'react-native-maps';
 import { getNetworkErrorInfo, Nullable } from 'shuttlex-integration';
 
+import { logger } from '../../../../App';
 import { profileZoneSelector } from '../../../passenger/redux/selectors';
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import { geolocationCoordinatesSelector } from '../geolocation/selectors';
@@ -229,7 +230,7 @@ export const getAvailableTariffs = createAppAsyncThunk<TariffFromAPI[] | null, v
 
         return tariffsWithMapedName;
       } else {
-        console.error(`Wrong url path. getAvailableTariffs thunk uzes zoneId = ${zoneId}`);
+        logger.error(`Wrong url path. getAvailableTariffs thunk uzes zoneId = ${zoneId}`);
         return null;
       }
     } catch (error) {
@@ -291,7 +292,7 @@ export const getTariffsPrices = createAppAsyncThunk<GetTariffsPricesThunkResult,
 
         return response.data;
       } else {
-        console.error('Something wrong with the route in getTariffsPrices thunk');
+        logger.error('Something wrong with the route in getTariffsPrices thunk', zoneId);
         return null;
       }
     } catch (error) {
