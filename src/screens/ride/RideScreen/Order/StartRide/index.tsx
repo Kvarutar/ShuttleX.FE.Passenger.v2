@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Keyboard, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   BottomWindowWithGesture,
@@ -59,6 +59,15 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
         setIsUnsupportedCityPopupVisible(!isCityAvailable);
       }
     }, [isCityAvailable, isCityAvailableLoading]);
+
+    useEffect(() => {
+      if (!isUnsupportedCityPopupVisible) {
+        return;
+      }
+
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', Keyboard.dismiss);
+      return keyboardDidShowListener.remove;
+    }, [isUnsupportedCityPopupVisible]);
 
     return (
       <>
