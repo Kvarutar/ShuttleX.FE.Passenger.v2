@@ -19,6 +19,8 @@ import {
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
 import {
+  isTripCanceledLoadingSelector,
+  isTripCanceledSelector,
   isTripLoadingSelector,
   orderIdSelector,
   orderSelector,
@@ -47,6 +49,8 @@ const Trip = () => {
   const tripStatus = useSelector(tripStatusSelector);
   const orderId = useSelector(orderIdSelector);
   const isTripLoading = useSelector(isTripLoadingSelector);
+  const isTripCanceled = useSelector(isTripCanceledSelector);
+  const isTripCanceledLoading = useSelector(isTripCanceledLoadingSelector);
   const order = useSelector(orderSelector);
 
   const arrivedTime = order?.info ? Date.parse(order?.info?.estimatedArriveToDropOffDate) : 0;
@@ -57,10 +61,14 @@ const Trip = () => {
       dispatch(getTripCanceledAfterPickUpLongPolling(orderId));
     }
 
-    if (tripStatus === TripStatus.Finished) {
-      navigation.navigate('Rating');
+    if (tripStatus === TripStatus.Finished && !isTripCanceledLoading) {
+      if (isTripCanceled) {
+        navigation.navigate('Receipt');
+      } else {
+        navigation.navigate('Rating');
+      }
     }
-  }, [tripStatus, navigation, orderId, dispatch]);
+  }, [tripStatus, navigation, orderId, dispatch, isTripCanceled, isTripCanceledLoading]);
 
   const TariffIcon = tariffIconsData.Basic.icon;
 
