@@ -116,7 +116,6 @@ export type LongPollingInSomePointAPIResponse = {
 export type OrderLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripSuccessfullLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripArivedLongPollingAPIResponse = LongPollingAPIResponse;
-export type TripCanceledBeforePickupLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripCanceledAfterPickupLongPollingAPIResponse = LongPollingAPIResponse;
 export type TripInPickupLongPollingAPIResponse = LongPollingInSomePointAPIResponse;
 export type TripInStopPointAPIResponse = LongPollingInSomePointAPIResponse;
@@ -164,6 +163,10 @@ export type TripState = {
   tip: Nullable<number>;
   finishedTrips: number;
   isCanceled: boolean;
+  isOrderCanceled: boolean;
+  ui: {
+    isOrderCanceledAlertVisible: boolean;
+  };
   loading: {
     orderInfo: boolean;
     currentOrder: boolean;

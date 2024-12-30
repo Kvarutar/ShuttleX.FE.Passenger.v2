@@ -21,6 +21,10 @@ const initialState: TripState = {
   finishedTrips: 0,
   order: null,
   isCanceled: false,
+  isOrderCanceled: false,
+  ui: {
+    isOrderCanceledAlertVisible: false,
+  },
   loading: {
     orderInfo: false,
     currentOrder: false,
@@ -65,6 +69,12 @@ const slice = createSlice({
     },
     setTripStatus(state, action: PayloadAction<TripStatus>) {
       state.status = action.payload;
+    },
+    setIsOrderCanceled(state, action: PayloadAction<boolean>) {
+      state.isOrderCanceled = action.payload;
+    },
+    setIsOrderCanceledAlertVisible(state, action: PayloadAction<boolean>) {
+      state.ui.isOrderCanceledAlertVisible = action.payload;
     },
     setTip(state, action: PayloadAction<Nullable<number>>) {
       if (state.routeInfo) {
@@ -264,6 +274,8 @@ export const {
   setTripRouteInfo,
   setTripStatus,
   setOrderInfo,
+  setIsOrderCanceled,
+  setIsOrderCanceledAlertVisible,
   setTip,
   endTrip,
   addFinishedTrips,

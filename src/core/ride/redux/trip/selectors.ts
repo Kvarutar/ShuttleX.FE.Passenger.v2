@@ -14,6 +14,7 @@ export const isTripCanceledBeforePickUpLoadingSelector = (state: AppState) => st
 export const isTripSuccessLongPollingLoadingSelector = (state: AppState) =>
   state.trip.loading.tripSuccessfullLongPolling;
 export const orderIdSelector = (state: AppState) => state.trip.order?.orderId;
+export const isOrderCanceledSelector = (state: AppState) => state.trip.isOrderCanceled;
 export const orderInfoSelector = (state: AppState) => state.trip.order?.info;
 export const orderTariffIdSelector = (state: AppState) => state.trip.order?.info?.tariffId;
 export const contractorAvatarSelector = (state: AppState) => state.trip.order?.avatar;
@@ -21,3 +22,6 @@ export const isTripCanceledSelector = (state: AppState) => state.trip.isCanceled
 export const orderInfoErrorSelector = (state: AppState) => state.trip.error.orderInfo;
 
 export const isTripCanceledLoadingSelector = (state: AppState) => state.trip.loading.cancelTrip;
+
+//UI
+export const isOrderCanceledAlertVisibleSelector = (state: AppState) => state.trip.ui.isOrderCanceledAlertVisible;

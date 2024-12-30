@@ -1,15 +1,23 @@
 import notifee, { AndroidColor } from '@notifee/react-native';
+import { isCoordinatesEqualZero } from 'shuttlex-integration';
 
 import { logger } from '../../../App';
 import { setWinnerPrizes } from '../../lottery/redux';
 import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
+import { offerSelector } from '../../ride/redux/offer/selectors';
 import { createInitialOffer, getRecentDropoffs } from '../../ride/redux/offer/thunks';
 import { setOrderStatus } from '../../ride/redux/order';
-import { orderStatusSelector } from '../../ride/redux/order/selectors';
 import { OrderStatus } from '../../ride/redux/order/types';
-import { addFinishedTrips, endTrip, setTripIsCanceled, setTripStatus } from '../../ride/redux/trip';
-import { orderInfoSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
+import {
+  addFinishedTrips,
+  endTrip,
+  setIsOrderCanceled,
+  setIsOrderCanceledAlertVisible,
+  setTripIsCanceled,
+  setTripStatus,
+} from '../../ride/redux/trip';
+import { isOrderCanceledSelector, orderInfoSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
 import { getCurrentOrder, getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { NotificationPayload, NotificationRemoteMessage, NotificationType } from './types';
@@ -28,6 +36,7 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
       await store.dispatch(getOrderInfo(payload.orderId));
       await store.dispatch(getRouteInfo(payload.orderId));
       store.dispatch(setTripStatus(TripStatus.Accepted));
+      store.dispatch(setIsOrderCanceled(false));
     }
   },
   [NotificationType.TripEnded]: async () => {
@@ -63,12 +72,22 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
 
   // BeforePickup when trip doesnt start and driver rejected - go to search driver again
   [NotificationType.DriverCanceled]: async () => {
-    const orderStatus = orderStatusSelector(store.getState());
+    const isOrderCanceled = isOrderCanceledSelector(store.getState());
+    const offer = offerSelector(store.getState());
 
-    if (orderStatus !== OrderStatus.Confirming) {
+    //Because it can be changed in notifications
+    if (!isOrderCanceled) {
       store.dispatch(endTrip());
+
+      //TODO: Rewrite with saving points on the device
+      if (isCoordinatesEqualZero(offer.points[0]) || isCoordinatesEqualZero(offer.points[1])) {
+        store.dispatch(setIsOrderCanceledAlertVisible(true));
+        return;
+      }
+
       store.dispatch(createInitialOffer());
       store.dispatch(setOrderStatus(OrderStatus.Confirming));
+      store.dispatch(setIsOrderCanceled(true));
     }
   },
 

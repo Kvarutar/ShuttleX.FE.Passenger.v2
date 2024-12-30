@@ -1,13 +1,20 @@
-import { convertBlobToImgUri, getNetworkErrorInfo, Nullable } from 'shuttlex-integration';
+import { convertBlobToImgUri, getNetworkErrorInfo, isCoordinatesEqualZero, Nullable } from 'shuttlex-integration';
 
 import { getTicketAfterRide } from '../../../lottery/redux/thunks';
 import { createAppAsyncThunk } from '../../../redux/hooks';
+import { offerSelector } from '../offer/selectors';
 import { createInitialOffer, getRecentDropoffs } from '../offer/thunks';
 import { setOrderStatus } from '../order';
-import { orderStatusSelector } from '../order/selectors';
 import { OrderStatus } from '../order/types';
-import { addFinishedTrips, endTrip, setTripIsCanceled, setTripStatus } from '.';
-import { tripStatusSelector } from './selectors';
+import {
+  addFinishedTrips,
+  endTrip,
+  setIsOrderCanceled,
+  setIsOrderCanceledAlertVisible,
+  setTripIsCanceled,
+  setTripStatus,
+} from '.';
+import { isOrderCanceledSelector, tripStatusSelector } from './selectors';
 import {
   FeedbackAPIRequest,
   GetCurrentOrderAPIResponse,
@@ -18,7 +25,6 @@ import {
   RoutePickUpApiResponse,
   TripArivedLongPollingAPIResponse,
   TripCanceledAfterPickupLongPollingAPIResponse,
-  TripCanceledBeforePickupLongPollingAPIResponse,
   TripInfo,
   TripInPickupLongPollingAPIResponse,
   TripStatus,
@@ -132,6 +138,7 @@ export const getOrderLongPolling = createAppAsyncThunk<string, string>(
         dispatch(getOrderInfo(response.data.orderId));
         dispatch(getRouteInfo(response.data.orderId));
         dispatch(setTripStatus(TripStatus.Accepted));
+        dispatch(setIsOrderCanceled(false));
       }
 
       return response.data.orderId;
@@ -164,22 +171,29 @@ export const getTripSuccessfullLongPolling = createAppAsyncThunk<string, string>
   },
 );
 
-export const getTripCanceledBeforePickUpLongPolling = createAppAsyncThunk<string, string>(
+export const getTripCanceledBeforePickUpLongPolling = createAppAsyncThunk<void, string>(
   'trip/getTripCanceledBeforePickUpLongPolling',
   async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState }) => {
     try {
-      const response = await passengerLongPollingAxios.get<TripCanceledBeforePickupLongPollingAPIResponse>(
-        `/Order/${orderId}/canceled/before-pickup/long-polling`,
-      );
-      const orderStatus = orderStatusSelector(getState());
+      await passengerLongPollingAxios.get(`/Order/${orderId}/canceled/before-pickup/long-polling`);
 
-      if (orderStatus !== OrderStatus.Confirming) {
+      const isOrderCanceled = isOrderCanceledSelector(getState());
+      const offer = offerSelector(getState());
+
+      //Because it can be changed in longpolling thunk
+      if (!isOrderCanceled) {
         dispatch(endTrip());
+
+        //TODO: Rewrite with saving points on the device
+        if (isCoordinatesEqualZero(offer.points[0]) || isCoordinatesEqualZero(offer.points[1])) {
+          dispatch(setIsOrderCanceledAlertVisible(true));
+          return;
+        }
+
         dispatch(createInitialOffer());
         dispatch(setOrderStatus(OrderStatus.Confirming));
+        dispatch(setIsOrderCanceled(true));
       }
-
-      return response.data.orderId;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

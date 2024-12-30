@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Alert, Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MenuHeader, sizes, useTheme } from 'shuttlex-integration';
 
@@ -16,7 +17,12 @@ import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../
 import { offerIdSelector } from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
-import { orderIdSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
+import { setIsOrderCanceledAlertVisible } from '../../../core/ride/redux/trip';
+import {
+  isOrderCanceledAlertVisibleSelector,
+  orderIdSelector,
+  orderSelector,
+} from '../../../core/ride/redux/trip/selectors';
 import {
   getArrivedLongPolling,
   getInPickUpLongPolling,
@@ -35,6 +41,7 @@ import { RideScreenProps } from './types';
 
 const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const orderRef = useRef<OrderRef>(null);
   const dispatch = useAppDispatch();
 
@@ -50,6 +57,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   const orderInfo = useSelector(orderSelector);
   const orderId = useSelector(orderIdSelector);
   const offerId = useSelector(offerIdSelector);
+  const isOrderCanceledAlertVisible = useSelector(isOrderCanceledAlertVisibleSelector);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -165,6 +173,18 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
     noDrivers: null,
     rideUnavailable: null,
   };
+
+  //TODO: Remove these popup and effect when add saving pick up and drop off points data in device's storage
+  useEffect(() => {
+    if (isOrderCanceledAlertVisible) {
+      Alert.alert(t('ride_Ride_canceledOrderAlertTitle'), t('ride_Ride_canceledOrderAlertDescription'), [
+        {
+          text: t('ride_Ride_canceledOrderAlertButton'),
+          onPress: () => dispatch(setIsOrderCanceledAlertVisible(false)),
+        },
+      ]);
+    }
+  }, [t, dispatch, isOrderCanceledAlertVisible]);
 
   return (
     <>
