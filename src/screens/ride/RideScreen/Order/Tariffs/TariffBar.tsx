@@ -1,11 +1,10 @@
 import { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
   BaggageIcon,
-  Bar,
   getCurrencySign,
   ProfileIcon,
   Skeleton,
@@ -57,9 +56,8 @@ const TariffBar = ({
     separateCircle: {
       backgroundColor: colors.iconSecondaryColor,
     },
-    container: {
-      borderColor: isPlanSelected ? colors.borderColor : 'transparent',
-      opacity: isAvailableTariff ? 1 : 0.3,
+    wrapper: {
+      opacity: isAvailableTariff ? 1 : 0.4,
     },
     price: {
       color: colors.textSecondaryColor,
@@ -92,6 +90,15 @@ const TariffBar = ({
       height: withTiming(windowIsOpened ? 200 : 52, { duration: animationDuration }),
     })),
   };
+
+  const animatedContainerStyles = useAnimatedStyle(() => ({
+    backgroundColor: withTiming(isPlanSelected ? colors.backgroundPrimaryColor : colors.backgroundSecondaryColor, {
+      duration: animationDuration,
+    }),
+    borderColor: withTiming(isPlanSelected ? colors.borderColor : 'transparent', {
+      duration: animationDuration,
+    }),
+  }));
 
   const formatTime = (time: number) => {
     const totalMinutes = Math.floor(time / 60);
@@ -208,25 +215,27 @@ const TariffBar = ({
   }
 
   return (
-    <Bar style={[styles.container, computedStyles.container]} onPress={event => isAvailableTariff && onPress(event)}>
-      <Animated.View style={[styles.tariffContainer, computedStyles.tariffContainer, animatedStyles.tariffContainer]}>
-        {tariffContent}
-      </Animated.View>
-      {availablePlans.length > 1 && (
-        <Animated.View style={animatedStyles.buttonWrapper}>
-          <View style={styles.buttonContainer}>
-            {availablePlans.map((plan, index) => (
-              <PlanButton
-                key={index}
-                onPress={() => setSelectedPrice(index)}
-                isSelected={selectedPrice === index}
-                plan={plan}
-              />
-            ))}
-          </View>
+    <Pressable style={computedStyles.wrapper} onPress={event => isAvailableTariff && onPress(event)}>
+      <Animated.View style={[styles.container, animatedContainerStyles]}>
+        <Animated.View style={[styles.tariffContainer, computedStyles.tariffContainer, animatedStyles.tariffContainer]}>
+          {tariffContent}
         </Animated.View>
-      )}
-    </Bar>
+        {availablePlans.length > 1 && (
+          <Animated.View style={animatedStyles.buttonWrapper}>
+            <View style={styles.buttonContainer}>
+              {availablePlans.map((plan, index) => (
+                <PlanButton
+                  key={index}
+                  onPress={() => setSelectedPrice(index)}
+                  isSelected={selectedPrice === index}
+                  plan={plan}
+                />
+              ))}
+            </View>
+          </Animated.View>
+        )}
+      </Animated.View>
+    </Pressable>
   );
 };
 
@@ -241,6 +250,8 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     paddingTop: 16,
     marginBottom: 8,
+    borderWidth: 1,
+    borderRadius: 12,
   },
   buttonContainer: {
     flexDirection: 'row',

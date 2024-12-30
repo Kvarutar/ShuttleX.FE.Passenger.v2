@@ -18,12 +18,14 @@ import {
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
+import { tariffByIdSelector } from '../../../../core/ride/redux/offer/selectors';
 import {
   isTripCanceledLoadingSelector,
   isTripCanceledSelector,
   isTripLoadingSelector,
   orderIdSelector,
   orderSelector,
+  orderTariffIdSelector,
   tripStatusSelector,
 } from '../../../../core/ride/redux/trip/selectors';
 import {
@@ -52,8 +54,17 @@ const Trip = () => {
   const isTripCanceled = useSelector(isTripCanceledSelector);
   const isTripCanceledLoading = useSelector(isTripCanceledLoadingSelector);
   const order = useSelector(orderSelector);
+  const tripTariffId = useSelector(orderTariffIdSelector);
+  const tripTariff = useSelector(state => tariffByIdSelector(state, tripTariffId));
 
   const arrivedTime = order?.info ? Date.parse(order?.info?.estimatedArriveToDropOffDate) : 0;
+  const TariffIcon = tripTariff?.name ? tariffIconsData[tripTariff?.name].icon : null;
+
+  const computedStyles = StyleSheet.create({
+    avatarWrapper: {
+      backgroundColor: colors.backgroundPrimaryColor,
+    },
+  });
 
   useEffect(() => {
     if (orderId && tripStatus === TripStatus.Ride) {
@@ -70,14 +81,6 @@ const Trip = () => {
     }
   }, [tripStatus, navigation, orderId, dispatch, isTripCanceled, isTripCanceledLoading]);
 
-  const TariffIcon = tariffIconsData.Basic.icon;
-
-  const computedStyles = StyleSheet.create({
-    avatarWrapper: {
-      backgroundColor: colors.backgroundPrimaryColor,
-    },
-  });
-
   const onCancelTrip = async () => {
     if (orderId) {
       await dispatch(cancelTrip(orderId));
@@ -93,21 +96,23 @@ const Trip = () => {
         colorMode={TimerColorModes.Mode3}
       />
     ) : (
-      <View style={styles.imageContainer}>
-        <TariffIcon style={styles.carImage} />
-        <View style={[styles.avatarWrapper, computedStyles.avatarWrapper]}>
-          {isTripLoading ? (
-            <Skeleton skeletonContainerStyle={styles.skeletonAvatar} />
-          ) : (
-            <Image
-              style={styles.avatar}
-              source={{
-                uri: order?.avatar ?? undefined, //TODO: change to default image
-              }}
-            />
-          )}
+      TariffIcon !== null && (
+        <View style={styles.imageContainer}>
+          <TariffIcon style={styles.carImage} />
+          <View style={[styles.avatarWrapper, computedStyles.avatarWrapper]}>
+            {isTripLoading ? (
+              <Skeleton skeletonContainerStyle={styles.skeletonAvatar} />
+            ) : (
+              <Image
+                style={styles.avatar}
+                source={{
+                  uri: order?.avatar ?? undefined, //TODO: change to default image
+                }}
+              />
+            )}
+          </View>
         </View>
-      </View>
+      )
     );
 
   return (
@@ -184,7 +189,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     width: '65%',
     height: undefined,
-    aspectRatio: 3.15,
+    aspectRatio: 3.1,
   },
 });
 
