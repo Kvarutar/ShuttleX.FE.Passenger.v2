@@ -18,7 +18,17 @@ import {
   setTripStatus,
 } from '../../ride/redux/trip';
 import { isOrderCanceledSelector, orderInfoSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
-import { getCurrentOrder, getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
+import {
+  getArrivedLongPolling,
+  getCurrentOrder,
+  getInPickUpLongPolling,
+  getOrderInfo,
+  getOrderLongPolling,
+  getRouteInfo,
+  getTripCanceledAfterPickUpLongPolling,
+  getTripCanceledBeforePickUpLongPolling,
+  getTripSuccessfullLongPolling,
+} from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { NotificationPayload, NotificationRemoteMessage, NotificationType } from './types';
 
@@ -29,6 +39,8 @@ const isValidNotificationType = (key: string): key is NotificationType => {
 
 const notificationHandlers: Record<NotificationType, (payload: NotificationPayload | undefined) => Promise<void>> = {
   [NotificationType.DriverAccepted]: async payload => {
+    getOrderLongPolling.abortAll();
+
     const tripStatus = tripStatusSelector(store.getState());
 
     //Check trip status because longpolling can get information earlier
@@ -40,6 +52,8 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     }
   },
   [NotificationType.TripEnded]: async () => {
+    getTripSuccessfullLongPolling.abortAll();
+
     const tripStatus = tripStatusSelector(store.getState());
 
     if (tripStatus !== TripStatus.Finished) {
@@ -50,7 +64,6 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     }
 
     store.dispatch(getRecentDropoffs({ amount: 10 }));
-
     store.dispatch(setTripStatus(TripStatus.Finished));
   },
   [NotificationType.WinnerFounded]: async payload => {
@@ -64,6 +77,8 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     }
   },
   [NotificationType.DriverArrived]: async () => {
+    getArrivedLongPolling.abortAll();
+
     const tripStatus = tripStatusSelector(store.getState());
     if (tripStatus !== TripStatus.Arrived) {
       store.dispatch(getCurrentOrder());
@@ -72,6 +87,8 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
 
   // BeforePickup when trip doesnt start and driver rejected - go to search driver again
   [NotificationType.DriverCanceled]: async () => {
+    getTripCanceledBeforePickUpLongPolling.abortAll();
+
     const isOrderCanceled = isOrderCanceledSelector(store.getState());
     const offer = offerSelector(store.getState());
 
@@ -93,6 +110,8 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
 
   //AfterPickUp when trip started and driver canceled trip - go to receipt screen
   [NotificationType.DriverRejected]: async () => {
+    getTripCanceledAfterPickUpLongPolling.abortAll();
+
     store.dispatch(setTripIsCanceled(true));
     const orderInfo = orderInfoSelector(store.getState());
     const tripStatus = tripStatusSelector(store.getState());
@@ -106,6 +125,8 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
   },
 
   [NotificationType.TripStarted]: async () => {
+    getInPickUpLongPolling.abortAll();
+
     const tripStatus = tripStatusSelector(store.getState());
     if (tripStatus !== TripStatus.Ride) {
       store.dispatch(getCurrentOrder());

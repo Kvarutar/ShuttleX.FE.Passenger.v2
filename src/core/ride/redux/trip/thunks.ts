@@ -125,10 +125,11 @@ export const getRouteInfo = createAppAsyncThunk<
 
 export const getOrderLongPolling = createAppAsyncThunk<string, string>(
   'trip/getOrderLongPolling',
-  async (offerId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState }) => {
+  async (offerId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
     try {
       const response = await passengerLongPollingAxios.get<OrderLongPollingAPIResponse>(
         `/Offer/${offerId}/confirmed/long-polling`,
+        { signal: abortAllSignal },
       );
 
       const tripStatus = tripStatusSelector(getState());
@@ -150,10 +151,11 @@ export const getOrderLongPolling = createAppAsyncThunk<string, string>(
 
 export const getTripSuccessfullLongPolling = createAppAsyncThunk<string, string>(
   'trip/getTripSuccessfullLongPolling',
-  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState }) => {
+  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
     try {
       const response = await passengerLongPollingAxios.get<TripSuccessfullLongPollingAPIResponse>(
         `/Order/${orderId}/successfull/long-polling`,
+        { signal: abortAllSignal },
       );
       const tripStatus = tripStatusSelector(getState());
 
@@ -173,9 +175,11 @@ export const getTripSuccessfullLongPolling = createAppAsyncThunk<string, string>
 
 export const getTripCanceledBeforePickUpLongPolling = createAppAsyncThunk<void, string>(
   'trip/getTripCanceledBeforePickUpLongPolling',
-  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState }) => {
+  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
     try {
-      await passengerLongPollingAxios.get(`/Order/${orderId}/canceled/before-pickup/long-polling`);
+      await passengerLongPollingAxios.get(`/Order/${orderId}/canceled/before-pickup/long-polling`, {
+        signal: abortAllSignal,
+      });
 
       const isOrderCanceled = isOrderCanceledSelector(getState());
       const offer = offerSelector(getState());
@@ -202,10 +206,11 @@ export const getTripCanceledBeforePickUpLongPolling = createAppAsyncThunk<void, 
 
 export const getTripCanceledAfterPickUpLongPolling = createAppAsyncThunk<string, string>(
   'trip/getTripCanceledAfterPickUpLongPolling',
-  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState }) => {
+  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
     try {
       const response = await passengerLongPollingAxios.get<TripCanceledAfterPickupLongPollingAPIResponse>(
         `/Order/${orderId}/canceled/after-pickup/long-polling`,
+        { signal: abortAllSignal },
       );
       const tripStatus = tripStatusSelector(getState());
 
@@ -222,10 +227,11 @@ export const getTripCanceledAfterPickUpLongPolling = createAppAsyncThunk<string,
 
 export const getArrivedLongPolling = createAppAsyncThunk<TripArivedLongPollingAPIResponse, string>(
   'trip/getArrivedLongPolling',
-  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState }) => {
+  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
     try {
       const response = await passengerLongPollingAxios.get<TripArivedLongPollingAPIResponse>(
         `/Order/${orderId}/arrived/long-polling`,
+        { signal: abortAllSignal },
       );
 
       const tripStatus = tripStatusSelector(getState());
@@ -242,10 +248,11 @@ export const getArrivedLongPolling = createAppAsyncThunk<TripArivedLongPollingAP
 
 export const getInPickUpLongPolling = createAppAsyncThunk<TripInPickupLongPollingAPIResponse, string>(
   'trip/getInPickUpLongPolling',
-  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState }) => {
+  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
     try {
       const response = await passengerLongPollingAxios.get<TripInPickupLongPollingAPIResponse>(
         `/Order/${orderId}/in-pick-up/long-polling`,
+        { signal: abortAllSignal },
       );
       const tripStatus = tripStatusSelector(getState());
 
