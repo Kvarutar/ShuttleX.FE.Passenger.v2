@@ -60,11 +60,11 @@ const PrizeWithWinnerBar = ({
             />
           )}
           <View style={styles.contentText}>
-            <Text style={[styles.text, styles.winnerName, computedStyles.winnerName]}>
+            <Text numberOfLines={1} style={[styles.text, styles.winnerName, computedStyles.winnerName]}>
               {ticketCode
                 ? t('raffle_Lottery_PrizeWithWinnerBar_name', {
                     name: winnerName,
-                    ticketCode: ticketCode ?? '...',
+                    ticketCode: ticketCode,
                   })
                 : t('raffle_Lottery_noWinner')}
             </Text>
@@ -93,9 +93,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    flex: 1,
   },
   contentText: {
     justifyContent: 'space-between',
+    flexShrink: 1,
   },
   prizeImage: {
     width: 44,
@@ -120,6 +122,7 @@ const styles = StyleSheet.create({
   placeNumber: {
     fontFamily: 'Inter Bold',
     fontSize: 50,
+    flexShrink: 0,
   },
   loadingSpinnerContainer: {
     width: 44,

@@ -11,7 +11,7 @@ import {
   getTicketAfterRide,
   getWinnerAvatar,
 } from './thunks';
-import { LotteryMode, LotteryState, TicketFromAPI, WinnerPrizesAPIResponse } from './types';
+import { LotteryMode, LotteryState, SetAvatarStatePayloadType, TicketFromAPI, WinnerPrizesAPIResponse } from './types';
 
 const initialState: LotteryState = {
   lottery: {
@@ -21,13 +21,19 @@ const initialState: LotteryState = {
     state: 'CurrentUpcoming',
   },
   previousLottery: null,
-  prizes: [],
+  prizes: {
+    data: [],
+    avatars: [],
+  },
   selectedMode: 'current',
   winnerPrizes: {
     ticket: '',
     prizeIds: [],
   },
-  previousPrizes: [],
+  previousPrizes: {
+    data: [],
+    avatars: [],
+  },
   tickets: [],
   ticketAfterRide: null,
   loading: {
@@ -71,6 +77,29 @@ const slice = createSlice({
     },
     setWinnerPrizes(state, action: PayloadAction<Nullable<WinnerPrizesAPIResponse>>) {
       state.winnerPrizes = action.payload;
+    },
+    setAvatarState(state, action: PayloadAction<SetAvatarStatePayloadType>) {
+      const { winnerId, imageUrl, isLoading } = action.payload;
+      const selectedPrizes = state.selectedMode === 'history' ? state.previousPrizes : state.prizes;
+      const prize = selectedPrizes.data.find(item => item.winnerId === winnerId);
+
+      if (prize) {
+        const avatarIndex = selectedPrizes.avatars.findIndex(avatar => avatar.index === prize.index);
+
+        if (avatarIndex !== -1) {
+          selectedPrizes.avatars[avatarIndex] = {
+            index: prize.index,
+            imageUrl,
+            isLoading,
+          };
+        } else {
+          selectedPrizes.avatars.push({
+            index: prize.index,
+            imageUrl,
+            isLoading,
+          });
+        }
+      }
     },
   },
   extraReducers: builder => {
@@ -123,7 +152,7 @@ const slice = createSlice({
       })
       .addCase(getCurrentPrizes.fulfilled, (state, action) => {
         state.loading.prizes = false;
-        state.prizes = action.payload;
+        state.prizes.data = action.payload;
       })
       .addCase(getCurrentPrizes.rejected, (state, action) => {
         state.loading.prizes = false;
@@ -137,7 +166,7 @@ const slice = createSlice({
       })
       .addCase(getPreviousPrizes.fulfilled, (state, action) => {
         state.loading.previousPrizes = false;
-        state.previousPrizes = action.payload;
+        state.previousPrizes.data = action.payload;
       })
       .addCase(getPreviousPrizes.rejected, (state, action) => {
         state.loading.previousPrizes = false;
@@ -177,40 +206,24 @@ const slice = createSlice({
       //WinnerAvatar
       .addCase(getWinnerAvatar.pending, (state, action) => {
         const { winnerId } = action.meta.arg;
-        const selectedPrizes = state.selectedMode === 'history' ? state.previousPrizes : state.prizes;
-
-        const prize = selectedPrizes.find(item => item.winnerId === winnerId);
-
-        if (prize) {
-          prize.avatar = {
-            imageUrl: null,
-            isLoading: true,
-          };
-        }
+        slice.caseReducers.setAvatarState(state, {
+          payload: { winnerId, imageUrl: null, isLoading: true },
+          type: slice.actions.setAvatarState.type,
+        });
       })
       .addCase(getWinnerAvatar.fulfilled, (state, action) => {
         const { winnerId } = action.meta.arg;
-        const selectedPrizes = state.selectedMode === 'history' ? state.previousPrizes : state.prizes;
-        const prize = selectedPrizes.find(item => item.winnerId === winnerId);
-
-        if (prize) {
-          prize.avatar = {
-            imageUrl: action.payload,
-            isLoading: false,
-          };
-        }
+        slice.caseReducers.setAvatarState(state, {
+          payload: { winnerId, imageUrl: action.payload, isLoading: false },
+          type: slice.actions.setAvatarState.type,
+        });
       })
       .addCase(getWinnerAvatar.rejected, (state, action) => {
         const { winnerId } = action.meta.arg;
-        const selectedPrizes = state.selectedMode === 'history' ? state.previousPrizes : state.prizes;
-        const prize = selectedPrizes.find(item => item.winnerId === winnerId);
-
-        if (prize && prize.avatar) {
-          prize.avatar = {
-            imageUrl: null,
-            isLoading: false,
-          };
-        }
+        slice.caseReducers.setAvatarState(state, {
+          payload: { winnerId, imageUrl: null, isLoading: false },
+          type: slice.actions.setAvatarState.type,
+        });
       });
   },
 });

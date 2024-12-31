@@ -22,7 +22,7 @@ const formatTime = (seconds: number) => {
   const hours = Math.floor((seconds % (24 * 3600)) / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
 
-  const formattedTime = `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+  const formattedTime = `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${seconds < 60 ? '01' : String(minutes).padStart(2, '0')}`;
 
   return formattedTime;
 };

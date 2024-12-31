@@ -50,7 +50,7 @@ export const getPreviousLottery = createAppAsyncThunk<Nullable<LotteryAPIRespons
       const result = await lotteryAxios.get<LotteryAPIResponse[]>('/events', {
         params: {
           filterBy: 'State::eq::Previous',
-          sortBy: 'startTime:asc',
+          sortBy: 'startTime:desc',
         },
       });
 

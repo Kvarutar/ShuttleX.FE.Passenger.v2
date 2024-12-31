@@ -3,9 +3,9 @@ import { NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 export type LotteryState = {
   lottery: Nullable<LotteryAPIResponse>;
   previousLottery: Nullable<LotteryAPIResponse>;
-  prizes: Prize[];
+  prizes: PrizesData;
   winnerPrizes: Nullable<WinnerPrizesAPIResponse>;
-  previousPrizes: Prize[];
+  previousPrizes: PrizesData;
   tickets: TicketFromAPI[];
   ticketAfterRide: Nullable<TicketFromAPI>;
   selectedMode: LotteryMode;
@@ -46,11 +46,15 @@ export type PrizesAPIResponse = {
   ticketNumber: Nullable<string>;
 }[];
 
-export type Prize = PrizesAPIResponse[0] & {
-  avatar?: {
+export type Prize = PrizesAPIResponse[0];
+
+export type PrizesData = {
+  data: PrizesAPIResponse;
+  avatars: {
+    index: number;
     imageUrl: Nullable<string>;
     isLoading: boolean;
-  };
+  }[];
 };
 
 export type TicketAPIResponse = TicketFromAPI[];
@@ -76,3 +80,9 @@ export type TicketFromAPI = {
 };
 
 export type GetTicketAfterRideAPIResponse = TicketFromAPI;
+
+export type SetAvatarStatePayloadType = {
+  winnerId: string;
+  imageUrl: Nullable<string>;
+  isLoading: boolean;
+};

@@ -81,21 +81,24 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
 
   const { mainPrizes, otherPrizes, sortedPrizes } = useMemo(() => {
     const prizes = isPrizeSelected ? lotteryPrizes : lotteryPreviousPrizes;
-    const sortedPrizes = [...prizes].sort((a, b) => a.index - b.index);
+    const sortedPrizesLocal = [...prizes].sort((a, b) => a.index - b.index);
 
-    const { mainPrizes, otherPrizes } = sortedPrizes.reduce<{ mainPrizes: Prize[]; otherPrizes: Prize[] }>(
+    const { mainPrizesLocal, otherPrizesLocal } = sortedPrizesLocal.reduce<{
+      mainPrizesLocal: Prize[];
+      otherPrizesLocal: Prize[];
+    }>(
       (acc, prize) => {
         if (prize.index >= 0 && prize.index <= 2) {
-          acc.mainPrizes.push(prize);
+          acc.mainPrizesLocal.push(prize);
         } else {
-          acc.otherPrizes.push(prize);
+          acc.otherPrizesLocal.push(prize);
         }
         return acc;
       },
-      { mainPrizes: [], otherPrizes: [] },
+      { mainPrizesLocal: [], otherPrizesLocal: [] },
     );
 
-    return { mainPrizes, otherPrizes, sortedPrizes };
+    return { mainPrizes: mainPrizesLocal, otherPrizes: otherPrizesLocal, sortedPrizes: sortedPrizesLocal };
   }, [isPrizeSelected, lotteryPreviousPrizes, lotteryPrizes]);
 
   useEffect(() => {
@@ -113,7 +116,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
       } else if (intervalRef.current === null) {
         intervalRef.current = setInterval(() => {
           dispatch(getCurrentPrizes());
-        }, secToMilSec(30));
+        }, secToMilSec(10));
       }
     }
   }, [allWinners, dispatch, lotteryPrizes.length, lotteryState]);
