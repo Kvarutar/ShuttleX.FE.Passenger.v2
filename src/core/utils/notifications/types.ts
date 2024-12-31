@@ -14,7 +14,7 @@ export enum NotificationType {
   TripEnded = 'trip_ended',
   DriverArrived = 'driver_arrived',
   DriverRejected = 'driver_rejected',
-  WinnerFounded = 'winner_founded',
+  WinnerFounded = 'winner_found',
   DriverCanceled = 'driver_canceled',
 }
 

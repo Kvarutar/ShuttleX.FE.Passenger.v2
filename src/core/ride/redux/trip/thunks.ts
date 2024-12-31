@@ -159,12 +159,12 @@ export const getTripSuccessfullLongPolling = createAppAsyncThunk<string, string>
       );
       const tripStatus = tripStatusSelector(getState());
 
-      dispatch(getRecentDropoffs({ amount: 10 }));
       if (tripStatus !== TripStatus.Finished) {
         dispatch(addFinishedTrips());
         //TODO go to rating page
         dispatch(getTicketAfterRide());
         dispatch(setTripStatus(TripStatus.Finished));
+        dispatch(getRecentDropoffs({ amount: 10 }));
       }
       return response.data.orderId;
     } catch (error) {

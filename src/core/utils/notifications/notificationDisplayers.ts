@@ -61,10 +61,8 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
       //TODO go to rating page
       store.dispatch(getTicketAfterRide());
       store.dispatch(setTripStatus(TripStatus.Finished));
+      store.dispatch(getRecentDropoffs({ amount: 10 }));
     }
-
-    store.dispatch(getRecentDropoffs({ amount: 10 }));
-    store.dispatch(setTripStatus(TripStatus.Finished));
   },
   [NotificationType.WinnerFounded]: async payload => {
     if (payload?.prizeIds && payload.ticketNumber) {

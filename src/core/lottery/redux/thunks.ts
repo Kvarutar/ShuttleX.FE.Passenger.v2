@@ -2,6 +2,7 @@ import { convertBlobToImgUri, getNetworkErrorInfo, Nullable } from 'shuttlex-int
 
 import { createAppAsyncThunk } from '../../redux/hooks';
 import { orderIdSelector } from '../../ride/redux/trip/selectors';
+import { setTicketAfterRide } from '.';
 import {
   GetTicketAfterRideAPIResponse,
   LotteryAPIResponse,
@@ -139,13 +140,13 @@ export const getAllCurrentTickets = createAppAsyncThunk<TicketAPIResponse, void>
 
 export const getTicketAfterRide = createAppAsyncThunk<GetTicketAfterRideAPIResponse, void>(
   'lottery/getTicketAfterRide',
-  async (_, { rejectWithValue, lotteryAxios, getState }) => {
+  async (_, { rejectWithValue, lotteryAxios, getState, dispatch }) => {
     const orderId = orderIdSelector(getState());
     try {
       const result = await lotteryAxios.post<GetTicketAfterRideAPIResponse>(
         `/events/current/tickets/orders/${orderId}`,
       );
-
+      dispatch(setTicketAfterRide(result.data));
       return result.data;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));

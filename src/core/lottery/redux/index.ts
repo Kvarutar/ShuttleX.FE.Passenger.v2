@@ -8,7 +8,6 @@ import {
   getCurrentUpcomingLottery,
   getPreviousLottery,
   getPreviousPrizes,
-  getTicketAfterRide,
   getWinnerAvatar,
 } from './thunks';
 import { LotteryMode, LotteryState, SetAvatarStatePayloadType, TicketFromAPI, WinnerPrizesAPIResponse } from './types';
@@ -63,10 +62,6 @@ const slice = createSlice({
     clearPrizes: state => {
       state.prizes = initialState.prizes;
       state.previousPrizes = initialState.previousPrizes;
-    },
-    addTicket(state, action: PayloadAction<TicketFromAPI>) {
-      state.tickets.unshift(action.payload);
-      setTicketAfterRide(action.payload);
     },
     setTicketAfterRide(state, action: PayloadAction<Nullable<TicketFromAPI>>) {
       state.ticketAfterRide = action.payload;
@@ -186,22 +181,6 @@ const slice = createSlice({
         state.loading.tickets = false;
         state.error.tickets = action.payload as NetworkErrorDetailsWithBody<any>;
       })
-      .addCase(getTicketAfterRide.fulfilled, (state, action) => {
-        slice.caseReducers.addTicket(state, {
-          payload: action.payload,
-          type: addTicket.type,
-        });
-        slice.caseReducers.setTicketAfterRide(state, {
-          payload: action.payload,
-          type: addTicket.type,
-        });
-      })
-      .addCase(getTicketAfterRide.rejected, state => {
-        slice.caseReducers.setTicketAfterRide(state, {
-          payload: null,
-          type: addTicket.type,
-        });
-      })
 
       //WinnerAvatar
       .addCase(getWinnerAvatar.pending, (state, action) => {
@@ -228,6 +207,6 @@ const slice = createSlice({
   },
 });
 
-export const { setLotterySelectedMode, clearPrizes, addTicket, setTicketAfterRide, setWinnerPrizes } = slice.actions;
+export const { setLotterySelectedMode, clearPrizes, setTicketAfterRide, setWinnerPrizes } = slice.actions;
 
 export default slice.reducer;

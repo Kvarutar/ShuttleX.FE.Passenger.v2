@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -21,6 +21,8 @@ import {
 
 import capyTicketWallet from '../../../../assets/images/capyTicketWallet';
 import { lotteryTicketsSelector } from '../../../core/lottery/redux/selectors';
+import { getAllCurrentTickets } from '../../../core/lottery/redux/thunks';
+import { useAppDispatch } from '../../../core/redux/hooks';
 import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
 import { cardColors } from './cardColors';
@@ -37,6 +39,11 @@ const TicketWalletScreen = () => {
   const ticketNumbers = useSelector(lotteryTicketsSelector);
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCurrentTickets());
+  }, [dispatch]);
 
   const computedStyles = StyleSheet.create({
     wrapper: {
