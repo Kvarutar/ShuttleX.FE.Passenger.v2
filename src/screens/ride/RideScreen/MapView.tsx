@@ -10,6 +10,7 @@ import {
   MapPolyline,
   MapView as MapViewIntegration,
   MapViewRef,
+  MarkerTypeWithLabel,
   Nullable,
   secToMilSec,
 } from 'shuttlex-integration';
@@ -22,7 +23,11 @@ import {
 } from '../../../core/ride/redux/geolocation/selectors';
 import { setMapCameraMode, setMapRidePercentFromPolylines, setMapRouteTraffic } from '../../../core/ride/redux/map';
 import { mapCameraModeSelector, mapCarsSelector, mapStopPointsSelector } from '../../../core/ride/redux/map/selectors';
-import { offerPointsSelector, offerRoutesSelector } from '../../../core/ride/redux/offer/selectors';
+import {
+  currentSelectedTariffSelector,
+  offerPointsSelector,
+  offerRoutesSelector,
+} from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
 import {
@@ -52,6 +57,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   const tripStatus = useSelector(tripStatusSelector);
   const pickUpRoute = useSelector(tripPickUpRouteSelector);
   const dropOffRoute = useSelector(tripDropOffRouteSelector);
+  const currentSelectedTariff = useSelector(currentSelectedTariffSelector);
 
   const updatePassengerGeoRef = useRef<NodeJS.Timeout | null>(null);
   const mapRef = useRef<MapViewRef>(null);
@@ -65,6 +71,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   const [routePolylinePointsCount, setRoutePolylinePointsCount] = useState<number>(0);
   const [finalStopPointCoordinates, setFinalStopPointCoordinates] = useState<LatLng | null>(null);
   const [finalStopPointTimeInSec, setFinalStopPointTimeInSec] = useState<number>(0);
+  const [finalStopPointColorMode, setFinalStopPointColorMode] = useState<MarkerTypeWithLabel['colorMode']>('mode1');
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [mapCameraCoordinates, setMapCameraCoordinates] = useState<LatLng | null>(null);
 
@@ -147,7 +154,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
           }
           const coordinates = decodeGooglePolyline(pickUpRoute.geometry); // TODO: check, maybe need to reverse array
           setRoutePolylinePointsCount(coordinates.length);
-          setMarkers([{ colorMode: 'mode1', coordinates: coordinates[coordinates.length - 1] }]);
+          setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: coordinates[coordinates.length - 1] }]);
           dispatch(setMapRouteTraffic(pickUpRoute.accurateGeometries));
           return { type, options: { coordinates } };
         });
@@ -170,6 +177,8 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
           setRoutePolylinePointsCount(coordinates.length);
           setFinalStopPointCoordinates(coordinates[coordinates.length - 1]);
           setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
+          setFinalStopPointColorMode('mode1');
+          // TODO: this line throws warning, move that dispatch outside of setPolyline
           dispatch(setMapRouteTraffic(dropOffRoute.accurateGeometries));
           return { type, options: { coordinates } };
         });
@@ -210,6 +219,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       );
       setMarkers([
         {
+          type: 'simple',
           colorMode: 'mode1',
           coordinates: { latitude: startOfferPoint.latitude, longitude: startOfferPoint.longitude },
           zIndex: -1,
@@ -223,10 +233,9 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         type: 'dashed',
         options: { coordinates: decodeGooglePolyline(offerRoutes.geometry), color: '#ABC736' },
       });
-      setMarkers([
-        { colorMode: 'mode1', coordinates: pickUpPoint, zIndex: -1 },
-        { colorMode: 'mode2', coordinates: dropOffPoint, zIndex: -1 },
-      ]);
+      setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: pickUpPoint, zIndex: -1 }]);
+      setFinalStopPointCoordinates(dropOffPoint);
+      setFinalStopPointColorMode('mode2');
       //TODO: make camera animate to route (not just 1 point), or (better) to resize MapView according to bottomwindow
       mapRef.current?.animateCamera({ pitch: 0, heading: 0, center: pickUpPoint, zoom: 15 }, { duration: 700 });
     } else {
@@ -234,8 +243,22 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     }
   }, [orderStatus, offerPoints, offerRoutes, tripStatus]);
 
+  useEffect(() => {
+    if (orderStatus === OrderStatus.ChoosingTariff && offerRoutes) {
+      if (currentSelectedTariff?.matching[0].durationSec) {
+        setFinalStopPointTimeInSec(offerRoutes.totalDurationSec + currentSelectedTariff.matching[0].durationSec);
+      } else {
+        setFinalStopPointTimeInSec(offerRoutes.totalDurationSec);
+      }
+    }
+  }, [orderStatus, offerRoutes, currentSelectedTariff]);
+
   // Section: final stop point time updating
   useEffect(() => {
+    if (orderStatus === OrderStatus.ChoosingTariff || orderStatus === OrderStatus.Payment) {
+      return;
+    }
+
     const interval = setInterval(() => {
       setFinalStopPointTimeInSec(prev => {
         if (prev < finalStopPointUpdateIntervalInSec) {
@@ -249,7 +272,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     return () => {
       clearInterval(interval);
     };
-  }, [finalStopPointCoordinates]);
+  }, [finalStopPointCoordinates, orderStatus]);
 
   const finalStopPointTimeWithAbbreviation = useMemo(
     () => getTimeWithAbbreviation(finalStopPointTimeInSec),
@@ -272,17 +295,21 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       // or alternatively do the next request when animation is done (or few miliseconds before ending)
       cars={{ data: cars, animationDuration: updatePassengerGeoInterval * 0.85 }}
       polylines={polyline ? [polyline] : undefined}
-      finalStopPoint={
-        finalStopPointCoordinates
-          ? {
-              coordinates: finalStopPointCoordinates,
-              title: finalStopPointTimeWithAbbreviation.value,
-              subtitle: finalStopPointTimeWithAbbreviation.label,
-            }
-          : undefined
-      }
       stopPoints={stopPoints}
-      markers={markers}
+      markers={
+        finalStopPointCoordinates
+          ? [
+              ...markers,
+              {
+                type: 'withLabel',
+                colorMode: finalStopPointColorMode,
+                coordinates: finalStopPointCoordinates,
+                title: finalStopPointTimeWithAbbreviation.value,
+                subtitle: finalStopPointTimeWithAbbreviation.label,
+              },
+            ]
+          : markers
+      }
       cameraMode={cameraMode}
       setCameraModeOnDrag={mode => dispatch(setMapCameraMode(mode))}
       onDragComplete={setMapCameraCoordinates}

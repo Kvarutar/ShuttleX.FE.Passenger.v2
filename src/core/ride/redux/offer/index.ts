@@ -55,6 +55,7 @@ const initialState: OfferState = {
     offerCreate: null,
   },
   selectedTariff: null,
+  currentSelectedTariff: null,
   estimatedPrice: null,
   isCityAvailable: null,
 };
@@ -146,6 +147,9 @@ const slice = createSlice({
     },
     setOfferZoneId(state, action: PayloadAction<ZoneIdFromAPI>) {
       state.zoneId = action.payload;
+    },
+    setCurrentSelectedTariff(state, action: PayloadAction<OfferState['currentSelectedTariff']>) {
+      state.currentSelectedTariff = action.payload;
     },
   },
   extraReducers: builder => {
@@ -321,6 +325,7 @@ export const {
   setEstimatedPrice,
   setTariffsPricesLoading,
   setPhantomOfferLoading,
+  setCurrentSelectedTariff,
 } = slice.actions;
 
 export default slice.reducer;

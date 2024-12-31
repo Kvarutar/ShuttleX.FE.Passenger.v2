@@ -58,6 +58,7 @@ export type OfferState = {
   offerRoutes: Nullable<OfferRoutesFromAPI>;
   avaliableTariffs: Nullable<TariffWithMatching[]>;
   selectedTariff: Nullable<SelectedTariff>;
+  currentSelectedTariff: Nullable<SelectedTariff>;
   estimatedPrice: Nullable<EstimatedPrice>;
   isCityAvailable: Nullable<boolean>;
   zoneId: Nullable<string>;

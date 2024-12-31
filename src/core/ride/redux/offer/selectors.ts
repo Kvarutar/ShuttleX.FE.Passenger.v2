@@ -16,6 +16,7 @@ export const offerPointsSelector = (state: AppState) => state.offer.points;
 export const offerSelectedTariffSelector = (state: AppState) => state.offer.selectedTariff;
 export const offerAvaliableTariffsSelector = (state: AppState) => state.offer.avaliableTariffs;
 export const isCityAvailableSelector = (state: AppState) => state.offer.isCityAvailable;
+export const currentSelectedTariffSelector = (state: AppState) => state.offer.currentSelectedTariff;
 
 export const tariffByIdSelector = createSelector(
   [offerAvaliableTariffsSelector, (_, tariffId: string | undefined) => tariffId],

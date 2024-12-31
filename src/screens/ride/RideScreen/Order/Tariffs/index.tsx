@@ -18,7 +18,7 @@ import {
 
 //TODO: rewrite all tariffs files, current solution is not flexible
 import { useAppDispatch } from '../../../../../core/redux/hooks';
-import { setEstimatedPrice, setTripTariff } from '../../../../../core/ride/redux/offer';
+import { setCurrentSelectedTariff, setEstimatedPrice, setTripTariff } from '../../../../../core/ride/redux/offer';
 import { groupedTariffsSelector, offerRoutesSelector } from '../../../../../core/ride/redux/offer/selectors';
 import { getTariffsPrices } from '../../../../../core/ride/redux/offer/thunks';
 import { SelectedTariff, TariffCategory, TariffsType } from '../../../../../core/ride/redux/offer/types';
@@ -51,6 +51,10 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
       color: isAvailableSelectedTariffGroup ? colors.textPrimaryColor : colors.textQuadraticColor,
     },
   });
+
+  useEffect(() => {
+    dispatch(setCurrentSelectedTariff(tariff));
+  }, [dispatch, tariff]);
 
   useEffect(() => {
     if (offerRoutes) {

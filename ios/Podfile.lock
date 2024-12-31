@@ -593,11 +593,18 @@ PODS:
     - React-Core
   - RNSensors (7.3.6):
     - React-Core
+  - RNSentry (6.4.0):
+    - hermes-engine
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+    - React-hermes
+    - Sentry/HybridSDK (= 8.41.0)
   - RNShare (11.0.3):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - RNSVG (13.14.0):
     - React-Core
+  - Sentry/HybridSDK (8.41.0)
   - SocketRocket (0.6.1)
   - TOCropViewController (2.7.4)
   - Yoga (1.14.0)
@@ -669,6 +676,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSensors (from `../node_modules/react-native-sensors`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -689,6 +697,7 @@ SPEC REPOS:
     - libevent
     - nanopb
     - PromisesObjC
+    - Sentry
     - SocketRocket
     - TOCropViewController
 
@@ -821,6 +830,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSensors:
     :path: "../node_modules/react-native-sensors"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   RNShare:
     :path: "../node_modules/react-native-share"
   RNSVG:
@@ -907,8 +918,10 @@ SPEC CHECKSUMS:
   RNReanimated: 068e508188021cbe24ae25c6cb2827d0abf6054e
   RNScreens: 5280f062ab6aee9e7c27fa1f43480b977b922974
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
+  RNSentry: a427653089cd19abcae177209718af682cbf3905
   RNShare: cc904a0d9305649d0fe7897fc6de938f958c3a40
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
+  Sentry: 54d0fe6c0df448497c8ed4cce66ccf7027e1823e
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   Yoga: 87e59f6d458e5061d2421086c5de994b3f7cd151

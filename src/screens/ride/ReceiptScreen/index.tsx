@@ -11,6 +11,7 @@ import {
   CircleButtonModes,
   CloseIcon,
   CoinIcon,
+  decodeGooglePolyline,
   Fog,
   formatTime,
   getCurrencySign,
@@ -228,7 +229,7 @@ const ReceiptScreen = () => {
 
   const onMapLayout = useCallback(() => {
     if (mapRef.current && startPoint && endPoint) {
-      const delta = getDistanceBetweenPoints(startPoint, endPoint) / 40000;
+      const delta = getDistanceBetweenPoints(startPoint, endPoint) / 35000;
 
       mapRef.current.animateToRegion(
         {
@@ -251,12 +252,16 @@ const ReceiptScreen = () => {
         markers={
           startPoint && endPoint
             ? [
-                { colorMode: 'mode1', coordinates: startPoint },
-                { colorMode: 'mode2', coordinates: endPoint },
+                { type: 'simple', colorMode: 'mode1', coordinates: startPoint },
+                { type: 'simple', colorMode: 'mode2', coordinates: endPoint },
               ]
             : undefined
         }
-        polylines={startPoint && endPoint ? [{ type: 'arc', options: { startPoint, endPoint } }] : undefined}
+        polylines={
+          routeInfo
+            ? [{ type: 'straight', options: { coordinates: decodeGooglePolyline(routeInfo.geometry) } }]
+            : undefined
+        }
       />
       <Fog widthInPercents={`${windowHeight / 9.5}%`} />
       <SafeAreaView containerStyle={styles.container} withTransparentBackground>
