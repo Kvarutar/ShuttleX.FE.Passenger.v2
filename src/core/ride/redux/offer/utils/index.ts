@@ -7,8 +7,9 @@ export const tariffsNamesByFeKey: Record<TariffFeKeyFromAPI, TariffType> = {
   basicxl: 'BasicXL',
   comfortplus: 'ComfortPlus',
   electric: 'Electric',
-  premiumx: 'Business',
-  premiumxl: 'Business',
+  //TODO: Add 'Business' when work with it
+  // premiumx: 'Business',
+  // premiumxl: 'Business',
 };
 
 export const algorythmTypeParser = (algorythmTypeFromBackend: number): MatchingAlgorythm => {

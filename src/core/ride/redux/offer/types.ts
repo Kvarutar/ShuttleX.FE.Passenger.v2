@@ -143,8 +143,11 @@ export type TariffWithMatching = TariffFromAPI & { matching: Matching[]; isAvali
 
 export type GetAvailableTariffsAPIResponse = TariffFromAPI[];
 
-export type TariffFeKeyFromAPI = 'basicx' | 'basicxl' | 'comfortplus' | 'electric' | 'premiumx' | 'premiumxl';
-export type TariffsType = 'economy' | 'comfort' | 'business';
+//TODO: add "premiumx", "premiumxl" or "business" if necessary
+export type TariffFeKeyFromAPI = 'basicx' | 'basicxl' | 'comfortplus' | 'electric';
+
+//TODO: Add 'business' when work with this type
+export type TariffsType = 'economy' | 'comfort';
 export type TariffsTypeFromAPI = 'Economy' | 'Comfort' | 'Premium';
 
 export type TariffCategory = { groupName: TariffsType } & { tariffs: TariffWithMatching[] | undefined };

@@ -12,6 +12,8 @@ import {
   getPreviousLottery,
 } from '../../../core/lottery/redux/thunks';
 import { getAccountSettingsVerifyStatus } from '../../../core/menu/redux/accountSettings/thunks';
+import { setIsLoadingStubVisible } from '../../../core/passenger/redux';
+import { isLoadingStubVisibleSelector } from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { offerIdSelector } from '../../../core/ride/redux/offer/selectors';
@@ -31,7 +33,7 @@ import {
 } from '../../../core/ride/redux/trip/thunks';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
-import Loading from './Loading';
+import LoadingStub from './Loading';
 import MapView from './MapView';
 import Order from './Order';
 import { OrderRef } from './Order/types';
@@ -59,7 +61,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   const offerId = useSelector(offerIdSelector);
   const isOrderCanceledAlertVisible = useSelector(isOrderCanceledAlertVisibleSelector);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const isLoadingStubVisible = useSelector(isLoadingStubVisibleSelector);
 
   useEffect(() => {
     if (offerId && orderStatus === OrderStatus.Confirming) {
@@ -188,9 +190,9 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
 
   return (
     <>
-      {isLoading && <Loading />}
+      {isLoadingStubVisible && <LoadingStub />}
       <SafeAreaView style={styles.wrapper}>
-        <MapView onFirstCameraAnimationComplete={() => setIsLoading(false)} />
+        <MapView onFirstCameraAnimationComplete={() => dispatch(setIsLoadingStubVisible(false))} />
         {topMenu[orderStatus]}
         {TripStatus.Accepted && orderInfo ? <Trip /> : <Order ref={orderRef} />}
       </SafeAreaView>

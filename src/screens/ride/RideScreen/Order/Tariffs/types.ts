@@ -8,6 +8,7 @@ export type TariffGroupProps = {
   isSelected?: boolean;
   style?: StyleProp<ViewStyle>;
   onPress: () => void;
+  carsAnimationDelayInMilSec: number;
 };
 
 export type TariffBarProps = { tariff: TariffWithMatching } & {
@@ -16,6 +17,8 @@ export type TariffBarProps = { tariff: TariffWithMatching } & {
   selectedPrice: number | null;
   setSelectedPrice: (newState: number | null) => void;
   windowIsOpened: boolean;
+  carsAnimationDelayInMilSec: number;
+  withAnimatedBigCars: boolean;
 };
 
 export type TariffGroupType = {

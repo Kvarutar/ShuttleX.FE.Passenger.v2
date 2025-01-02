@@ -9,6 +9,9 @@ const initialState: PassengerState = {
   profile: null,
   zone: null,
   ordersHistory: [],
+  ui: {
+    isLoadingStubVisible: true,
+  },
   loading: {
     passengerAvatar: false,
     passengerInfo: false,
@@ -29,6 +32,9 @@ const slice = createSlice({
   reducers: {
     setProfile(state, action: PayloadAction<Profile>) {
       state.profile = action.payload;
+    },
+    setIsLoadingStubVisible(state, action: PayloadAction<boolean>) {
+      state.ui.isLoadingStubVisible = action.payload;
     },
     updateProfile(state, action: PayloadAction<Partial<Profile>>) {
       if (state.profile) {
@@ -101,6 +107,6 @@ const slice = createSlice({
   },
 });
 
-export const { setProfile, updateProfile, setZone } = slice.actions;
+export const { setProfile, updateProfile, setZone, setIsLoadingStubVisible } = slice.actions;
 
 export default slice.reducer;

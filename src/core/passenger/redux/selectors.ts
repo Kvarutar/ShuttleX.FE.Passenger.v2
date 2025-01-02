@@ -23,3 +23,6 @@ export const isOrdersHistoryLoadingSelector = (state: AppState) => state.passeng
 export const passengerGeneralErrorSelector = (state: AppState) => state.passenger.error.general;
 export const passengerAvatarErrorSelector = (state: AppState) => state.passenger.error.passengerAvatar;
 export const passengerInfoErrorSelector = (state: AppState) => state.passenger.error.passengerInfo;
+
+//UI
+export const isLoadingStubVisibleSelector = (state: AppState) => state.passenger.ui.isLoadingStubVisible;

@@ -73,6 +73,9 @@ export type PassengerState = {
     ordersHistory: boolean;
     general: boolean;
   };
+  ui: {
+    isLoadingStubVisible: boolean;
+  };
   error: {
     passengerAvatar: Nullable<NetworkErrorDetailsWithBody<any>>;
     passengerInfo: Nullable<NetworkErrorDetailsWithBody<any>>;

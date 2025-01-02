@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import Animated, { FadeOut } from 'react-native-reanimated';
 import { LoadingBrandIcon, LoadingBrandIconModes, useTheme } from 'shuttlex-integration';
 
-const Loading = () => {
+const LoadingStub = () => {
   const { colors } = useTheme();
 
   const computedStyles = StyleSheet.create({
@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Loading;
+export default LoadingStub;

@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -29,6 +29,11 @@ import TariffBar from './TariffBar';
 import TariffGroup from './TariffGroup';
 import { TariffsProps } from './types';
 
+const carsAnimationDelaysInMilSec = {
+  tariffBar: 200,
+  tariffGroup: 100,
+};
+
 const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -42,6 +47,8 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
   const [selectedPriceIdx, setSelectedPriceIdx] = useState<number | null>(null);
   const [tariff, setTariff] = useState<SelectedTariff | null>(null);
   const [windowIsOpened, setWindowIsOpened] = useState(false);
+
+  const withAnimatedBigCars = useRef(true);
 
   const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs?.some(trf =>
     trf.matching.some(item => item.durationSec !== null && item.durationSec !== 0),
@@ -161,6 +168,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
             title={key as TariffsType}
             onPress={() => setSelectedTariffGroup(value)}
             isSelected={value.groupName === selectedTariffGroup?.groupName}
+            carsAnimationDelayInMilSec={content.length * carsAnimationDelaysInMilSec.tariffGroup}
           />,
         );
       }
@@ -184,6 +192,8 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
                   setSelectedPrice={setSelectedPriceIdx}
                   tariff={tariffBar}
                   windowIsOpened={windowIsOpened}
+                  carsAnimationDelayInMilSec={index * carsAnimationDelaysInMilSec.tariffBar}
+                  withAnimatedBigCars={withAnimatedBigCars.current}
                 />
               </Animated.View>
             ))}
@@ -208,7 +218,12 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 
   return (
     <BottomWindowWithGesture
-      setIsOpened={setWindowIsOpened}
+      setIsOpened={value => {
+        setWindowIsOpened(value);
+        if (withAnimatedBigCars) {
+          withAnimatedBigCars.current = false;
+        }
+      }}
       minHeight={0.6}
       additionalTopContent={
         <View style={styles.additionalTopContent}>

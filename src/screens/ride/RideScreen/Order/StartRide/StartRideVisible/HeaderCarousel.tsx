@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSelector } from 'react-redux';
-import { PassengerDefaultCarImage, sizes, Skeleton, Text, useTheme } from 'shuttlex-integration';
+import { AnimatedCarImage, sizes, Skeleton, Text, useTheme } from 'shuttlex-integration';
 
 import imageStartRideCarouselBinance from '../../../../../../../assets/images/startRide/imageStartRideCarouselBinance';
 import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
 import { isLotteryLoadingSelector, lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
+import { isLoadingStubVisibleSelector } from '../../../../../../core/passenger/redux/selectors';
 import usePrizeTimer from '../utils/usePrizeTimer';
 import { SliderItemProps } from './types';
 
@@ -49,6 +50,7 @@ const HeaderCarousel = () => {
   const carouselRef = useRef<ICarouselInstance>(null);
   const lotteryStartTime = useSelector(lotteryStartTimeSelector);
   const isLotteryLoading = useSelector(isLotteryLoadingSelector);
+  const isLoadingStubVisible = useSelector(isLoadingStubVisibleSelector);
 
   const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime ?? 0));
 
@@ -65,7 +67,14 @@ const HeaderCarousel = () => {
     {
       topText: t('ride_Ride_StartRideVisible_carouselFistSlideTopText'),
       bottomText: t('ride_Ride_StartRideVisible_carouselFistSlideBottomText'),
-      image: <PassengerDefaultCarImage style={styles.carImage} />,
+      image: (
+        <AnimatedCarImage
+          tariffType="Default"
+          containerStyle={styles.animatedCarImageContainer}
+          withAnimation={!isLoadingStubVisible}
+          leaveInStartPosition
+        />
+      ),
     },
     {
       topText: t('ride_Ride_StartRideVisible_carouselSecondSlideTopText'),
@@ -147,13 +156,8 @@ const styles = StyleSheet.create({
     fontSize: 21,
     lineHeight: 22,
   },
-  carImage: {
-    resizeMode: 'contain',
-    aspectRatio: 3,
-    flexShrink: 1,
+  animatedCarImageContainer: {
     width: '40%',
-    height: undefined,
-    alignSelf: 'flex-end',
   },
   prizeImage: {
     resizeMode: 'contain',

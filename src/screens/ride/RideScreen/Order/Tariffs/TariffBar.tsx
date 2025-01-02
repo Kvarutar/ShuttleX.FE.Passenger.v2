@@ -1,9 +1,10 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
+  AnimatedCarImage,
   BaggageIcon,
   getCurrencySign,
   ProfileIcon,
@@ -31,6 +32,8 @@ const TariffBar = ({
   onPress,
   tariff,
   windowIsOpened,
+  carsAnimationDelayInMilSec,
+  withAnimatedBigCars,
 }: TariffBarProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -39,7 +42,6 @@ const TariffBar = ({
   const isTariffsPricesLoading = useSelector(isTariffsPricesLoadingSelector);
   const isPhantomOfferLoading = useSelector(isPhantomOfferLoadingSelector);
 
-  const TariffImage = tariffsCarData[tariff.name].icon;
   const tariffTitle = tariffsCarData[tariff.name].text;
   const availablePlans = useMemo(
     () => (tariff.matching ? tariff.matching.filter(item => item.durationSec !== null) : []),
@@ -48,6 +50,14 @@ const TariffBar = ({
   const defaultPlanIndex = availablePlans.length > 1 ? 1 : 0;
   const showPriceAndTime = !isPlanSelected || availablePlans.length < 2;
   const isAvailableTariff = availablePlans[defaultPlanIndex]?.durationSec !== 0;
+
+  const [withAnimatedSmallCar, setWithAnimatedSmallCar] = useState(true);
+
+  useEffect(() => {
+    if (windowIsOpened && withAnimatedSmallCar) {
+      setWithAnimatedSmallCar(false);
+    }
+  }, [windowIsOpened, withAnimatedSmallCar]);
 
   const computedStyles = StyleSheet.create({
     capacityColor: {
@@ -169,7 +179,12 @@ const TariffBar = ({
   let tariffContent = (
     <>
       <View style={computedStyles.imageContainer}>
-        <TariffImage style={computedStyles.image} />
+        <AnimatedCarImage
+          tariffType={tariff.name}
+          containerStyle={computedStyles.image}
+          startDelayInMilSec={carsAnimationDelayInMilSec}
+          withAnimation={withAnimatedSmallCar}
+        />
       </View>
       <View style={styles.infoContainer}>
         {tariffTitleBlock}
@@ -195,7 +210,12 @@ const TariffBar = ({
       <>
         {tariffTitleBlock}
         <View style={computedStyles.imageContainer}>
-          <TariffImage style={computedStyles.image} />
+          <AnimatedCarImage
+            tariffType={tariff.name}
+            containerStyle={computedStyles.image}
+            startDelayInMilSec={carsAnimationDelayInMilSec}
+            withAnimation={withAnimatedBigCars}
+          />
         </View>
         {capacityBlock}
         {isTariffsPricesLoading ? (
