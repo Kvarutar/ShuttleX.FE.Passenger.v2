@@ -108,7 +108,7 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
           <SignUpScreen
             ref={signUpRef}
             navigateToSignIn={() => setIsisSignIn(true)}
-            navigateToTerms={() => Linking.openURL('https://www.shuttlex.com/Privacy%20Policy%20ShuttleX.pdf')}
+            navigateToTerms={() => Linking.openURL('https://www.shuttlex.com/privacy.html')}
             onSubmit={handleSendingSignUpData}
             isLoading={isLoading}
             setPanelPhoneVisible={setIsPanelPhoneSelectVisible}
