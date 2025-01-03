@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import {
   Bar,
+  LoadingSpinner,
   MenuHeader,
   SafeAreaView,
   sizes,
@@ -16,7 +17,12 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
-import { isOrdersHistoryLoadingSelector, ordersHistorySelector } from '../../../core/passenger/redux/selectors';
+import { clearOrdersHistory } from '../../../core/passenger/redux';
+import {
+  isOrdersHistoryLoadingSelector,
+  isOrdersHistoryOffsetEmptySelector,
+  ordersHistorySelector,
+} from '../../../core/passenger/redux/selectors';
 import { getOrdersHistory } from '../../../core/passenger/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { mapRidePercentFromPolylinesSelector, mapRouteTrafficSelector } from '../../../core/ride/redux/map/selectors';
@@ -32,6 +38,8 @@ import { trafficLoadFromAPIToTrafficLevel } from '../../../core/utils';
 import Menu from '../../ride/Menu';
 import RecentAddressesBar from './RecentAddressesBar';
 
+const recentAddressesAmount = 10;
+
 const ActivityScreen = () => {
   const tariffIconsData = useTariffsIcons();
   const { colors } = useTheme();
@@ -39,6 +47,7 @@ const ActivityScreen = () => {
   const dispatch = useAppDispatch();
 
   const ordersHistory = useSelector(ordersHistorySelector);
+  const isOrdersHistoryOffsetEmpty = useSelector(isOrdersHistoryOffsetEmptySelector);
   const order = useSelector(orderSelector);
   const orderInfo = useSelector(orderInfoSelector);
   const tripTariff = useSelector(orderTariffInfoSelector);
@@ -50,6 +59,7 @@ const ActivityScreen = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [routeStartDate, setRouteStartDate] = useState<Date | undefined>(undefined);
   const [routeEndDate, setRouteEndDate] = useState<Date | undefined>(undefined);
+  const [recentAddressesOffset, setRecentAddressesOffset] = useState(1);
 
   const feRideStatusesByOrderStatus: Record<
     Extract<TripStatus, TripStatus.Accepted | TripStatus.Arrived | TripStatus.Ride>,
@@ -104,11 +114,23 @@ const ActivityScreen = () => {
   }, [tripStatus, orderInfo]);
 
   useEffect(() => {
-    dispatch(getOrdersHistory());
+    dispatch(getOrdersHistory({ offset: 0, amount: recentAddressesAmount }));
+
+    return () => {
+      dispatch(clearOrdersHistory());
+    };
   }, [dispatch]);
 
+  const loadMoreRecentAddresses = () => {
+    if (!isOrdersHistoryLoading && !isOrdersHistoryOffsetEmpty) {
+      dispatch(getOrdersHistory({ offset: recentAddressesOffset, amount: recentAddressesAmount }));
+
+      setRecentAddressesOffset(value => value + 1);
+    }
+  };
+
   const renderActiveRides = (): JSX.Element => {
-    if (isOrdersHistoryLoading) {
+    if (isOrdersHistoryLoading && ordersHistory.length === 0) {
       return <Skeleton skeletonContainerStyle={styles.skeletonActiveRides} />;
     }
     if (!tripTariff || !order || !orderInfo || tripStatus === TripStatus.Idle || tripStatus === TripStatus.Finished) {
@@ -167,15 +189,20 @@ const ActivityScreen = () => {
           <Text style={[styles.recentAddressesTitleText, computedStyles.text]}>
             {t('menu_Activity_recentAddresses')}
           </Text>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.recentAddressesContainer}>
-              {isOrdersHistoryLoading ? (
-                <Skeleton skeletonsAmount={5} skeletonContainerStyle={styles.skeletonRecentAdress} />
-              ) : (
-                ordersHistory.map((value, index) => <RecentAddressesBar key={index} order={value} />)
-              )}
-            </View>
-          </ScrollView>
+          <View>
+            {isOrdersHistoryLoading && ordersHistory.length === 0 ? (
+              <Skeleton skeletonsAmount={5} skeletonContainerStyle={styles.skeletonRecentAdress} />
+            ) : (
+              <FlatList
+                contentContainerStyle={styles.recentAddressesContainer}
+                showsVerticalScrollIndicator={false}
+                data={ordersHistory}
+                renderItem={({ item }) => <RecentAddressesBar order={item} />}
+                onEndReached={loadMoreRecentAddresses}
+                ListFooterComponent={isOrdersHistoryLoading ? <LoadingSpinner /> : <></>}
+              />
+            )}
+          </View>
         </View>
       )}
     </>
@@ -213,6 +240,7 @@ const styles = StyleSheet.create({
   skeletonRecentAdress: {
     height: 120,
     borderRadius: 12,
+    marginBottom: 8,
   },
   headerText: {
     fontSize: 17,
@@ -279,6 +307,7 @@ const styles = StyleSheet.create({
   },
   recentAddressesContainer: {
     gap: 8,
+    paddingBottom: 40,
   },
   recentAddressesTitleText: {
     fontSize: 14,

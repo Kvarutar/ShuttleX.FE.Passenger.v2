@@ -69,6 +69,7 @@ export type GetOrdersHistoryAPIResponse = OrderWithTariffInfoFromAPI[];
 export type PassengerState = {
   profile: Nullable<Profile>;
   zone: Nullable<ZoneFromAPI>;
+  isOrdersHistoryOffsetEmpty: boolean;
   ordersHistory: OrderWithTariffInfoFromAPI[];
   loading: {
     passengerAvatar: boolean;
@@ -95,6 +96,11 @@ export type FileInfo = { name: string; type: string; uri: string };
 
 export type SaveAvatarAPIRequest = {
   file: FileInfo;
+};
+
+export type OrdersHistoryAPIRequest = {
+  amount: number;
+  offset: number;
 };
 
 export type SaveAvatarAPIResponse = {

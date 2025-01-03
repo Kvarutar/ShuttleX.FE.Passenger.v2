@@ -12,6 +12,7 @@ export const profileContactEmailSelector = (state: AppState) =>
   state.passenger.profile?.emails?.find(email => email.type === 'Contact')?.value;
 export const passengerZoneSelector = (state: AppState) => state.passenger.zone;
 export const ordersHistorySelector = (state: AppState) => state.passenger.ordersHistory;
+export const isOrdersHistoryOffsetEmptySelector = (state: AppState) => state.passenger.isOrdersHistoryOffsetEmpty;
 
 //Loadings
 export const isPassengerAvatarLoadingSelector = (state: AppState) => state.passenger.loading.passengerAvatar;

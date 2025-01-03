@@ -9,6 +9,7 @@ const initialState: PassengerState = {
   profile: null,
   zone: null,
   ordersHistory: [],
+  isOrdersHistoryOffsetEmpty: false,
   ui: {
     isLoadingStubVisible: true,
     activeBottomWindowYCoordinate: 0,
@@ -48,6 +49,10 @@ const slice = createSlice({
     setZone(state, action: PayloadAction<ZoneFromAPI | null>) {
       state.zone = action.payload;
     },
+    clearOrdersHistory(state) {
+      state.ordersHistory = initialState.ordersHistory;
+      state.isOrdersHistoryOffsetEmpty = initialState.isOrdersHistoryOffsetEmpty;
+    },
     setActiveBottomWindowYCoordinate(
       state,
       action: PayloadAction<PassengerState['ui']['activeBottomWindowYCoordinate']>,
@@ -76,7 +81,11 @@ const slice = createSlice({
         state.error.ordersHistory = null;
       })
       .addCase(getOrdersHistory.fulfilled, (state, action) => {
-        state.ordersHistory = action.payload;
+        if (action.payload.length) {
+          state.ordersHistory.push(...action.payload);
+        } else {
+          state.isOrdersHistoryOffsetEmpty = true;
+        }
 
         state.loading.ordersHistory = false;
         state.error.ordersHistory = null;
@@ -114,7 +123,13 @@ const slice = createSlice({
   },
 });
 
-export const { setProfile, updateProfile, setZone, setIsLoadingStubVisible, setActiveBottomWindowYCoordinate } =
-  slice.actions;
+export const {
+  clearOrdersHistory,
+  setProfile,
+  updateProfile,
+  setZone,
+  setIsLoadingStubVisible,
+  setActiveBottomWindowYCoordinate,
+} = slice.actions;
 
 export default slice.reducer;

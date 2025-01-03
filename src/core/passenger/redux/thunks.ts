@@ -10,6 +10,7 @@ import {
   GetOrdersHistoryAPIResponse,
   GetOrUpdateZoneAPIResponse,
   GetProfileInfoAPIResponse,
+  OrdersHistoryAPIRequest,
   OrderWithTariffInfoFromAPI,
   Profile,
   SaveAvatarAPIRequest,
@@ -18,14 +19,16 @@ import {
   ZoneFromAPI,
 } from './types';
 
-export const getOrdersHistory = createAppAsyncThunk<OrderWithTariffInfoFromAPI[], void>(
+export const getOrdersHistory = createAppAsyncThunk<OrderWithTariffInfoFromAPI[], OrdersHistoryAPIRequest>(
   'passenger/getOrdersHistory',
-  async (_, { rejectWithValue, passengerAxios, dispatch }) => {
+  async (payload, { rejectWithValue, passengerAxios, dispatch }) => {
     try {
       const ordersHistory = (
         await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders', {
           params: {
             sortBy: 'finishedDate:desc',
+            amount: payload.amount,
+            offset: payload.offset,
           },
         })
       ).data;
