@@ -1,11 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { getLocales } from 'react-native-localize';
-import { useSelector } from 'react-redux';
 import { Bar, BarModes, formatCurrency, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
 import { tariffsNamesByFeKey } from '../../../core/ride/redux/offer/utils';
-import { orderTariffInfoSelector } from '../../../core/ride/redux/trip/selectors';
 import { RecentAddressesProps } from './props';
 
 const formatDateTime = (date: Date): string => {
@@ -29,7 +27,7 @@ const RecentAddressesBar = ({ order }: RecentAddressesProps) => {
   const tariffIconsData = useTariffsIcons();
   const { t } = useTranslation();
 
-  const tripTariff = useSelector(orderTariffInfoSelector);
+  const tripTariff = order.tariffInfo;
 
   const isOrderCanceled = order.state === 'CanceledByContractor' || order.state === 'CanceledByPassenger';
 
