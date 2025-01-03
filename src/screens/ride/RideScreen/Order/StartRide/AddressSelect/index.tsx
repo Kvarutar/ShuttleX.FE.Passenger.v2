@@ -291,6 +291,7 @@ const AddressSelect = ({
   };
 
   const isButtonDisabled =
+    !isAllOfferPointsFilled ||
     incorrectWaypoints ||
     !isCityAvailable ||
     (offerRoutesError !== null && isRoutePointsLocationError(offerRoutesError));
@@ -413,7 +414,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   confirmButtonContainer: {
-    paddingVertical: 20,
+    paddingTop: 20,
+    paddingBottom: sizes.paddingVertical,
   },
   searchAddressesText: {
     marginTop: 20,
