@@ -314,6 +314,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       setCameraModeOnDrag={mode => dispatch(setMapCameraMode(mode))}
       onDragComplete={setMapCameraCoordinates}
       onFirstCameraAnimationComplete={onFirstCameraAnimationComplete}
+      withCarsThinkingAnimation={orderStatus === OrderStatus.Confirming && tripStatus === TripStatus.Idle}
     />
   );
 };
