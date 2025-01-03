@@ -1,7 +1,7 @@
 import { LatLng } from 'react-native-maps';
 import { NetworkErrorDetailsWithBody, Nullable, TariffType } from 'shuttlex-integration';
 
-import { AddressPoint } from '../offer/types';
+import { AddressPoint, TariffFromAPI } from '../offer/types';
 
 export type TripStateFromAPI =
   | 'None'
@@ -50,15 +50,16 @@ export type OrderFromAPI = {
   paidWaitingTimeFeePricePerMin: number;
 };
 
-export type GetCurrentOrderAPIResponse = OrderFromAPI;
-export type GetOrderInfoAPIResponse = OrderFromAPI;
-export type GetOrdersHistoryAPIResponse = OrderFromAPI[];
-
 export type Order = {
   info: Nullable<OrderFromAPI>;
   avatar: Nullable<string>;
   orderId: string;
 };
+
+export type OrderWithTariffInfo = Order & { tariffInfo: TariffFromAPI };
+
+export type GetCurrentOrderAPIResponse = OrderFromAPI;
+export type GetOrderInfoAPIResponse = OrderFromAPI;
 
 export type TrafficLoadFromAPI = 'Low' | 'Average' | 'High';
 
@@ -121,6 +122,8 @@ export type TripInPickupLongPollingAPIResponse = LongPollingInSomePointAPIRespon
 export type TripInStopPointAPIResponse = LongPollingInSomePointAPIResponse;
 export type TripInDropOffAPIResponse = LongPollingInSomePointAPIResponse;
 
+export type GetTariffInfoByIdAPIResponse = TariffFromAPI;
+
 //TODO do something with this type
 type RouteInfoOld = {
   duration: number;
@@ -157,7 +160,7 @@ export enum TripStatus {
 }
 
 export type TripState = {
-  order: Nullable<Order>;
+  order: Nullable<OrderWithTariffInfo>;
   routeInfo: Nullable<RouteInfo>;
   status: TripStatus;
   tip: Nullable<number>;

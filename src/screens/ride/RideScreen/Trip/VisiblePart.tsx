@@ -32,12 +32,11 @@ import {
   mapRouteTrafficSelector,
 } from '../../../../core/ride/redux/map/selectors';
 //TODO: rewrite strange logic with timers
-import { tariffByIdSelector } from '../../../../core/ride/redux/offer/selectors';
 import {
   contractorAvatarSelector,
   isTripLoadingSelector,
   orderInfoSelector,
-  orderTariffIdSelector,
+  orderTariffInfoSelector,
   tripStatusSelector,
 } from '../../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../../core/ride/redux/trip/types';
@@ -56,8 +55,7 @@ const VisiblePart = () => {
   const isTripLoading = useSelector(isTripLoadingSelector);
   const orderInfo = useSelector(orderInfoSelector);
   const contractorAvatar = useSelector(contractorAvatarSelector);
-  const tripTariffId = useSelector(orderTariffIdSelector);
-  const tripTariff = useSelector(state => tariffByIdSelector(state, tripTariffId));
+  const tripTariff = useSelector(orderTariffInfoSelector);
   const ridePercentFromPolylines = useSelector(mapRidePercentFromPolylinesSelector);
   const routeTraffic = useSelector(mapRouteTrafficSelector);
 

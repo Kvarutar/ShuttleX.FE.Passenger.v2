@@ -4,7 +4,8 @@ import { getLocales } from 'react-native-localize';
 import { useSelector } from 'react-redux';
 import { Bar, BarModes, formatCurrency, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
-import { tariffByIdSelector } from '../../../core/ride/redux/offer/selectors';
+import { tariffsNamesByFeKey } from '../../../core/ride/redux/offer/utils';
+import { orderTariffInfoSelector } from '../../../core/ride/redux/trip/selectors';
 import { RecentAddressesProps } from './props';
 
 const formatDateTime = (date: Date): string => {
@@ -28,7 +29,7 @@ const RecentAddressesBar = ({ order }: RecentAddressesProps) => {
   const tariffIconsData = useTariffsIcons();
   const { t } = useTranslation();
 
-  const tripTariff = useSelector(state => tariffByIdSelector(state, order.tariffId));
+  const tripTariff = useSelector(orderTariffInfoSelector);
 
   const isOrderCanceled = order.state === 'CanceledByContractor' || order.state === 'CanceledByPassenger';
 
@@ -51,7 +52,7 @@ const RecentAddressesBar = ({ order }: RecentAddressesProps) => {
   return (
     <Bar style={styles.container} mode={isOrderCanceled ? BarModes.Disabled : BarModes.Default}>
       <View style={styles.imageContainer}>
-        {tripTariff && getTariffImage(tripTariff.name)}
+        {tripTariff && getTariffImage(tariffsNamesByFeKey[tripTariff.feKey])}
         <View style={[styles.statusContainer, computedStyles.statusContainer]}>
           <Text style={[styles.statusText, computedStyles.statusText]}>
             {isOrderCanceled ? t('menu_Activity_canceled') : formatCurrency(order.currencyCode, order.totalFinalPrice)}

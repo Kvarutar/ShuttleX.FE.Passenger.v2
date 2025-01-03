@@ -1,5 +1,5 @@
-import { OrderFromAPI } from '../../../core/ride/redux/trip/types';
+import { OrderWithTariffInfoFromAPI } from '../../../core/passenger/redux/types';
 
 export type RecentAddressesProps = {
-  order: OrderFromAPI;
+  order: OrderWithTariffInfoFromAPI;
 };

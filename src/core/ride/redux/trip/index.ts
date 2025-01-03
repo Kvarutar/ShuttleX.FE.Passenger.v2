@@ -12,7 +12,7 @@ import {
   getTripCanceledBeforePickUpLongPolling,
   getTripSuccessfullLongPolling,
 } from './thunks';
-import { Order, RouteDropOffApiResponse, RoutePickUpApiResponse, TripState, TripStatus } from './types';
+import { RouteDropOffApiResponse, RoutePickUpApiResponse, TripState, TripStatus } from './types';
 
 const initialState: TripState = {
   routeInfo: null,
@@ -60,9 +60,6 @@ const slice = createSlice({
         pickUp: action.payload.pickUpData,
         dropOff: action.payload.dropOffData,
       };
-    },
-    setOrderInfo(state, action: PayloadAction<Order>) {
-      state.order = action.payload;
     },
     setOrderLongpollingLoading(state, action: PayloadAction<boolean>) {
       state.loading.orderLongpolling = action.payload;
@@ -273,7 +270,6 @@ const slice = createSlice({
 export const {
   setTripRouteInfo,
   setTripStatus,
-  setOrderInfo,
   setIsOrderCanceled,
   setIsOrderCanceledAlertVisible,
   setTip,

@@ -17,11 +17,11 @@ import {
 
 //TODO: take image from BE
 import imagePrize from '../../../../../assets/images/trip/imagePrize';
-import { tariffByIdSelector } from '../../../../core/ride/redux/offer/selectors';
+import { tariffsNamesByFeKey } from '../../../../core/ride/redux/offer/utils';
 import {
   isTripLoadingSelector,
   orderSelector,
-  orderTariffIdSelector,
+  orderTariffInfoSelector,
 } from '../../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../../Navigate/props';
 import passengerColors from '../../../../shared/colors/colors';
@@ -79,8 +79,7 @@ const HiddenPart = () => {
   const isTripLoading = useSelector(isTripLoadingSelector);
 
   const order = useSelector(orderSelector);
-  const tripTariffId = useSelector(orderTariffIdSelector);
-  const tripTariff = useSelector(state => tariffByIdSelector(state, tripTariffId));
+  const tripTariff = useSelector(orderTariffInfoSelector);
 
   if (tripTariff && order?.info) {
     const computedStyles = StyleSheet.create({
@@ -112,7 +111,7 @@ const HiddenPart = () => {
       // },
       {
         text: t('ride_Ride_Trip_tripType'),
-        value: tariffIconsData[tripTariff.name].text,
+        value: tariffIconsData[tariffsNamesByFeKey[tripTariff.feKey]].text,
       },
       {
         text: t('ride_Ride_Trip_totalForRide'),

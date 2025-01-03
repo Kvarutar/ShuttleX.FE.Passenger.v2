@@ -7,16 +7,11 @@ import { setIsLoggedIn } from '../core/auth/redux';
 import { isLoggedInSelector } from '../core/auth/redux/selectors';
 import { getAllCurrentTickets } from '../core/lottery/redux/thunks';
 import { passengerZoneSelector } from '../core/passenger/redux/selectors';
-import {
-  getOrdersHistory,
-  getOrUpdateZone,
-  getProfileInfo,
-  updateProfileLanguage,
-} from '../core/passenger/redux/thunks';
+import { getOrUpdateZone, getProfileInfo, updateProfileLanguage } from '../core/passenger/redux/thunks';
 import { useAppDispatch } from '../core/redux/hooks';
 import { signalRThunks, updateSignalRAccessToken } from '../core/redux/signalr';
 import { geolocationCoordinatesSelector } from '../core/ride/redux/geolocation/selectors';
-import { getAvailableTariffs, getRecentDropoffs } from '../core/ride/redux/offer/thunks';
+import { getRecentDropoffs } from '../core/ride/redux/offer/thunks';
 import { getCurrentOrder } from '../core/ride/redux/trip/thunks';
 import { getFirebaseDeviceToken, setupNotifications } from '../core/utils/notifications/notificationSetup';
 import { InitialSetupProps } from './types';
@@ -46,7 +41,6 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
       if (accessToken) {
         getFirebaseDeviceToken();
 
-        dispatch(getRecentDropoffs({ amount: 10 }));
         dispatch(getProfileInfo());
         console.log('accessToken', accessToken);
         dispatch(getAllCurrentTickets());
@@ -63,11 +57,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
     if (locationLoaded) {
       dispatch(getOrUpdateZone());
       dispatch(getRecentDropoffs({ amount: 10 }));
-      (async () => {
-        await dispatch(getCurrentOrder());
-        dispatch(getAvailableTariffs());
-      })();
-      dispatch(getOrdersHistory());
+      dispatch(getCurrentOrder());
     }
   }, [locationLoaded, dispatch]);
 
@@ -96,10 +86,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
   }, [passengerZone, i18n.language, dispatch]);
 
   useEffect(() => {
-    (async () => {
-      await dispatch(getCurrentOrder());
-      dispatch(getAvailableTariffs());
-    })();
+    dispatch(getCurrentOrder());
   }, [passengerZone, dispatch]);
 
   useEffect(() => {

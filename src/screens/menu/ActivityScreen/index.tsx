@@ -20,8 +20,13 @@ import { isOrdersHistoryLoadingSelector, ordersHistorySelector } from '../../../
 import { getOrdersHistory } from '../../../core/passenger/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { mapRidePercentFromPolylinesSelector, mapRouteTrafficSelector } from '../../../core/ride/redux/map/selectors';
-import { tariffByIdSelector } from '../../../core/ride/redux/offer/selectors';
-import { orderInfoSelector, orderSelector, tripStatusSelector } from '../../../core/ride/redux/trip/selectors';
+import { tariffsNamesByFeKey } from '../../../core/ride/redux/offer/utils';
+import {
+  orderInfoSelector,
+  orderSelector,
+  orderTariffInfoSelector,
+  tripStatusSelector,
+} from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import { trafficLoadFromAPIToTrafficLevel } from '../../../core/utils';
 import Menu from '../../ride/Menu';
@@ -36,7 +41,7 @@ const ActivityScreen = () => {
   const ordersHistory = useSelector(ordersHistorySelector);
   const order = useSelector(orderSelector);
   const orderInfo = useSelector(orderInfoSelector);
-  const tripTariff = useSelector(state => tariffByIdSelector(state, orderInfo?.tariffId));
+  const tripTariff = useSelector(orderTariffInfoSelector);
   const isOrdersHistoryLoading = useSelector(isOrdersHistoryLoadingSelector);
   const tripStatus = useSelector(tripStatusSelector);
   const ridePercentFromPolylines = useSelector(mapRidePercentFromPolylinesSelector);
@@ -116,7 +121,7 @@ const ActivityScreen = () => {
       );
     }
 
-    const TariffImage = tariffIconsData[tripTariff.name].icon;
+    const TariffImage = tariffIconsData[tariffsNamesByFeKey[tripTariff.feKey]].icon;
 
     return (
       <Bar style={styles.currentTripContainer}>

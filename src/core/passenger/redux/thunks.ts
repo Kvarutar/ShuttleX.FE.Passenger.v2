@@ -2,13 +2,15 @@ import { convertBlobToImgUri, getNetworkErrorInfo } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../redux/hooks';
 import { geolocationCoordinatesSelector } from '../../ride/redux/geolocation/selectors';
-import { OrderFromAPI } from '../../ride/redux/trip/types';
+import { TariffFromAPI } from '../../ride/redux/offer/types';
+import { getTariffInfoById } from '../../ride/redux/trip/thunks';
 import {
   AvatarFromAPI,
   AvatarWithoutValueFromAPI,
   GetOrdersHistoryAPIResponse,
   GetOrUpdateZoneAPIResponse,
   GetProfileInfoAPIResponse,
+  OrderWithTariffInfoFromAPI,
   Profile,
   SaveAvatarAPIRequest,
   SaveAvatarAPIResponse,
@@ -16,14 +18,35 @@ import {
   ZoneFromAPI,
 } from './types';
 
-export const getOrdersHistory = createAppAsyncThunk<OrderFromAPI[], void>(
+export const getOrdersHistory = createAppAsyncThunk<OrderWithTariffInfoFromAPI[], void>(
   'passenger/getOrdersHistory',
-  async (_, { rejectWithValue, passengerAxios }) => {
+  async (_, { rejectWithValue, passengerAxios, dispatch }) => {
     try {
-      //TODO: Rewrite sorting using BE params (it doesn't work for now)
-      return (await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders')).data.sort(
-        (a, b) => Date.parse(b.finishedDate) - Date.parse(a.finishedDate),
+      const ordersHistory = (
+        await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders', {
+          params: {
+            sortBy: 'finishedDate:desc',
+          },
+        })
+      ).data;
+
+      //To optimize the number of requests
+      const uniqueTariffIds = Array.from(new Set(ordersHistory.map(order => order.tariffId)));
+
+      const tariffInfoMap: Record<string, TariffFromAPI> = {};
+      await Promise.all(
+        uniqueTariffIds.map(async tariffId => {
+          const tariffInfo = await dispatch(getTariffInfoById({ tariffId })).unwrap();
+          tariffInfoMap[tariffId] = tariffInfo;
+        }),
       );
+
+      const ordersWithTariffInfo = ordersHistory.map(order => ({
+        ...order,
+        tariffInfo: tariffInfoMap[order.tariffId],
+      }));
+
+      return ordersWithTariffInfo;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

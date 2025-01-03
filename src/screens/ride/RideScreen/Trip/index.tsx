@@ -18,14 +18,14 @@ import {
 
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
-import { tariffByIdSelector } from '../../../../core/ride/redux/offer/selectors';
+import { tariffsNamesByFeKey } from '../../../../core/ride/redux/offer/utils';
 import {
   isTripCanceledLoadingSelector,
   isTripCanceledSelector,
   isTripLoadingSelector,
   orderIdSelector,
   orderSelector,
-  orderTariffIdSelector,
+  orderTariffInfoSelector,
   tripStatusSelector,
 } from '../../../../core/ride/redux/trip/selectors';
 import {
@@ -54,11 +54,10 @@ const Trip = () => {
   const isTripCanceled = useSelector(isTripCanceledSelector);
   const isTripCanceledLoading = useSelector(isTripCanceledLoadingSelector);
   const order = useSelector(orderSelector);
-  const tripTariffId = useSelector(orderTariffIdSelector);
-  const tripTariff = useSelector(state => tariffByIdSelector(state, tripTariffId));
+  const tripTariff = useSelector(orderTariffInfoSelector);
 
   const arrivedTime = order?.info ? Date.parse(order?.info?.estimatedArriveToDropOffDate) : 0;
-  const TariffIcon = tripTariff?.name ? tariffIconsData[tripTariff?.name].icon : null;
+  const TariffIcon = tripTariff?.name ? tariffIconsData[tariffsNamesByFeKey[tripTariff.feKey]].icon : null;
 
   const computedStyles = StyleSheet.create({
     avatarWrapper: {

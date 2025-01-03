@@ -4,6 +4,7 @@ import { getTicketAfterRide } from '../../../lottery/redux/thunks';
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import { offerSelector } from '../offer/selectors';
 import { createInitialOffer, getRecentDropoffs } from '../offer/thunks';
+import { TariffFromAPI } from '../offer/types';
 import { setOrderStatus } from '../order';
 import { OrderStatus } from '../order/types';
 import {
@@ -19,8 +20,9 @@ import {
   FeedbackAPIRequest,
   GetCurrentOrderAPIResponse,
   GetOrderInfoAPIResponse,
-  Order,
+  GetTariffInfoByIdAPIResponse,
   OrderLongPollingAPIResponse,
+  OrderWithTariffInfo,
   RouteDropOffApiResponse,
   RoutePickUpApiResponse,
   TripArivedLongPollingAPIResponse,
@@ -31,9 +33,20 @@ import {
   TripSuccessfullLongPollingAPIResponse,
 } from './types';
 
+export const getTariffInfoById = createAppAsyncThunk<TariffFromAPI, { tariffId: string }>(
+  'trip/getTariffInfoById',
+  async (payload, { rejectWithValue, configAxios }) => {
+    try {
+      return (await configAxios.get<GetTariffInfoByIdAPIResponse>(`/tariffs/${payload.tariffId}`)).data;
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
+
 //TODO: Rewrite this thunk if need
 //Some duplicate logic because I don't know what this logic will look like in the future (we are going to receive several orders).
-export const getCurrentOrder = createAppAsyncThunk<Nullable<Order>, void>(
+export const getCurrentOrder = createAppAsyncThunk<Nullable<OrderWithTariffInfo>, void>(
   'trip/getCurrentOrder',
   async (_, { rejectWithValue, orderAxios, dispatch }) => {
     try {
@@ -52,10 +65,13 @@ export const getCurrentOrder = createAppAsyncThunk<Nullable<Order>, void>(
           );
         } catch {}
 
+        const tariffInfo = await dispatch(getTariffInfoById({ tariffId: response.data.tariffId })).unwrap();
+
         return {
           info: response.data,
           avatar: avatar ? await convertBlobToImgUri(avatar.data) : null,
           orderId: response.data.orderId,
+          tariffInfo,
         };
       }
 
@@ -81,9 +97,9 @@ export const fetchTripInfo = createAppAsyncThunk<TripInfo, void>(
   },
 );
 
-export const getOrderInfo = createAppAsyncThunk<Order, string>(
+export const getOrderInfo = createAppAsyncThunk<OrderWithTariffInfo, string>(
   'trip/getOrderInfo',
-  async (orderId, { rejectWithValue, orderAxios }) => {
+  async (orderId, { rejectWithValue, orderAxios, dispatch }) => {
     try {
       const data = (await orderAxios.get<GetOrderInfoAPIResponse>(`/${orderId}`)).data;
       let avatar = null;
@@ -94,10 +110,13 @@ export const getOrderInfo = createAppAsyncThunk<Order, string>(
         });
       } catch {}
 
+      const tariffInfo = await dispatch(getTariffInfoById({ tariffId: data.tariffId })).unwrap();
+
       return {
         info: data,
         avatar: avatar ? await convertBlobToImgUri(avatar.data) : null,
         orderId,
+        tariffInfo,
       };
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
