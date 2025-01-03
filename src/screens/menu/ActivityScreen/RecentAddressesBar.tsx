@@ -60,7 +60,7 @@ const RecentAddressesBar = ({ order }: RecentAddressesProps) => {
       </View>
       <View style={styles.addressWrapper}>
         <View style={styles.addressContainer}>
-          <Text style={styles.addressText}>{order.dropOffAddress}</Text>
+          <Text style={styles.addressText}>{order.dropOffFullAddress}</Text>
           <Text style={[styles.addressDetailsText, computedStyles.addressesText]}>{order.dropOffPlace}</Text>
         </View>
         <Text style={[styles.dateTimeText, computedStyles.addressesText]}>

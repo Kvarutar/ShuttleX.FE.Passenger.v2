@@ -3,6 +3,7 @@ import DeviceInfo from 'react-native-device-info';
 import Keychain from 'react-native-keychain';
 import { formatPhone, getNetworkErrorInfo, getTokens, saveTokens } from 'shuttlex-integration';
 
+import { setIsLoadingStubVisible } from '../../passenger/redux';
 import { createAppAsyncThunk } from '../../redux/hooks';
 import { setIsLoggedIn } from '.';
 import {
@@ -82,6 +83,7 @@ export const signOut = createAppAsyncThunk<void, void>(
         });
       }
 
+      dispatch(setIsLoadingStubVisible(true));
       dispatch(setIsLoggedIn(false));
     } catch (error) {
       const { code, body, status } = getNetworkErrorInfo(error);

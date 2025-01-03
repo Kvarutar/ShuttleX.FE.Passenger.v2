@@ -33,10 +33,10 @@ export type OrderFromAPI = {
   finishedDate: string;
   dropOffRouteId: string;
   pickUpRouteId: string;
-  pickUpAddress: string;
+  pickUpFullAddress: string;
   pickUpPlace: string;
   pickUpDate: string;
-  dropOffAddress: string;
+  dropOffFullAddress: string;
   dropOffPlace: string;
   state: TripStateFromAPI;
   totalFinalPrice: number;

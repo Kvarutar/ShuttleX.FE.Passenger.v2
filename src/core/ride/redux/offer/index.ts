@@ -84,6 +84,7 @@ const slice = createSlice({
             durationSec: el.durationSeconds,
             algorythm: el.algorythmType,
             cost: null,
+            currency: '',
           }));
           state.avaliableTariffs[tariffToUpdateIndex].matching = newMatching;
         }
@@ -97,6 +98,7 @@ const slice = createSlice({
 
           if (tariffToUpdateIdx !== -1 && tariffToUpdateIdx !== undefined) {
             state.avaliableTariffs[tariffToUpdateIdx].matching[0].cost = Number(tariffWithCost.cost);
+            state.avaliableTariffs[tariffToUpdateIdx].matching[0].currency = tariffWithCost.currency;
           }
         }
       });

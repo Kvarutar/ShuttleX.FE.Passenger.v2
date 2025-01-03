@@ -102,10 +102,14 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
         const selectedTariffPlans = selectedTariffGroup.tariffs[foundAvailableTariffIdx].matching;
         if (selectedTariffPlans.length >= 2) {
           setSelectedPriceIdx(1);
-          dispatch(setEstimatedPrice({ value: selectedTariffPlans[1].cost, currencyCode: 'UAH' }));
+          dispatch(
+            setEstimatedPrice({ value: selectedTariffPlans[1].cost, currencyCode: selectedTariffPlans[1].currency }),
+          );
         } else if (selectedTariffPlans.length === 1) {
           setSelectedPriceIdx(0);
-          dispatch(setEstimatedPrice({ value: selectedTariffPlans[0].cost, currencyCode: 'UAH' }));
+          dispatch(
+            setEstimatedPrice({ value: selectedTariffPlans[0].cost, currencyCode: selectedTariffPlans[0].currency }),
+          );
         } else {
           setSelectedPriceIdx(null);
           dispatch(setEstimatedPrice(null));
@@ -150,15 +154,17 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
         );
 
         groupPrice =
-          filteredTariffs?.reduce(
-            (accumulator, trf) =>
-              accumulator +
-              trf.matching.reduce(
-                (acc, el) => acc + (el.durationSec !== null && el.durationSec !== 0 ? el.cost ?? 0 : 0),
+          filteredTariffs && filteredTariffs.length > 0
+            ? filteredTariffs?.reduce(
+                (accumulator, trf) =>
+                  accumulator +
+                  trf.matching.reduce(
+                    (acc, el) => acc + (el.durationSec !== null && el.durationSec !== 0 ? el.cost ?? 0 : 0),
+                    0,
+                  ),
                 0,
-              ),
-            0,
-          ) / filteredTariffs?.length;
+              ) / filteredTariffs?.length
+            : 0;
         //TODO: think about smarter key?
 
         content.push(

@@ -285,7 +285,7 @@ const ReceiptScreen = () => {
           <View style={styles.addressContainer}>
             <View style={styles.placeContainer}>
               <Text numberOfLines={2} style={[styles.addressDetailsText, computedStyles.textTitleColor]}>
-                {orderInfo?.info?.pickUpAddress}
+                {orderInfo?.info?.pickUpFullAddress}
               </Text>
             </View>
             <View style={styles.placeContainer}>
@@ -293,7 +293,7 @@ const ReceiptScreen = () => {
                 numberOfLines={2}
                 style={[styles.addressDetailsText, computedStyles.textTitleColor, styles.placeTextRight]}
               >
-                {orderInfo?.info?.dropOffAddress}
+                {orderInfo?.info?.dropOffFullAddress}
               </Text>
             </View>
           </View>

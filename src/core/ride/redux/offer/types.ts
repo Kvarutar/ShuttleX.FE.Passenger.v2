@@ -159,6 +159,7 @@ export type Matching = {
   algorythm: MatchingAlgorythm;
   durationSec: Nullable<number>;
   cost: Nullable<number>;
+  currency: string;
 };
 
 export type MatchingFromAPI = {
@@ -176,6 +177,7 @@ export type CreatePhantomOfferAPIResponse = {
 export type TariffsPricesFromAPI = {
   tariffId: string;
   cost: string;
+  currency: string;
 };
 
 export type GetTariffsPricesAPIResponse = TariffsPricesFromAPI[];

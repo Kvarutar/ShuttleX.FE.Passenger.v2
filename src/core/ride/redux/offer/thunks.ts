@@ -311,6 +311,8 @@ export const createInitialOffer = createAppAsyncThunk<string, void>(
 
     let pickUpPoint = points[0];
 
+    const route = await dispatch(getOfferRoutes()).unwrap();
+
     if (pickUpPoint.address === '') {
       const addressWithFullInfo = await dispatch(
         convertGeoToAddress({ longitude: pickUpPoint.longitude, latitude: pickUpPoint.latitude }),
@@ -324,7 +326,7 @@ export const createInitialOffer = createAppAsyncThunk<string, void>(
     }
 
     const bodyPart = {
-      routeId: offerRoutes?.routeId,
+      routeId: route.routeId,
       tariffId: selectedTariff?.id,
       paymentMethod: 'Cash',
       pickUpGeo: {
@@ -332,15 +334,15 @@ export const createInitialOffer = createAppAsyncThunk<string, void>(
         longitude: pickUpPoint.longitude,
       },
       pickUpZoneId: offerRoutes?.waypoints[0].zoneId,
-      pickUpAddress: pickUpPoint.address,
-      pickUpPlace: pickUpPoint.fullAddress ?? pickUpPoint.address,
+      pickUpFullAddress: pickUpPoint.fullAddress ?? pickUpPoint.address,
+      pickUpPlace: pickUpPoint.address,
       dropOffGeo: {
         latitude: points[1].latitude,
         longitude: points[1].longitude,
       },
       dropOffZoneId: offerRoutes?.waypoints[0].zoneId,
-      dropOffAddress: points[1].address,
-      dropOffPlace: points[1].fullAddress,
+      dropOffFullAddress: points[1].fullAddress,
+      dropOffPlace: points[1].address,
     };
 
     try {
