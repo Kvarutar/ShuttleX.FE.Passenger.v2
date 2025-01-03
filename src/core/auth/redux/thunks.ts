@@ -5,6 +5,8 @@ import { formatPhone, getNetworkErrorInfo, getTokens, saveTokens } from 'shuttle
 
 import { setIsLoadingStubVisible } from '../../passenger/redux';
 import { createAppAsyncThunk } from '../../redux/hooks';
+import { clearOffer } from '../../ride/redux/offer';
+import { cleanOrder } from '../../ride/redux/order';
 import { setIsLoggedIn } from '.';
 import {
   SignInAPIRequest,
@@ -82,6 +84,10 @@ export const signOut = createAppAsyncThunk<void, void>(
           allOpenSessions: false,
         });
       }
+
+      //clean work
+      dispatch(cleanOrder());
+      dispatch(clearOffer());
 
       dispatch(setIsLoadingStubVisible(true));
       dispatch(setIsLoggedIn(false));
