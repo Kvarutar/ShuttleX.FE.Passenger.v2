@@ -11,6 +11,7 @@ const initialState: PassengerState = {
   ordersHistory: [],
   ui: {
     isLoadingStubVisible: true,
+    activeBottomWindowYCoordinate: 0,
   },
   loading: {
     passengerAvatar: false,
@@ -46,6 +47,12 @@ const slice = createSlice({
     },
     setZone(state, action: PayloadAction<ZoneFromAPI | null>) {
       state.zone = action.payload;
+    },
+    setActiveBottomWindowYCoordinate(
+      state,
+      action: PayloadAction<PassengerState['ui']['activeBottomWindowYCoordinate']>,
+    ) {
+      state.ui.activeBottomWindowYCoordinate = action.payload;
     },
   },
   extraReducers: builder => {
@@ -107,6 +114,7 @@ const slice = createSlice({
   },
 });
 
-export const { setProfile, updateProfile, setZone, setIsLoadingStubVisible } = slice.actions;
+export const { setProfile, updateProfile, setZone, setIsLoadingStubVisible, setActiveBottomWindowYCoordinate } =
+  slice.actions;
 
 export default slice.reducer;

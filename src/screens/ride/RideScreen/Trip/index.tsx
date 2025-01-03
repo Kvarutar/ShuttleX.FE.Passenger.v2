@@ -16,6 +16,7 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
 import { tariffsNamesByFeKey } from '../../../../core/ride/redux/offer/utils';
@@ -116,6 +117,7 @@ const Trip = () => {
 
   return (
     <BottomWindowWithGesture
+      onGestureUpdate={callback => dispatch(setActiveBottomWindowYCoordinate(callback.y))}
       maxHeight={0.88}
       withDraggable={!TripStatus.Ride}
       headerWrapperStyle={styles.headerWrapperStyle}

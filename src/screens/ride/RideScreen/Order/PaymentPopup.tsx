@@ -31,8 +31,10 @@ import {
   useTariffsIcons,
   useTheme,
 } from 'shuttlex-integration';
+import { BottomWindowRef } from 'shuttlex-integration/lib/typescript/src/shared/molecules/BottomWindow/props';
 
 import { logger } from '../../../../App';
+import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import {
   isOfferCreateLoadingSelector,
@@ -128,7 +130,9 @@ const PaymentPopup = () => {
   const dispatch = useAppDispatch();
   const tariffIconsData = useTariffsIcons();
   const { t } = useTranslation();
+
   const datePickerRef = useRef<BottomWindowWithGestureRef>(null);
+  const bottomWindowRef = useRef<BottomWindowRef>(null);
 
   const { points, selectedTariff, estimatedPrice } = useSelector(offerSelector);
   const isOfferCreateLoading = useSelector(isOfferCreateLoadingSelector);
@@ -186,6 +190,14 @@ const PaymentPopup = () => {
       color: colors.textSecondaryColor,
     },
   });
+
+  useEffect(() => {
+    setTimeout(() => {
+      bottomWindowRef.current?.measure((_, __, ___, ____, _____, pageY) => {
+        dispatch(setActiveBottomWindowYCoordinate(pageY));
+      });
+    }, 0);
+  }, [dispatch]);
 
   useEffect(() => {
     if (isDatePickerVisible) {
@@ -555,7 +567,7 @@ const PaymentPopup = () => {
         headerWrapperStyle={styles.headerWrapperStyle}
         headerElement={<TariffIcon style={styles.image} />}
       /> */}
-        <BottomWindow>
+        <BottomWindow ref={bottomWindowRef}>
           <TariffIcon style={styles.image} />
           {content}
         </BottomWindow>

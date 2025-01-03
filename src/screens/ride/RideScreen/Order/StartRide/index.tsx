@@ -8,6 +8,7 @@ import {
   UnsupportedCityPopup,
 } from 'shuttlex-integration';
 
+import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/redux';
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
 import { cleanOfferPoints } from '../../../../../core/ride/redux/offer';
@@ -72,6 +73,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
     return (
       <>
         <BottomWindowWithGesture
+          onGestureUpdate={callback => dispatch(setActiveBottomWindowYCoordinate(callback.y))}
           visiblePart={
             <StartRideVisible
               openAddressSelect={setIsAddressSelectVisible}

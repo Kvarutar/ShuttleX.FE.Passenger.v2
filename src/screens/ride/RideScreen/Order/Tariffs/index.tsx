@@ -16,6 +16,7 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/redux';
 //TODO: rewrite all tariffs files, current solution is not flexible
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { setCurrentSelectedTariff, setEstimatedPrice, setTripTariff } from '../../../../../core/ride/redux/offer';
@@ -224,6 +225,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 
   return (
     <BottomWindowWithGesture
+      onGestureUpdate={callback => dispatch(setActiveBottomWindowYCoordinate(callback.y))}
       setIsOpened={value => {
         setWindowIsOpened(value);
         if (withAnimatedBigCars) {

@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { LatLng } from 'react-native-maps';
 import { useSelector } from 'react-redux';
 import {
   calculateNewMapRoute,
   decodeGooglePolyline,
+  getDistanceBetweenPoints,
   getTimeWithAbbreviation,
   MapMarker,
   MapPolyline,
@@ -15,6 +16,7 @@ import {
   secToMilSec,
 } from 'shuttlex-integration';
 
+import { activeBottomWindowYCoordinateSelector } from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { updatePassengerGeo } from '../../../core/redux/signalr';
 import {
@@ -42,6 +44,8 @@ const updatePassengerGeoInterval = 1000;
 const finalStopPointUpdateIntervalInSec = 30;
 const polylineClearPointDistanceMtr = 25;
 
+const screenHeight = Dimensions.get('screen').height;
+
 const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationComplete: () => void }): JSX.Element => {
   const dispatch = useAppDispatch();
 
@@ -58,6 +62,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   const pickUpRoute = useSelector(tripPickUpRouteSelector);
   const dropOffRoute = useSelector(tripDropOffRouteSelector);
   const currentSelectedTariff = useSelector(currentSelectedTariffSelector);
+  const activeBottomWindowYCoordinate = useSelector(activeBottomWindowYCoordinateSelector);
 
   const updatePassengerGeoRef = useRef<NodeJS.Timeout | null>(null);
   const mapRef = useRef<MapViewRef>(null);
@@ -236,8 +241,23 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: pickUpPoint, zIndex: -1 }]);
       setFinalStopPointCoordinates(dropOffPoint);
       setFinalStopPointColorMode('mode2');
-      //TODO: make camera animate to route (not just 1 point), or (better) to resize MapView according to bottomwindow
-      mapRef.current?.animateCamera({ pitch: 0, heading: 0, center: pickUpPoint, zoom: 15 }, { duration: 700 });
+
+      let ratio = 35;
+      if (orderStatus === OrderStatus.Payment) {
+        ratio = 40;
+      }
+      if (mapRef.current) {
+        const delta = getDistanceBetweenPoints(pickUpPoint, dropOffPoint) / (ratio * 1000);
+        mapRef.current.animateToRegion(
+          {
+            latitude: (pickUpPoint.latitude + dropOffPoint.latitude) / 2,
+            longitude: (pickUpPoint.longitude + dropOffPoint.longitude) / 2,
+            latitudeDelta: delta,
+            longitudeDelta: delta,
+          },
+          700,
+        );
+      }
     } else {
       setMarkers([]);
     }
@@ -279,10 +299,16 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     [finalStopPointTimeInSec],
   );
 
+  const computedStyles = StyleSheet.create({
+    map: {
+      bottom: activeBottomWindowYCoordinate ? screenHeight - activeBottomWindowYCoordinate - 32 : 0,
+    },
+  });
+
   return (
     <MapViewIntegration
       ref={mapRef}
-      style={StyleSheet.absoluteFill}
+      style={[styles.map, computedStyles.map]}
       // Hide current geolocation if in Accepted or Ride status
       geolocationCoordinates={
         tripStatus === TripStatus.Accepted || tripStatus === TripStatus.Ride
@@ -318,5 +344,14 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     />
   );
 };
+
+const styles = StyleSheet.create({
+  map: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+  },
+});
 
 export default MapView;

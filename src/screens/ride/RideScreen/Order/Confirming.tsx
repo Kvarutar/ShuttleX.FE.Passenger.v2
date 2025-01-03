@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Bar, BarModes, CloseIcon, Fog, sizes, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 
+import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { cancelOffer } from '../../../../core/ride/redux/offer/thunks';
 
@@ -28,6 +29,8 @@ const Confirming = () => {
   });
 
   useEffect(() => {
+    dispatch(setActiveBottomWindowYCoordinate(null));
+
     const interval = setInterval(() => {
       setDotsCounter(prevCount => {
         if (prevCount > 2) {
