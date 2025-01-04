@@ -159,9 +159,15 @@ export enum TripStatus {
   Finished = 'finished',
 }
 
+export type ReceiptInfo = {
+  orderInfo: OrderWithTariffInfo;
+  routeInfo: RouteDropOffApiResponse;
+};
+
 export type TripState = {
   order: Nullable<OrderWithTariffInfo>;
   routeInfo: Nullable<RouteInfo>;
+  receipt: Nullable<ReceiptInfo>;
   status: TripStatus;
   tip: Nullable<number>;
   finishedTrips: number;

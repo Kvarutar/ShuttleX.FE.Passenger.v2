@@ -12,11 +12,12 @@ import {
   getTripCanceledBeforePickUpLongPolling,
   getTripSuccessfullLongPolling,
 } from './thunks';
-import { RouteDropOffApiResponse, RoutePickUpApiResponse, TripState, TripStatus } from './types';
+import { ReceiptInfo, RouteDropOffApiResponse, RoutePickUpApiResponse, TripState, TripStatus } from './types';
 
 const initialState: TripState = {
   routeInfo: null,
   status: TripStatus.Idle,
+  receipt: null,
   tip: null,
   finishedTrips: 0,
   order: null,
@@ -54,12 +55,16 @@ const slice = createSlice({
     },
     setTripRouteInfo(
       state,
-      action: PayloadAction<{ pickUpData: RoutePickUpApiResponse; dropOffData: RouteDropOffApiResponse }>,
+      action: PayloadAction<Nullable<{ pickUpData: RoutePickUpApiResponse; dropOffData: RouteDropOffApiResponse }>>,
     ) {
-      state.routeInfo = {
-        pickUp: action.payload.pickUpData,
-        dropOff: action.payload.dropOffData,
-      };
+      if (action.payload) {
+        state.routeInfo = {
+          pickUp: action.payload.pickUpData,
+          dropOff: action.payload.dropOffData,
+        };
+      } else {
+        state.routeInfo = null;
+      }
     },
     setOrderLongpollingLoading(state, action: PayloadAction<boolean>) {
       state.loading.orderLongpolling = action.payload;
@@ -77,6 +82,9 @@ const slice = createSlice({
       if (state.routeInfo) {
         state.tip = action.payload;
       }
+    },
+    setTripReceipt(state, action: PayloadAction<Nullable<ReceiptInfo>>) {
+      state.receipt = action.payload;
     },
     endTrip(state) {
       state.status = initialState.status;
@@ -272,6 +280,7 @@ export const {
   setTripStatus,
   setIsOrderCanceled,
   setIsOrderCanceledAlertVisible,
+  setTripReceipt,
   setTip,
   endTrip,
   addFinishedTrips,

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -31,11 +31,12 @@ import {
 import { lotteryTicketAfterRideSelector } from '../../../core/lottery/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { cleanOrder } from '../../../core/ride/redux/order';
-import { endTrip } from '../../../core/ride/redux/trip';
+import { endTrip, setTripReceipt, setTripRouteInfo } from '../../../core/ride/redux/trip';
 import {
   isTripCanceledSelector,
   orderSelector,
   tripDropOffRouteSelector,
+  tripReceiptSelector,
 } from '../../../core/ride/redux/trip/selectors';
 import { RootStackParamList } from '../../../Navigate/props';
 import passengerColors from '../../../shared/colors/colors';
@@ -50,17 +51,26 @@ const ReceiptScreen = () => {
 
   const routeInfo = useSelector(tripDropOffRouteSelector);
   const orderInfo = useSelector(orderSelector);
+  const receipt = useSelector(tripReceiptSelector);
   const isTripCanceled = useSelector(isTripCanceledSelector);
   const ticket = useSelector(lotteryTicketAfterRideSelector);
 
   const mapRef = useRef<MapViewRef>(null);
 
   const finalPrice = () => {
-    if (orderInfo?.info) {
-      const { currencyCode, totalFinalPrice, estimatedPrice } = orderInfo.info;
+    if (receipt?.orderInfo.info) {
+      const { currencyCode, totalFinalPrice, estimatedPrice } = receipt?.orderInfo.info;
       return formatCurrency(currencyCode, totalFinalPrice ?? estimatedPrice);
     }
   };
+
+  useEffect(() => {
+    if (orderInfo && routeInfo) {
+      dispatch(setTripReceipt({ orderInfo, routeInfo }));
+      dispatch(cleanOrder());
+      dispatch(setTripRouteInfo(null));
+    }
+  }, [dispatch, orderInfo, routeInfo]);
 
   const computedStyles = StyleSheet.create({
     textSecondaryColor: {
@@ -96,8 +106,9 @@ const ReceiptScreen = () => {
   });
 
   const onEndTrip = async () => {
-    dispatch(cleanOrder());
+    dispatch(setTripReceipt(null));
     dispatch(endTrip());
+
     navigation.navigate('Ride');
   };
 
@@ -118,8 +129,8 @@ const ReceiptScreen = () => {
 
   const tripTimeDuration = () => {
     const [pickUpTime, finishedTime] = [
-      new Date(orderInfo?.info?.pickUpDate ?? new Date()),
-      new Date(orderInfo?.info?.finishedDate ?? new Date()),
+      new Date(receipt?.orderInfo.info?.pickUpDate ?? new Date()),
+      new Date(receipt?.orderInfo.info?.finishedDate ?? new Date()),
     ].map(date => {
       date.setSeconds(0, 0);
       return date.getTime();
@@ -139,17 +150,17 @@ const ReceiptScreen = () => {
       : t(hours ? 'ride_Receipt_hours' : 'ride_Receipt_minutes', { count: hours || minutes });
   };
 
-  const distance = mtrToKm(routeInfo?.totalDistanceMtr ?? 0);
-  const isKilometres = routeInfo && routeInfo?.totalDistanceMtr > 1000;
+  const distance = mtrToKm(receipt?.routeInfo.totalDistanceMtr ?? 0);
+  const isKilometres = receipt?.routeInfo && receipt?.routeInfo.totalDistanceMtr > 1000;
 
   const roadTimeData = [
     {
       title: t('ride_Receipt_start'),
-      value: formatTime(new Date(orderInfo?.info?.pickUpDate ?? 0)),
+      value: formatTime(new Date(receipt?.orderInfo.info?.pickUpDate ?? 0)),
     },
     {
       title: t('ride_Receipt_finish'),
-      value: formatTime(new Date(orderInfo?.info?.finishedDate ?? 0)),
+      value: formatTime(new Date(receipt?.orderInfo.info?.finishedDate ?? 0)),
     },
     {
       title: t('ride_Receipt_time'),
@@ -191,7 +202,7 @@ const ReceiptScreen = () => {
 
   const roadTimeBlock = (
     <View style={styles.roadTimeWrapper}>
-      {orderInfo?.info?.pickUpDate && orderInfo?.info?.finishedDate ? (
+      {receipt?.orderInfo.info?.pickUpDate && receipt?.orderInfo.info?.finishedDate ? (
         roadTimeData.map(time => (
           <View key={time.title} style={styles.roadTimeContainer}>
             <Text style={[styles.roadTimeTitleText, computedStyles.textTitleColor]}>{time.title}</Text>
@@ -219,8 +230,8 @@ const ReceiptScreen = () => {
     </Bar>
   );
 
-  const startPoint = routeInfo?.waypoints[0].geo;
-  const endPoint = routeInfo?.waypoints[routeInfo.waypoints.length - 1].geo;
+  const startPoint = receipt?.routeInfo.waypoints[0].geo;
+  const endPoint = receipt?.routeInfo.waypoints[receipt?.routeInfo.waypoints.length - 1].geo;
 
   const onMapLayout = useCallback(() => {
     if (mapRef.current && startPoint && endPoint) {
@@ -253,8 +264,8 @@ const ReceiptScreen = () => {
             : undefined
         }
         polylines={
-          routeInfo
-            ? [{ type: 'straight', options: { coordinates: decodeGooglePolyline(routeInfo.geometry) } }]
+          receipt?.routeInfo
+            ? [{ type: 'straight', options: { coordinates: decodeGooglePolyline(receipt?.routeInfo.geometry) } }]
             : undefined
         }
       />
@@ -280,7 +291,7 @@ const ReceiptScreen = () => {
           <View style={styles.addressContainer}>
             <View style={styles.placeContainer}>
               <Text numberOfLines={2} style={[styles.addressDetailsText, computedStyles.textTitleColor]}>
-                {orderInfo?.info?.pickUpFullAddress}
+                {receipt?.orderInfo.info?.pickUpFullAddress}
               </Text>
             </View>
             <View style={styles.placeContainer}>
@@ -288,7 +299,7 @@ const ReceiptScreen = () => {
                 numberOfLines={2}
                 style={[styles.addressDetailsText, computedStyles.textTitleColor, styles.placeTextRight]}
               >
-                {orderInfo?.info?.dropOffFullAddress}
+                {receipt?.orderInfo.info?.dropOffFullAddress}
               </Text>
             </View>
           </View>
@@ -301,7 +312,7 @@ const ReceiptScreen = () => {
                   {t('ride_Receipt_cancelledTrip')}
                 </Text>
               </View>
-              {Boolean(orderInfo?.info) && paymentBarBlock}
+              {Boolean(receipt?.orderInfo.info) && paymentBarBlock}
             </View>
           ) : (
             <>
