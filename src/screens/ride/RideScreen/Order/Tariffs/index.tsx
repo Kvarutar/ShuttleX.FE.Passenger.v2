@@ -145,6 +145,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 
   const renderTariffsCategories = useCallback((): ReactNode[] => {
     const content: ReactNode[] = [];
+    const currencyCode = groupedTariffs.economy.tariffs?.[0]?.currencyCode ?? 'UAH';
 
     Object.entries(groupedTariffs).forEach(([key, value]) => {
       let groupPrice = 0;
@@ -171,6 +172,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
         content.push(
           <TariffGroup
             key={`tariff_group_${key}`}
+            currencyCode={currencyCode}
             price={Math.round(groupPrice)}
             title={key as TariffsType}
             onPress={() => setSelectedTariffGroup(value)}

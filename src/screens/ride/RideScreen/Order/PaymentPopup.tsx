@@ -21,7 +21,7 @@ import {
   CloseIcon,
   DatePicker,
   DatePickerV1,
-  getCurrencySign,
+  formatCurrency,
   PaymentBar,
   // PaymentMethod,
   sizes,
@@ -319,8 +319,7 @@ const PaymentPopup = () => {
       },
       {
         title: t('ride_Ride_PaymentPopup_priceTitle'),
-        // TODO: swap currencyCode to correct value
-        value: `${getCurrencySign('UAH')}${estimatedPrice?.value ?? 0}`,
+        value: formatCurrency(estimatedPrice?.currencyCode ?? 'UAH', estimatedPrice?.value ?? 0),
       },
       {
         title: t('ride_Ride_PaymentPopup_timeTitle'),

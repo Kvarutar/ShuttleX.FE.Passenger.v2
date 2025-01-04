@@ -7,7 +7,7 @@ import {
   Bar,
   BarModes,
   EmergencyServiceIcon,
-  getCurrencySign,
+  formatCurrency,
   ReportIcon,
   Skeleton,
   Text,
@@ -115,8 +115,7 @@ const HiddenPart = () => {
       },
       {
         text: t('ride_Ride_Trip_totalForRide'),
-        //TODO: swap currencyCode to correct value
-        value: `${getCurrencySign('UAH')}${order.info.estimatedPrice}`,
+        value: formatCurrency(order.info.currencyCode, order.info.estimatedPrice),
       },
     ];
 

@@ -13,8 +13,8 @@ import {
   CoinIcon,
   decodeGooglePolyline,
   Fog,
+  formatCurrency,
   formatTime,
-  getCurrencySign,
   getDistanceBetweenPoints,
   getPaymentIcon,
   LoadingSpinner,
@@ -27,7 +27,6 @@ import {
   Text,
   useTheme,
 } from 'shuttlex-integration';
-import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
 import { lotteryTicketAfterRideSelector } from '../../../core/lottery/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
@@ -58,12 +57,8 @@ const ReceiptScreen = () => {
 
   const finalPrice = () => {
     if (orderInfo?.info) {
-      // TODO: ask back about sign(currencyCode), not code
       const { currencyCode, totalFinalPrice, estimatedPrice } = orderInfo.info;
-      const currencySign = getCurrencySign(currencyCode as CurrencyType);
-      const price = totalFinalPrice ?? estimatedPrice;
-
-      return `${currencySign}${price}`;
+      return formatCurrency(currencyCode, totalFinalPrice ?? estimatedPrice);
     }
   };
 

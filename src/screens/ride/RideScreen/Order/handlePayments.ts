@@ -4,15 +4,17 @@ import { logger } from '../../../../App';
 
 type handleMonoPaymentProps = {
   amount: number;
+  currencyCode: string;
   setPaymentUrl: React.Dispatch<React.SetStateAction<string | null>>;
 };
+
 //Mono payment
-export const handleMonoPayment = async ({ amount, setPaymentUrl }: handleMonoPaymentProps) => {
+export const handleMonoPayment = async ({ amount, currencyCode, setPaymentUrl }: handleMonoPaymentProps) => {
   try {
     //TODO Just for test. Change for real url and data
     const response = await axios.post('/create-payment', {
       amount: amount,
-      currency: 'UAH', //need it?
+      currency: currencyCode,
     });
 
     const paymentUrl = response.data.url; // URL for redirecting
@@ -23,12 +25,12 @@ export const handleMonoPayment = async ({ amount, setPaymentUrl }: handleMonoPay
 };
 
 //Binance payment
-export const handleBinancePayment = async ({ amount, setPaymentUrl }: handleMonoPaymentProps) => {
+export const handleBinancePayment = async ({ amount, currencyCode, setPaymentUrl }: handleMonoPaymentProps) => {
   try {
     //TODO Just for test. Change for real url and data
     const response = await axios.post('/create-payment', {
       amount: amount,
-      currency: 'UAH', //need it?
+      currency: currencyCode,
     });
 
     const paymentUrl = response.data.url; // URL for redirecting

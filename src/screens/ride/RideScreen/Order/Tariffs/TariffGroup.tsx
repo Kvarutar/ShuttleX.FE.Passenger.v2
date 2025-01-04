@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
-import { AnimatedCarImage, getCurrencySign, Skeleton, TariffType, Text, useTheme } from 'shuttlex-integration';
+import { AnimatedCarImage, formatCurrency, Skeleton, TariffType, Text, useTheme } from 'shuttlex-integration';
 
 import { isTariffsPricesLoadingSelector } from '../../../../../core/ride/redux/offer/selectors';
 import { TariffsType } from '../../../../../core/ride/redux/offer/types';
@@ -11,7 +11,15 @@ import { TariffGroupProps } from './types';
 
 const animationDuration = 300;
 
-const TariffGroup = ({ price, title, isSelected, onPress, style, carsAnimationDelayInMilSec }: TariffGroupProps) => {
+const TariffGroup = ({
+  currencyCode,
+  price,
+  title,
+  isSelected,
+  onPress,
+  style,
+  carsAnimationDelayInMilSec,
+}: TariffGroupProps) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
@@ -63,11 +71,7 @@ const TariffGroup = ({ price, title, isSelected, onPress, style, carsAnimationDe
             }
           />
         ) : (
-          <Text style={[styles.price, computedStyles.price]}>
-            {/*TODO: swap currencyCode to correct value*/}
-            {getCurrencySign('UAH')}
-            {price}
-          </Text>
+          <Text style={[styles.price, computedStyles.price]}>{formatCurrency(currencyCode, price)}</Text>
         )}
         <AnimatedCarImage
           tariffType={tariffsGroupImagesNames[title].image}

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import {
   AnimatedCarImage,
   BaggageIcon,
-  getCurrencySign,
+  formatCurrency,
   ProfileIcon,
   Skeleton,
   Text,
@@ -168,8 +168,7 @@ const TariffBar = ({
   const tariffPrice = () => {
     if (isAvailableTariff) {
       if (showPriceAndTime && availablePlans[defaultPlanIndex]) {
-        //TODO: swap currencyCode to correct value
-        return `${getCurrencySign('UAH')}${availablePlans[defaultPlanIndex].cost !== null ? availablePlans[defaultPlanIndex].cost : 0}`;
+        return formatCurrency(availablePlans[defaultPlanIndex].currency, availablePlans[defaultPlanIndex].cost ?? 0);
       }
     } else {
       return t('ride_Ride_TariffBar_notAvailable');

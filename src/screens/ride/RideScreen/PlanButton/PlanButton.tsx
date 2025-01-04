@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { getCurrencySign, LightningIcon, Text, useTheme } from 'shuttlex-integration';
+import { formatCurrency, LightningIcon, Text, useTheme } from 'shuttlex-integration';
 
 import { PlanButtonProps } from './types';
 
@@ -59,9 +59,7 @@ const PlanButton = ({ plan, onPress, isSelected, style, withTimeShow = true }: P
           {withTimeShow ? formatTime(Number(plan.durationSec)) : tariffModes[plan.algorythm]}
         </Text>
         <Animated.Text style={[styles.price, animatedStyles.price]}>
-          {/*TODO: swap currencyCode to correct value*/}
-          {getCurrencySign('UAH')}
-          {planPriceCounting(Number(plan.durationSec), plan.algorythm)}
+          {formatCurrency(plan.currency, planPriceCounting(Number(plan.durationSec), plan.algorythm))}
         </Animated.Text>
         {plan.algorythm === 'Eager Fast' && <LightningIcon style={styles.icon} />}
       </Animated.View>
