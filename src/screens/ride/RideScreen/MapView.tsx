@@ -80,6 +80,8 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [mapCameraCoordinates, setMapCameraCoordinates] = useState<LatLng | null>(null);
 
+  const memoizedPolyline = useMemo(() => (polyline ? [polyline] : undefined), [polyline]);
+
   // Section: getting geo of contractors and send geo of passenger
   const setUpdatePassengerGeoInterval = (callback: () => void) => {
     if (updatePassengerGeoRef.current !== null) {
@@ -143,10 +145,49 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
 
   useEffect(() => {
     switch (tripStatus) {
-      case TripStatus.Accepted:
+      case TripStatus.Accepted: {
         if (!pickUpRoute) {
           break;
         }
+        const coordinates = decodeGooglePolyline(pickUpRoute.geometry); // TODO: check, maybe need to reverse array
+        setRoutePolylinePointsCount(coordinates.length);
+        setPolyline({ type: 'dashed', options: { coordinates, color: '#ABC736' } });
+
+        setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: coordinates[coordinates.length - 1] }]);
+
+        dispatch(setMapRouteTraffic(pickUpRoute.accurateGeometries));
+        break;
+      }
+      case TripStatus.Ride: {
+        if (!dropOffRoute) {
+          break;
+        }
+        const coordinates = decodeGooglePolyline(dropOffRoute.geometry);
+        setRoutePolylinePointsCount(coordinates.length);
+        setPolyline({ type: 'straight', options: { coordinates } });
+
+        setFinalStopPointCoordinates(coordinates[coordinates.length - 1]);
+        setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
+        setFinalStopPointColorMode('mode1');
+
+        dispatch(setMapRouteTraffic(dropOffRoute.accurateGeometries));
+        break;
+      }
+      case TripStatus.Idle:
+      case TripStatus.Arrived:
+        if (orderStatus === OrderStatus.ChoosingTariff || orderStatus === OrderStatus.Payment) {
+          break;
+        }
+        resetPoints();
+        break;
+      default:
+    }
+  }, [dispatch, tripStatus, orderStatus, pickUpRoute, dropOffRoute, resetPoints]);
+
+  // Polyline clearing from moving car
+  useEffect(() => {
+    switch (tripStatus) {
+      case TripStatus.Accepted:
         setPolyline(prev => {
           const type: MapPolyline['type'] = 'dashed';
           if (prev && prev.type === type && cars.length > 0) {
@@ -157,17 +198,10 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
             );
             return { type, options: { coordinates: newCoordinates, color: '#ABC736' } };
           }
-          const coordinates = decodeGooglePolyline(pickUpRoute.geometry); // TODO: check, maybe need to reverse array
-          setRoutePolylinePointsCount(coordinates.length);
-          setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: coordinates[coordinates.length - 1] }]);
-          dispatch(setMapRouteTraffic(pickUpRoute.accurateGeometries));
-          return { type, options: { coordinates } };
+          return prev;
         });
         break;
       case TripStatus.Ride:
-        if (!dropOffRoute) {
-          break;
-        }
         setPolyline(prev => {
           const type: MapPolyline['type'] = 'straight';
           if (prev && prev.type === type && cars.length > 0) {
@@ -178,26 +212,13 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
             );
             return { type, options: { coordinates: newCoordinates } };
           }
-          const coordinates = decodeGooglePolyline(dropOffRoute.geometry);
-          setRoutePolylinePointsCount(coordinates.length);
-          setFinalStopPointCoordinates(coordinates[coordinates.length - 1]);
-          setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
-          setFinalStopPointColorMode('mode1');
-          // TODO: this line throws warning, move that dispatch outside of setPolyline
-          dispatch(setMapRouteTraffic(dropOffRoute.accurateGeometries));
-          return { type, options: { coordinates } };
+          return prev;
         });
         break;
-      case TripStatus.Idle:
-      case TripStatus.Arrived:
-        if (orderStatus === OrderStatus.ChoosingTariff || orderStatus === OrderStatus.Payment) {
-          break;
-        }
-        resetPoints();
-        break;
       default:
+        break;
     }
-  }, [dispatch, tripStatus, orderStatus, pickUpRoute, dropOffRoute, cars, resetPoints]);
+  }, [tripStatus, cars]);
 
   useEffect(() => {
     if (polyline && polyline.type !== 'arc') {
@@ -320,7 +341,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       // (maybe drop few animations if queue is too big)
       // or alternatively do the next request when animation is done (or few miliseconds before ending)
       cars={{ data: cars, animationDuration: updatePassengerGeoInterval * 0.85 }}
-      polylines={polyline ? [polyline] : undefined}
+      polylines={memoizedPolyline}
       stopPoints={stopPoints}
       markers={
         finalStopPointCoordinates
