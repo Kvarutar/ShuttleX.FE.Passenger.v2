@@ -15,6 +15,7 @@ import {
   SquareButtonModes,
   useTheme,
 } from 'shuttlex-integration';
+import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
 import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/redux';
 //TODO: rewrite all tariffs files, current solution is not flexible
@@ -145,10 +146,10 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 
   const renderTariffsCategories = useCallback((): ReactNode[] => {
     const content: ReactNode[] = [];
-    const currencyCode = groupedTariffs.economy.tariffs?.[0]?.currencyCode ?? 'UAH';
 
     Object.entries(groupedTariffs).forEach(([key, value]) => {
       let groupPrice = 0;
+      let currencyCode: CurrencyType = 'UAH';
 
       if (value.tariffs !== undefined && value.tariffs.length > 0) {
         const filteredTariffs = value.tariffs?.filter(trf =>
@@ -167,8 +168,10 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
                 0,
               ) / filteredTariffs?.length
             : 0;
-        //TODO: think about smarter key?
 
+        currencyCode = value.tariffs[0].currencyCode as CurrencyType;
+
+        //TODO: think about smarter key?
         content.push(
           <TariffGroup
             key={`tariff_group_${key}`}

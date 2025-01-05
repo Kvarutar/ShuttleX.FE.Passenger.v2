@@ -21,7 +21,7 @@ import {
   CloseIcon,
   DatePicker,
   DatePickerV1,
-  formatCurrency,
+  getCurrencySign,
   PaymentBar,
   // PaymentMethod,
   sizes,
@@ -32,6 +32,7 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 import { BottomWindowRef } from 'shuttlex-integration/lib/typescript/src/shared/molecules/BottomWindow/props';
+import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
 import { logger } from '../../../../App';
 import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
@@ -319,7 +320,7 @@ const PaymentPopup = () => {
       },
       {
         title: t('ride_Ride_PaymentPopup_priceTitle'),
-        value: formatCurrency(estimatedPrice?.currencyCode ?? 'UAH', estimatedPrice?.value ?? 0),
+        value: `${getCurrencySign((estimatedPrice?.currencyCode as CurrencyType) ?? 'UAH')}${estimatedPrice?.value ?? 0}`,
       },
       {
         title: t('ride_Ride_PaymentPopup_timeTitle'),

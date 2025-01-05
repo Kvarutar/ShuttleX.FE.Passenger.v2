@@ -7,13 +7,14 @@ import {
   Bar,
   BarModes,
   EmergencyServiceIcon,
-  formatCurrency,
+  getCurrencySign,
   ReportIcon,
   Skeleton,
   Text,
   useTariffsIcons,
   useTheme,
 } from 'shuttlex-integration';
+import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
 //TODO: take image from BE
 import imagePrize from '../../../../../assets/images/trip/imagePrize';
@@ -115,7 +116,7 @@ const HiddenPart = () => {
       },
       {
         text: t('ride_Ride_Trip_totalForRide'),
-        value: formatCurrency(order.info.currencyCode, order.info.estimatedPrice),
+        value: `${getCurrencySign(order.info.currencyCode as CurrencyType)}${order.info.estimatedPrice}`,
       },
     ];
 

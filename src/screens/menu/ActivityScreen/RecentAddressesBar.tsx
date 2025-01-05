@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { getLocales } from 'react-native-localize';
-import { Bar, BarModes, formatCurrency, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { Bar, BarModes, getCurrencySign, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
 import { tariffsNamesByFeKey } from '../../../core/ride/redux/offer/utils';
 import { RecentAddressesProps } from './props';
@@ -53,7 +54,9 @@ const RecentAddressesBar = ({ order }: RecentAddressesProps) => {
         {tripTariff && getTariffImage(tariffsNamesByFeKey[tripTariff.feKey])}
         <View style={[styles.statusContainer, computedStyles.statusContainer]}>
           <Text style={[styles.statusText, computedStyles.statusText]}>
-            {isOrderCanceled ? t('menu_Activity_canceled') : formatCurrency(order.currencyCode, order.totalFinalPrice)}
+            {isOrderCanceled
+              ? t('menu_Activity_canceled')
+              : `${getCurrencySign(order.currencyCode as CurrencyType)}${order.totalFinalPrice}`}
           </Text>
         </View>
       </View>

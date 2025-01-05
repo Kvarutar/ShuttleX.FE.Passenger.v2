@@ -6,13 +6,14 @@ import { useSelector } from 'react-redux';
 import {
   AnimatedCarImage,
   BaggageIcon,
-  formatCurrency,
+  getCurrencySign,
   ProfileIcon,
   Skeleton,
   Text,
   useTariffsIcons,
   useTheme,
 } from 'shuttlex-integration';
+import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
 import {
   isPhantomOfferLoadingSelector,
@@ -168,7 +169,7 @@ const TariffBar = ({
   const tariffPrice = () => {
     if (isAvailableTariff) {
       if (showPriceAndTime && availablePlans[defaultPlanIndex]) {
-        return formatCurrency(availablePlans[defaultPlanIndex].currency, availablePlans[defaultPlanIndex].cost ?? 0);
+        return `${getCurrencySign(availablePlans[defaultPlanIndex].currency as CurrencyType)}${availablePlans[defaultPlanIndex].cost !== null ? availablePlans[defaultPlanIndex].cost : 0}`;
       }
     } else {
       return t('ride_Ride_TariffBar_notAvailable');

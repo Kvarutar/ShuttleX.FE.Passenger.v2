@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
-import { AnimatedCarImage, formatCurrency, Skeleton, TariffType, Text, useTheme } from 'shuttlex-integration';
+import { AnimatedCarImage, getCurrencySign, Skeleton, TariffType, Text, useTheme } from 'shuttlex-integration';
 
 import { isTariffsPricesLoadingSelector } from '../../../../../core/ride/redux/offer/selectors';
 import { TariffsType } from '../../../../../core/ride/redux/offer/types';
@@ -71,7 +71,10 @@ const TariffGroup = ({
             }
           />
         ) : (
-          <Text style={[styles.price, computedStyles.price]}>{formatCurrency(currencyCode, price)}</Text>
+          <Text style={[styles.price, computedStyles.price]}>
+            {getCurrencySign(currencyCode)}
+            {price}
+          </Text>
         )}
         <AnimatedCarImage
           tariffType={tariffsGroupImagesNames[title].image}

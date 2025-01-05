@@ -1,9 +1,10 @@
 import { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native';
+import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
 import { TariffsType, TariffWithMatching } from '../../../../../core/ride/redux/offer/types';
 
 export type TariffGroupProps = {
-  currencyCode: string;
+  currencyCode: CurrencyType;
   price: number;
   title: TariffsType;
   isSelected?: boolean;
