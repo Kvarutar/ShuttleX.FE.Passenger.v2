@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Linking, StyleSheet, View } from 'react-native';
 import { BigHeader, BottomWindowWithGesture, Button, SquareButtonModes } from 'shuttlex-integration';
 
 import { UnsupportedDestinationPopupProps } from './types';
@@ -7,9 +7,9 @@ import { UnsupportedDestinationPopupProps } from './types';
 const UnsupportedDestinationPopup = ({ setIsUnsupportedDestinationPopupVisible }: UnsupportedDestinationPopupProps) => {
   const { t } = useTranslation();
 
-  //TODO: add navigation to Support
   const onSupportPress = () => {
     setIsUnsupportedDestinationPopupVisible(false);
+    Linking.openURL('https://t.me/ShuttleX_Support');
   };
 
   const hiddenPartContent = (

@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Keyboard, StyleSheet } from 'react-native';
+import { Keyboard, Linking, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   BottomWindowWithGesture,
@@ -114,8 +114,7 @@ const StartRide = forwardRef<StartRideRef, StartRideProps>(
         )}
         {isUnsupportedCityPopupVisible && (
           <UnsupportedCityPopup
-            //TODO: swap console.log('Support') to navigation on Support
-            onSupportPressHandler={() => console.log('Support')}
+            onSupportPressHandler={() => Linking.openURL('https://t.me/ShuttleX_Support')}
             setIsUnsupportedCityPopupVisible={setIsUnsupportedCityPopupVisible}
           />
         )}

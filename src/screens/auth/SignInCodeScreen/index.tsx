@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Linking } from 'react-native';
 import { useSelector } from 'react-redux';
 import { CodeVerificationScreen, isLockedError, milSecToTime } from 'shuttlex-integration';
 
@@ -85,9 +86,7 @@ const SignInCodeScreen = ({ navigation, route }: SignInCodeScreenProps): JSX.Ele
       lockOutTime={lockoutEndTimestamp}
       lockOutTimeForText={lockoutMinutes}
       onBannedAgainButtonPress={onBannedAgainPress}
-      onSupportButtonPress={() => {
-        console.log('TODO: onSupportPress'); //TODO: add function
-      }}
+      onSupportButtonPress={() => Linking.openURL('https://t.me/ShuttleX_Support')}
     />
   );
 };

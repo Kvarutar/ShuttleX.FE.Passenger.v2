@@ -116,10 +116,9 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
         )}
       </SafeAreaView>
       {isSignIn && lockoutMinutes !== '' && (
-        //TODO: swap console.log('onSupportButtonPress') to navigation on Support
         <TemporaryLockoutPopup
           lockOutTimeText={lockoutMinutes}
-          onSupportButtonPress={() => console.log('onSupportButtonPress')}
+          onSupportButtonPress={() => Linking.openURL('https://t.me/ShuttleX_Support')}
         />
       )}
     </CustomKeyboardAvoidingView>

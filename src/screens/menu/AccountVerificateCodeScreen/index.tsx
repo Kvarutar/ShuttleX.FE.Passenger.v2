@@ -2,6 +2,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Linking } from 'react-native';
 import { useSelector } from 'react-redux';
 import { CodeVerificationScreen, isLockedError, milSecToTime, SafeAreaView } from 'shuttlex-integration';
 
@@ -101,9 +102,7 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
         lockOutTime={lockoutEndTimestamp}
         lockOutTimeForText={lockoutMinutes}
         onBannedAgainButtonPress={onBannedAgainPress}
-        onSupportButtonPress={() => {
-          // TODO: onSupportPress
-        }}
+        onSupportButtonPress={() => Linking.openURL('https://t.me/ShuttleX_Support')}
       />
     </SafeAreaView>
   );
