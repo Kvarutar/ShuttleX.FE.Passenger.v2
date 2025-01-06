@@ -111,20 +111,6 @@ export const getWinnerAvatar = createAppAsyncThunk<WinnerAvatarAPIResponse, Winn
   },
 );
 
-// //TODO: uncomment when we need it
-// export const getTicketsById = createAppAsyncThunk<TicketAPIResponse, { eventId: string }>(
-//   'lottery/getTicketsById',
-//   async (payload, { rejectWithValue, lotteryAxios }) => {
-//     try {
-//       const result = await lotteryAxios.get<TicketAPIResponse>(`/events/${payload.eventId}/tickets`);
-//
-//       return result.data;
-//     } catch (error) {
-//       return rejectWithValue(getNetworkErrorInfo(error));
-//     }
-//   },
-// );
-
 export const getAllCurrentTickets = createAppAsyncThunk<TicketAPIResponse, void>(
   'lottery/getAllCurrentTickets',
   async (_, { rejectWithValue, lotteryAxios }) => {
@@ -147,6 +133,21 @@ export const getTicketAfterRide = createAppAsyncThunk<GetTicketAfterRideAPIRespo
         `/events/current/tickets/orders/${orderId}`,
       );
       dispatch(setTicketAfterRide(result.data));
+      return result.data;
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
+
+export const getTicketByOrderId = createAppAsyncThunk<GetTicketAfterRideAPIResponse, { orderId: string }>(
+  'lottery/getTicketByOrderId',
+  async (payload, { rejectWithValue, lotteryAxios }) => {
+    try {
+      const result = await lotteryAxios.post<GetTicketAfterRideAPIResponse>(
+        `/events/current/tickets/orders/${payload.orderId}`,
+      );
+
       return result.data;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));

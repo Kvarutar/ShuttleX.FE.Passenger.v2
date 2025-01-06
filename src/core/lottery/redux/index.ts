@@ -8,6 +8,7 @@ import {
   getCurrentUpcomingLottery,
   getPreviousLottery,
   getPreviousPrizes,
+  getTicketByOrderId,
   getWinnerAvatar,
 } from './thunks';
 import { LotteryMode, LotteryState, SetAvatarStatePayloadType, TicketFromAPI, WinnerPrizesAPIResponse } from './types';
@@ -36,6 +37,7 @@ const initialState: LotteryState = {
   tickets: [],
   ticketAfterRide: null,
   loading: {
+    ticketAfterRide: false,
     previousLottery: false,
     lottery: false,
     prizes: false,
@@ -180,6 +182,18 @@ const slice = createSlice({
       .addCase(getAllCurrentTickets.rejected, (state, action) => {
         state.loading.tickets = false;
         state.error.tickets = action.payload as NetworkErrorDetailsWithBody<any>;
+      })
+
+      .addCase(getTicketByOrderId.pending, state => {
+        state.loading.ticketAfterRide = true;
+      })
+      .addCase(getTicketByOrderId.fulfilled, (state, action) => {
+        state.loading.ticketAfterRide = false;
+        state.ticketAfterRide = action.payload;
+      })
+      .addCase(getTicketByOrderId.rejected, state => {
+        state.loading.ticketAfterRide = false;
+        state.ticketAfterRide = null;
       })
 
       //WinnerAvatar

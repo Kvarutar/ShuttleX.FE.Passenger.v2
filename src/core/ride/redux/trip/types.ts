@@ -177,6 +177,7 @@ export type TripState = {
     isOrderCanceledAlertVisible: boolean;
   };
   loading: {
+    routeInfo: boolean;
     orderInfo: boolean;
     currentOrder: boolean;
     orderLongpolling: boolean;

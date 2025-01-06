@@ -13,6 +13,7 @@ export const lotteryWinnerSelector = (state: AppState) => state.lottery.winnerPr
 export const isLotteryLoadingSelector = (state: AppState) => state.lottery.loading.lottery;
 export const isPrizesLoadingSelector = (state: AppState) => state.lottery.loading.prizes;
 export const isTicketsLoadingSelector = (state: AppState) => state.lottery.loading.tickets;
+export const isTicketAfterRideLoadingSelector = (state: AppState) => state.lottery.loading.ticketAfterRide;
 export const isPreviousLotteryLoadingSelector = (state: AppState) => state.lottery.loading.previousLottery;
 export const isPreviousPrizesLoadingSelector = (state: AppState) => state.lottery.loading.previousPrizes;
 

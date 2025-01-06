@@ -1,11 +1,17 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { getLocales } from 'react-native-localize';
 import { Bar, BarModes, getCurrencySign, TariffType, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
 import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
+import { getTicketByOrderId } from '../../../core/lottery/redux/thunks';
+import { useAppDispatch } from '../../../core/redux/hooks';
 import { tariffsNamesByFeKey } from '../../../core/ride/redux/offer/utils';
-import { RecentAddressesProps } from './props';
+import { getRouteInfo } from '../../../core/ride/redux/trip/thunks';
+import { RootStackParamList } from '../../../Navigate/props';
+import { RecentAddressesProps } from './types';
 
 const formatDateTime = (date: Date): string => {
   const formattedDate = date.toLocaleDateString(getLocales()[0].languageTag, {
@@ -27,6 +33,8 @@ const RecentAddressesBar = ({ order }: RecentAddressesProps) => {
   const { colors } = useTheme();
   const tariffIconsData = useTariffsIcons();
   const { t } = useTranslation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'ActivityReceiptScreen'>>();
+  const dispatch = useAppDispatch();
 
   const tripTariff = order.tariffInfo;
 
@@ -48,8 +56,14 @@ const RecentAddressesBar = ({ order }: RecentAddressesProps) => {
     return tariffIconsData[tripTariffName].icon({ style: styles.image });
   };
 
+  const onBarPress = () => {
+    dispatch(getRouteInfo(order.orderId));
+    dispatch(getTicketByOrderId({ orderId: order.orderId }));
+    navigation.navigate('ActivityReceiptScreen', { orderId: order.orderId });
+  };
+
   return (
-    <Bar style={styles.container} mode={isOrderCanceled ? BarModes.Disabled : BarModes.Default}>
+    <Bar onPress={onBarPress} style={styles.container} mode={isOrderCanceled ? BarModes.Disabled : BarModes.Default}>
       <View style={styles.imageContainer}>
         {tripTariff && getTariffImage(tariffsNamesByFeKey[tripTariff.feKey])}
         <View style={[styles.statusContainer, computedStyles.statusContainer]}>

@@ -11,6 +11,7 @@ import SplashScreen from '../screens/auth/SplashScreen';
 import TermsScreen from '../screens/auth/TermsScreen';
 import AccountSettings from '../screens/menu/AccountSettings';
 import AccountVerificateCodeScreen from '../screens/menu/AccountVerificateCodeScreen';
+import ActivityReceiptScreen from '../screens/menu/ActivityReceiptScreen';
 import ActivityScreen from '../screens/menu/ActivityScreen';
 import NotificationsScreen from '../screens/menu/NotificationsScreen';
 import ProfilePhotoScreen from '../screens/menu/ProfilePhotoScreen';
@@ -72,6 +73,7 @@ const Navigate = (): JSX.Element => {
             <Stack.Screen name="Activity" component={ActivityScreen} />
             <Stack.Screen name="TicketWallet" component={TicketWalletScreen} />
             <Stack.Screen name="Raffle" component={RaffleScreen} />
+            <Stack.Screen name="ActivityReceiptScreen" component={ActivityReceiptScreen} />
           </>
         ) : (
           <>

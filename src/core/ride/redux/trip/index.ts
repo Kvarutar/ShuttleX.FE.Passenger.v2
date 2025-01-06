@@ -27,6 +27,7 @@ const initialState: TripState = {
     isOrderCanceledAlertVisible: false,
   },
   loading: {
+    routeInfo: false,
     orderInfo: false,
     currentOrder: false,
     orderLongpolling: false,
@@ -185,6 +186,9 @@ const slice = createSlice({
       })
 
       //RouteInfo
+      .addCase(getRouteInfo.pending, state => {
+        state.loading.routeInfo = true;
+      })
       .addCase(getRouteInfo.fulfilled, (state, action) => {
         slice.caseReducers.setTripRouteInfo(state, {
           payload: {
@@ -193,6 +197,10 @@ const slice = createSlice({
           },
           type: setTripRouteInfo.type,
         });
+        state.loading.routeInfo = false;
+      })
+      .addCase(getRouteInfo.rejected, state => {
+        state.loading.routeInfo = false;
       })
 
       //CancelTrip

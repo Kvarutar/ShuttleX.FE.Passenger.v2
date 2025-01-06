@@ -23,4 +23,5 @@ export type RootStackParamList = {
   Raffle: undefined;
   TicketWallet: undefined;
   ProfilePhoto: undefined;
+  ActivityReceiptScreen: { orderId: string };
 };

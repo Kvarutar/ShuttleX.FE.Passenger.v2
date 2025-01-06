@@ -19,6 +19,7 @@ export const tripReceiptSelector = (state: AppState) => state.trip.receipt;
 
 //Loadings
 export const isTripCanceledLoadingSelector = (state: AppState) => state.trip.loading.cancelTrip;
+export const isRouteInfoLoadingSelector = (state: AppState) => state.trip.loading.routeInfo;
 export const isTripLoadingSelector = (state: AppState) => state.trip.loading.orderInfo;
 export const isOrderLongPollingLoadingSelector = (state: AppState) => state.trip.loading.orderLongpolling;
 export const isTripSuccessLongPollingLoadingSelector = (state: AppState) =>

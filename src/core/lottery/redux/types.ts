@@ -10,6 +10,7 @@ export type LotteryState = {
   ticketAfterRide: Nullable<TicketFromAPI>;
   selectedMode: LotteryMode;
   loading: {
+    ticketAfterRide: boolean;
     previousLottery: boolean;
     lottery: boolean;
     prizes: boolean;
