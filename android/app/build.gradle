@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
-apply plugin: 'com.google.gms.google-services'
+apply plugin: "com.google.gms.google-services"
+apply plugin: "io.sentry.android.gradle"
 
 project.ext.envConfigFiles = [
     devdebug: ".env.development",
@@ -78,6 +79,14 @@ def enableProguardInReleaseBuilds = true
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
+sentry {
+    // Enables or disables the automatic configuration of Native Symbols
+    uploadNativeSymbols = true
+
+    // Enables or disables the automatic upload of the app's native source code to Sentry.
+    includeNativeSources = true
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
