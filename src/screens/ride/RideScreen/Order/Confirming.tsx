@@ -45,7 +45,7 @@ const Confirming = () => {
 
   return (
     <>
-      <Fog />
+      <Fog withAnimation />
       <View style={styles.wrapper}>
         <View style={styles.imageContainer}>
           <TariffImage style={styles.image} />
