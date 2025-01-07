@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { MenuHeader, sizes, useTheme } from 'shuttlex-integration';
+import { LoadingBrandIconModes, LoadingStub, MenuHeader, sizes, useTheme } from 'shuttlex-integration';
 
 import { lotteryWinnerSelector } from '../../../core/lottery/redux/selectors';
 import {
@@ -33,7 +33,6 @@ import {
 } from '../../../core/ride/redux/trip/thunks';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
-import LoadingStub from './Loading';
 import MapView from './MapView';
 import Order from './Order';
 import { OrderRef } from './Order/types';
@@ -190,7 +189,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
 
   return (
     <>
-      {isLoadingStubVisible && <LoadingStub />}
+      {isLoadingStubVisible && <LoadingStub mode={LoadingBrandIconModes.Mode2} />}
       <SafeAreaView style={styles.wrapper}>
         <MapView onFirstCameraAnimationComplete={() => dispatch(setIsLoadingStubVisible(false))} />
         {topMenu[orderStatus]}
