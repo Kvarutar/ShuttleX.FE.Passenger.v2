@@ -3,6 +3,7 @@ import { NetworkErrorDetailsWithBody } from 'shuttlex-integration';
 
 import {
   changeAccountContactData,
+  deleteAccountRequest,
   getAccountSettingsVerifyStatus,
   requestAccountSettingsChangeDataVerificationCode,
   verifyAccountSettingsDataCode,
@@ -27,6 +28,7 @@ const initialState: AccountSettingsState = {
     verify: null,
     requestCode: null,
     getVerifyStatus: null,
+    deleteAccount: null,
   },
 };
 
@@ -42,6 +44,7 @@ const slice = createSlice({
       state.loading.changeData = initialState.loading.changeData;
       state.error.verify = initialState.error.verify;
       state.loading.verify = initialState.loading.verify;
+      state.error.deleteAccount = initialState.error.deleteAccount;
     },
   },
   extraReducers: builder => {
@@ -102,6 +105,17 @@ const slice = createSlice({
       .addCase(getAccountSettingsVerifyStatus.rejected, (state, action) => {
         state.loading.getVerifyStatus = false;
         state.error.getVerifyStatus = action.payload as NetworkErrorDetailsWithBody<any>;
+      })
+
+      //Delete Account
+      .addCase(deleteAccountRequest.pending, state => {
+        state.error.deleteAccount = null;
+      })
+      .addCase(deleteAccountRequest.fulfilled, state => {
+        state.error.deleteAccount = null;
+      })
+      .addCase(deleteAccountRequest.rejected, (state, action) => {
+        state.error.deleteAccount = action.payload as NetworkErrorDetailsWithBody<any>;
       });
   },
 });

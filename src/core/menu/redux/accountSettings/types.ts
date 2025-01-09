@@ -14,6 +14,7 @@ export type AccountSettingsState = {
     verify: Nullable<NetworkErrorDetailsWithBody<any>>;
     requestCode: Nullable<NetworkErrorDetailsWithBody<any>>;
     getVerifyStatus: Nullable<NetworkErrorDetailsWithBody<any>>;
+    deleteAccount: Nullable<NetworkErrorDetailsWithBody<any>>;
   };
   verifyStatus: VerifyStatusAPIResponse;
 };

@@ -1,7 +1,9 @@
 import DeviceInfo from 'react-native-device-info';
 import { formatPhone, getNetworkErrorInfo } from 'shuttlex-integration';
 
+import { signOut } from '../../../auth/redux/thunks';
 import { createAppAsyncThunk } from '../../../redux/hooks';
+import { deleteAccountRequestNetworkErrorInfo } from './errors';
 import {
   AccountSettingsVerificationConfirmType,
   ChangeAccountContactDataAPIRequest,
@@ -93,6 +95,19 @@ export const getAccountSettingsVerifyStatus = createAppAsyncThunk<VerifyStatusAP
       return result.data;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
+
+export const deleteAccountRequest = createAppAsyncThunk<void, void>(
+  'accountSettings/deleteAccountRequest',
+  async (_, { rejectWithValue, profileAxios, dispatch }) => {
+    try {
+      await profileAxios.delete('/profile');
+
+      dispatch(signOut());
+    } catch (error) {
+      return rejectWithValue(deleteAccountRequestNetworkErrorInfo(error));
     }
   },
 );

@@ -53,6 +53,10 @@ const slice = createSlice({
       state.ordersHistory = initialState.ordersHistory;
       state.isOrdersHistoryOffsetEmpty = initialState.isOrdersHistoryOffsetEmpty;
     },
+    clearPassengerInfo(state) {
+      state.profile = null;
+      state.zone = null;
+    },
     setActiveBottomWindowYCoordinate(
       state,
       action: PayloadAction<PassengerState['ui']['activeBottomWindowYCoordinate']>,
@@ -125,6 +129,7 @@ const slice = createSlice({
 
 export const {
   clearOrdersHistory,
+  clearPassengerInfo,
   setProfile,
   updateProfile,
   setZone,

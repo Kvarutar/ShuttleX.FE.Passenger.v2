@@ -2,17 +2,20 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import { useSelector } from 'react-redux';
 import { CodeVerificationScreen, isLockedError, milSecToTime, SafeAreaView } from 'shuttlex-integration';
 
+import { isCantDeleteAccountWhileInDebtError } from '../../../core/menu/redux/accountSettings/errors';
 import {
   accountSettingsChangeDataErrorSelector,
   accountSettingsVerifyStatusSelector,
+  deleteAccountErrorSelector,
   isAccountSettingsVerifyLoadingSelector,
 } from '../../../core/menu/redux/accountSettings/selectors';
 import {
   changeAccountContactData,
+  deleteAccountRequest,
   requestAccountSettingsChangeDataVerificationCode,
   verifyAccountSettingsDataCode,
 } from '../../../core/menu/redux/accountSettings/thunks';
@@ -32,6 +35,7 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
   const [lockoutEndTimestamp, setLockoutEndTimestamp] = useState(0);
 
   const changeDataError = useSelector(accountSettingsChangeDataErrorSelector);
+  const deleteAccountError = useSelector(deleteAccountErrorSelector);
   const isVerificationLoading = useSelector(isAccountSettingsVerifyLoadingSelector);
   const verifiedStatus = useSelector(accountSettingsVerifyStatusSelector);
 
@@ -55,9 +59,27 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
 
   useEffect(() => {
     if (!changeDataError && !isVerificationLoading) {
+      if (method === 'delete') {
+        dispatch(deleteAccountRequest());
+      } else {
+        navigation.goBack();
+      }
+    }
+  }, [dispatch, changeDataError, navigation, isVerificationLoading, method]);
+
+  useEffect(() => {
+    if (deleteAccountError) {
+      Alert.alert(
+        t('menu_AccountVerificateCode_deleteAccountErrorAlertTitle'),
+        t(
+          isCantDeleteAccountWhileInDebtError(deleteAccountError)
+            ? 'menu_AccountVerificateCode_deleteAccountErrorAlertDescriptionDebt'
+            : 'menu_AccountVerificateCode_deleteAccountErrorAlertDescriptionInvalidState',
+        ),
+      );
       navigation.goBack();
     }
-  }, [changeDataError, navigation, isVerificationLoading]);
+  }, [t, navigation, deleteAccountError]);
 
   useEffect(() => {
     if (changeDataError) {
@@ -91,8 +113,10 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
   return (
     <SafeAreaView>
       <CodeVerificationScreen
-        headerFirstText={t('menu_AccountVerificateCode_firstHeader')}
-        headerSecondText={t('menu_AccountVerificateCode_secondHeader')}
+        headerFirstText={t(
+          mode === 'email' ? 'menu_AccountVerificateCode_emailPrompt' : 'menu_AccountVerificateCode_phonePrompt',
+        )}
+        headerSecondText={defineMode}
         onBackButtonPress={navigation.goBack}
         onAgainButtonPress={handleRequestAgain}
         onCodeChange={handleCodeChange}

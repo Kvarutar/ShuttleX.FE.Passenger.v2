@@ -1,5 +1,5 @@
 import { LatLng } from 'react-native-maps';
-import { CountryPhoneMaskDto } from 'shuttlex-integration';
+import { AccountSettingsVerificationMethod, CountryPhoneMaskDto } from 'shuttlex-integration';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -18,7 +18,7 @@ export type RootStackParamList = {
   LockOut: undefined;
   AccountSettings: undefined;
   PromocodesScreen: undefined;
-  AccountVerificateCode: { mode: 'phone' | 'email'; newValue?: string; method?: 'change' | 'verify' };
+  AccountVerificateCode: { mode: 'phone' | 'email'; newValue?: string; method?: AccountSettingsVerificationMethod };
   Activity: undefined;
   Raffle: undefined;
   TicketWallet: undefined;

@@ -2,7 +2,14 @@ import { useSelector } from 'react-redux';
 import { isServerError } from 'shuttlex-integration';
 
 import { authErrorSelector } from '../../core/auth/redux/selectors';
-import { accountSettingsChangeDataErrorSelector } from '../../core/menu/redux/accountSettings/selectors';
+import {
+  isCantDeleteAccountWhileInDebtError,
+  isInvalidStateForAccountDeletingError,
+} from '../../core/menu/redux/accountSettings/errors';
+import {
+  accountSettingsChangeDataErrorSelector,
+  deleteAccountErrorSelector,
+} from '../../core/menu/redux/accountSettings/selectors';
 import { isRoutePointsLocationError } from '../../core/ride/redux/offer/errors';
 import { offerRoutesErrorSelector, tariffsPricesErrorSelector } from '../../core/ride/redux/offer/selectors';
 import { orderInfoErrorSelector } from '../../core/ride/redux/trip/selectors';
@@ -10,6 +17,7 @@ import { orderInfoErrorSelector } from '../../core/ride/redux/trip/selectors';
 const useServerErrorHandler = () => {
   const errors = [
     useSelector(offerRoutesErrorSelector),
+    useSelector(deleteAccountErrorSelector),
     useSelector(authErrorSelector),
     useSelector(tariffsPricesErrorSelector),
     useSelector(accountSettingsChangeDataErrorSelector),
@@ -18,11 +26,20 @@ const useServerErrorHandler = () => {
 
   const serverError = errors.find((error, index) => {
     if (error) {
-      // if error from offerRoutesErrorSelector
-      if (index === 0) {
-        return !isRoutePointsLocationError(error) && isServerError(error);
+      switch (index) {
+        // if error from offerRoutesErrorSelector
+        case 0:
+          return !isRoutePointsLocationError(error) && isServerError(error);
+        // if error from deleteAccountError
+        case 1:
+          return (
+            !isCantDeleteAccountWhileInDebtError(error) &&
+            !isInvalidStateForAccountDeletingError(error) &&
+            isServerError(error)
+          );
+        default:
+          return isServerError(error);
       }
-      return isServerError(error);
     }
   });
 

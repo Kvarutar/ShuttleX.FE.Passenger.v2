@@ -6,10 +6,13 @@ import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   AccountSettingsScreen,
+  AccountSettingsVerificationMethod,
   Button,
   ButtonShapes,
   ButtonSizes,
   CircleButtonModes,
+  ConfirmDeleteAccountPopup,
+  DeleteAccountPopup,
   MenuHeader,
   MenuUserImage2,
   SafeAreaView,
@@ -52,12 +55,18 @@ const AccountSettings = (): JSX.Element => {
   const isChangeDataLoading = useSelector(isAccountSettingsChangeDataLoadingSelector);
   const verifiedStatus = useSelector(accountSettingsVerifyStatusSelector);
   const [isSignOutPopupVisible, setIsSignOutPopupVisible] = useState(false);
+  const [isDeleteAccountPopupVisible, setIsDeleteAccountPopupVisible] = useState(false);
+  const [isConfirmDeleteAccountPopupVisible, setIsConfirmDeleteAccountPopupVisible] = useState(false);
 
   useEffect(() => {
     dispatch(resetAccountSettingsVerification());
   }, [verifyDataError, changeDataError, dispatch]);
 
-  const handleOpenVerification = async (mode: 'phone' | 'email', newValue: string, method: 'change' | 'verify') => {
+  const handleOpenVerification = async (
+    mode: 'phone' | 'email',
+    newValue: string,
+    method: AccountSettingsVerificationMethod,
+  ) => {
     if (!isChangeDataLoading && !changeDataError) {
       let oldData: string | undefined;
 
@@ -70,7 +79,6 @@ const AccountSettings = (): JSX.Element => {
           oldData = verifiedStatus.emailInfo;
           break;
       }
-
       switch (method) {
         case 'change':
           try {
@@ -81,8 +89,11 @@ const AccountSettings = (): JSX.Element => {
             navigation.navigate('AccountVerificateCode', { mode, newValue, method });
           } catch (_) {}
           break;
-
         case 'verify':
+          await dispatch(requestAccountSettingsChangeDataVerificationCode({ mode, data: oldData ?? '' }));
+          navigation.navigate('AccountVerificateCode', { mode, method });
+          break;
+        case 'delete':
           await dispatch(requestAccountSettingsChangeDataVerificationCode({ mode, data: oldData ?? '' }));
           navigation.navigate('AccountVerificateCode', { mode, method });
           break;
@@ -102,6 +113,7 @@ const AccountSettings = (): JSX.Element => {
         </MenuHeader>
         <AccountSettingsScreen
           setIsSignOutPopupVisible={setIsSignOutPopupVisible}
+          setIsDeleteAccountPopupVisible={setIsDeleteAccountPopupVisible}
           isChangeDataLoading={isChangeDataLoading}
           handleOpenVerification={handleOpenVerification}
           profile={{
@@ -116,6 +128,19 @@ const AccountSettings = (): JSX.Element => {
       </SafeAreaView>
       {isSignOutPopupVisible && (
         <SignOutPopup setIsSignOutPopupVisible={setIsSignOutPopupVisible} onSignOut={() => dispatch(signOut())} />
+      )}
+      {isDeleteAccountPopupVisible && (
+        <DeleteAccountPopup
+          setIsDeleteAccountPopupVisible={setIsDeleteAccountPopupVisible}
+          onPressYes={() => setIsConfirmDeleteAccountPopupVisible(true)}
+        />
+      )}
+      {isConfirmDeleteAccountPopupVisible && (
+        <ConfirmDeleteAccountPopup
+          handleOpenVerification={handleOpenVerification}
+          setIsConfirmDeleteAccountPopupVisible={setIsConfirmDeleteAccountPopupVisible}
+          userData={{ phone: verifiedStatus.phoneInfo, email: verifiedStatus.emailInfo }}
+        />
       )}
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
     </>
