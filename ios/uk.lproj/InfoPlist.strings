@@ -1,0 +1,4 @@
+"NSLocationWhenInUseUsageDescription" = "Ми використовуємо Ваше місцезнаходження для пошуку найближчих водіїв та розрахунку маршруту.";
+"NSPhotoLibraryUsageDescription" = "Доступ до галереї потрібен для завантаження фото вашого профілю.";
+"NSPhotoLibraryAddUsageDescription" = "Доступ до галереї потрібен для завантаження фото вашого профілю.";
+"NSCameraUsageDescription" = "Доступ до камери потрібен для завантаження фото профілю.";

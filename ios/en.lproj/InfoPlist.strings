@@ -1,0 +1,4 @@
+"NSLocationWhenInUseUsageDescription" = "We use your location to find nearby drivers and calculate your route.";
+"NSPhotoLibraryUsageDescription" = "Photo library access is needed to upload your profile picture.";
+"NSPhotoLibraryAddUsageDescription" = "Photo library access is needed to upload your profile picture.";
+"NSCameraUsageDescription" = "Camera access is needed to upload your profile photo.";

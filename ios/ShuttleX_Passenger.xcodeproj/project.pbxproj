@@ -15,6 +15,9 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		26ACF2213EB041D8AD358EA3 /* Dealerplate California.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 00B77111DE3D41E4822E2BA4 /* Dealerplate California.ttf */; };
 		312609149A248F3B839F915A /* Pods_SharedPods_ShuttleX_Passenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 152390E2EE49DEF7E501964D /* Pods_SharedPods_ShuttleX_Passenger.framework */; };
+		4BBF71C42D2EC1BB00F9AB34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4BBF71C82D2EC1BB00F9AB34 /* InfoPlist.strings */; };
+		4BBF71C52D2EC1BB00F9AB34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4BBF71C82D2EC1BB00F9AB34 /* InfoPlist.strings */; };
+		4BBF71C62D2EC1BB00F9AB34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4BBF71C82D2EC1BB00F9AB34 /* InfoPlist.strings */; };
 		73FB9756690D4DA393F41D2C /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C6EF64B7BE214801A1E90650 /* BootSplash.storyboard */; };
 		7469FC60AA60421C87EDD256 /* Inter Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0238A355658E430091BCF313 /* Inter Black.ttf */; };
 		755DCDA12C96225300BB9FFE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
@@ -76,6 +79,9 @@
 		3F9D08D4DE7DBC75DAB643FB /* Pods-SharePods-ShuttleX_PassengerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharePods-ShuttleX_PassengerTests.release.xcconfig"; path = "Target Support Files/Pods-SharePods-ShuttleX_PassengerTests/Pods-SharePods-ShuttleX_PassengerTests.release.xcconfig"; sourceTree = "<group>"; };
 		461F5E57531A781F7DD732A0 /* Pods-SharePods-ShuttleX_PassengerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharePods-ShuttleX_PassengerTests.debug.xcconfig"; path = "Target Support Files/Pods-SharePods-ShuttleX_PassengerTests/Pods-SharePods-ShuttleX_PassengerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4639270B582D43A8A29F6CEC /* Inter Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter Regular.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter Regular.ttf"; sourceTree = "<group>"; };
+		4BBF71C72D2EC1BB00F9AB34 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4BBF71C92D2EC1C200F9AB34 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4BBF71CA2D2EC1C600F9AB34 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		539E74757C7141D183435DAC /* Inter Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter Thin.ttf"; path = "../node_modules/shuttlex-integration/src/assets/fonts/Inter Thin.ttf"; sourceTree = "<group>"; };
 		573B0D619F2E7FB9CEF21A35 /* Pods-SharePods-ShuttleX_Passenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharePods-ShuttleX_Passenger.release.xcconfig"; path = "Target Support Files/Pods-SharePods-ShuttleX_Passenger/Pods-SharePods-ShuttleX_Passenger.release.xcconfig"; sourceTree = "<group>"; };
 		57F57A162F4BED116AEAA32E /* Pods-ShuttleX_Passenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShuttleX_Passenger.release.xcconfig"; path = "Target Support Files/Pods-ShuttleX_Passenger/Pods-ShuttleX_Passenger.release.xcconfig"; sourceTree = "<group>"; };
@@ -200,6 +206,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				4BBF71C82D2EC1BB00F9AB34 /* InfoPlist.strings */,
 				CF7F95BF2D0D9B0600FD07BC /* ShuttleX_Passenger_dev.entitlements */,
 				755DCDB92C96225300BB9FFE /* ShuttleX_Passenger_dev.plist */,
 				13B07FAE1A68108700A75B9A /* ShuttleX_Passenger */,
@@ -342,6 +349,8 @@
 			knownRegions = (
 				en,
 				Base,
+				uk,
+				ru,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
@@ -361,6 +370,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFBD7E2E2D0CA19F001EC941 /* GoogleService-Info.plist in Resources */,
+				4BBF71C62D2EC1BB00F9AB34 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,6 +379,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFBD7E2D2D0CA19F001EC941 /* GoogleService-Info.plist in Resources */,
+				4BBF71C42D2EC1BB00F9AB34 /* InfoPlist.strings in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				7469FC60AA60421C87EDD256 /* Inter Black.ttf in Resources */,
 				C831B16BA0424505A965D261 /* Inter Bold.ttf in Resources */,
@@ -389,6 +400,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFBD7E2C2D0CA19F001EC941 /* GoogleService-Info.plist in Resources */,
+				4BBF71C52D2EC1BB00F9AB34 /* InfoPlist.strings in Resources */,
 				755DCDA62C96225300BB9FFE /* Images.xcassets in Resources */,
 				755DCDA72C96225300BB9FFE /* Inter Black.ttf in Resources */,
 				755DCDA82C96225300BB9FFE /* Inter Bold.ttf in Resources */,
@@ -715,6 +727,19 @@
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		4BBF71C82D2EC1BB00F9AB34 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4BBF71C72D2EC1BB00F9AB34 /* en */,
+				4BBF71C92D2EC1C200F9AB34 /* uk */,
+				4BBF71CA2D2EC1C600F9AB34 /* ru */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
