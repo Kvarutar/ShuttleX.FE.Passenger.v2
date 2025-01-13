@@ -25,6 +25,7 @@ export const isOrderLongPollingLoadingSelector = (state: AppState) => state.trip
 export const isTripSuccessLongPollingLoadingSelector = (state: AppState) =>
   state.trip.loading.tripSuccessfullLongPolling;
 export const isTripCanceledBeforePickUpLoadingSelector = (state: AppState) => state.trip.loading.orderLongpolling;
+export const isCancelOfferLoadingSelector = (state: AppState) => state.trip.loading.cancelOffer;
 
 //Errors
 export const orderInfoErrorSelector = (state: AppState) => state.trip.error.orderInfo;

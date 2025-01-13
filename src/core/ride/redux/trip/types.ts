@@ -185,6 +185,7 @@ export type TripState = {
     cancelBeforePickUpLongPolling: boolean;
     cancelAfterPickUpLongPolling: boolean;
     tripSuccessfullLongPolling: boolean;
+    cancelOffer: boolean;
   };
   error: {
     orderInfo: Nullable<NetworkErrorDetailsWithBody<any>>;

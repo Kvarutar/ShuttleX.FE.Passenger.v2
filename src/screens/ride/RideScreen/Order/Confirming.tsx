@@ -1,18 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Bar, BarModes, CloseIcon, Fog, sizes, Text, useTariffsIcons, useTheme } from 'shuttlex-integration';
+import { useSelector } from 'react-redux';
+import {
+  Bar,
+  BarModes,
+  CloseIcon,
+  Fog,
+  LoadingSpinner,
+  sizes,
+  Text,
+  useTariffsIcons,
+  useTheme,
+} from 'shuttlex-integration';
 
 import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { cancelOffer } from '../../../../core/ride/redux/offer/thunks';
+import { isCancelOfferLoadingSelector } from '../../../../core/ride/redux/trip/selectors';
 
 const Confirming = () => {
   const { colors } = useTheme();
   const { t } = useTranslation();
-  const [dotsCounter, setDotsCounter] = useState(3);
   const dispatch = useAppDispatch();
   const tariffsIconsData = useTariffsIcons();
+
+  const isCancelOfferLoading = useSelector(isCancelOfferLoadingSelector);
+  const [dotsCounter, setDotsCounter] = useState(3);
 
   const TariffImage = tariffsIconsData.Basic.icon;
 
@@ -57,9 +71,13 @@ const Confirming = () => {
           <Bar
             mode={BarModes.Disabled}
             style={[styles.button, computedStyles.button]}
-            onPress={() => dispatch(cancelOffer())}
+            onPress={() => !isCancelOfferLoading && dispatch(cancelOffer())}
           >
-            <CloseIcon style={styles.closeIcon} />
+            {isCancelOfferLoading ? (
+              <LoadingSpinner iconMode={{ size: 60, strokeWidth: 5 }} />
+            ) : (
+              <CloseIcon style={styles.closeIcon} />
+            )}
           </Bar>
           <Text style={[styles.buttonText, computedStyles.buttonText]}>{t('ride_Ride_Confirming_cancelButton')}</Text>
         </View>

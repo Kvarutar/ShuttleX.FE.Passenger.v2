@@ -35,6 +35,7 @@ const initialState: TripState = {
     cancelAfterPickUpLongPolling: false,
     tripSuccessfullLongPolling: false,
     cancelTrip: false,
+    cancelOffer: false,
   },
   error: {
     orderInfo: null,
@@ -235,8 +236,15 @@ const slice = createSlice({
       })
 
       //CancelOffer - stops getOrderLongPolling
+      .addCase(cancelOffer.pending, state => {
+        state.loading.cancelOffer = true;
+      })
       .addCase(cancelOffer.fulfilled, state => {
         state.loading.orderLongpolling = false;
+        state.loading.cancelOffer = false;
+      })
+      .addCase(cancelOffer.rejected, state => {
+        state.loading.cancelOffer = false;
       })
 
       //cancelBeforePickUpLongPolling
