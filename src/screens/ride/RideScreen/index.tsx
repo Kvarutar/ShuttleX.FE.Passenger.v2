@@ -161,7 +161,9 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
 
   return (
     <>
-      {isLoadingStubVisible && <LoadingStub mode={LoadingBrandIconModes.Mode2} />}
+      {isLoadingStubVisible && (
+        <LoadingStub mode={LoadingBrandIconModes.Mode2} onTimeout={() => dispatch(setIsLoadingStubVisible(false))} />
+      )}
       <SafeAreaView style={styles.wrapper}>
         <MapView onFirstCameraAnimationComplete={() => dispatch(setIsLoadingStubVisible(false))} />
         {topMenu[orderStatus]}
