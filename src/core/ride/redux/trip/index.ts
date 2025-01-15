@@ -1,17 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { minToMilSec, NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 
-import { cancelOffer } from '../offer/thunks';
-import {
-  cancelTrip,
-  getCurrentOrder,
-  getOrderInfo,
-  getOrderLongPolling,
-  getRouteInfo,
-  getTripCanceledAfterPickUpLongPolling,
-  getTripCanceledBeforePickUpLongPolling,
-  getTripSuccessfullLongPolling,
-} from './thunks';
+import { cancelTrip, getCurrentOrder, getOrderInfo, getRouteInfo } from './thunks';
 import { ReceiptInfo, RouteDropOffApiResponse, RoutePickUpApiResponse, TripState, TripStatus } from './types';
 
 const initialState: TripState = {
@@ -219,74 +209,6 @@ const slice = createSlice({
       .addCase(cancelTrip.rejected, (state, action) => {
         state.error.cancelTrip = action.payload as NetworkErrorDetailsWithBody<any>;
         state.loading.cancelTrip = false;
-      })
-
-      //OrderLonpolling
-      .addCase(getOrderLongPolling.pending, state => {
-        state.loading.orderLongpolling = true;
-        state.error.orderLongpolling = null;
-      })
-      .addCase(getOrderLongPolling.fulfilled, state => {
-        state.loading.orderLongpolling = false;
-        state.error.orderLongpolling = null;
-      })
-      .addCase(getOrderLongPolling.rejected, (state, action) => {
-        state.loading.orderLongpolling = false;
-        state.error.orderLongpolling = action.payload as NetworkErrorDetailsWithBody<any>;
-      })
-
-      //CancelOffer - stops getOrderLongPolling
-      .addCase(cancelOffer.pending, state => {
-        state.loading.cancelOffer = true;
-      })
-      .addCase(cancelOffer.fulfilled, state => {
-        state.loading.orderLongpolling = false;
-        state.loading.cancelOffer = false;
-      })
-      .addCase(cancelOffer.rejected, state => {
-        state.loading.cancelOffer = false;
-      })
-
-      //cancelBeforePickUpLongPolling
-      .addCase(getTripCanceledBeforePickUpLongPolling.pending, state => {
-        state.loading.cancelBeforePickUpLongPolling = true;
-        state.error.cancelBeforePickUpLongPolling = null;
-      })
-      .addCase(getTripCanceledBeforePickUpLongPolling.fulfilled, state => {
-        state.loading.cancelBeforePickUpLongPolling = false;
-        state.error.cancelBeforePickUpLongPolling = null;
-      })
-      .addCase(getTripCanceledBeforePickUpLongPolling.rejected, (state, action) => {
-        state.loading.cancelBeforePickUpLongPolling = false;
-        state.error.cancelBeforePickUpLongPolling = action.payload as NetworkErrorDetailsWithBody<any>;
-      })
-
-      //cancelAfterPickUpLongPolling
-      .addCase(getTripCanceledAfterPickUpLongPolling.pending, state => {
-        state.loading.cancelAfterPickUpLongPolling = true;
-        state.error.cancelAfterPickUpLongPolling = null;
-      })
-      .addCase(getTripCanceledAfterPickUpLongPolling.fulfilled, state => {
-        state.loading.cancelAfterPickUpLongPolling = false;
-        state.error.cancelAfterPickUpLongPolling = null;
-      })
-      .addCase(getTripCanceledAfterPickUpLongPolling.rejected, (state, action) => {
-        state.loading.cancelAfterPickUpLongPolling = false;
-        state.error.cancelAfterPickUpLongPolling = action.payload as NetworkErrorDetailsWithBody<any>;
-      })
-
-      //TripSuccessfullLongPolling
-      .addCase(getTripSuccessfullLongPolling.pending, state => {
-        state.loading.tripSuccessfullLongPolling = true;
-        state.error.tripSuccessfullLongPolling = null;
-      })
-      .addCase(getTripSuccessfullLongPolling.fulfilled, state => {
-        state.loading.tripSuccessfullLongPolling = false;
-        state.error.tripSuccessfullLongPolling = null;
-      })
-      .addCase(getTripSuccessfullLongPolling.rejected, (state, action) => {
-        state.loading.tripSuccessfullLongPolling = false;
-        state.error.tripSuccessfullLongPolling = action.payload as NetworkErrorDetailsWithBody<any>;
       });
   },
 });

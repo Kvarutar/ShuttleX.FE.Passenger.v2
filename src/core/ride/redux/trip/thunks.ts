@@ -1,36 +1,16 @@
-import { convertBlobToImgUri, getNetworkErrorInfo, isCoordinatesEqualZero, Nullable } from 'shuttlex-integration';
+import { convertBlobToImgUri, getNetworkErrorInfo, Nullable } from 'shuttlex-integration';
 
-import { getTicketAfterRide } from '../../../lottery/redux/thunks';
 import { createAppAsyncThunk } from '../../../redux/hooks';
-import { offerSelector } from '../offer/selectors';
-import { createInitialOffer, getRecentDropoffs } from '../offer/thunks';
 import { TariffFromAPI } from '../offer/types';
-import { setOrderStatus } from '../order';
-import { OrderStatus } from '../order/types';
-import {
-  addFinishedTrips,
-  endTrip,
-  setIsOrderCanceled,
-  setIsOrderCanceledAlertVisible,
-  setTripIsCanceled,
-  setTripStatus,
-} from '.';
-import { isOrderCanceledSelector, tripStatusSelector } from './selectors';
 import {
   FeedbackAPIRequest,
   GetCurrentOrderAPIResponse,
   GetOrderInfoAPIResponse,
   GetTariffInfoByIdAPIResponse,
-  OrderLongPollingAPIResponse,
   OrderWithTariffInfo,
   RouteDropOffApiResponse,
   RoutePickUpApiResponse,
-  TripArivedLongPollingAPIResponse,
-  TripCanceledAfterPickupLongPollingAPIResponse,
   TripInfo,
-  TripInPickupLongPollingAPIResponse,
-  TripStatus,
-  TripSuccessfullLongPollingAPIResponse,
 } from './types';
 
 export const getTariffInfoById = createAppAsyncThunk<TariffFromAPI, { tariffId: string }>(
@@ -141,178 +121,6 @@ export const getRouteInfo = createAppAsyncThunk<
     return rejectWithValue(getNetworkErrorInfo(error));
   }
 });
-
-export const getOrderLongPolling = createAppAsyncThunk<string, string>(
-  'trip/getOrderLongPolling',
-  async (offerId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
-    try {
-      const response = await passengerLongPollingAxios.get<OrderLongPollingAPIResponse>(
-        `/Offer/${offerId}/confirmed/long-polling`,
-        { signal: abortAllSignal },
-      );
-
-      const tripStatus = tripStatusSelector(getState());
-
-      //Check trip status because notifications can get information earlier
-      if (tripStatus !== TripStatus.Accepted) {
-        dispatch(getOrderInfo(response.data.orderId));
-        dispatch(getRouteInfo(response.data.orderId));
-        dispatch(setTripStatus(TripStatus.Accepted));
-        dispatch(setIsOrderCanceled(false));
-      }
-
-      return response.data.orderId;
-    } catch (error) {
-      return rejectWithValue(getNetworkErrorInfo(error));
-    }
-  },
-);
-
-export const getTripSuccessfullLongPolling = createAppAsyncThunk<string, string>(
-  'trip/getTripSuccessfullLongPolling',
-  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
-    try {
-      const response = await passengerLongPollingAxios.get<TripSuccessfullLongPollingAPIResponse>(
-        `/Order/${orderId}/successfull/long-polling`,
-        { signal: abortAllSignal },
-      );
-      const tripStatus = tripStatusSelector(getState());
-
-      if (tripStatus !== TripStatus.Finished) {
-        dispatch(addFinishedTrips());
-        //TODO go to rating page
-        dispatch(getTicketAfterRide());
-        dispatch(setTripStatus(TripStatus.Finished));
-        dispatch(getRecentDropoffs({ amount: 10 }));
-      }
-      return response.data.orderId;
-    } catch (error) {
-      return rejectWithValue(getNetworkErrorInfo(error));
-    }
-  },
-);
-
-export const getTripCanceledBeforePickUpLongPolling = createAppAsyncThunk<void, string>(
-  'trip/getTripCanceledBeforePickUpLongPolling',
-  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
-    try {
-      await passengerLongPollingAxios.get(`/Order/${orderId}/canceled/before-pickup/long-polling`, {
-        signal: abortAllSignal,
-      });
-
-      const isOrderCanceled = isOrderCanceledSelector(getState());
-      const offer = offerSelector(getState());
-
-      //Because it can be changed in longpolling thunk
-      if (!isOrderCanceled) {
-        dispatch(endTrip());
-
-        //TODO: Rewrite with saving points on the device
-        if (isCoordinatesEqualZero(offer.points[0]) || isCoordinatesEqualZero(offer.points[1])) {
-          dispatch(setIsOrderCanceledAlertVisible(true));
-          return;
-        }
-
-        dispatch(createInitialOffer());
-        dispatch(setOrderStatus(OrderStatus.Confirming));
-        dispatch(setIsOrderCanceled(true));
-      }
-    } catch (error) {
-      return rejectWithValue(getNetworkErrorInfo(error));
-    }
-  },
-);
-
-export const getTripCanceledAfterPickUpLongPolling = createAppAsyncThunk<string, string>(
-  'trip/getTripCanceledAfterPickUpLongPolling',
-  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
-    try {
-      const response = await passengerLongPollingAxios.get<TripCanceledAfterPickupLongPollingAPIResponse>(
-        `/Order/${orderId}/canceled/after-pickup/long-polling`,
-        { signal: abortAllSignal },
-      );
-      const tripStatus = tripStatusSelector(getState());
-
-      if (tripStatus !== TripStatus.Finished) {
-        dispatch(setTripIsCanceled(true));
-        dispatch(setTripStatus(TripStatus.Finished));
-      }
-      return response.data.orderId;
-    } catch (error) {
-      return rejectWithValue(getNetworkErrorInfo(error));
-    }
-  },
-);
-
-export const getArrivedLongPolling = createAppAsyncThunk<TripArivedLongPollingAPIResponse, string>(
-  'trip/getArrivedLongPolling',
-  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
-    try {
-      const response = await passengerLongPollingAxios.get<TripArivedLongPollingAPIResponse>(
-        `/Order/${orderId}/arrived/long-polling`,
-        { signal: abortAllSignal },
-      );
-
-      const tripStatus = tripStatusSelector(getState());
-
-      if (tripStatus !== TripStatus.Arrived) {
-        dispatch(getCurrentOrder());
-      }
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(getNetworkErrorInfo(error));
-    }
-  },
-);
-
-export const getInPickUpLongPolling = createAppAsyncThunk<TripInPickupLongPollingAPIResponse, string>(
-  'trip/getInPickUpLongPolling',
-  async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch, getState, abortAllSignal }) => {
-    try {
-      const response = await passengerLongPollingAxios.get<TripInPickupLongPollingAPIResponse>(
-        `/Order/${orderId}/in-pick-up/long-polling`,
-        { signal: abortAllSignal },
-      );
-      const tripStatus = tripStatusSelector(getState());
-
-      if (tripStatus !== TripStatus.Ride) {
-        dispatch(getCurrentOrder());
-      }
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(getNetworkErrorInfo(error));
-    }
-  },
-);
-
-// TODO for now we dont have logic for this
-// export const getInStopPointLongPolling = createAppAsyncThunk<TripInStopPointAPIResponse, string>(
-//   'trip/getInStopPointLongPolling',
-//   async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch }) => {
-//     try {
-//       const response = await passengerLongPollingAxios.get<TripInStopPointAPIResponse>(
-//         `/Order/${orderId}/in-stop-point/long-polling`,
-//       );
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(getNetworkErrorInfo(error));
-//     }
-//   },
-// );
-
-// export const getInDropOffLongPolling = createAppAsyncThunk<TripInDropOffAPIResponse, string>(
-//   'trip/getInDropOffLongPolling',
-//   async (orderId, { rejectWithValue, passengerLongPollingAxios, dispatch }) => {
-//     try {
-//       const response = await passengerLongPollingAxios.get<TripInDropOffAPIResponse>(
-//         `/Order/${orderId}/in-drop-off/long-polling`,
-//       );
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(getNetworkErrorInfo(error));
-//     }
-//   },
-// );
 
 export const sendFeedback = createAppAsyncThunk<FeedbackAPIRequest, { orderId: string; payload: FeedbackAPIRequest }>(
   'trip/sendFeedback',

@@ -18,29 +18,20 @@ import {
   setTripStatus,
 } from '../../ride/redux/trip';
 import { isOrderCanceledSelector, orderInfoSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
-import {
-  getArrivedLongPolling,
-  getCurrentOrder,
-  getInPickUpLongPolling,
-  getOrderInfo,
-  getOrderLongPolling,
-  getRouteInfo,
-  getTripCanceledAfterPickUpLongPolling,
-  getTripCanceledBeforePickUpLongPolling,
-  getTripSuccessfullLongPolling,
-} from '../../ride/redux/trip/thunks';
+import { getCurrentOrder, getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
-import { NotificationPayload, NotificationRemoteMessage, NotificationType } from './types';
+import { NotificationPayload, NotificationRemoteMessage, SSEAndNotificationsEventType } from './types';
 
 //display notiff without buttons
-const isValidNotificationType = (key: string): key is NotificationType => {
-  return Object.values(NotificationType).includes(key as NotificationType);
+const isValidNotificationType = (key: string): key is SSEAndNotificationsEventType => {
+  return Object.values(SSEAndNotificationsEventType).includes(key as SSEAndNotificationsEventType);
 };
 
-const notificationHandlers: Record<NotificationType, (payload: NotificationPayload | undefined) => Promise<void>> = {
-  [NotificationType.DriverAccepted]: async payload => {
-    getOrderLongPolling.abortAll();
-
+const notificationHandlers: Record<
+  SSEAndNotificationsEventType,
+  (payload: NotificationPayload | undefined) => Promise<void>
+> = {
+  [SSEAndNotificationsEventType.DriverAccepted]: async payload => {
     const tripStatus = tripStatusSelector(store.getState());
 
     //Check trip status because longpolling can get information earlier
@@ -51,9 +42,7 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
       store.dispatch(setIsOrderCanceled(false));
     }
   },
-  [NotificationType.TripEnded]: async () => {
-    getTripSuccessfullLongPolling.abortAll();
-
+  [SSEAndNotificationsEventType.TripEnded]: async () => {
     const tripStatus = tripStatusSelector(store.getState());
 
     if (tripStatus !== TripStatus.Finished) {
@@ -64,7 +53,7 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
       store.dispatch(getRecentDropoffs({ amount: 10 }));
     }
   },
-  [NotificationType.WinnerFounded]: async payload => {
+  [SSEAndNotificationsEventType.WinnerFounded]: async payload => {
     if (payload?.prizeIds && payload.ticketNumber) {
       store.dispatch(
         setWinnerPrizes({
@@ -74,9 +63,7 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
       );
     }
   },
-  [NotificationType.DriverArrived]: async () => {
-    getArrivedLongPolling.abortAll();
-
+  [SSEAndNotificationsEventType.DriverArrived]: async () => {
     const tripStatus = tripStatusSelector(store.getState());
     if (tripStatus !== TripStatus.Arrived) {
       store.dispatch(getCurrentOrder());
@@ -84,9 +71,7 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
   },
 
   // BeforePickup when trip doesnt start and driver rejected - go to search driver again
-  [NotificationType.DriverCanceled]: async () => {
-    getTripCanceledBeforePickUpLongPolling.abortAll();
-
+  [SSEAndNotificationsEventType.DriverCanceled]: async () => {
     const isOrderCanceled = isOrderCanceledSelector(store.getState());
     const offer = offerSelector(store.getState());
 
@@ -107,9 +92,7 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
   },
 
   //AfterPickUp when trip started and driver canceled trip - go to receipt screen
-  [NotificationType.DriverRejected]: async () => {
-    getTripCanceledAfterPickUpLongPolling.abortAll();
-
+  [SSEAndNotificationsEventType.DriverRejected]: async () => {
     store.dispatch(setTripIsCanceled(true));
     const orderInfo = orderInfoSelector(store.getState());
     const tripStatus = tripStatusSelector(store.getState());
@@ -122,9 +105,7 @@ const notificationHandlers: Record<NotificationType, (payload: NotificationPaylo
     }
   },
 
-  [NotificationType.TripStarted]: async () => {
-    getInPickUpLongPolling.abortAll();
-
+  [SSEAndNotificationsEventType.TripStarted]: async () => {
     const tripStatus = tripStatusSelector(store.getState());
     if (tripStatus !== TripStatus.Ride) {
       store.dispatch(getCurrentOrder());

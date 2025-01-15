@@ -16,21 +16,10 @@ import { setIsLoadingStubVisible } from '../../../core/passenger/redux';
 import { isLoadingStubVisibleSelector } from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
-import { offerIdSelector } from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
 import { setIsOrderCanceledAlertVisible } from '../../../core/ride/redux/trip';
-import {
-  isOrderCanceledAlertVisibleSelector,
-  orderIdSelector,
-  orderSelector,
-} from '../../../core/ride/redux/trip/selectors';
-import {
-  getArrivedLongPolling,
-  getInPickUpLongPolling,
-  getOrderLongPolling,
-  getTripCanceledBeforePickUpLongPolling,
-} from '../../../core/ride/redux/trip/thunks';
+import { isOrderCanceledAlertVisibleSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
 import MapView from './MapView';
@@ -56,17 +45,9 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   // const [isMysteryBoxPopupVisible, setIsMysteryBoxPopupVisible] = useState(false);
 
   const orderInfo = useSelector(orderSelector);
-  const orderId = useSelector(orderIdSelector);
-  const offerId = useSelector(offerIdSelector);
   const isOrderCanceledAlertVisible = useSelector(isOrderCanceledAlertVisibleSelector);
 
   const isLoadingStubVisible = useSelector(isLoadingStubVisibleSelector);
-
-  useEffect(() => {
-    if (offerId && orderStatus === OrderStatus.Confirming) {
-      dispatch(getOrderLongPolling(offerId));
-    }
-  }, [dispatch, offerId, orderStatus]);
 
   useEffect(() => {
     if (lotteryWinner?.ticket.length !== 0) {
@@ -77,15 +58,6 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
   useEffect(() => {
     dispatch(getAccountSettingsVerifyStatus());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (orderId) {
-      dispatch(getTripCanceledBeforePickUpLongPolling(orderId));
-      dispatch(getArrivedLongPolling(orderId));
-      dispatch(getInPickUpLongPolling(orderId));
-      dispatch(getArrivedLongPolling(orderId));
-    }
-  }, [orderId, dispatch]);
 
   useEffect(() => {
     (async () => {

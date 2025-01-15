@@ -8,7 +8,7 @@ export interface NotificationRemoteMessage {
   };
 }
 
-export enum NotificationType {
+export enum SSEAndNotificationsEventType {
   DriverAccepted = 'driver_accepted',
   TripStarted = 'trip_started',
   TripEnded = 'trip_ended',

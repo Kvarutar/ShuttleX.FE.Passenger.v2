@@ -29,11 +29,7 @@ import {
   orderTariffInfoSelector,
   tripStatusSelector,
 } from '../../../../core/ride/redux/trip/selectors';
-import {
-  cancelTrip,
-  getTripCanceledAfterPickUpLongPolling,
-  getTripSuccessfullLongPolling,
-} from '../../../../core/ride/redux/trip/thunks';
+import { cancelTrip } from '../../../../core/ride/redux/trip/thunks';
 import { TripStatus } from '../../../../core/ride/redux/trip/types';
 import { RootStackParamList } from '../../../../Navigate/props';
 import AlertInitializer from '../../../../shared/AlertInitializer';
@@ -67,11 +63,6 @@ const Trip = () => {
   });
 
   useEffect(() => {
-    if (orderId && tripStatus === TripStatus.Ride) {
-      dispatch(getTripSuccessfullLongPolling(orderId));
-      dispatch(getTripCanceledAfterPickUpLongPolling(orderId));
-    }
-
     if (tripStatus === TripStatus.Finished && !isTripCanceledLoading) {
       if (isTripCanceled) {
         navigation.navigate('Receipt');

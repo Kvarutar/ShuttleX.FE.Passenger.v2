@@ -105,23 +105,6 @@ export type FeedbackAPIRequest = {
   negativeFeedbacks: FeedbackRatingReasonsToAPI[];
 };
 
-export type LongPollingAPIResponse = {
-  orderId: string;
-};
-
-export type LongPollingInSomePointAPIResponse = {
-  orderId: string;
-  date: string;
-};
-
-export type OrderLongPollingAPIResponse = LongPollingAPIResponse;
-export type TripSuccessfullLongPollingAPIResponse = LongPollingAPIResponse;
-export type TripArivedLongPollingAPIResponse = LongPollingAPIResponse;
-export type TripCanceledAfterPickupLongPollingAPIResponse = LongPollingAPIResponse;
-export type TripInPickupLongPollingAPIResponse = LongPollingInSomePointAPIResponse;
-export type TripInStopPointAPIResponse = LongPollingInSomePointAPIResponse;
-export type TripInDropOffAPIResponse = LongPollingInSomePointAPIResponse;
-
 export type GetTariffInfoByIdAPIResponse = TariffFromAPI;
 
 //TODO do something with this type

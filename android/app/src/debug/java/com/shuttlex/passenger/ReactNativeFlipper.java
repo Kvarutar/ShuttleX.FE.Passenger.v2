@@ -39,13 +39,14 @@ public class ReactNativeFlipper {
       client.addPlugin(CrashReporterPlugin.getInstance());
 
       NetworkFlipperPlugin networkFlipperPlugin = new NetworkFlipperPlugin();
-      NetworkingModule.setCustomClientBuilder(
-          new NetworkingModule.CustomClientBuilder() {
-            @Override
-            public void apply(OkHttpClient.Builder builder) {
-              builder.addNetworkInterceptor(new FlipperOkhttpInterceptor(networkFlipperPlugin));
-            }
-          });
+      //This is commented out because it used to block the SSE stream
+      // NetworkingModule.setCustomClientBuilder(
+      //     new NetworkingModule.CustomClientBuilder() {
+      //       @Override
+      //       public void apply(OkHttpClient.Builder builder) {
+      //         builder.addNetworkInterceptor(new FlipperOkhttpInterceptor(networkFlipperPlugin));
+      //       }
+      //     });
       client.addPlugin(networkFlipperPlugin);
       client.start();
 
