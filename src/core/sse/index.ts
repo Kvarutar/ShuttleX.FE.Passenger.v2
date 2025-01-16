@@ -1,5 +1,6 @@
 import Config from 'react-native-config';
 import EventSource from 'react-native-sse';
+import { Nullable } from 'shuttlex-integration';
 
 import { SSEAndNotificationsEventType } from '../utils/notifications/types';
 import {
@@ -11,8 +12,10 @@ import {
   tripStartedSSEHandler,
 } from './handlers';
 
+let eventSource: Nullable<EventSource<SSEAndNotificationsEventType>> = null;
+
 export const initializeSSEConnection = (accessToken: string) => {
-  const eventSource = new EventSource<SSEAndNotificationsEventType>(`${Config.SSE_URL}/connect?userType=passenger`, {
+  eventSource = new EventSource<SSEAndNotificationsEventType>(`${Config.SSE_URL}/connect?userType=passenger`, {
     method: 'GET',
     headers: {
       Accept: '*/*',
@@ -28,4 +31,17 @@ export const initializeSSEConnection = (accessToken: string) => {
   eventSource.addEventListener(SSEAndNotificationsEventType.TripEnded, tripEndedSSEHandler);
   eventSource.addEventListener(SSEAndNotificationsEventType.DriverCanceled, driverCanceledSSEHandler);
   eventSource.addEventListener(SSEAndNotificationsEventType.DriverRejected, driverRejectedSSEHandler);
+};
+
+export const removeAllSSEListeners = () => {
+  if (eventSource) {
+    eventSource.removeAllEventListeners();
+  }
+};
+
+export const closeSSEConnection = () => {
+  if (eventSource) {
+    eventSource.close();
+    eventSource = null;
+  }
 };

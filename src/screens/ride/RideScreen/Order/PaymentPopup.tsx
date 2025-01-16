@@ -37,6 +37,7 @@ import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/curr
 import { logger } from '../../../../App';
 import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
 import { useAppDispatch } from '../../../../core/redux/hooks';
+import { setMapCars } from '../../../../core/ride/redux/map';
 import {
   isOfferCreateLoadingSelector,
   offerCreateErrorSelector,
@@ -289,6 +290,7 @@ const PaymentPopup = () => {
       }
 
       if (status === 'success' && !offerCreateError) {
+        dispatch(setMapCars([]));
         dispatch(setOrderStatus(OrderStatus.Confirming));
       }
     };

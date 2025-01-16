@@ -7,6 +7,7 @@ import { clearPassengerInfo, setIsLoadingStubVisible } from '../../passenger/red
 import { createAppAsyncThunk } from '../../redux/hooks';
 import { clearOffer } from '../../ride/redux/offer';
 import { cleanOrder } from '../../ride/redux/order';
+import { closeSSEConnection, removeAllSSEListeners } from '../../sse';
 import { setIsLoggedIn } from '.';
 import {
   SignInAPIRequest,
@@ -86,6 +87,9 @@ export const signOut = createAppAsyncThunk<void, void>(
       }
 
       //clean work
+      removeAllSSEListeners();
+      closeSSEConnection();
+
       dispatch(cleanOrder());
       dispatch(clearOffer());
       dispatch(clearPassengerInfo());

@@ -196,7 +196,7 @@ const ActivityScreen = () => {
               <FlatList
                 contentContainerStyle={styles.recentAddressesContainer}
                 showsVerticalScrollIndicator={false}
-                data={ordersHistory}
+                data={ordersHistory.filter(orderHistory => orderHistory.finishedDate)}
                 renderItem={({ item }) => <RecentAddressesBar order={item} />}
                 onEndReached={loadMoreRecentAddresses}
                 ListFooterComponent={isOrdersHistoryLoading ? <LoadingSpinner /> : <></>}
