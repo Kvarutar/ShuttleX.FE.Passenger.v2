@@ -24,19 +24,18 @@ import { setCurrentSelectedTariff, setEstimatedPrice, setTripTariff } from '../.
 import { groupedTariffsSelector, offerRoutesSelector } from '../../../../../core/ride/redux/offer/selectors';
 import { getTariffsPrices } from '../../../../../core/ride/redux/offer/thunks';
 import { SelectedTariff, TariffCategory, TariffsType } from '../../../../../core/ride/redux/offer/types';
-import { setOrderStatus } from '../../../../../core/ride/redux/order';
+import { setIsAddressSelectVisible, setOrderStatus } from '../../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../../core/ride/redux/order/types';
 import MapCameraModeButton from '../../MapCameraModeButton';
 import TariffBar from './TariffBar';
 import TariffGroup from './TariffGroup';
-import { TariffsProps } from './types';
 
 const carsAnimationDelaysInMilSec = {
   tariffBar: 200,
   tariffGroup: 100,
 };
 
-const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
+const Tariffs = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -94,7 +93,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
 
   const onBackPress = () => {
     dispatch(setOrderStatus(OrderStatus.StartRide));
-    setIsAddressSelectVisible(true);
+    dispatch(setIsAddressSelectVisible(true));
   };
 
   const resetTariffPrice = useCallback(
@@ -233,7 +232,7 @@ const Tariffs = ({ setIsAddressSelectVisible }: TariffsProps) => {
       onGestureUpdate={callback => dispatch(setActiveBottomWindowYCoordinate(callback.y))}
       setIsOpened={value => {
         setWindowIsOpened(value);
-        if (withAnimatedBigCars) {
+        if (withAnimatedBigCars.current) {
           withAnimatedBigCars.current = false;
         }
       }}

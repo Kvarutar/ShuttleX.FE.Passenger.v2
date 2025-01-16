@@ -55,6 +55,9 @@ export type OfferState = {
     tariffsPrices: Nullable<NetworkErrorDetailsWithBody<any>>;
     offerCreate: Nullable<NetworkErrorDetailsWithBody<any>>;
   };
+  ui: {
+    isTooShortRouteLengthPopupVisible: boolean;
+  };
   offerRoutes: Nullable<OfferRoutesFromAPI>;
   avaliableTariffs: Nullable<TariffWithMatching[]>;
   selectedTariff: Nullable<SelectedTariff>;

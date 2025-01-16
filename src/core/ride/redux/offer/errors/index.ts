@@ -9,6 +9,12 @@ export const isRoutePointsLocationError = (
   return errorResponse.status === NetworkErrorsStatuses.ServerError && errorResponse.body?.code === 10006;
 };
 
+export const isRouteLengthTooShortError = (
+  errorResponse: NetworkErrorDetailsWithBody<RoutePointsLocationErrorBody>,
+): errorResponse is NetworkErrorDetailsWithBody<RoutePointsLocationErrorBody> => {
+  return errorResponse.status === NetworkErrorsStatuses.ServerError && errorResponse.body?.code === 10008;
+};
+
 export const getOfferNetworkErrorInfo = (error: any): NetworkErrorDetailsWithBody<any> => {
   if (isAxiosError(error) && error.response) {
     const code = error.response.status;

@@ -27,7 +27,3 @@ export type TariffGroupType = {
   name: TariffsType;
   tariffs: TariffWithMatching[];
 };
-
-export type TariffsProps = {
-  setIsAddressSelectVisible: (state: boolean) => void;
-};

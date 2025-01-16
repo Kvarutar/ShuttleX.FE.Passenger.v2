@@ -10,4 +10,7 @@ export enum OrderStatus {
 export type OrderState = {
   status: OrderStatus;
   isLoading: boolean;
+  ui: {
+    isAddressSelectVisible: boolean;
+  };
 };

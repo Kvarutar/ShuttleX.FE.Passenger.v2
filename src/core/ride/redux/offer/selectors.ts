@@ -55,6 +55,8 @@ export const isAvailableTariffsLoadingSelector = (state: AppState) => state.offe
 export const isOfferRoutesLoadingSelector = (state: AppState) => state.offer.loading.offerRoutes;
 export const isOfferCreateLoadingSelector = (state: AppState) => state.offer.loading.offerCreate;
 export const isCityAvailableLoadingSelector = (state: AppState) => state.offer.loading.isCityAvailable;
+export const isTooShortRouteLengthPopupVisibleSelector = (state: AppState) =>
+  state.offer.ui.isTooShortRouteLengthPopupVisible;
 
 //Errors
 export const recentDropoffsErrorSelector = (state: AppState) => state.offer.errors.recentDropoffs;

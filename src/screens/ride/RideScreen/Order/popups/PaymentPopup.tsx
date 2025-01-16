@@ -34,21 +34,23 @@ import {
 import { BottomWindowRef } from 'shuttlex-integration/lib/typescript/src/shared/molecules/BottomWindow/props';
 import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
-import { logger } from '../../../../App';
-import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
-import { useAppDispatch } from '../../../../core/redux/hooks';
-import { setMapCars } from '../../../../core/ride/redux/map';
+import { logger } from '../../../../../App';
+import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/redux';
+import { useAppDispatch } from '../../../../../core/redux/hooks';
+import { setMapCars } from '../../../../../core/ride/redux/map';
 import {
   isOfferCreateLoadingSelector,
   offerCreateErrorSelector,
   offerSelector,
-} from '../../../../core/ride/redux/offer/selectors';
-import { createInitialOffer } from '../../../../core/ride/redux/offer/thunks';
-import { setOrderStatus } from '../../../../core/ride/redux/order';
-import { OrderStatus } from '../../../../core/ride/redux/order/types';
-import PlanButton from '../PlanButton/PlanButton';
-import { checkPaymentStatus } from './handlePayments';
-import { DefaultPaymentMethodsType } from './types';
+} from '../../../../../core/ride/redux/offer/selectors';
+import { createInitialOffer } from '../../../../../core/ride/redux/offer/thunks';
+import { setOrderStatus } from '../../../../../core/ride/redux/order';
+import { OrderStatus } from '../../../../../core/ride/redux/order/types';
+import PlanButton from '../../PlanButton/PlanButton';
+import { checkPaymentStatus, PaymentStatusAPIResponse } from '../handlePayments';
+import { DefaultPaymentMethodsType } from '../types';
+
+export type PaymentStatus = PaymentStatusAPIResponse['status'] | 'pending';
 
 const testPaymentMethods: { method: DefaultPaymentMethodsType; details: string; expiresAt: string }[] = [
   {
@@ -152,9 +154,20 @@ const PaymentPopup = () => {
   const [selectedTime, setSelectedTime] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedPayment, setSelectedPayment] = useState<DefaultPaymentMethodsType>('cash');
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('pending');
   const [dateTimeTitle, setDateTimeTitle] = useState(t('ride_Ride_PaymentPopup_defaultTime'));
   const [confirmDateChecker, setConfirmDateChecker] = useState(false);
   //const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isOfferCreateLoading) {
+      //TODO: Add other errors handling if need
+      if (paymentStatus === 'success' && !offerCreateError) {
+        dispatch(setMapCars([]));
+        dispatch(setOrderStatus(OrderStatus.Confirming));
+      }
+    }
+  }, [dispatch, paymentStatus, offerCreateError, isOfferCreateLoading]);
 
   const computedStyles = StyleSheet.create({
     wrapper: {
@@ -259,7 +272,6 @@ const PaymentPopup = () => {
     //TODO: rewrite this logic after we connect payment
     const onConfirmPress = async () => {
       const paymentId = '3456677'; //TODO: get to know from where I can get it?
-      let status = 'pending';
       // const price = planPriceCounting(
       //   Number(availableTestPlans[selectedPlan].durationSec),
       //   availableTestPlans[selectedPlan].algorythm,
@@ -268,7 +280,7 @@ const PaymentPopup = () => {
       switch (selectedPayment) {
         case 'cash':
           await dispatch(createInitialOffer());
-          status = 'success';
+          setPaymentStatus('success');
           break;
         case 'card':
           //await handleMonoPayment({ amount: price, setPaymentUrl });
@@ -283,15 +295,11 @@ const PaymentPopup = () => {
 
       if (selectedPayment !== 'cash') {
         try {
-          status = await checkPaymentStatus(paymentId);
+          const status: PaymentStatus = await checkPaymentStatus(paymentId);
+          setPaymentStatus(status);
         } catch (error) {
-          status = 'failed';
+          setPaymentStatus('failed');
         }
-      }
-
-      if (status === 'success' && !offerCreateError) {
-        dispatch(setMapCars([]));
-        dispatch(setOrderStatus(OrderStatus.Confirming));
       }
     };
 

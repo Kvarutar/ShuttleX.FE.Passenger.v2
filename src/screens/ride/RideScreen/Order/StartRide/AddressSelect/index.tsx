@@ -22,7 +22,7 @@ import {
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
-import { isRoutePointsLocationError } from '../../../../../../core/ride/redux/offer/errors';
+import { isRouteLengthTooShortError, isRoutePointsLocationError } from '../../../../../../core/ride/redux/offer/errors';
 import {
   isAvailableTariffsLoadingSelector,
   isCityAvailableSelector,
@@ -294,7 +294,8 @@ const AddressSelect = ({
     !isAllOfferPointsFilled ||
     incorrectWaypoints ||
     !isCityAvailable ||
-    (offerRoutesError !== null && isRoutePointsLocationError(offerRoutesError));
+    (offerRoutesError !== null &&
+      (isRoutePointsLocationError(offerRoutesError) || isRouteLengthTooShortError(offerRoutesError)));
 
   return (
     <>

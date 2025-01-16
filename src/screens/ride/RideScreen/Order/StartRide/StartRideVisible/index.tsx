@@ -6,8 +6,10 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import { Bar, BarModes, SearchIcon, sizes, Text, useTheme } from 'shuttlex-integration';
 
+import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { offerRecentDropoffsSelector } from '../../../../../../core/ride/redux/offer/selectors';
 import { RecentDropoffsFromAPI } from '../../../../../../core/ride/redux/offer/types';
+import { setIsAddressSelectVisible } from '../../../../../../core/ride/redux/order';
 import PlaceBar from '../../PlaceBar';
 import HeaderCarousel from './HeaderCarousel';
 import { StartRideVisibleProps } from './types';
@@ -19,9 +21,11 @@ const animationsDurations = {
   scrollViewContainer: 300,
 };
 
-const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddressSelect }: StartRideVisibleProps) => {
+const StartRideVisible = ({ isBottomWindowOpen, setFastAddressSelect }: StartRideVisibleProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
 
   const isRecentDropoffsExist = useMemo(() => recentDropoffs.length > 0, [recentDropoffs]);
@@ -56,11 +60,11 @@ const StartRideVisible = ({ openAddressSelect, isBottomWindowOpen, setFastAddres
     setIsSearchBarVisible(offsetX <= windowWidth * 0.75 - 62);
   };
 
-  const openAddressSelectHandler = () => openAddressSelect(true);
+  const openAddressSelectHandler = () => dispatch(setIsAddressSelectVisible(true));
 
   const onFastAddressSelectHandler = (place: RecentDropoffsFromAPI) => () => {
     setFastAddressSelect(place);
-    openAddressSelect(true);
+    dispatch(setIsAddressSelectVisible(true));
   };
 
   const searchBar = (

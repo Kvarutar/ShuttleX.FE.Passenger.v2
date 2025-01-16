@@ -11,122 +11,132 @@ import {
 import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/redux';
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
-import { cleanOfferPoints } from '../../../../../core/ride/redux/offer';
+import { cleanOfferPoints, setIsTooShortRouteLengthPopupVisible } from '../../../../../core/ride/redux/offer';
+import { isRouteLengthTooShortError } from '../../../../../core/ride/redux/offer/errors';
 import {
   isCityAvailableLoadingSelector,
   isCityAvailableSelector,
+  isTooShortRouteLengthPopupVisibleSelector,
+  offerRoutesErrorSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
 import { RecentDropoffsFromAPI } from '../../../../../core/ride/redux/offer/types';
+import { setIsAddressSelectVisible } from '../../../../../core/ride/redux/order';
+import { isOrderAddressSelectVisibleSelector } from '../../../../../core/ride/redux/order/selectors';
 import AlertInitializer from '../../../../../shared/AlertInitializer';
 import MapCameraModeButton from '../../MapCameraModeButton';
 import UnsupportedDestinationPopup from '../../popups/UnsupportedDestinationPopup';
+import TooShortRouteLengthPopup from '../popups/TooShortRouteLengthPopup';
 import AddressSelect from './AddressSelect';
 import StartRideHidden from './StartRideHidden';
 import StartRideVisible from './StartRideVisible';
-import { StartRideProps, StartRideRef } from './types';
+import { StartRideRef } from './types';
 
-const StartRide = forwardRef<StartRideRef, StartRideProps>(
-  ({ isAddressSelectVisible, setIsAddressSelectVisible }, ref) => {
-    const addressSelectRef = useRef<BottomWindowWithGestureRef>(null);
-    const dispatch = useAppDispatch();
+const StartRide = forwardRef<StartRideRef>((_, ref) => {
+  const addressSelectRef = useRef<BottomWindowWithGestureRef>(null);
+  const dispatch = useAppDispatch();
 
-    const alerts = useSelector(twoHighestPriorityAlertsSelector);
-    const isCityAvailable = useSelector(isCityAvailableSelector);
-    const isCityAvailableLoading = useSelector(isCityAvailableLoadingSelector);
+  const alerts = useSelector(twoHighestPriorityAlertsSelector);
+  const isCityAvailable = useSelector(isCityAvailableSelector);
+  const isCityAvailableLoading = useSelector(isCityAvailableLoadingSelector);
+  const isAddressSelectVisible = useSelector(isOrderAddressSelectVisibleSelector);
+  const offerRoutesError = useSelector(offerRoutesErrorSelector);
+  const isTooShortRouteLengthPopupVisible = useSelector(isTooShortRouteLengthPopupVisibleSelector);
 
-    const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
-    const [fastAddressSelect, setFastAddressSelect] = useState<Nullable<RecentDropoffsFromAPI>>(null);
-    const [isUnsupportedCityPopupVisible, setIsUnsupportedCityPopupVisible] = useState<boolean>(false);
-    const [isUnsupportedDestinationPopupVisible, setIsUnsupportedDestinationPopupVisible] = useState<boolean>(false);
+  const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
+  const [fastAddressSelect, setFastAddressSelect] = useState<Nullable<RecentDropoffsFromAPI>>(null);
+  const [isUnsupportedCityPopupVisible, setIsUnsupportedCityPopupVisible] = useState<boolean>(false);
+  const [isUnsupportedDestinationPopupVisible, setIsUnsupportedDestinationPopupVisible] = useState<boolean>(false);
 
-    useImperativeHandle(ref, () => ({
-      openAddressSelect: () => {
-        setIsAddressSelectVisible(true);
-        addressSelectRef.current?.openWindow();
-      },
-    }));
+  useImperativeHandle(ref, () => ({
+    openAddressSelect: () => {
+      dispatch(setIsAddressSelectVisible(true));
+      addressSelectRef.current?.openWindow();
+    },
+  }));
 
-    useEffect(() => {
-      if (isAddressSelectVisible) {
-        addressSelectRef.current?.openWindow();
-      } else {
-        dispatch(cleanOfferPoints());
-        setFastAddressSelect(null);
-      }
-    }, [dispatch, isAddressSelectVisible]);
+  useEffect(() => {
+    if (offerRoutesError && isRouteLengthTooShortError(offerRoutesError)) {
+      dispatch(setIsTooShortRouteLengthPopupVisible(true));
+    }
+  }, [dispatch, offerRoutesError]);
 
-    useEffect(() => {
-      if (isCityAvailable !== null && !isCityAvailableLoading) {
-        setIsUnsupportedCityPopupVisible(!isCityAvailable);
-      }
-    }, [isCityAvailable, isCityAvailableLoading]);
+  useEffect(() => {
+    if (isAddressSelectVisible) {
+      addressSelectRef.current?.openWindow();
+    } else {
+      dispatch(cleanOfferPoints());
+      setFastAddressSelect(null);
+    }
+  }, [dispatch, isAddressSelectVisible]);
 
-    useEffect(() => {
-      if (!isUnsupportedCityPopupVisible) {
-        return;
-      }
+  useEffect(() => {
+    if (isCityAvailable !== null && !isCityAvailableLoading) {
+      setIsUnsupportedCityPopupVisible(!isCityAvailable);
+    }
+  }, [isCityAvailable, isCityAvailableLoading]);
 
-      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', Keyboard.dismiss);
-      return keyboardDidShowListener.remove;
-    }, [isUnsupportedCityPopupVisible]);
+  useEffect(() => {
+    if (!isUnsupportedCityPopupVisible) {
+      return;
+    }
 
-    return (
-      <>
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', Keyboard.dismiss);
+    return keyboardDidShowListener.remove;
+  }, [isUnsupportedCityPopupVisible]);
+
+  return (
+    <>
+      <BottomWindowWithGesture
+        onGestureUpdate={callback => dispatch(setActiveBottomWindowYCoordinate(callback.y))}
+        visiblePart={
+          <StartRideVisible isBottomWindowOpen={isBottomWindowOpen} setFastAddressSelect={setFastAddressSelect} />
+        }
+        setIsOpened={setIsBottomWindowOpen}
+        hiddenPart={<StartRideHidden />}
+        hiddenPartStyle={styles.hiddenPartStyle}
+        hiddenPartWrapperStyle={styles.hiddenPartWrapper}
+        additionalTopContent={<MapCameraModeButton />}
+        alerts={alerts.map(alertData => (
+          <AlertInitializer
+            key={alertData.id}
+            id={alertData.id}
+            priority={alertData.priority}
+            type={alertData.type}
+            options={'options' in alertData ? alertData.options : undefined}
+          />
+        ))}
+      />
+      {isAddressSelectVisible && (
         <BottomWindowWithGesture
-          onGestureUpdate={callback => dispatch(setActiveBottomWindowYCoordinate(callback.y))}
-          visiblePart={
-            <StartRideVisible
-              openAddressSelect={setIsAddressSelectVisible}
-              isBottomWindowOpen={isBottomWindowOpen}
-              setFastAddressSelect={setFastAddressSelect}
+          hiddenPart={
+            <AddressSelect
+              address={fastAddressSelect}
+              setIsAddressSelectVisible={newState => dispatch(setIsAddressSelectVisible(newState))}
+              setIsUnsupportedDestinationPopupVisible={setIsUnsupportedDestinationPopupVisible}
             />
           }
-          setIsOpened={setIsBottomWindowOpen}
-          hiddenPart={<StartRideHidden />}
-          hiddenPartStyle={styles.hiddenPartStyle}
+          setIsOpened={newState => dispatch(setIsAddressSelectVisible(newState))}
+          ref={addressSelectRef}
+          hiddenPartStyle={styles.hiddenPartStyleAddressSelect}
           hiddenPartWrapperStyle={styles.hiddenPartWrapper}
-          additionalTopContent={<MapCameraModeButton />}
-          alerts={alerts.map(alertData => (
-            <AlertInitializer
-              key={alertData.id}
-              id={alertData.id}
-              priority={alertData.priority}
-              type={alertData.type}
-              options={'options' in alertData ? alertData.options : undefined}
-            />
-          ))}
+          withHiddenPartScroll={false}
         />
-        {isAddressSelectVisible && (
-          <BottomWindowWithGesture
-            hiddenPart={
-              <AddressSelect
-                address={fastAddressSelect}
-                setIsAddressSelectVisible={setIsAddressSelectVisible}
-                setIsUnsupportedDestinationPopupVisible={setIsUnsupportedDestinationPopupVisible}
-              />
-            }
-            setIsOpened={setIsAddressSelectVisible}
-            ref={addressSelectRef}
-            hiddenPartStyle={styles.hiddenPartStyleAddressSelect}
-            hiddenPartWrapperStyle={styles.hiddenPartWrapper}
-            withHiddenPartScroll={false}
-          />
-        )}
-        {isUnsupportedCityPopupVisible && (
-          <UnsupportedCityPopup
-            onSupportPressHandler={() => Linking.openURL('https://t.me/ShuttleX_Support')}
-            setIsUnsupportedCityPopupVisible={setIsUnsupportedCityPopupVisible}
-          />
-        )}
-        {isUnsupportedDestinationPopupVisible && (
-          <UnsupportedDestinationPopup
-            setIsUnsupportedDestinationPopupVisible={setIsUnsupportedDestinationPopupVisible}
-          />
-        )}
-      </>
-    );
-  },
-);
+      )}
+      {isUnsupportedCityPopupVisible && (
+        <UnsupportedCityPopup
+          onSupportPressHandler={() => Linking.openURL('https://t.me/ShuttleX_Support')}
+          setIsUnsupportedCityPopupVisible={setIsUnsupportedCityPopupVisible}
+        />
+      )}
+      {isUnsupportedDestinationPopupVisible && (
+        <UnsupportedDestinationPopup
+          setIsUnsupportedDestinationPopupVisible={setIsUnsupportedDestinationPopupVisible}
+        />
+      )}
+      {isTooShortRouteLengthPopupVisible && <TooShortRouteLengthPopup />}
+    </>
+  );
+});
 
 const styles = StyleSheet.create({
   hiddenPartStyleAddressSelect: {

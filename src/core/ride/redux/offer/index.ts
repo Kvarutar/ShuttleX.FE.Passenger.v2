@@ -54,6 +54,9 @@ const initialState: OfferState = {
     tariffsPrices: null,
     offerCreate: null,
   },
+  ui: {
+    isTooShortRouteLengthPopupVisible: false,
+  },
   selectedTariff: null,
   currentSelectedTariff: null,
   estimatedPrice: null,
@@ -153,6 +156,9 @@ const slice = createSlice({
     setCurrentSelectedTariff(state, action: PayloadAction<OfferState['currentSelectedTariff']>) {
       state.currentSelectedTariff = action.payload;
     },
+    setIsTooShortRouteLengthPopupVisible(state, action: PayloadAction<boolean>) {
+      state.ui.isTooShortRouteLengthPopupVisible = action.payload;
+    },
   },
   extraReducers: builder => {
     builder
@@ -247,12 +253,12 @@ const slice = createSlice({
         state.loading.offerCreate = false;
         state.errors.offerCreate = null;
       })
-      //TODO: uncomment after payment will be done
-      // .addCase(createInitialOffer.rejected, (state, action) => {
-      //   store.dispatch(createOffer());
-      //   state.loading.offerCreate = false;
-      //   state.errors.offerCreate = action.payload as NetworkErrorDetailsWithBody<any>;
-      // })
+      .addCase(createInitialOffer.rejected, (state, action) => {
+        //TODO: uncomment after payment will be done
+        // store.dispatch(createOffer());
+        state.loading.offerCreate = false;
+        state.errors.offerCreate = action.payload as NetworkErrorDetailsWithBody<any>;
+      })
       .addCase(createOffer.pending, state => {
         state.loading.offerCreate = true;
         state.errors.offerCreate = null;
@@ -328,6 +334,7 @@ export const {
   setTariffsPricesLoading,
   setPhantomOfferLoading,
   setCurrentSelectedTariff,
+  setIsTooShortRouteLengthPopupVisible,
 } = slice.actions;
 
 export default slice.reducer;

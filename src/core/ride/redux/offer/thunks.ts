@@ -350,7 +350,7 @@ export const createInitialOffer = createAppAsyncThunk<string, void>(
 
       return response.data.id;
     } catch (error) {
-      return rejectWithValue(getNetworkErrorInfo(error));
+      return rejectWithValue(getOfferNetworkErrorInfo(error));
     }
   },
 );

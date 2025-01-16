@@ -8,7 +8,6 @@ export type SliderItemProps = {
 };
 
 export type StartRideVisibleProps = {
-  openAddressSelect: (state: boolean) => void;
   setFastAddressSelect: (address: RecentDropoffsFromAPI) => void;
   isBottomWindowOpen: boolean;
 };
