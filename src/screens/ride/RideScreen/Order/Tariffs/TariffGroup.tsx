@@ -25,7 +25,7 @@ const TariffGroup = ({
 
   const isTariffsPricesLoading = useSelector(isTariffsPricesLoadingSelector);
 
-  const tariffsGroupImagesNames: Record<TariffsType, { title: TariffsType; image: Exclude<TariffType, 'Business'> }> = {
+  const tariffsGroupImagesNames: Record<TariffsType, { title: string; image: Exclude<TariffType, 'Business'> }> = {
     economy: {
       title: t('ride_Ride_TariffGroup_economy'),
       image: 'Basic',

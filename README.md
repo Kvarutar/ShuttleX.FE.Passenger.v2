@@ -125,7 +125,7 @@ Result:
 In your text editor open a terminal from the _root_ of your React Native project. Run the following command to start your _Android_ app:
 
 ```sh
-npm run android:dev
+yarn run android:dev
 ```
 
 ### Congratulations!
@@ -233,7 +233,7 @@ Files for install:
 - Install dependencies
 
   ```sh
-  npm i
+  yarn
   ```
 
 - Go to **ios folder**.
@@ -259,7 +259,7 @@ Files for install:
 In your text editor open a terminal from the _root_ of your React Native project. Run the following command to start your _iOS_ app:
 
 ```sh
-npm run ios:dev
+yarn run ios:dev
 ```
 
 ### Congratulations!

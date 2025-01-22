@@ -161,7 +161,7 @@ const Tariffs = () => {
                 (accumulator, trf) =>
                   accumulator +
                   trf.matching.reduce(
-                    (acc, el) => acc + (el.durationSec !== null && el.durationSec !== 0 ? el.cost ?? 0 : 0),
+                    (acc, el) => acc + (el.durationSec !== null && el.durationSec !== 0 ? (el.cost ?? 0) : 0),
                     0,
                   ),
                 0,

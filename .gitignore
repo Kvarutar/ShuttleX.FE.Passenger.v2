@@ -10,6 +10,7 @@ __generated__
 ### ReactNative.Xcode Stack ###
 ## User settings
 xcuserdata/
+**/.xcode.env.local
 
 ## Xcode 8 and earlier
 *.xcscmblueprint

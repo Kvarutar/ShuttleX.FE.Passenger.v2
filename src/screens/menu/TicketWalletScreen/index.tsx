@@ -77,7 +77,7 @@ const TicketWalletScreen = () => {
   });
 
   const scrollY = useSharedValue(0);
-  const activeCardIndex = useSharedValue(null);
+  const activeCardIndex = useSharedValue<number | null>(null);
   const [listHeight, setListHeight] = useState(0);
   const isScrollWorks = listHeight + cardHeight > windowHeight;
 

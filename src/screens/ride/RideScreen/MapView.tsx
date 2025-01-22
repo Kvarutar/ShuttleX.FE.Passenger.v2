@@ -334,7 +334,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       geolocationCoordinates={
         tripStatus === TripStatus.Accepted || tripStatus === TripStatus.Ride
           ? undefined
-          : geolocationCoordinates ?? undefined
+          : (geolocationCoordinates ?? undefined)
       }
       geolocationCalculatedHeading={geolocationCalculatedHeading}
       // TODO: * 0.85 - temporary solution, need to make smart waiting of finishing previous animation and then start next
