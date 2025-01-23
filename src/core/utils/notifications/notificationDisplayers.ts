@@ -139,7 +139,7 @@ export const displayNotificationForAll = async (remoteMessage: NotificationRemot
       title,
       body,
       android: {
-        channelId: 'general-channel',
+        channelId: 'general',
         color: AndroidColor.LIME,
         smallIcon: 'ic_notification',
         largeIcon: 'ic_launcher',

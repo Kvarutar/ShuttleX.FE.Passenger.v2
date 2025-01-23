@@ -18,10 +18,12 @@ export const setupNotifications = async () => {
 //channels
 const createChannels = async () => {
   await notifee.createChannel({
-    id: 'general-channel',
+    id: 'general',
     name: 'General Channel',
     importance: AndroidImportance.HIGH,
     visibility: AndroidVisibility.PUBLIC,
+    sound: 'default',
+    vibration: true,
   });
 };
 
