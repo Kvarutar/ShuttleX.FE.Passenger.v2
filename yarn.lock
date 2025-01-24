@@ -4401,7 +4401,7 @@ __metadata:
     react-native-maps: 1.14.0
     react-native-permissions: 5.2.3
     react-native-reanimated: 3.16.7
-    react-native-reanimated-carousel: ^3.5.1
+    react-native-reanimated-carousel: 4.0.0-canary.22
     react-native-safe-area-context: ^4.7.3
     react-native-screens: ^3.27.0
     react-native-sensors: ^7.3.6
@@ -10860,15 +10860,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated-carousel@npm:^3.5.1":
-  version: 3.5.1
-  resolution: "react-native-reanimated-carousel@npm:3.5.1"
+"react-native-reanimated-carousel@npm:4.0.0-canary.22":
+  version: 4.0.0-canary.22
+  resolution: "react-native-reanimated-carousel@npm:4.0.0-canary.22"
   peerDependencies:
-    react: ">=16.8.0"
-    react-native: ">=0.6.0"
-    react-native-gesture-handler: ">=2.0.0"
+    react: ">=18.0.0"
+    react-native: ">=0.70.3"
+    react-native-gesture-handler: ">=2.9.0"
     react-native-reanimated: ">=3.0.0"
-  checksum: a2eb640453fa35f659c1fb5575f903364d513fb7f621104afa14fee2284132674dfaf0d87cb29e8c119f7513094a5967d5193f3dfa24043af167c6f26abcfe73
+  checksum: 52d4f3c66ea46b6309518bb98547b48302d9852d6ffd7db3f470e3edf342cc289d206c015cf9ba0c31b768e1a15b48f5170b4de678bdcb5f7a29791ef948bd0a
   languageName: node
   linkType: hard
 
@@ -11830,7 +11830,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
 
 "shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev":
   version: 1.0.0
-  resolution: "shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=91c0a2f2c97d305dc3c77ce1df60c4acbbb2a40c"
+  resolution: "shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=171305b00089b7390d2e96ee2e60bdefe2e17b94"
   dependencies:
     "@googlemaps/polyline-codec": ^1.0.28
     "@react-native/eslint-config": 0.73.2
@@ -11878,7 +11878,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react-native-svg-transformer: "*"
     react-redux: "*"
     uuid: "*"
-  checksum: 9e8c8b43942e198bfbefef1695c16a6601ad0792d73f2d2587627b6b47a1d235f84721208a281975c58ee587254cfed24a76b3b62a3d002100cff12bf527e608
+  checksum: 0b889453ba6c017d812118b14f78259da5a9147eda3f54c725b7493ab987d388c657b44c1937b5fd2779b9bfed236f2f0f85b16c02a59389d7b71c0f2073db8e
   languageName: node
   linkType: hard
 
