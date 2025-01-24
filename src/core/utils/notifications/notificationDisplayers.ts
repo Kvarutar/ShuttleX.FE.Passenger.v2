@@ -111,6 +111,14 @@ const notificationHandlers: Record<
       store.dispatch(getCurrentOrder());
     }
   },
+
+  [SSEAndNotificationsEventType.Custom]: async () => {
+    //just custom notif for test from endpoint
+  },
+
+  [SSEAndNotificationsEventType.PaymentTracsactionStatus]: async () => {
+    //add logic when payment will be done
+  },
 };
 
 export const displayNotificationForAll = async (remoteMessage: NotificationRemoteMessage) => {

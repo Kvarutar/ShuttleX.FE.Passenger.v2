@@ -16,10 +16,15 @@ export enum SSEAndNotificationsEventType {
   DriverRejected = 'driver_rejected',
   WinnerFounded = 'winner_found',
   DriverCanceled = 'driver_canceled',
+  Custom = 'user_custom_notification',
+  PaymentTracsactionStatus = 'passenger_payment_transaction_status',
 }
 
 export type NotificationPayload = {
   orderId?: string;
   prizeIds?: string[];
   ticketNumber?: string;
+  paymentTransactionId?: string;
+  status?: string;
+  errorMessage?: string;
 };

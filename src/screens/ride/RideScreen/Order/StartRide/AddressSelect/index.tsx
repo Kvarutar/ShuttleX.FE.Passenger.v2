@@ -14,6 +14,8 @@ import {
   LoadingSpinner,
   SelectOnMapIcon,
   sizes,
+  SliderWithCustomGesture,
+  SwipeButtonModes,
   Text,
   useDebounce,
   useTheme,
@@ -34,6 +36,7 @@ import {
   offerRoutesErrorSelector,
 } from '../../../../../../core/ride/redux/offer/selectors';
 import {
+  deleteRecentAddress,
   enhanceAddress,
   getAddressSearchHistory,
   getOfferRoutes,
@@ -101,12 +104,23 @@ const AddressSelect = ({
     searchPlaceBarWrapper: {
       marginRight: sizes.paddingHorizontal,
     },
+    sliderContainer: {
+      backgroundColor: colors.backgroundPrimaryColor,
+    },
   });
 
   const getSearchHistory = useCallback(async () => {
     const addressessHistory = await dispatch(getAddressSearchHistory({ amount: 10 })).unwrap();
     setAddressesHistory(addressessHistory);
   }, [setAddressesHistory, dispatch]);
+
+  const handleDeleteAddress = useCallback(
+    async (id: string) => {
+      await dispatch(deleteRecentAddress(id));
+      setAddressesHistory(prev => prev.filter(item => item.id !== id));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     getSearchHistory();
@@ -352,11 +366,27 @@ const AddressSelect = ({
                     {title(t('ride_Ride_AddressSelect_addressTitle_lastSearch'))}
                     <View style={[styles.searchPlaceBarWrapper, computedStyles.searchPlaceBarWrapper]}>
                       {addressesHistory.map((item, index) => (
-                        <PlaceBar
+                        <SliderWithCustomGesture
                           key={index}
-                          mode={PlaceBarModes.Search}
-                          place={item}
-                          onPress={() => onAddressSelect(item, true)}
+                          rightToLeftSwipe={true}
+                          mode={SwipeButtonModes.Finish}
+                          text={t('menu_Wallet_delete')}
+                          textStyle={styles.testStyle}
+                          wipeBlockStyle={styles.wipeBlockStyle}
+                          onSwipeEnd={() => {
+                            if (item.id) {
+                              handleDeleteAddress(item.id);
+                            }
+                          }}
+                          containerStyle={[styles.sliderContainer, computedStyles.sliderContainer]}
+                          sliderElement={
+                            <PlaceBar
+                              style={styles.placeBarStyle}
+                              mode={PlaceBarModes.Search}
+                              place={item}
+                              onPress={() => onAddressSelect(item, true)}
+                            />
+                          }
                         />
                       ))}
                     </View>
@@ -385,9 +415,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   searchPlaceBarWrapper: {
-    gap: 32,
     marginTop: 20,
-    alignItems: 'center',
   },
   scrollViewSearchContainer: {
     flex: 1,
@@ -421,6 +449,22 @@ const styles = StyleSheet.create({
   searchAddressesText: {
     marginTop: 20,
     alignSelf: 'flex-start',
+  },
+  testStyle: {
+    fontSize: 17,
+    fontFamily: 'Inter Medium',
+    right: 14,
+    alignSelf: 'stretch',
+    textAlign: 'right',
+  },
+  sliderContainer: {
+    padding: 0,
+  },
+  wipeBlockStyle: {
+    borderRadius: 24,
+  },
+  placeBarStyle: {
+    paddingVertical: 16,
   },
 });
 

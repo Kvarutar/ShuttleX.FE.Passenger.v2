@@ -130,10 +130,22 @@ export const getAddressSearchHistory = createAppAsyncThunk<SearchAddressFromAPI[
       );
 
       return response.data.map<SearchAddressFromAPI>(el => ({
+        id: el.id,
         fullAddress: el.fullAddress,
         dropoffAddress: el.place,
         dropoffGeo: el.geo,
       }));
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
+
+export const deleteRecentAddress = createAppAsyncThunk<void, string>(
+  'offer/deleteRecentAddress',
+  async (searchId, { rejectWithValue, passengerAxios }) => {
+    try {
+      await passengerAxios.delete(`/Ride/search/${searchId}`);
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

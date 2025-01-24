@@ -76,6 +76,7 @@ export type AddressSearchPayload = {
 export type SaveSearchResultPayload = Omit<SearchAddressFromAPI, 'totalDistanceMtr'>;
 
 export type RecentAddressAPIResponse = {
+  id: string;
   fullAddress: string;
   place: string;
   geo: LatLng;
