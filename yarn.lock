@@ -4750,6 +4750,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"async-function@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "async-function@npm:1.0.0"
+  checksum: 9102e246d1ed9b37ac36f57f0a6ca55226876553251a31fc80677e71471f463a54c872dc78d5d7f80740c8ba624395cccbe8b60f7b690c4418f487d8e9fd1106
+  languageName: node
+  linkType: hard
+
 "async-limiter@npm:~1.0.0":
   version: 1.0.1
   resolution: "async-limiter@npm:1.0.1"
@@ -7863,14 +7870,15 @@ __metadata:
   linkType: hard
 
 "is-async-function@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "is-async-function@npm:2.1.0"
+  version: 2.1.1
+  resolution: "is-async-function@npm:2.1.1"
   dependencies:
+    async-function: ^1.0.0
     call-bound: ^1.0.3
     get-proto: ^1.0.1
     has-tostringtag: ^1.0.2
     safe-regex-test: ^1.1.0
-  checksum: e8dfa81561eb7cd845d626bf49675c735a177013943eb6919185e1f358fe8b16fd11fa477397df8ddddd31ade47092de8243997530931a4ec17cb2b9d15479c9
+  checksum: 9bece45133da26636488ca127d7686b85ad3ca18927e2850cff1937a650059e90be1c71a48623f8791646bb7a241b0cabf602a0b9252dcfa5ab273f2399000e6
   languageName: node
   linkType: hard
 
@@ -11822,7 +11830,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
 
 "shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev":
   version: 1.0.0
-  resolution: "shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=249b08d08d5827b76bc117ee5e2354e8935f39ae"
+  resolution: "shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=91c0a2f2c97d305dc3c77ce1df60c4acbbb2a40c"
   dependencies:
     "@googlemaps/polyline-codec": ^1.0.28
     "@react-native/eslint-config": 0.73.2
@@ -11870,7 +11878,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react-native-svg-transformer: "*"
     react-redux: "*"
     uuid: "*"
-  checksum: 1d147943f58d7ff11c886f37f4bd7a189b18beb5408e3934f2c904b4adedab970adfb576699aac75b097460f8ffe6cab4ba6c128c952f19e12005919570ee800
+  checksum: 9e8c8b43942e198bfbefef1695c16a6601ad0792d73f2d2587627b6b47a1d235f84721208a281975c58ee587254cfed24a76b3b62a3d002100cff12bf527e608
   languageName: node
   linkType: hard
 

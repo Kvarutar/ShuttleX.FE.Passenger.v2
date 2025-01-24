@@ -45,7 +45,7 @@ const AccountVerificateCodeScreen = (): JSX.Element => {
   const { t } = useTranslation();
 
   //TODO change it when back will synchronize profile
-  const defineMode = mode === 'email' ? verifiedStatus.emailInfo : verifiedStatus.phoneInfo;
+  const defineMode = mode === 'email' ? verifiedStatus.email : verifiedStatus.phone;
 
   const handleCodeChange = useCallback(
     (newCode: string) => {

@@ -12,9 +12,9 @@ import { AccountSettingsState } from './types';
 
 const initialState: AccountSettingsState = {
   verifyStatus: {
-    phoneInfo: '',
+    phone: '',
     isPhoneVerified: false,
-    emailInfo: '',
+    email: '',
     isEmailVerified: false,
   },
   loading: {

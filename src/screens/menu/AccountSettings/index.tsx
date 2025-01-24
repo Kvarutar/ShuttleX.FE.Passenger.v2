@@ -92,10 +92,10 @@ const AccountSettings = (): JSX.Element => {
     switch (mode) {
       case 'phone':
         //TODO change it when back will synchronize profile
-        oldData = verifiedStatus.phoneInfo;
+        oldData = verifiedStatus.phone;
         break;
       case 'email':
-        oldData = verifiedStatus.emailInfo;
+        oldData = verifiedStatus.email;
         break;
     }
 
@@ -145,8 +145,8 @@ const AccountSettings = (): JSX.Element => {
           profile={{
             fullName: prefferedName ?? '',
             //TODO change it when back will synchronize profile
-            email: verifiedStatus.emailInfo ?? '',
-            phone: verifiedStatus.phoneInfo ?? '',
+            email: verifiedStatus.email ?? '',
+            phone: verifiedStatus.phone ?? '',
           }}
           verifiedStatus={verifiedStatus}
           photoBlock={<PhotoBlock onUploadPhoto={onUploadPhoto} />}
@@ -165,7 +165,7 @@ const AccountSettings = (): JSX.Element => {
         <ConfirmDeleteAccountPopup
           handleOpenVerification={handleOpenVerification}
           setIsConfirmDeleteAccountPopupVisible={setIsConfirmDeleteAccountPopupVisible}
-          userData={{ phone: verifiedStatus.phoneInfo, email: verifiedStatus.emailInfo }}
+          userData={{ phone: verifiedStatus.phone, email: verifiedStatus.email }}
         />
       )}
       {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}

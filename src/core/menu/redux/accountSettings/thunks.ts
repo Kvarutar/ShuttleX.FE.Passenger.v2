@@ -11,7 +11,6 @@ import {
   SendConfirmAPIRequest,
   SendConfirmPayload,
   VerifyAccountContactDataCodeAPIRequest,
-  VerifyAccountContactDataCodeAPIResponse,
   VerifyAccountSettingsDataCodePayload,
   VerifyStatusAPIResponse,
 } from './types';
@@ -33,7 +32,7 @@ export const verifyAccountSettingsDataCode = createAppAsyncThunk<void, VerifyAcc
     }
 
     try {
-      await authAccountSettingsAxios.post<VerifyAccountContactDataCodeAPIResponse>(`/verify/${payload.mode}`, {
+      await authAccountSettingsAxios.post(`/otp/verify/${payload.mode}`, {
         ...bodyPart,
         code: payload.code,
         deviceId,
@@ -76,7 +75,7 @@ export const requestAccountSettingsChangeDataVerificationCode = createAppAsyncTh
     try {
       const deviceId = await DeviceInfo.getUniqueId();
 
-      authAccountSettingsAxios.post(`/send-confirm/${mode}`, {
+      authAccountSettingsAxios.post(`/otp/confirm/${mode}`, {
         ...requestData,
         deviceId,
       } as SendConfirmAPIRequest);
@@ -90,9 +89,7 @@ export const getAccountSettingsVerifyStatus = createAppAsyncThunk<VerifyStatusAP
   'accountSettings/getAccountSettingsVerifyStatus',
   async (_, { rejectWithValue, authAccountSettingsAxios }) => {
     try {
-      const result = await authAccountSettingsAxios.get<VerifyStatusAPIResponse>('/verify/status');
-
-      return result.data;
+      return (await authAccountSettingsAxios.get<VerifyStatusAPIResponse>('/')).data;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }
