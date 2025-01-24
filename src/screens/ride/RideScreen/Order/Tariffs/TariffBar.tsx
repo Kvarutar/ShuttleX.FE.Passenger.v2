@@ -18,6 +18,7 @@ import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/curr
 import {
   isPhantomOfferLoadingSelector,
   isTariffsPricesLoadingSelector,
+  minDurationTariffSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
 import passengerColors from '../../../../../shared/colors/colors';
 import PlanButton from '../../PlanButton/PlanButton';
@@ -42,6 +43,7 @@ const TariffBar = ({
 
   const isTariffsPricesLoading = useSelector(isTariffsPricesLoadingSelector);
   const isPhantomOfferLoading = useSelector(isPhantomOfferLoadingSelector);
+  const minDurationTariff = useSelector(minDurationTariffSelector);
 
   const tariffTitle = tariffsCarData[tariff.name].text;
   const availablePlans = useMemo(
@@ -72,8 +74,6 @@ const TariffBar = ({
     },
     price: {
       color: colors.textSecondaryColor,
-    },
-    isNotSelectedPrice: {
       right: windowIsOpened ? 8 : 0,
     },
     tariffContainer: {
@@ -90,6 +90,12 @@ const TariffBar = ({
       flex: windowIsOpened ? 1 : 0,
       width: windowIsOpened ? '90%' : '100%',
       resizeMode: 'contain',
+    },
+    timeContainer: {
+      backgroundColor: minDurationTariff?.id === tariff.id ? colors.primaryColor : 'transparent',
+    },
+    timeText: {
+      color: minDurationTariff?.id === tariff.id ? colors.textPrimaryColor : colors.iconSecondaryColor,
     },
   });
 
@@ -143,9 +149,11 @@ const TariffBar = ({
   const esimatedArrival = (): ReactNode => {
     if (showPriceAndTime && isAvailableTariff && availablePlans[defaultPlanIndex]) {
       return (
-        <Text style={[styles.capacityText, computedStyles.capacityColor]}>
-          {formatTime(Number(availablePlans[defaultPlanIndex].durationSec))}
-        </Text>
+        <View style={[styles.timeContainer, computedStyles.timeContainer]}>
+          <Text style={[styles.capacityText, computedStyles.timeText]}>
+            {formatTime(Number(availablePlans[defaultPlanIndex].durationSec))}
+          </Text>
+        </View>
       );
     }
 
@@ -196,11 +204,7 @@ const TariffBar = ({
           boneColor={passengerColors.tariffsColors.tariffGroupPriceLoadingColor}
         />
       ) : (
-        <Text
-          style={[styles.isNotSelectedPrice, computedStyles.isNotSelectedPrice, styles.price, computedStyles.price]}
-        >
-          {tariffPrice()}
-        </Text>
+        <Text style={[styles.price, computedStyles.price]}>{tariffPrice()}</Text>
       )}
     </>
   );
@@ -224,11 +228,7 @@ const TariffBar = ({
             boneColor={passengerColors.tariffsColors.tariffGroupPriceLoadingColor}
           />
         ) : (
-          <Text
-            style={[styles.isNotSelectedPrice, computedStyles.isNotSelectedPrice, styles.price, computedStyles.price]}
-          >
-            {tariffPrice()}
-          </Text>
+          <Text style={[styles.price, computedStyles.price]}>{tariffPrice()}</Text>
         )}
       </>
     );
@@ -281,6 +281,8 @@ const styles = StyleSheet.create({
   price: {
     fontFamily: 'Inter Medium',
     fontSize: 17,
+    position: 'absolute',
+    bottom: 0,
   },
   tariffContainer: {
     flex: 1,
@@ -313,10 +315,6 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 100,
   },
-  isNotSelectedPrice: {
-    position: 'absolute',
-    bottom: 0,
-  },
   planButton: {
     marginTop: 20,
   },
@@ -325,6 +323,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexShrink: 1,
     alignSelf: 'stretch',
+  },
+  timeContainer: {
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+    borderRadius: 10,
   },
 });
 

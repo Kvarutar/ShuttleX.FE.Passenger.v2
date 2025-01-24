@@ -47,6 +47,19 @@ export const groupedTariffsSelector = createSelector(
   }),
 );
 
+export const minDurationTariffSelector = createSelector(
+  [groupedTariffsSelector],
+  groupedTariffs =>
+    Object.values(groupedTariffs)
+      .flatMap(item => item.tariffs)
+      .filter(item => item?.matching[0]?.durationSec !== 0)
+      .sort((a, b) => {
+        const aDuration = a?.matching[0]?.durationSec ?? 0;
+        const bDuration = b?.matching[0]?.durationSec ?? 0;
+        return aDuration - bDuration;
+      })[0],
+);
+
 //UI
 export const isTooShortRouteLengthPopupVisibleSelector = (state: AppState) =>
   state.offer.ui.isTooShortRouteLengthPopupVisible;

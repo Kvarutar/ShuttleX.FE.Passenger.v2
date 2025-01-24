@@ -11,6 +11,7 @@ export type TariffGroupProps = {
   style?: StyleProp<ViewStyle>;
   onPress: () => void;
   carsAnimationDelayInMilSec: number;
+  isContainFastestTariff: boolean;
 };
 
 export type TariffBarProps = { tariff: TariffWithMatching } & {

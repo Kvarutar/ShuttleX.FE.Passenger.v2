@@ -1,8 +1,16 @@
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
-import { AnimatedCarImage, getCurrencySign, Skeleton, TariffType, Text, useTheme } from 'shuttlex-integration';
+import {
+  AnimatedCarImage,
+  getCurrencySign,
+  LightningIcon,
+  Skeleton,
+  TariffType,
+  Text,
+  useTheme,
+} from 'shuttlex-integration';
 
 import { isTariffsPricesLoadingSelector } from '../../../../../core/ride/redux/offer/selectors';
 import { TariffsType } from '../../../../../core/ride/redux/offer/types';
@@ -19,6 +27,7 @@ const TariffGroup = ({
   onPress,
   style,
   carsAnimationDelayInMilSec,
+  isContainFastestTariff,
 }: TariffGroupProps) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -62,7 +71,10 @@ const TariffGroup = ({
   return (
     <Pressable style={[styles.wrapper, style]} onPress={onPress}>
       <Animated.View style={[styles.container, animatedStyles]}>
-        <Text style={[styles.title, computedStyles.title]}>{tariffsGroupImagesNames[title].title}</Text>
+        <View style={styles.titleContainer}>
+          <Text style={[styles.title, computedStyles.title]}>{tariffsGroupImagesNames[title].title}</Text>
+          {isContainFastestTariff && <LightningIcon style={styles.lightningIcon} />}
+        </View>
         {isTariffsPricesLoading ? (
           <Skeleton
             skeletonContainerStyle={styles.skeletonTariffPrice}
@@ -120,6 +132,14 @@ const styles = StyleSheet.create({
     width: '170%',
     bottom: 16,
     left: 20,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  lightningIcon: {
+    width: 16,
+    height: 16,
   },
 });
 

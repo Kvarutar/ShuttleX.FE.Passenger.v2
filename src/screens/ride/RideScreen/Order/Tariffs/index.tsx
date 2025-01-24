@@ -21,7 +21,11 @@ import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/
 //TODO: rewrite all tariffs files, current solution is not flexible
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { setCurrentSelectedTariff, setEstimatedPrice, setTripTariff } from '../../../../../core/ride/redux/offer';
-import { groupedTariffsSelector, offerRoutesSelector } from '../../../../../core/ride/redux/offer/selectors';
+import {
+  groupedTariffsSelector,
+  minDurationTariffSelector,
+  offerRoutesSelector,
+} from '../../../../../core/ride/redux/offer/selectors';
 import { getTariffsPrices } from '../../../../../core/ride/redux/offer/thunks';
 import { SelectedTariff, TariffCategory, TariffsType } from '../../../../../core/ride/redux/offer/types';
 import { setIsAddressSelectVisible, setOrderStatus } from '../../../../../core/ride/redux/order';
@@ -41,6 +45,7 @@ const Tariffs = () => {
   const { colors } = useTheme();
 
   const groupedTariffs = useSelector(groupedTariffsSelector);
+  const minDurationTariff = useSelector(minDurationTariffSelector);
   const offerRoutes = useSelector(offerRoutesSelector);
 
   const [selectedTariffGroup, setSelectedTariffGroup] = useState<TariffCategory | null>(groupedTariffs.economy ?? null);
@@ -54,6 +59,7 @@ const Tariffs = () => {
   const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs?.some(trf =>
     trf.matching.some(item => item.durationSec !== null && item.durationSec !== 0),
   );
+
   const computedStyles = StyleSheet.create({
     confirmText: {
       color: isAvailableSelectedTariffGroup ? colors.textPrimaryColor : colors.textQuadraticColor,
@@ -168,11 +174,14 @@ const Tariffs = () => {
               ) / filteredTariffs?.length
             : 0;
 
+        const isContainFastestTariff = filteredTariffs?.some(item => item.id === minDurationTariff?.id);
+
         currencyCode = value.tariffs[0].currencyCode as CurrencyType;
 
         //TODO: think about smarter key?
         content.push(
           <TariffGroup
+            isContainFastestTariff={isContainFastestTariff}
             key={`tariff_group_${key}`}
             currencyCode={currencyCode}
             price={Math.round(groupPrice)}
@@ -186,7 +195,7 @@ const Tariffs = () => {
     });
 
     return content;
-  }, [groupedTariffs, selectedTariffGroup]);
+  }, [groupedTariffs, minDurationTariff?.id, selectedTariffGroup]);
 
   const content = (
     <>
