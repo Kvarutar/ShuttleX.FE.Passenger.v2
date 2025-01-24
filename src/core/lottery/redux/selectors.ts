@@ -9,6 +9,7 @@ export const previousLotteryIdSelector = (state: AppState) => state.lottery.prev
 export const lotteryPreviousPrizesSelector = (state: AppState) => state.lottery.previousPrizes.data;
 export const lotteryTicketAfterRideSelector = (state: AppState) => state.lottery.ticketAfterRide;
 export const lotteryWinnerSelector = (state: AppState) => state.lottery.winnerPrizes;
+export const lotterySelectModeSelector = (state: AppState) => state.lottery.selectedMode;
 
 export const isLotteryLoadingSelector = (state: AppState) => state.lottery.loading.lottery;
 export const isPrizesLoadingSelector = (state: AppState) => state.lottery.loading.prizes;

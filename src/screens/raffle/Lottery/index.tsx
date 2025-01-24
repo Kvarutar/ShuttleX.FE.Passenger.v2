@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, LayoutChangeEvent, Platform, StyleSheet, View } from 'react-native';
+import { Dimensions, LayoutChangeEvent, Linking, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useDerivedValue, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { logger } from '../../../App.tsx';
 import { clearPrizes, setLotterySelectedMode } from '../../../core/lottery/redux';
 import {
   isPreviousPrizesLoadingSelector,
@@ -187,6 +188,12 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
     visiblePartStyle: {
       paddingBottom: isBottomWindowOpen ? 10 : 70,
     },
+    ruleContainer: {
+      marginBottom: isBottomWindowOpen ? 24 : 34,
+    },
+    ruleText: {
+      color: colors.textLinkColor,
+    },
   });
 
   const renderContent = () => (
@@ -235,6 +242,11 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
           />
         ))
       )}
+      <View style={[styles.ruleContainer, computedStyles.ruleContainer]}>
+        <TouchableOpacity onPress={() => Linking.openURL('https://www.shuttlex.com').catch(logger.error)}>
+          <Text style={[styles.ruleText, computedStyles.ruleText]}>{t('raffle_Lottery_promotionalRules')}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -320,7 +332,6 @@ const styles = StyleSheet.create({
   },
   visiblePartStyle: {
     paddingTop: 18,
-    marginBottom: 10,
   },
   renderContainer: {
     flexWrap: 'wrap',
@@ -345,6 +356,14 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 22,
     textAlign: 'center',
+  },
+  ruleContainer: {
+    marginTop: 6,
+    width: '100%',
+    alignItems: 'center',
+  },
+  ruleText: {
+    fontSize: 14,
   },
 });
 

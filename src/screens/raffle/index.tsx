@@ -3,8 +3,10 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import { Confetti, InputXIcon, SafeAreaView, Text, useTheme } from 'shuttlex-integration';
 
+import { lotterySelectModeSelector, lotteryStateSelector } from '../../core/lottery/redux/selectors.ts';
 import { RootStackParamList } from '../../Navigate/props';
 import Lottery from './Lottery';
 import Season from './Season';
@@ -12,9 +14,11 @@ import SmallButton from './SmallButton';
 
 const RaffleScreen = (): JSX.Element => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Raffle'>>();
-
   const { colors } = useTheme();
   const { t } = useTranslation();
+
+  const lotteryState = useSelector(lotteryStateSelector);
+  const lotterySelectMode = useSelector(lotterySelectModeSelector);
 
   const [isLotterySelected] = useState<boolean>(true);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
@@ -45,7 +49,13 @@ const RaffleScreen = (): JSX.Element => {
             }}
           /> */}
           <View style={styles.headerTitleContainer}>
-            <Text>{t('raffle_Raffle_winnersTitle')}</Text>
+            <Text>
+              {t(
+                lotteryState === 'CurrentUpcoming' || lotterySelectMode === 'history'
+                  ? 'raffle_Raffle_defaultTitle'
+                  : 'raffle_Raffle_winnersTitle',
+              )}
+            </Text>
           </View>
           {/*TODO will be add later*/}
           {/*<SmallButton*/}
