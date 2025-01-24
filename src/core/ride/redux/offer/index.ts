@@ -56,6 +56,7 @@ const initialState: OfferState = {
   },
   ui: {
     isTooShortRouteLengthPopupVisible: false,
+    isTooManyRidesPopupVisible: false,
   },
   selectedTariff: null,
   currentSelectedTariff: null,
@@ -158,6 +159,9 @@ const slice = createSlice({
     },
     setIsTooShortRouteLengthPopupVisible(state, action: PayloadAction<boolean>) {
       state.ui.isTooShortRouteLengthPopupVisible = action.payload;
+    },
+    setIsTooManyRidesPopupVisible(state, action: PayloadAction<boolean>) {
+      state.ui.isTooManyRidesPopupVisible = action.payload;
     },
   },
   extraReducers: builder => {
@@ -335,6 +339,7 @@ export const {
   setPhantomOfferLoading,
   setCurrentSelectedTariff,
   setIsTooShortRouteLengthPopupVisible,
+  setIsTooManyRidesPopupVisible,
 } = slice.actions;
 
 export default slice.reducer;

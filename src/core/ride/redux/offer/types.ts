@@ -57,6 +57,7 @@ export type OfferState = {
   };
   ui: {
     isTooShortRouteLengthPopupVisible: boolean;
+    isTooManyRidesPopupVisible: boolean;
   };
   offerRoutes: Nullable<OfferRoutesFromAPI>;
   avaliableTariffs: Nullable<TariffWithMatching[]>;

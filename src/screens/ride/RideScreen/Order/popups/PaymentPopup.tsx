@@ -38,6 +38,8 @@ import { logger } from '../../../../../App';
 import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/redux';
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { setMapCars } from '../../../../../core/ride/redux/map';
+import { setIsTooManyRidesPopupVisible } from '../../../../../core/ride/redux/offer';
+import { isTooManyActiveRidesError } from '../../../../../core/ride/redux/offer/errors';
 import {
   isOfferCreateLoadingSelector,
   offerCreateErrorSelector,
@@ -161,10 +163,13 @@ const PaymentPopup = () => {
 
   useEffect(() => {
     if (!isOfferCreateLoading) {
-      //TODO: Add other errors handling if need
       if (paymentStatus === 'success' && !offerCreateError) {
         dispatch(setMapCars([]));
         dispatch(setOrderStatus(OrderStatus.Confirming));
+      }
+      // Add other errors handling if need
+      else if (offerCreateError && isTooManyActiveRidesError(offerCreateError)) {
+        dispatch(setIsTooManyRidesPopupVisible(true));
       }
     }
   }, [dispatch, paymentStatus, offerCreateError, isOfferCreateLoading]);

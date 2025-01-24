@@ -16,6 +16,7 @@ import { setIsLoadingStubVisible } from '../../../core/passenger/redux';
 import { isLoadingStubVisibleSelector } from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
+import { isTooManyRidesPopupVisibleSelector } from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
 import { setIsOrderCanceledAlertVisible } from '../../../core/ride/redux/trip';
@@ -24,6 +25,7 @@ import { TripStatus } from '../../../core/ride/redux/trip/types';
 import Menu from '../Menu';
 import MapView from './MapView';
 import Order from './Order';
+import TooManyRidesPopup from './Order/popups/TooManyRidesPopup';
 import { OrderRef } from './Order/types';
 import WinningPopup from './popups/WinningPopup';
 import Trip from './Trip';
@@ -37,6 +39,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
 
   const orderStatus = useSelector(orderStatusSelector);
   const lotteryWinner = useSelector(lotteryWinnerSelector);
+  const isTooManyRidesPopupVisible = useSelector(isTooManyRidesPopupVisibleSelector);
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isWinningPopupVisible, setIsWinningPopupVisible] = useState(false);
@@ -173,6 +176,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
       {isWinningPopupVisible && <WinningPopup setIsWinningPopupVisible={setIsWinningPopupVisible} />}
       {/*TODO: uncomment when we will need MysteryBoxPopup*/}
       {/*{isMysteryBoxPopupVisible && <MysteryBoxPopup setIsMysteryBoxPopupVisible={setIsMysteryBoxPopupVisible} />}*/}
+      {isTooManyRidesPopupVisible && <TooManyRidesPopup />}
     </>
   );
 };

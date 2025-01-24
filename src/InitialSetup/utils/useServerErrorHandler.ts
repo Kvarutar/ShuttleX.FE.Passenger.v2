@@ -10,14 +10,23 @@ import {
   accountSettingsChangeDataErrorSelector,
   deleteAccountErrorSelector,
 } from '../../core/menu/redux/accountSettings/selectors';
-import { isRouteLengthTooShortError, isRoutePointsLocationError } from '../../core/ride/redux/offer/errors';
-import { offerRoutesErrorSelector, tariffsPricesErrorSelector } from '../../core/ride/redux/offer/selectors';
+import {
+  isRouteLengthTooShortError,
+  isRoutePointsLocationError,
+  isTooManyActiveRidesError,
+} from '../../core/ride/redux/offer/errors';
+import {
+  offerCreateErrorSelector,
+  offerRoutesErrorSelector,
+  tariffsPricesErrorSelector,
+} from '../../core/ride/redux/offer/selectors';
 import { orderInfoErrorSelector } from '../../core/ride/redux/trip/selectors';
 
 const useServerErrorHandler = () => {
   const errors = [
     useSelector(offerRoutesErrorSelector),
     useSelector(deleteAccountErrorSelector),
+    useSelector(offerCreateErrorSelector),
     useSelector(authErrorSelector),
     useSelector(tariffsPricesErrorSelector),
     useSelector(accountSettingsChangeDataErrorSelector),
@@ -37,6 +46,9 @@ const useServerErrorHandler = () => {
             !isInvalidStateForAccountDeletingError(error) &&
             isServerError(error)
           );
+        // if error from offerCreateErrorSelector
+        case 2:
+          return !isTooManyActiveRidesError && isServerError(error);
         default:
           return isServerError(error);
       }
