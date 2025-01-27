@@ -283,6 +283,7 @@ const AddressSelect = ({
             mode={PlaceBarModes.Search}
             place={item}
             onPress={() => onAddressSelect(item)}
+            style={styles.placeBarStyle}
           />
         ))
       ) : (

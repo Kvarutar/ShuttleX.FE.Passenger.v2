@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, Modal, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
-import { InputXIcon, sizes, Text, useTheme } from 'shuttlex-integration';
+import { InputXIcon, SafeAreaView, Text, useTheme } from 'shuttlex-integration';
 
 import { Prize } from '../../../../core/lottery/redux/types';
+import colors from '../../../../shared/colors/colors.ts';
 import SmallButton from '../../SmallButton';
 import { prizesData } from '../prizesData';
 import { PrizesSliderProps } from './types';
@@ -62,7 +63,9 @@ const PrizesSlider = memo(({ visible, onClose, selectedItemIndex, listItem }: Pr
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
-          <SmallButton icon={<InputXIcon color={computedStyles.icon.color} />} onPress={onClose} />
+          <SafeAreaView withTransparentBackground>
+            <SmallButton icon={<InputXIcon color={computedStyles.icon.color} />} onPress={onClose} />
+          </SafeAreaView>
         </View>
       </TouchableWithoutFeedback>
       <View style={[styles.wrapper, computedStyles.wrapper]}>
@@ -91,9 +94,7 @@ const PrizesSlider = memo(({ visible, onClose, selectedItemIndex, listItem }: Pr
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#00000066',
-    paddingVertical: sizes.paddingVertical,
-    paddingHorizontal: sizes.paddingHorizontal,
+    backgroundColor: colors.raffle.surpriseTitleBackgroundColor,
   },
   wrapper: {
     position: 'absolute',

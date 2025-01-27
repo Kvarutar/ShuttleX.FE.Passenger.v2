@@ -37,7 +37,7 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: Place
       return (
         <Bar mode={BarModes.Default} onPress={onPress} style={[styles.barContainer, style]}>
           <View style={styles.fullHeaderContainer}>
-            <View>
+            <View style={styles.distanceContainer}>
               <Bar mode={BarModes.Disabled} style={styles.circleIconContainer}>
                 <ClockIcon color={colors.iconPrimaryColor} />
               </Bar>
@@ -88,14 +88,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  distanceContainer: {
+    flex: 1,
+  },
   fullDistancePosition: {
     position: 'absolute',
     bottom: -5,
     left: 30,
-    width: 64,
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 8,
   },
   fullTitleContainer: {
     marginTop: 12,
