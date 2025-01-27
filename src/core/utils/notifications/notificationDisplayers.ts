@@ -27,7 +27,7 @@ const isValidNotificationType = (key: string): key is SSEAndNotificationsEventTy
   return Object.values(SSEAndNotificationsEventType).includes(key as SSEAndNotificationsEventType);
 };
 
-const notificationHandlers: Record<
+export const notificationHandlers: Record<
   SSEAndNotificationsEventType,
   (payload: NotificationPayload | undefined) => Promise<void>
 > = {
@@ -122,7 +122,9 @@ const notificationHandlers: Record<
 };
 
 export const displayNotificationForAll = async (remoteMessage: NotificationRemoteMessage) => {
-  const { key, payload, title, body } = remoteMessage.data;
+  const { key, payload } = remoteMessage.data;
+  const { title, body } = remoteMessage.notification;
+
   console.log('displayNotificationForAll', remoteMessage);
 
   if (!isValidNotificationType(key)) {

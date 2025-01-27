@@ -1,7 +1,9 @@
 export interface NotificationRemoteMessage {
-  data: {
+  notification: {
     title: string;
     body: string;
+  };
+  data: {
     sendTime: string;
     key: string;
     payload: string;
