@@ -144,7 +144,14 @@ export type TariffFromAPI = {
   index: number;
 };
 
-export type TariffWithMatching = TariffFromAPI & { matching: Matching[]; isAvaliable: boolean };
+//TODO: dumb logic while backend don't have normal way for algorythms
+export type TariffWithMatching = TariffFromAPI & {
+  cost: number | null;
+  time: number | null;
+  currency: string | null;
+  matching: Matching[];
+  isAvaliable: boolean;
+};
 
 export type GetAvailableTariffsAPIResponse = TariffFromAPI[];
 

@@ -284,10 +284,11 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     }
   }, [orderStatus, offerPoints, offerRoutes, tripStatus]);
 
+  //TODO: dumb logic while backend don't have normal way for algorythms
   useEffect(() => {
     if (orderStatus === OrderStatus.ChoosingTariff && offerRoutes) {
-      if (currentSelectedTariff?.matching[0].durationSec) {
-        setFinalStopPointTimeInSec(offerRoutes.totalDurationSec + currentSelectedTariff.matching[0].durationSec);
+      if (currentSelectedTariff?.time) {
+        setFinalStopPointTimeInSec(offerRoutes.totalDurationSec + currentSelectedTariff.time);
       } else {
         setFinalStopPointTimeInSec(offerRoutes.totalDurationSec);
       }

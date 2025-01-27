@@ -56,10 +56,10 @@ const Tariffs = () => {
 
   const withAnimatedBigCars = useRef(true);
 
-  const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs?.some(trf =>
-    trf.matching.some(item => item.durationSec !== null && item.durationSec !== 0),
-  );
-
+  const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs?.some(trf => trf.cost !== null && trf.cost !== 0);
+  // const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs?.some(trf =>
+  //   trf.matching.some(item => item.durationSec !== null && item.durationSec !== 0),
+  // );
   const computedStyles = StyleSheet.create({
     confirmText: {
       color: isAvailableSelectedTariffGroup ? colors.textPrimaryColor : colors.textQuadraticColor,
@@ -106,16 +106,27 @@ const Tariffs = () => {
     //TODO: add logic for currency
     (foundAvailableTariffIdx: number) => {
       if (selectedTariffGroup && selectedTariffGroup.tariffs) {
-        const selectedTariffPlans = selectedTariffGroup.tariffs[foundAvailableTariffIdx].matching;
-        if (selectedTariffPlans.length >= 2) {
-          setSelectedPriceIdx(1);
-          dispatch(
-            setEstimatedPrice({ value: selectedTariffPlans[1].cost, currencyCode: selectedTariffPlans[1].currency }),
-          );
-        } else if (selectedTariffPlans.length === 1) {
+        //TODO: dumb logic while backend don't have normal way for algorythms
+        const selectedTariffPlans = selectedTariffGroup.tariffs[foundAvailableTariffIdx];
+        // if (selectedTariffPlans.length >= 2) {
+        //   setSelectedPriceIdx(1);
+        //   dispatch(
+        //     setEstimatedPrice({ value: selectedTariffPlans[1].cost, currencyCode: selectedTariffPlans[1].currency }),
+        //   );
+        // } else if (selectedTariffPlans.length === 1) {
+        //   setSelectedPriceIdx(0);
+        //   dispatch(
+        //     setEstimatedPrice({ value: selectedTariffPlans[0].cost, currencyCode: selectedTariffPlans[0].currency }),
+        //   );
+        // } else {
+        //   setSelectedPriceIdx(null);
+        //   dispatch(setEstimatedPrice(null));
+        // }
+
+        if (selectedTariffPlans) {
           setSelectedPriceIdx(0);
           dispatch(
-            setEstimatedPrice({ value: selectedTariffPlans[0].cost, currencyCode: selectedTariffPlans[0].currency }),
+            setEstimatedPrice({ value: selectedTariffPlans.cost, currencyCode: selectedTariffPlans.currencyCode }),
           );
         } else {
           setSelectedPriceIdx(null);
@@ -128,9 +139,8 @@ const Tariffs = () => {
 
   useEffect(() => {
     if (selectedTariffGroup) {
-      const foundAvailableTariffIdx = selectedTariffGroup?.tariffs?.findIndex(el =>
-        el?.matching.some(item => item.durationSec !== null && item.durationSec !== 0),
-      );
+      //TODO: dumb logic while backend don't have normal way for algorythms
+      const foundAvailableTariffIdx = selectedTariffGroup?.tariffs?.findIndex(el => el?.cost !== null);
 
       if (foundAvailableTariffIdx !== undefined && foundAvailableTariffIdx !== -1) {
         setSelectedPlanIndex(foundAvailableTariffIdx);
@@ -156,22 +166,30 @@ const Tariffs = () => {
       let groupPrice = 0;
       let currencyCode: CurrencyType = 'UAH';
 
+      // if (value.tariffs !== undefined && value.tariffs.length > 0) {
+      //   const filteredTariffs = value.tariffs?.filter(trf =>
+      //     trf.matching.some(el => el.durationSec !== null && el.durationSec !== 0),
+      //   );
+
+      //   groupPrice =
+      //     filteredTariffs && filteredTariffs.length > 0
+      //       ? filteredTariffs?.reduce(
+      //           (accumulator, trf) =>
+      //             accumulator +
+      //             trf.matching.reduce(
+      //               (acc, el) => acc + (el.durationSec !== null && el.durationSec !== 0 ? (el.cost ?? 0) : 0),
+      //               0,
+      //             ),
+      //           0,
+      //         ) / filteredTariffs?.length
+      //       : 0;
+
       if (value.tariffs !== undefined && value.tariffs.length > 0) {
-        const filteredTariffs = value.tariffs?.filter(trf =>
-          trf.matching.some(el => el.durationSec !== null && el.durationSec !== 0),
-        );
+        const filteredTariffs = value.tariffs?.filter(trf => trf.cost !== null);
 
         groupPrice =
           filteredTariffs && filteredTariffs.length > 0
-            ? filteredTariffs?.reduce(
-                (accumulator, trf) =>
-                  accumulator +
-                  trf.matching.reduce(
-                    (acc, el) => acc + (el.durationSec !== null && el.durationSec !== 0 ? (el.cost ?? 0) : 0),
-                    0,
-                  ),
-                0,
-              ) / filteredTariffs?.length
+            ? filteredTariffs.reduce((accumulator, trf) => accumulator + (trf.cost ?? 0), 0) / filteredTariffs.length
             : 0;
 
         const isContainFastestTariff = filteredTariffs?.some(item => item.id === minDurationTariff?.id);

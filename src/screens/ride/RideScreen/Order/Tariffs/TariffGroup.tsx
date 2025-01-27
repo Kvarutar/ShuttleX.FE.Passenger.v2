@@ -84,7 +84,7 @@ const TariffGroup = ({
           />
         ) : (
           <Text style={[styles.price, computedStyles.price]}>
-            {getCurrencySign(currencyCode)}
+            ~{getCurrencySign(currencyCode)}
             {price}
           </Text>
         )}

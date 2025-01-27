@@ -16,7 +16,6 @@ import {
 import {
   AddressPoint,
   EstimatedPrice,
-  Matching,
   MatchingFromAPI,
   OfferRoutesFromAPI,
   OfferState,
@@ -84,13 +83,14 @@ const slice = createSlice({
         );
 
         if (tariffToUpdateIndex !== -1) {
-          const newMatching: Matching[] = action.payload.map(el => ({
-            durationSec: el.durationSeconds,
-            algorythm: el.algorythmType,
-            cost: null,
-            currency: '',
-          }));
-          state.avaliableTariffs[tariffToUpdateIndex].matching = newMatching;
+          //TODO: dumb logic while backend don't have normal way for algorythms
+          // const newMatching: Matching[] = action.payload.map(el => ({
+          //   durationSec: el.durationSeconds,
+          //   algorythm: el.algorythmType,
+          //   cost: null,
+          //   currency: '',
+          // }));
+          state.avaliableTariffs[tariffToUpdateIndex].time = action.payload[0].durationSeconds;
         }
       }
     },
@@ -101,8 +101,9 @@ const slice = createSlice({
           const tariffToUpdateIdx = state.avaliableTariffs.findIndex(tariff => tariff.id === tariffWithCost.tariffId);
 
           if (tariffToUpdateIdx !== -1 && tariffToUpdateIdx !== undefined) {
-            state.avaliableTariffs[tariffToUpdateIdx].matching[0].cost = Number(tariffWithCost.cost);
-            state.avaliableTariffs[tariffToUpdateIdx].matching[0].currency = tariffWithCost.currency;
+            //TODO: dumb logic while backend don't have normal way for algorythms
+            state.avaliableTariffs[tariffToUpdateIdx].cost = Number(tariffWithCost.cost);
+            state.avaliableTariffs[tariffToUpdateIdx].currency = tariffWithCost.currency;
           }
         }
       });
@@ -193,7 +194,14 @@ const slice = createSlice({
       })
       .addCase(getAvailableTariffs.fulfilled, (state, action) => {
         if (action.payload) {
-          state.avaliableTariffs = action.payload.map(tariff => ({ ...tariff, matching: [], isAvaliable: false }));
+          state.avaliableTariffs = action.payload.map(tariff => ({
+            ...tariff,
+            cost: null,
+            time: null,
+            currency: null,
+            matching: [],
+            isAvaliable: false,
+          }));
         }
         state.loading.avaliableTariffs = false;
       })

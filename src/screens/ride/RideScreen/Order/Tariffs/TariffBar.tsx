@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
@@ -21,7 +21,6 @@ import {
   minDurationTariffSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
 import passengerColors from '../../../../../shared/colors/colors';
-import PlanButton from '../../PlanButton/PlanButton';
 import { TariffBarProps } from './types';
 
 const animationDuration = 300;
@@ -29,8 +28,6 @@ const animationDuration = 300;
 //TODO: do skeleton while we don't have price and duration
 const TariffBar = ({
   isPlanSelected,
-  selectedPrice,
-  setSelectedPrice,
   onPress,
   tariff,
   windowIsOpened,
@@ -46,13 +43,17 @@ const TariffBar = ({
   const minDurationTariff = useSelector(minDurationTariffSelector);
 
   const tariffTitle = tariffsCarData[tariff.name].text;
-  const availablePlans = useMemo(
-    () => (tariff.matching ? tariff.matching.filter(item => item.durationSec !== null) : []),
-    [tariff],
-  );
-  const defaultPlanIndex = availablePlans.length > 1 ? 1 : 0;
+  //TODO: dumb logic while backend don't have normal way for algorythms
+  // const availablePlans = useMemo(
+  //   () => (tariff.time ? [{cost: tariff.cost, time: tariff.time, currency: tariff.currency}] : []),
+  //   [tariff],
+  // );
+  const availablePlans = [{ cost: tariff.cost, time: tariff.time, currency: tariff.currency }];
+
+  // const defaultPlanIndex = availablePlans.length > 1 ? 1 : 0;
+  const defaultPlanIndex = 0;
   const showPriceAndTime = !isPlanSelected || availablePlans.length < 2;
-  const isAvailableTariff = availablePlans[defaultPlanIndex]?.durationSec !== 0;
+  const isAvailableTariff = availablePlans[defaultPlanIndex]?.time !== 0;
 
   const [withAnimatedSmallCar, setWithAnimatedSmallCar] = useState(true);
 
@@ -151,7 +152,7 @@ const TariffBar = ({
       return (
         <View style={[styles.timeContainer, computedStyles.timeContainer]}>
           <Text style={[styles.capacityText, computedStyles.timeText]}>
-            {formatTime(Number(availablePlans[defaultPlanIndex].durationSec))}
+            {formatTime(Number(availablePlans[defaultPlanIndex].time))}
           </Text>
         </View>
       );
@@ -240,7 +241,8 @@ const TariffBar = ({
         <Animated.View style={[styles.tariffContainer, computedStyles.tariffContainer, animatedStyles.tariffContainer]}>
           {tariffContent}
         </Animated.View>
-        {availablePlans.length > 1 && (
+        {/* dumb logic while backend don't have normal way for algorythms */}
+        {/* {availablePlans.length > 1 && (
           <Animated.View style={animatedStyles.buttonWrapper}>
             <View style={styles.buttonContainer}>
               {availablePlans.map((plan, index) => (
@@ -253,7 +255,7 @@ const TariffBar = ({
               ))}
             </View>
           </Animated.View>
-        )}
+        )} */}
       </Animated.View>
     </Pressable>
   );
