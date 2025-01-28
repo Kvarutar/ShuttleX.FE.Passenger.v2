@@ -30,6 +30,7 @@ import { getTariffsPrices } from '../../../../../core/ride/redux/offer/thunks';
 import { SelectedTariff, TariffCategory, TariffsType } from '../../../../../core/ride/redux/offer/types';
 import { setIsAddressSelectVisible, setOrderStatus } from '../../../../../core/ride/redux/order';
 import { OrderStatus } from '../../../../../core/ride/redux/order/types';
+import { setTripRouteInfo } from '../../../../../core/ride/redux/trip';
 import MapCameraModeButton from '../../MapCameraModeButton';
 import TariffBar from './TariffBar';
 import TariffGroup from './TariffGroup';
@@ -100,6 +101,7 @@ const Tariffs = () => {
   const onBackPress = () => {
     dispatch(setOrderStatus(OrderStatus.StartRide));
     dispatch(setIsAddressSelectVisible(true));
+    dispatch(setTripRouteInfo(null));
   };
 
   const resetTariffPrice = useCallback(
