@@ -50,7 +50,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
   const { colors } = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const intervalRef = useRef<Nullable<NodeJS.Timeout>>(null);
   const isFirstRender = useRef<boolean>(false);
   const dispatch = useAppDispatch();
@@ -196,6 +196,11 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
     },
   });
 
+  const lotteryPolicyLink =
+    i18n.language === 'ru' || i18n.language === 'uk'
+      ? 'https://www.shuttlex.com/%D0%9B%D0%BE%D1%82%D0%B5%D1%80%D0%B5%D1%8F.pdf'
+      : 'https://www.shuttlex.com/Challenge.pdf';
+
   const renderContent = () => (
     <View style={[styles.renderContainer, computedStyles.renderContainer]}>
       {isPrizeSelected ? (
@@ -243,7 +248,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
         ))
       )}
       <View style={[styles.ruleContainer, computedStyles.ruleContainer]}>
-        <TouchableOpacity onPress={() => Linking.openURL('https://www.shuttlex.com').catch(logger.error)}>
+        <TouchableOpacity onPress={() => Linking.openURL(lotteryPolicyLink).catch(logger.error)}>
           <Text style={[styles.ruleText, computedStyles.ruleText]}>{t('raffle_Lottery_promotionalRules')}</Text>
         </TouchableOpacity>
       </View>

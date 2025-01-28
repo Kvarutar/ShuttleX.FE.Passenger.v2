@@ -6,7 +6,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import { InputXIcon, SafeAreaView, Text, useTheme } from 'shuttlex-integration';
 
 import { Prize } from '../../../../core/lottery/redux/types';
-import colors from '../../../../shared/colors/colors.ts';
+import passengerColors from '../../../../shared/colors/colors.ts';
 import SmallButton from '../../SmallButton';
 import { prizesData } from '../prizesData';
 import { PrizesSliderProps } from './types';
@@ -94,7 +94,7 @@ const PrizesSlider = memo(({ visible, onClose, selectedItemIndex, listItem }: Pr
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: colors.raffle.surpriseTitleBackgroundColor,
+    backgroundColor: passengerColors.raffle.surpriseTitleBackgroundColor,
   },
   wrapper: {
     position: 'absolute',

@@ -11830,7 +11830,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
 
 "shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev":
   version: 1.0.0
-  resolution: "shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=171305b00089b7390d2e96ee2e60bdefe2e17b94"
+  resolution: "shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=6971caf22ac4d35493168ac9d23f8548f64b418e"
   dependencies:
     "@googlemaps/polyline-codec": ^1.0.28
     "@react-native/eslint-config": 0.73.2
@@ -11878,7 +11878,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react-native-svg-transformer: "*"
     react-redux: "*"
     uuid: "*"
-  checksum: 0b889453ba6c017d812118b14f78259da5a9147eda3f54c725b7493ab987d388c657b44c1937b5fd2779b9bfed236f2f0f85b16c02a59389d7b71c0f2073db8e
+  checksum: 6cdc85c5094d7198e5436936d23593d4646f4ea1bf390e33f9941e547bf0ed915a017d023928925b271456deffedf5cb0ff537cc46d2a132ef23bb758e8c2b7e
   languageName: node
   linkType: hard
 
