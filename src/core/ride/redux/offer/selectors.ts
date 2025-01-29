@@ -52,10 +52,10 @@ export const minDurationTariffSelector = createSelector(
   groupedTariffs =>
     Object.values(groupedTariffs)
       .flatMap(item => item.tariffs)
-      .filter(item => item?.matching[0]?.durationSec !== 0)
+      .filter(item => item?.time !== 0)
       .sort((a, b) => {
-        const aDuration = a?.matching[0]?.durationSec ?? 0;
-        const bDuration = b?.matching[0]?.durationSec ?? 0;
+        const aDuration = a?.time ?? 0;
+        const bDuration = b?.time ?? 0;
         return aDuration - bDuration;
       })[0],
 );
