@@ -38,6 +38,7 @@ import {
 } from '../../../core/lottery/redux/thunks';
 import { Prize } from '../../../core/lottery/redux/types';
 import { useAppDispatch } from '../../../core/redux/hooks';
+import { lotteryPolicyLink } from '../index.tsx';
 import CountdownTimer from './CountDownTimer';
 import PrizeCard from './PrizeCard';
 import PrizePodium from './PrizePodium';
@@ -50,7 +51,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
   const { colors } = useTheme();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const intervalRef = useRef<Nullable<NodeJS.Timeout>>(null);
   const isFirstRender = useRef<boolean>(false);
   const dispatch = useAppDispatch();
@@ -195,11 +196,6 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
       color: colors.textLinkColor,
     },
   });
-
-  const lotteryPolicyLink =
-    i18n.language === 'ru' || i18n.language === 'uk'
-      ? 'https://www.shuttlex.com/%D0%9B%D0%BE%D1%82%D0%B5%D1%80%D0%B5%D1%8F.pdf'
-      : 'https://www.shuttlex.com/Challenge.pdf';
 
   const renderContent = () => (
     <View style={[styles.renderContainer, computedStyles.renderContainer]}>

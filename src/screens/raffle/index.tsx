@@ -2,15 +2,22 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Linking, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Confetti, InputXIcon, SafeAreaView, Text, useTheme } from 'shuttlex-integration';
+import { Confetti, InputXIcon, QuestionRoundIcon, SafeAreaView, Text, useTheme } from 'shuttlex-integration';
 
+import { logger } from '../../App.tsx';
+import i18n from '../../core/locales/i18n.ts';
 import { lotterySelectModeSelector, lotteryStateSelector } from '../../core/lottery/redux/selectors.ts';
 import { RootStackParamList } from '../../Navigate/props';
 import Lottery from './Lottery';
 import Season from './Season';
 import SmallButton from './SmallButton';
+
+export const lotteryPolicyLink =
+  i18n.language === 'ru' || i18n.language === 'uk'
+    ? 'https://www.shuttlex.com/%D0%9B%D0%BE%D1%82%D0%B5%D1%80%D0%B5%D1%8F.pdf'
+    : 'https://www.shuttlex.com/Challenge.pdf';
 
 const RaffleScreen = (): JSX.Element => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Raffle'>>();
@@ -57,13 +64,10 @@ const RaffleScreen = (): JSX.Element => {
               )}
             </Text>
           </View>
-          {/*TODO will be add later*/}
-          {/*<SmallButton*/}
-          {/*  icon={<UploadIcon />}*/}
-          {/*  onPress={() => {*/}
-          {/*    console.log('TODO: onSharePress');*/}
-          {/*  }}*/}
-          {/*/>*/}
+          <SmallButton
+            icon={<QuestionRoundIcon />}
+            onPress={() => Linking.openURL(lotteryPolicyLink).catch(logger.error)}
+          />
         </View>
       </SafeAreaView>
 
@@ -90,7 +94,6 @@ const styles = StyleSheet.create({
   headerTitleContainer: {
     flex: 1,
     alignItems: 'center',
-    marginRight: 44,
   },
 });
 
