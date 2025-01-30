@@ -87,7 +87,17 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   return (
     <>
       <BottomWindowWithGesture
-        onGestureUpdate={callback => dispatch(setActiveBottomWindowYCoordinate(callback.y))}
+        onAnimationEnd={values => dispatch(setActiveBottomWindowYCoordinate(values.pageY))}
+        onGestureStart={event => {
+          if (event.velocityY > 0) {
+            dispatch(setActiveBottomWindowYCoordinate(null));
+          }
+        }}
+        onHiddenOrVisibleHeightChange={values => {
+          if (!values.isWindowAnimating) {
+            dispatch(setActiveBottomWindowYCoordinate(values.pageY));
+          }
+        }}
         visiblePart={
           <StartRideVisible isBottomWindowOpen={isBottomWindowOpen} setFastAddressSelect={setFastAddressSelect} />
         }

@@ -108,7 +108,17 @@ const Trip = () => {
 
   return (
     <BottomWindowWithGesture
-      onGestureUpdate={callback => dispatch(setActiveBottomWindowYCoordinate(callback.y))}
+      onAnimationEnd={values => dispatch(setActiveBottomWindowYCoordinate(values.pageY))}
+      onGestureStart={event => {
+        if (event.velocityY > 0) {
+          dispatch(setActiveBottomWindowYCoordinate(null));
+        }
+      }}
+      onHiddenOrVisibleHeightChange={values => {
+        if (!values.isWindowAnimating) {
+          dispatch(setActiveBottomWindowYCoordinate(values.pageY));
+        }
+      }}
       maxHeight={0.88}
       withDraggable={!TripStatus.Ride}
       headerWrapperStyle={styles.headerWrapperStyle}

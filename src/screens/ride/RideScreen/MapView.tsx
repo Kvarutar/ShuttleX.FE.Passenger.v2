@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 import { LatLng } from 'react-native-maps';
+import { Easing, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
   calculateNewMapRoute,
@@ -321,16 +322,17 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     [finalStopPointTimeInSec],
   );
 
-  const computedStyles = StyleSheet.create({
-    map: {
-      bottom: activeBottomWindowYCoordinate ? screenHeight - activeBottomWindowYCoordinate - 32 : 0,
-    },
-  });
+  const mapAnimatedStyle = useAnimatedStyle(() => ({
+    bottom: withTiming(activeBottomWindowYCoordinate ? screenHeight - activeBottomWindowYCoordinate - 32 : 0, {
+      duration: 200,
+      easing: Easing.linear,
+    }),
+  }));
 
   return (
     <MapViewIntegration
       ref={mapRef}
-      style={[styles.map, computedStyles.map]}
+      style={[styles.map, mapAnimatedStyle]}
       // Hide current geolocation if in Accepted or Ride status
       geolocationCoordinates={
         tripStatus === TripStatus.Accepted || tripStatus === TripStatus.Ride

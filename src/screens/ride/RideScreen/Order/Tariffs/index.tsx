@@ -258,7 +258,17 @@ const Tariffs = () => {
 
   return (
     <BottomWindowWithGesture
-      onGestureUpdate={callback => dispatch(setActiveBottomWindowYCoordinate(callback.y))}
+      onAnimationEnd={values => dispatch(setActiveBottomWindowYCoordinate(values.pageY))}
+      onGestureStart={event => {
+        if (event.velocityY > 0 && windowIsOpened) {
+          dispatch(setActiveBottomWindowYCoordinate(null));
+        }
+      }}
+      onHiddenOrVisibleHeightChange={values => {
+        if (!values.isWindowAnimating) {
+          dispatch(setActiveBottomWindowYCoordinate(values.pageY));
+        }
+      }}
       setIsOpened={value => {
         setWindowIsOpened(value);
         if (withAnimatedBigCars.current) {
