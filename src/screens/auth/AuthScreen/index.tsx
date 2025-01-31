@@ -77,7 +77,7 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
   };
 
   const handleSendingSignInData = (body: string) => {
-    setData(body);
+    setData(body.trim());
     dispatch(signIn({ method: signMethod, data: body }));
   };
 

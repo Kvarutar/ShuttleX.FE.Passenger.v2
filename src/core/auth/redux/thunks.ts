@@ -25,7 +25,7 @@ export const signIn = createAppAsyncThunk<void, SignInPayload>(
   async (payload, { rejectWithValue, authAxios }) => {
     const { method, data } = payload;
 
-    const requestData = method === 'phone' ? { phone: formatPhone(data) } : { email: data };
+    const requestData = method === 'phone' ? { phone: formatPhone(data) } : { email: data.trim() };
     const methodUrlPart = method === 'phone' ? 'sms' : 'email';
 
     try {
@@ -56,7 +56,7 @@ export const signUp = createAppAsyncThunk<void, SignUpPayload>(
       });
 
       await dispatch(
-        signIn({ method: payload.method, data: payload.method === 'phone' ? payload.phone : payload.email }),
+        signIn({ method: payload.method, data: payload.method === 'phone' ? payload.phone : payload.email.trim() }),
       );
     } catch (error) {
       const { code, body, status } = getNetworkErrorInfo(error);
@@ -117,7 +117,7 @@ export const verifyCode = createAppAsyncThunk<void, VerifyCodePayload>(
     if (payload.method === 'phone') {
       bodyPart = { phone: formatPhone(payload.body) };
     } else if (payload.method === 'email') {
-      bodyPart = { email: payload.body };
+      bodyPart = { email: payload.body.trim() };
     }
 
     const methodUrlPart = payload.method === 'phone' ? 'sms' : 'email';

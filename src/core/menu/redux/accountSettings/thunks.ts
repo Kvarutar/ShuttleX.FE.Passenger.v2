@@ -27,7 +27,7 @@ export const verifyAccountSettingsDataCode = createAppAsyncThunk<void, VerifyAcc
         bodyPart = { phone: formatPhone(payload.body) };
         break;
       case 'email':
-        bodyPart = { email: payload.body };
+        bodyPart = { email: payload.body.trim() };
         break;
     }
 
@@ -52,11 +52,11 @@ export const changeAccountContactData = createAppAsyncThunk<void, ChangeAccountC
     const requestData: ChangeAccountContactDataAPIRequest =
       mode === 'phone'
         ? { oldPhone: formatPhone(data.oldData), newPhone: formatPhone(data.newData) }
-        : { oldEmail: data.oldData, newEmail: data.newData };
+        : { oldEmail: data.oldData.trim(), newEmail: data.newData.trim() };
 
     try {
       await authAccountSettingsAxios.post(`/reset/${mode}`, requestData);
-      await dispatch(requestAccountSettingsChangeDataVerificationCode({ mode, data: data.newData }));
+      await dispatch(requestAccountSettingsChangeDataVerificationCode({ mode, data: data.newData.trim() }));
       await dispatch(getAccountSettingsVerifyStatus());
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
@@ -70,7 +70,7 @@ export const requestAccountSettingsChangeDataVerificationCode = createAppAsyncTh
     const { mode, data } = payload;
 
     const requestData: AccountSettingsVerificationConfirmType =
-      mode === 'phone' ? { phone: formatPhone(data) } : { email: data };
+      mode === 'phone' ? { phone: formatPhone(data) } : { email: data.trim() };
 
     try {
       const deviceId = await DeviceInfo.getUniqueId();
