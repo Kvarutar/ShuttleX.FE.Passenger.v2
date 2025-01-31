@@ -35,7 +35,7 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: Place
 
     case PlaceBarModes.Save:
       return (
-        <Bar mode={BarModes.Default} onPress={onPress} style={[styles.barContainer, style]}>
+        <Bar mode={BarModes.Default} onPress={onPress} style={[styles.barContainer, styles.saveBarContainer, style]}>
           <View style={styles.fullHeaderContainer}>
             <View style={styles.distanceContainer}>
               <Bar mode={BarModes.Disabled} style={styles.circleIconContainer}>
@@ -50,7 +50,7 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: Place
               )}
             </View>
           </View>
-          <PlaceTitle place={place} style={styles.fullTitleContainer} />
+          <PlaceTitle addressesTextNumberOfLines={1} place={place} style={styles.fullTitleContainer} />
         </Bar>
       );
 
@@ -82,6 +82,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 40,
     height: 40,
+  },
+  saveBarContainer: {
+    width: 280,
   },
   fullHeaderContainer: {
     flexDirection: 'row',

@@ -19,4 +19,5 @@ export type PlaceTitleProps = {
   withDistance?: boolean;
   place: SearchAddressFromAPI;
   style?: StyleProp<ViewStyle>;
+  addressesTextNumberOfLines?: number;
 };
