@@ -6,11 +6,13 @@ import {
   CustomKeyboardAvoidingView,
   isIncorrectFieldsError,
   isLockedError,
+  isNoExistingsError,
   KeyboardAvoidingViewMode,
   milSecToTime,
   SafeAreaView,
   SignInMethod,
   SignInScreen,
+  SignInScreenRef,
   SignUpForm,
   SignUpScreen,
   SignUpScreenRef,
@@ -18,19 +20,22 @@ import {
   TitleWithCloseButton,
 } from 'shuttlex-integration';
 
+import { setSignError } from '../../../core/auth/redux';
 import { authErrorSelector, isAuthLoadingSelector } from '../../../core/auth/redux/selectors';
 import { signIn, signUp } from '../../../core/auth/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { AuthScreenProps } from './props';
 
 const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
+  const signInRef = useRef<SignInScreenRef>(null);
   const signUpRef = useRef<SignUpScreenRef>(null);
+  const previousSignMethodRef = useRef<SignInMethod>(SignInMethod.Phone);
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+
   const isLoading = useSelector(isAuthLoadingSelector);
   const signError = useSelector(authErrorSelector);
-  const previousSignMethodRef = useRef<SignInMethod>(SignInMethod.Phone);
 
   const [isSignIn, setIsisSignIn] = useState<boolean>(route.params.state === 'SignIn');
   const [data, setData] = useState<string | null>();
@@ -48,12 +53,27 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
       if (Array.isArray(signError.body)) {
         signError.body.forEach(item => {
           signUpRef.current?.showErrors({ [item.field]: item.message });
+          signInRef.current?.showErrors(item.message);
         });
       } else {
         signUpRef.current?.showErrors({ email: signError.body.message });
+        signInRef.current?.showErrors(signError.body.message);
       }
     }
-  }, [isLoading, signError, navigation, data, signMethod]);
+
+    if (signError && isNoExistingsError(signError)) {
+      signInRef.current?.showErrors(signError.body);
+    }
+
+    if (!signError && isSignIn) {
+      signInRef.current?.resetErrors();
+    }
+  }, [isLoading, signError, navigation, data, signMethod, isSignIn]);
+
+  useEffect(() => {
+    dispatch(setSignError(null));
+    setData(null);
+  }, [dispatch, signMethod]);
 
   useEffect(() => {
     if (signError && isLockedError(signError)) {
@@ -97,6 +117,7 @@ const AuthScreen = ({ navigation, route }: AuthScreenProps): JSX.Element => {
         />
         {isSignIn ? (
           <SignInScreen
+            ref={signInRef}
             navigateToSignUp={() => setIsisSignIn(false)}
             onSubmit={handleSendingSignInData}
             isLoading={isLoading}
