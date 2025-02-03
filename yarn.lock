@@ -3232,6 +3232,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/geolocation@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "@react-native-community/geolocation@npm:3.4.0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 4a1a334de5b8345ee5ca9af987718a4cdd0b401b6d024268330c98736eccd0bebf45fd1d4cb396558f429a4670e5b29da0b5b7ebd4e51ca12972d4b08b55d4bc
+  languageName: node
+  linkType: hard
+
 "@react-native-community/netinfo@npm:^11.3.1":
   version: 11.4.1
   resolution: "@react-native-community/netinfo@npm:11.4.1"
@@ -4383,6 +4393,7 @@ __metadata:
     "@notifee/react-native": ^7.9.0
     "@react-native-community/blur": ^4.3.2
     "@react-native-community/datetimepicker": ^7.6.1
+    "@react-native-community/geolocation": ^3.4.0
     "@react-native-community/netinfo": ^11.3.1
     "@react-native-firebase/app": ^20.4.0
     "@react-native-firebase/messaging": ^20.4.0
@@ -4413,7 +4424,6 @@ __metadata:
     react-native-confetti-cannon: ^1.5.2
     react-native-config: ^1.5.1
     react-native-device-info: ^10.12.0
-    react-native-geolocation-service: ^5.3.1
     react-native-gesture-handler: 2.18.1
     react-native-get-random-values: ^1.11.0
     react-native-keychain: ^8.2.0
@@ -4438,7 +4448,7 @@ __metadata:
     react-test-renderer: 18.2.0
     reactotron-react-native: ^5.1.7
     reactotron-redux: ^3.1.9
-    shuttlex-integration: "git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev"
+    shuttlex-integration: "ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev"
     tsx: ^4.19.2
     typescript: 5.2.2
     uuid: ^9.0.1
@@ -6823,6 +6833,13 @@ __metadata:
   version: 5.0.1
   resolution: "event-target-shim@npm:5.0.1"
   checksum: 1ffe3bb22a6d51bdeb6bf6f7cf97d2ff4a74b017ad12284cc9e6a279e727dc30a5de6bb613e5596ff4dc3e517841339ad09a7eec44266eccb1aa201a30448166
+  languageName: node
+  linkType: hard
+
+"eventemitter3@npm:^4.0.7":
+  version: 4.0.7
+  resolution: "eventemitter3@npm:4.0.7"
+  checksum: 1875311c42fcfe9c707b2712c32664a245629b42bb0a5a84439762dd0fd637fc54d078155ea83c2af9e0323c9ac13687e03cfba79b03af9f40c89b4960099374
   languageName: node
   linkType: hard
 
@@ -10718,6 +10735,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-background-actions@npm:3.0.1":
+  version: 3.0.1
+  resolution: "react-native-background-actions@npm:3.0.1"
+  dependencies:
+    eventemitter3: ^4.0.7
+  peerDependencies:
+    react-native: ">=0.47.0"
+  checksum: 78c08d69766ba7903fdfc5693eca87349c048a16f4ecb31c750fb9a19854ff7e2e07a9c8474125f4c03d3912df44046d58b87af45a462d5a73f893ec74f5013e
+  languageName: node
+  linkType: hard
+
 "react-native-bootsplash@npm:^5.4.1":
   version: 5.5.3
   resolution: "react-native-bootsplash@npm:5.5.3"
@@ -10779,13 +10807,6 @@ __metadata:
     react-native-windows:
       optional: true
   checksum: e29b9406dd77e16f461e64035a5f7056b1fcb0d05fb26b23f0073ff2211520a7ac9b57da7e58e61ff03bcbe1120d2e104fb1c90282412736feeb12abe96e2d3b
-  languageName: node
-  linkType: hard
-
-"react-native-geolocation-service@npm:^5.3.1":
-  version: 5.3.1
-  resolution: "react-native-geolocation-service@npm:5.3.1"
-  checksum: 9a625c9f87811933491055fd8cbd1ef46f97fbbe0262714ad1d9aa969a8900dcb4abc47e58fe162400a81bcdee79324dfcc8e631862df9a22d59ac84af9acfde
   languageName: node
   linkType: hard
 
@@ -11882,9 +11903,9 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
   languageName: node
   linkType: hard
 
-"shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev":
+"shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev":
   version: 1.0.0
-  resolution: "shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=fcd653b2106d3c96f838ca46ec14300e135e5f88"
+  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=719a3cf59c8c8c831e90e07e1b845e535f62ac2d"
   dependencies:
     "@googlemaps/polyline-codec": ^1.0.28
     "@react-native/eslint-config": 0.73.2
@@ -11895,6 +11916,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     eslint-plugin-import: ^2.29.0
     eslint-plugin-react: ^7.34.3
     eslint-plugin-simple-import-sort: ^10.0.0
+    react-native-background-actions: 3.0.1
     react-native-confetti-cannon: ^1.5.2
     react-native-document-picker: 9.1.1
     react-native-image-crop-picker: ^0.41.4
@@ -11906,6 +11928,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     "@microsoft/signalr": "*"
     "@react-native-community/blur": "*"
     "@react-native-community/datetimepicker": "*"
+    "@react-native-community/geolocation": ^3.2.0
     "@react-native-community/netinfo": "*"
     "@react-native-firebase/app": "*"
     "@react-native-firebase/messaging": "*"
@@ -11917,7 +11940,6 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react: "*"
     react-native: "*"
     react-native-device-info: "*"
-    react-native-geolocation-service: "*"
     react-native-gesture-handler: "*"
     react-native-keychain: "*"
     react-native-linear-gradient: "*"
@@ -11932,7 +11954,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react-native-svg-transformer: "*"
     react-redux: "*"
     uuid: "*"
-  checksum: f105fc2127b08248efffa9677013545f121eef47a671dbfde257a36d07dcd99b4387fc738e24f22c9deaf7ee74e1676ce2eab59e1f976a0a48c4bc4dbe6a0b8f
+  checksum: e4e08f3465d5ab894b03453837f037f4d15569d83c72b213f56ff60e21eea597c2e53a7173aa761642832d6da1dfd16cbf09c2938732801e2d97b85b5f592e05
   languageName: node
   linkType: hard
 

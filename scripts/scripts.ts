@@ -126,8 +126,7 @@ switch (process.env.npm_lifecycle_event) {
     break;
   }
   case 'integration-update': {
-    const baseCommand =
-      'yarn up shuttlex-integration@git+ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1';
+    const baseCommand = 'yarn up shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1';
     const args = process.argv.slice(2);
     if (args.length > 0) {
       exec({
