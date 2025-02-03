@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   carImage: {
-    resizeMode: 'cover',
+    resizeMode: 'contain',
     width: '65%',
     height: undefined,
     aspectRatio: 3.1,

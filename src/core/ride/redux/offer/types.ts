@@ -155,11 +155,16 @@ export type TariffWithMatching = TariffFromAPI & {
 
 export type GetAvailableTariffsAPIResponse = TariffFromAPI[];
 
-//TODO: add "premiumx", "premiumxl" or "business" if necessary
-export type TariffFeKeyFromAPI = 'basicx' | 'basicxl' | 'comfortplus' | 'electric';
+export type TariffFeKeyFromAPI =
+  | 'basicx'
+  | 'basicxl'
+  | 'comfortplus'
+  | 'electric'
+  | 'businessx'
+  | 'businesselite'
+  | 'comforteco';
 
-//TODO: Add 'business' when work with this type
-export type TariffsType = 'economy' | 'comfort';
+export type TariffsType = 'economy' | 'comfort' | 'business';
 export type TariffsTypeFromAPI = 'Economy' | 'Comfort' | 'Premium';
 
 export type TariffCategory = { groupName: TariffsType } & { tariffs: TariffWithMatching[] | undefined };

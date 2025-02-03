@@ -974,6 +974,8 @@ PODS:
   - React-Mapbuffer (0.73.11):
     - glog
     - React-debug
+  - react-native-background-actions (3.0.1):
+    - React-Core
   - react-native-blur (4.4.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
@@ -984,8 +986,10 @@ PODS:
     - React-Core
   - react-native-document-picker (9.1.1):
     - React-Core
-  - react-native-geolocation-service (5.3.1):
-    - React
+  - react-native-geolocation (3.4.0):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - react-native-get-random-values (1.11.0):
     - React-Core
   - react-native-google-maps (1.14.0):
@@ -1300,10 +1304,11 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector-modern`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
+  - react-native-background-actions (from `../node_modules/react-native-background-actions`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
-  - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
+  - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
@@ -1429,14 +1434,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   React-Mapbuffer:
     :path: "../node_modules/react-native/ReactCommon"
+  react-native-background-actions:
+    :path: "../node_modules/react-native-background-actions"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
-  react-native-geolocation-service:
-    :path: "../node_modules/react-native-geolocation-service"
+  react-native-geolocation:
+    :path: "../node_modules/@react-native-community/geolocation"
   react-native-get-random-values:
     :path: "../node_modules/react-native-get-random-values"
   react-native-google-maps:
@@ -1573,10 +1580,11 @@ SPEC CHECKSUMS:
   React-jsinspector: a98428936fb888cc15d857226a26d9ac0a668a0e
   React-logger: 6c1170f7bc315878ef4bd3b918e09130cf632798
   React-Mapbuffer: 300b7684f71a676e9f2dbf6d67e14f39adfe84d3
+  react-native-background-actions: ecffd3f0864140ef6cf21c29be6819a02b531a52
   react-native-blur: 724b988a9d31784642a1617113b35b8a61fe266d
   react-native-config: 8f7283449bbb048902f4e764affbbf24504454af
   react-native-document-picker: 3599b238843369026201d2ef466df53f77ae0452
-  react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
+  react-native-geolocation: dca4a700096eb1253fdd47b8c39ee22b98232809
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-google-maps: 94df984b1647973baffe17c0b7b52828d6b69d94
   react-native-image-picker: 88f0a6e61299e8a94391284302633411a82ba395

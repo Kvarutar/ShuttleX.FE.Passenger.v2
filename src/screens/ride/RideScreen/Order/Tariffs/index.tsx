@@ -142,7 +142,9 @@ const Tariffs = () => {
   useEffect(() => {
     if (selectedTariffGroup) {
       //TODO: dumb logic while backend don't have normal way for algorythms
-      const foundAvailableTariffIdx = selectedTariffGroup?.tariffs?.findIndex(el => el?.cost !== null);
+      //TODO: check cost, because cost never null(swap cost to time)
+
+      const foundAvailableTariffIdx = selectedTariffGroup?.tariffs?.findIndex(el => el?.time !== 0);
 
       if (foundAvailableTariffIdx !== undefined && foundAvailableTariffIdx !== -1) {
         setSelectedPlanIndex(foundAvailableTariffIdx);

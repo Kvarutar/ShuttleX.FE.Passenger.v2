@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     height: undefined,
     aspectRatio: 3.15,
     flexShrink: 1,
+    resizeMode: 'contain',
   },
   addressWrapper: {
     flexDirection: 'row',

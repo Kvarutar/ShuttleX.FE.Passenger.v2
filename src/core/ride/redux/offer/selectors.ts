@@ -39,11 +39,10 @@ export const groupedTariffsSelector = createSelector(
       groupName: 'comfort',
       tariffs: tariffsList?.filter(tariff => tariff.type === 'Comfort'),
     },
-    //TODO: Add 'business' when work with it
-    // business: {
-    //   groupName: 'business',
-    //   tariffs: tariffsList?.filter(tariff => tariff.type === 'Premium'),
-    // },
+    business: {
+      groupName: 'business',
+      tariffs: tariffsList?.filter(tariff => tariff.type === 'Premium'),
+    },
   }),
 );
 

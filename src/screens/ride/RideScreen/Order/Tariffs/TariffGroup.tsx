@@ -34,7 +34,7 @@ const TariffGroup = ({
 
   const isTariffsPricesLoading = useSelector(isTariffsPricesLoadingSelector);
 
-  const tariffsGroupImagesNames: Record<TariffsType, { title: string; image: Exclude<TariffType, 'Business'> }> = {
+  const tariffsGroupImagesNames: Record<TariffsType, { title: string; image: TariffType }> = {
     economy: {
       title: t('ride_Ride_TariffGroup_economy'),
       image: 'Basic',
@@ -43,11 +43,10 @@ const TariffGroup = ({
       title: t('ride_Ride_TariffGroup_comfort'),
       image: 'ComfortPlus',
     },
-    //TODO: Add this object when work with business
-    // business: {
-    //   title: t('ride_Ride_TariffGroup_business'),
-    //   image: 'Business',
-    // },
+    business: {
+      title: t('ride_Ride_TariffGroup_business'),
+      image: 'BusinessElite',
+    },
   };
 
   const computedStyles = StyleSheet.create({
@@ -71,23 +70,25 @@ const TariffGroup = ({
   return (
     <Pressable style={[styles.wrapper, style]} onPress={onPress}>
       <Animated.View style={[styles.container, animatedStyles]}>
-        <View style={styles.titleContainer}>
-          <Text style={[styles.title, computedStyles.title]}>{tariffsGroupImagesNames[title].title}</Text>
-          {isContainFastestTariff && <LightningIcon style={styles.lightningIcon} />}
+        <View>
+          <View style={styles.titleContainer}>
+            <Text style={[styles.title, computedStyles.title]}>{tariffsGroupImagesNames[title].title}</Text>
+            {isContainFastestTariff && <LightningIcon style={styles.lightningIcon} />}
+          </View>
+          {isTariffsPricesLoading ? (
+            <Skeleton
+              skeletonContainerStyle={styles.skeletonTariffPrice}
+              boneColor={
+                isSelected ? colors.skeletonBoneColor : passengerColors.tariffsColors.tariffGroupPriceLoadingColor
+              }
+            />
+          ) : (
+            <Text style={[styles.price, computedStyles.price]}>
+              ~{getCurrencySign(currencyCode)}
+              {price}
+            </Text>
+          )}
         </View>
-        {isTariffsPricesLoading ? (
-          <Skeleton
-            skeletonContainerStyle={styles.skeletonTariffPrice}
-            boneColor={
-              isSelected ? colors.skeletonBoneColor : passengerColors.tariffsColors.tariffGroupPriceLoadingColor
-            }
-          />
-        ) : (
-          <Text style={[styles.price, computedStyles.price]}>
-            ~{getCurrencySign(currencyCode)}
-            {price}
-          </Text>
-        )}
         <AnimatedCarImage
           tariffType={tariffsGroupImagesNames[title].image}
           containerStyle={styles.animatedCarImageContainer}
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderWidth: 1,
     borderRadius: 12,
+    justifyContent: 'space-between',
   },
   title: {
     fontFamily: 'Inter Bold',
@@ -129,8 +131,10 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   animatedCarImageContainer: {
+    position: 'absolute',
     width: '170%',
-    bottom: 16,
+    maxHeight: 100,
+    bottom: 0,
     left: 20,
   },
   titleContainer: {
