@@ -72,7 +72,7 @@ export const driverCanceledSSEHandler = () => {
   const isOrderCanceled = isOrderCanceledSelector(getState());
   const offer = offerSelector(getState());
 
-  //Because it can be changed in notifications
+  //Because it can be changed in notifications or initial setup
   if (!isOrderCanceled) {
     dispatch(endTrip());
 

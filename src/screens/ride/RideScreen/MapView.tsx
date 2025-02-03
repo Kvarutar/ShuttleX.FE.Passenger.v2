@@ -144,47 +144,6 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     setFinalStopPointCoordinates(null);
   }, []);
 
-  useEffect(() => {
-    switch (tripStatus) {
-      case TripStatus.Accepted: {
-        if (!pickUpRoute) {
-          break;
-        }
-        const coordinates = decodeGooglePolyline(pickUpRoute.geometry); // TODO: check, maybe need to reverse array
-        setRoutePolylinePointsCount(coordinates.length);
-        setPolyline({ type: 'dashed', options: { coordinates, color: '#ABC736' } });
-
-        setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: coordinates[coordinates.length - 1] }]);
-
-        dispatch(setMapRouteTraffic(pickUpRoute.accurateGeometries));
-        break;
-      }
-      case TripStatus.Ride: {
-        if (!dropOffRoute) {
-          break;
-        }
-        const coordinates = decodeGooglePolyline(dropOffRoute.geometry);
-        setRoutePolylinePointsCount(coordinates.length);
-        setPolyline({ type: 'straight', options: { coordinates } });
-
-        setFinalStopPointCoordinates(coordinates[coordinates.length - 1]);
-        setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
-        setFinalStopPointColorMode('mode1');
-
-        dispatch(setMapRouteTraffic(dropOffRoute.accurateGeometries));
-        break;
-      }
-      case TripStatus.Idle:
-      case TripStatus.Arrived:
-        if (orderStatus === OrderStatus.ChoosingTariff || orderStatus === OrderStatus.Payment) {
-          break;
-        }
-        resetPoints();
-        break;
-      default:
-    }
-  }, [dispatch, tripStatus, orderStatus, pickUpRoute, dropOffRoute, resetPoints]);
-
   // Polyline clearing from moving car
   useEffect(() => {
     switch (tripStatus) {
@@ -284,6 +243,47 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       setMarkers([]);
     }
   }, [orderStatus, offerPoints, offerRoutes, tripStatus]);
+
+  useEffect(() => {
+    switch (tripStatus) {
+      case TripStatus.Accepted: {
+        if (!pickUpRoute) {
+          break;
+        }
+        const coordinates = decodeGooglePolyline(pickUpRoute.geometry); // TODO: check, maybe need to reverse array
+        setRoutePolylinePointsCount(coordinates.length);
+        setPolyline({ type: 'dashed', options: { coordinates, color: '#ABC736' } });
+
+        setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: coordinates[coordinates.length - 1] }]);
+
+        dispatch(setMapRouteTraffic(pickUpRoute.accurateGeometries));
+        break;
+      }
+      case TripStatus.Ride: {
+        if (!dropOffRoute) {
+          break;
+        }
+        const coordinates = decodeGooglePolyline(dropOffRoute.geometry);
+        setRoutePolylinePointsCount(coordinates.length);
+        setPolyline({ type: 'straight', options: { coordinates } });
+
+        setFinalStopPointCoordinates(coordinates[coordinates.length - 1]);
+        setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
+        setFinalStopPointColorMode('mode1');
+
+        dispatch(setMapRouteTraffic(dropOffRoute.accurateGeometries));
+        break;
+      }
+      case TripStatus.Idle:
+      case TripStatus.Arrived:
+        if (orderStatus === OrderStatus.ChoosingTariff || orderStatus === OrderStatus.Payment) {
+          break;
+        }
+        resetPoints();
+        break;
+      default:
+    }
+  }, [dispatch, tripStatus, orderStatus, pickUpRoute, dropOffRoute, resetPoints]);
 
   //TODO: dumb logic while backend don't have normal way for algorythms
   useEffect(() => {

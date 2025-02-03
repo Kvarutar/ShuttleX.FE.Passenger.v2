@@ -75,7 +75,7 @@ export const notificationHandlers: Record<
     const isOrderCanceled = isOrderCanceledSelector(store.getState());
     const offer = offerSelector(store.getState());
 
-    //Because it can be changed in notifications
+    //Because it can be changed in sse or initial setup
     if (!isOrderCanceled) {
       store.dispatch(endTrip());
 
