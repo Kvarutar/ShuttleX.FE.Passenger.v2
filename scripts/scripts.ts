@@ -145,16 +145,6 @@ switch (process.env.npm_lifecycle_event) {
   }
   case 'integration-local': {
     const args = process.argv.slice(2);
-    const integrationPath = 'node_modules/shuttlex-integration';
-    if (args.includes('--git-version')) {
-      fsExtra.removeSync(integrationPath);
-      exec({
-        unixCommand: 'yarn',
-        winCommand: 'yarn',
-        options: { dontParseArgs: true },
-      });
-      break;
-    }
     (async () => {
       const integrationPath = args[0];
       const yarnGlobalCache = path.join(os.homedir(), isWin ? 'AppData/Local/Yarn/Berry/cache' : '.yarn/berry/cache');

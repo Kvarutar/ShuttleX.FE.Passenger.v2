@@ -44,6 +44,7 @@ import { TripStatus } from '../../../core/ride/redux/trip/types';
 const updatePassengerGeoInterval = 1000;
 const finalStopPointUpdateIntervalInSec = 30;
 const polylineClearPointDistanceMtr = 25;
+const mapResizeAnimationDuration = 200;
 
 const screenHeight = Dimensions.get('screen').height;
 
@@ -324,7 +325,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
 
   const mapAnimatedStyle = useAnimatedStyle(() => ({
     bottom: withTiming(activeBottomWindowYCoordinate ? screenHeight - activeBottomWindowYCoordinate - 32 : 0, {
-      duration: 200,
+      duration: mapResizeAnimationDuration,
       easing: Easing.linear,
     }),
   }));
@@ -343,7 +344,8 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       // TODO: * 0.85 - temporary solution, need to make smart waiting of finishing previous animation and then start next
       // (maybe drop few animations if queue is too big)
       // or alternatively do the next request when animation is done (or few miliseconds before ending)
-      cars={{ data: cars, animationDuration: updatePassengerGeoInterval * 0.85 }}
+      // TODO: it's bug - animationDuration is dont change anything ;(
+      cars={{ data: cars, animationDuration: 0 }}
       polylines={memoizedPolyline}
       stopPoints={stopPoints}
       markers={

@@ -12,7 +12,7 @@ const initialState: PassengerState = {
   isOrdersHistoryOffsetEmpty: false,
   ui: {
     isLoadingStubVisible: true,
-    activeBottomWindowYCoordinate: 0,
+    activeBottomWindowYCoordinate: null,
   },
   loading: {
     passengerAvatar: false,
@@ -38,6 +38,12 @@ const slice = createSlice({
     setIsLoadingStubVisible(state, action: PayloadAction<boolean>) {
       state.ui.isLoadingStubVisible = action.payload;
     },
+    setActiveBottomWindowYCoordinate(
+      state,
+      action: PayloadAction<PassengerState['ui']['activeBottomWindowYCoordinate']>,
+    ) {
+      state.ui.activeBottomWindowYCoordinate = action.payload;
+    },
     updateProfile(state, action: PayloadAction<Partial<Profile>>) {
       if (state.profile) {
         state.profile = {
@@ -56,12 +62,6 @@ const slice = createSlice({
     clearPassengerInfo(state) {
       state.profile = null;
       state.zone = null;
-    },
-    setActiveBottomWindowYCoordinate(
-      state,
-      action: PayloadAction<PassengerState['ui']['activeBottomWindowYCoordinate']>,
-    ) {
-      state.ui.activeBottomWindowYCoordinate = action.payload;
     },
   },
   extraReducers: builder => {
