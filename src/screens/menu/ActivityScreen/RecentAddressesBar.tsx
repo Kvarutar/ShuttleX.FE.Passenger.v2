@@ -38,7 +38,7 @@ const RecentAddressesBar = ({ order }: RecentAddressesProps) => {
 
   const tripTariff = order.tariffInfo;
 
-  const isOrderCanceled = order.state === 'CanceledByContractor' || order.state === 'CanceledByPassenger';
+  const isOrderCanceled = order.info?.state === 'CanceledByContractor' || order.info?.state === 'CanceledByPassenger';
 
   const computedStyles = StyleSheet.create({
     statusText: {
@@ -70,17 +70,17 @@ const RecentAddressesBar = ({ order }: RecentAddressesProps) => {
           <Text style={[styles.statusText, computedStyles.statusText]}>
             {isOrderCanceled
               ? t('menu_Activity_canceled')
-              : `${getCurrencySign(order.currencyCode as CurrencyType)}${order.totalFinalPrice}`}
+              : `${getCurrencySign(order.info?.currencyCode as CurrencyType)}${order.info?.totalFinalPrice}`}
           </Text>
         </View>
       </View>
       <View style={styles.addressWrapper}>
         <View style={styles.addressContainer}>
-          <Text style={styles.addressText}>{order.dropOffFullAddress}</Text>
-          <Text style={[styles.addressDetailsText, computedStyles.addressesText]}>{order.dropOffPlace}</Text>
+          <Text style={styles.addressText}>{order.info?.dropOffFullAddress}</Text>
+          <Text style={[styles.addressDetailsText, computedStyles.addressesText]}>{order.info?.dropOffPlace}</Text>
         </View>
         <Text style={[styles.dateTimeText, computedStyles.addressesText]}>
-          {formatDateTime(new Date(order.finishedDate))}
+          {order.info?.finishedDate && formatDateTime(new Date(order.info.finishedDate))}
         </Text>
       </View>
     </Bar>

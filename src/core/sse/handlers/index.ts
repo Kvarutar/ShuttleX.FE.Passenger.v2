@@ -12,10 +12,16 @@ import {
   endTrip,
   setIsOrderCanceled,
   setIsOrderCanceledAlertVisible,
+  setSelectedOrderId,
   setTripIsCanceled,
   setTripStatus,
 } from '../../ride/redux/trip';
-import { isOrderCanceledSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
+import {
+  isOrderCanceledSelector,
+  orderInfoSelector,
+  selectedOrderIdSelector,
+  tripStatusSelector,
+} from '../../ride/redux/trip/selectors';
 import { getCurrentOrder, getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { SSEAndNotificationsEventType } from '../../utils/notifications/types';
@@ -34,22 +40,27 @@ export const driverAcceptedSSEHandler = (
       store.dispatch(getRouteInfo(data.orderId));
       store.dispatch(setTripStatus(TripStatus.Accepted));
       store.dispatch(setIsOrderCanceled(false));
+      store.dispatch(setSelectedOrderId(data.orderId));
     }
   }
 };
 
 export const driverArrivedSSEHandler = () => {
   const tripStatus = tripStatusSelector(store.getState());
+  const selectedOrderId = selectedOrderIdSelector(store.getState());
+  const orderInfo = orderInfoSelector(store.getState());
 
-  if (tripStatus !== TripStatus.Arrived) {
+  if (orderInfo?.orderId === selectedOrderId && tripStatus !== TripStatus.Arrived) {
     store.dispatch(getCurrentOrder());
   }
 };
 
 export const tripStartedSSEHandler = () => {
   const tripStatus = tripStatusSelector(store.getState());
+  const selectedOrderId = selectedOrderIdSelector(store.getState());
+  const orderInfo = orderInfoSelector(store.getState());
 
-  if (tripStatus !== TripStatus.Ride) {
+  if (orderInfo?.orderId === selectedOrderId && tripStatus !== TripStatus.Ride) {
     store.dispatch(getCurrentOrder());
   }
 };
@@ -85,6 +96,7 @@ export const driverCanceledSSEHandler = () => {
     dispatch(createInitialOffer());
     dispatch(setOrderStatus(OrderStatus.Confirming));
     dispatch(setIsOrderCanceled(true));
+    store.dispatch(setSelectedOrderId(null));
   }
 };
 
@@ -95,5 +107,6 @@ export const driverRejectedSSEHandler = () => {
   if (tripStatus !== TripStatus.Finished) {
     dispatch(setTripIsCanceled(true));
     dispatch(setTripStatus(TripStatus.Finished));
+    dispatch(setIsOrderCanceled(true));
   }
 };

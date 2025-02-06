@@ -2,6 +2,7 @@ import { convertBlobToImgUri, getNetworkErrorInfo, Nullable } from 'shuttlex-int
 
 import { createAppAsyncThunk } from '../../../redux/hooks';
 import { TariffFromAPI } from '../offer/types';
+import { setSelectedOrderId } from '.';
 import {
   FeedbackAPIRequest,
   GetCurrentOrderAPIResponse,
@@ -30,7 +31,11 @@ export const getCurrentOrder = createAppAsyncThunk<Nullable<OrderWithTariffInfo>
   'trip/getCurrentOrder',
   async (_, { rejectWithValue, orderAxios, dispatch }) => {
     try {
-      const response = await orderAxios.get<GetCurrentOrderAPIResponse>('/current');
+      const response = await orderAxios.get<GetCurrentOrderAPIResponse>('/current', {
+        params: {
+          filterBy: 'CreatedDate:asc',
+        },
+      });
 
       let avatar = null;
 
@@ -46,6 +51,8 @@ export const getCurrentOrder = createAppAsyncThunk<Nullable<OrderWithTariffInfo>
         } catch {}
 
         const tariffInfo = await dispatch(getTariffInfoById({ tariffId: response.data.tariffId })).unwrap();
+
+        dispatch(setSelectedOrderId(response.data.orderId));
 
         return {
           info: response.data,

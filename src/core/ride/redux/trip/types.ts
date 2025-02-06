@@ -148,6 +148,7 @@ export type ReceiptInfo = {
 };
 
 export type TripState = {
+  selectedOrderId: Nullable<string>;
   order: Nullable<OrderWithTariffInfo>;
   routeInfo: Nullable<RouteInfo>;
   receipt: Nullable<ReceiptInfo>;

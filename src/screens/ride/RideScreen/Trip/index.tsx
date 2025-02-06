@@ -11,6 +11,7 @@ import {
   SwipeButtonModes,
   Timer,
   TimerColorModes,
+  timerSizes,
   TimerSizesModes,
   useTariffsIcons,
   useTheme,
@@ -36,6 +37,8 @@ import AlertInitializer from '../../../../shared/AlertInitializer';
 import HiddenPart from './HiddenPart';
 import VisiblePart from './VisiblePart';
 
+const timerSizeMode = TimerSizesModes.S;
+
 const Trip = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -57,6 +60,10 @@ const Trip = () => {
   const TariffIcon = tripTariff?.name ? tariffIconsData[tariffsNamesByFeKey[tripTariff.feKey]].icon : null;
 
   const computedStyles = StyleSheet.create({
+    skeletonTimer: {
+      width: timerSizes[timerSizeMode].timerSize,
+      height: timerSizes[timerSizeMode].timerSize,
+    },
     avatarWrapper: {
       backgroundColor: colors.backgroundPrimaryColor,
     },
@@ -80,12 +87,16 @@ const Trip = () => {
 
   const headerElementBlock =
     tripStatus === TripStatus.Ride ? (
-      <Timer
-        style={{ timerWrapper: styles.timerWrapper }}
-        time={arrivedTime}
-        sizeMode={TimerSizesModes.S}
-        colorMode={TimerColorModes.Mode3}
-      />
+      isTripLoading ? (
+        <Skeleton skeletonContainerStyle={[styles.skeletonTimer, computedStyles.skeletonTimer]} />
+      ) : (
+        <Timer
+          style={{ timerWrapper: styles.timerWrapper }}
+          time={arrivedTime}
+          sizeMode={timerSizeMode}
+          colorMode={TimerColorModes.Mode3}
+        />
+      )
     ) : (
       TariffIcon !== null && (
         <View style={styles.imageContainer}>
@@ -151,6 +162,10 @@ const Trip = () => {
 const styles = StyleSheet.create({
   skeletonAvatar: {
     borderRadius: 1000,
+  },
+  skeletonTimer: {
+    borderRadius: 100,
+    alignSelf: 'center',
   },
   visiblePartStyle: {
     marginBottom: 16,

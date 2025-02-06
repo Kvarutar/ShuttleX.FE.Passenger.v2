@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
@@ -5,6 +7,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import {
   Bar,
+  GroupedButtons,
   LoadingSpinner,
   MenuHeader,
   SafeAreaView,
@@ -27,48 +30,78 @@ import { getOrdersHistory } from '../../../core/passenger/redux/thunks';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { mapRidePercentFromPolylinesSelector, mapRouteTrafficSelector } from '../../../core/ride/redux/map/selectors';
 import { tariffsNamesByFeKey } from '../../../core/ride/redux/offer/utils';
-import {
-  orderInfoSelector,
-  orderSelector,
-  orderTariffInfoSelector,
-  tripStatusSelector,
-} from '../../../core/ride/redux/trip/selectors';
-import { TripStatus } from '../../../core/ride/redux/trip/types';
+import { setOrderStatus } from '../../../core/ride/redux/order';
+import { OrderStatus } from '../../../core/ride/redux/order/types';
+import { setSelectedOrderId, setTripStatus } from '../../../core/ride/redux/trip';
+import { orderSelector, selectedOrderIdSelector } from '../../../core/ride/redux/trip/selectors';
+import { getOrderInfo, getRouteInfo } from '../../../core/ride/redux/trip/thunks';
+import { OrderWithTariffInfo, TripStateFromAPI } from '../../../core/ride/redux/trip/types';
+import { getFETripStatusByBETripState } from '../../../core/ride/redux/trip/utils';
 import { trafficLoadFromAPIToTrafficLevel } from '../../../core/utils';
+import { RootStackParamList } from '../../../Navigate/props';
 import Menu from '../../ride/Menu';
 import RecentAddressesBar from './RecentAddressesBar';
+import { RideStatusTranslateKey } from './types';
 
 const recentAddressesAmount = 10;
 
+const rideStatusTranslateKeyByBEOrderState: Record<
+  Exclude<TripStateFromAPI, 'None' | 'CompletedSuccessfully' | 'CanceledByPassenger' | 'CanceledByContractor'>,
+  RideStatusTranslateKey
+> = {
+  InPreviousOrder: 'menu_Activity_Enroute',
+  MoveToPickUp: 'menu_Activity_Enroute',
+  InPickUp: 'menu_Activity_Arrived',
+  InStopPoint: 'menu_Activity_Arrived',
+  MoveToStopPoint: 'menu_Activity_Driving',
+  MoveToDropOff: 'menu_Activity_Driving',
+};
+
+const isOrderNotActive = (stateForCheching: TripStateFromAPI | undefined) => {
+  return (
+    stateForCheching === 'CanceledByContractor' ||
+    stateForCheching === 'CanceledByPassenger' ||
+    stateForCheching === 'CompletedSuccessfully' ||
+    stateForCheching === 'None'
+  );
+};
+
 const ActivityScreen = () => {
-  const tariffIconsData = useTariffsIcons();
   const { colors } = useTheme();
   const { t } = useTranslation();
+
   const dispatch = useAppDispatch();
 
   const ordersHistory = useSelector(ordersHistorySelector);
   const isOrdersHistoryOffsetEmpty = useSelector(isOrdersHistoryOffsetEmptySelector);
   const order = useSelector(orderSelector);
-  const orderInfo = useSelector(orderInfoSelector);
-  const tripTariff = useSelector(orderTariffInfoSelector);
   const isOrdersHistoryLoading = useSelector(isOrdersHistoryLoadingSelector);
-  const tripStatus = useSelector(tripStatusSelector);
-  const ridePercentFromPolylines = useSelector(mapRidePercentFromPolylinesSelector);
-  const routeTraffic = useSelector(mapRouteTrafficSelector);
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const [routeStartDate, setRouteStartDate] = useState<Date | undefined>(undefined);
-  const [routeEndDate, setRouteEndDate] = useState<Date | undefined>(undefined);
-  const [recentAddressesOffset, setRecentAddressesOffset] = useState(1);
 
-  const feRideStatusesByOrderStatus: Record<
-    Extract<TripStatus, TripStatus.Accepted | TripStatus.Arrived | TripStatus.Ride>,
-    string
-  > = {
-    accepted: 'menu_Activity_Enroute',
-    arrived: 'menu_Activity_Arrived',
-    ride: 'menu_Activity_Driving',
-  };
+  const [recentAddressesOffset, setRecentAddressesOffset] = useState(1);
+  const [isFirstButtonSelected, setIsFirstButtonSelected] = useState(true);
+
+  const ordersHistoryFiltered = isFirstButtonSelected
+    ? ordersHistory
+        .filter(
+          orderHistory =>
+            orderHistory.info &&
+            (orderHistory.info.state === 'MoveToPickUp' ||
+              orderHistory.info.state === 'InPickUp' ||
+              orderHistory.info.state === 'InPreviousOrder' ||
+              orderHistory.info.state === 'MoveToStopPoint' ||
+              orderHistory.info.state === 'InStopPoint' ||
+              orderHistory.info.state === 'MoveToDropOff'),
+        )
+        //TODO: Check why order.info might be null
+        //Maybe refactor order.info
+        .sort((a, b) => {
+          const dateA = new Date(a.info?.createdDate || 0).getTime();
+          const dateB = new Date(b.info?.createdDate || 0).getTime();
+          return dateB - dateA;
+        })
+    : ordersHistory.filter(orderHistory => isOrderNotActive(orderHistory.info?.state));
 
   const computedStyles = StyleSheet.create({
     statusContainer: {
@@ -88,6 +121,119 @@ const ActivityScreen = () => {
     },
   });
 
+  useEffect(() => {
+    dispatch(getOrdersHistory({ offset: 0, amount: recentAddressesAmount }));
+
+    return () => {
+      dispatch(clearOrdersHistory());
+    };
+  }, [dispatch]);
+
+  const loadMoreRecentAddresses = () => {
+    if (!isOrdersHistoryLoading && !isOrdersHistoryOffsetEmpty && !isFirstButtonSelected) {
+      dispatch(getOrdersHistory({ offset: recentAddressesOffset, amount: recentAddressesAmount }));
+
+      setRecentAddressesOffset(value => value + 1);
+    }
+  };
+
+  const renderRideSkeleton = () => {
+    if (isFirstButtonSelected) {
+      return <Skeleton skeletonsAmount={5} skeletonContainerStyle={styles.skeletonActiveRide} />;
+    }
+    return <Skeleton skeletonsAmount={5} skeletonContainerStyle={styles.skeletonRecentAdress} />;
+  };
+
+  let content = (
+    <>
+      {(ordersHistoryFiltered.length || isOrdersHistoryLoading) && (
+        <View style={styles.recentAddressesWrapper}>
+          <View>
+            {isOrdersHistoryLoading && ordersHistoryFiltered.length === 0 ? (
+              renderRideSkeleton()
+            ) : (
+              <FlatList
+                contentContainerStyle={styles.recentAddressesContainer}
+                showsVerticalScrollIndicator={false}
+                data={ordersHistoryFiltered}
+                renderItem={({ item }) =>
+                  isOrderNotActive(item.info?.state) ? (
+                    <RecentAddressesBar order={item} />
+                  ) : (
+                    <ActiveRide activeRide={item} />
+                  )
+                }
+                onEndReached={loadMoreRecentAddresses}
+                ListFooterComponent={isOrdersHistoryLoading && !isFirstButtonSelected ? <LoadingSpinner /> : <></>}
+              />
+            )}
+          </View>
+        </View>
+      )}
+    </>
+  );
+
+  if (!ordersHistoryFiltered.length && !order && !isOrdersHistoryLoading) {
+    content = (
+      <View style={[styles.emptyActivityWrapper, computedStyles.emptyActivityWrapper]}>
+        <Text style={[styles.emptyActivityText, computedStyles.emptyActivityText]}>
+          {isFirstButtonSelected ? t('menu_Activity_haveNotCurrentRides') : t('menu_Activity_emptyActivity')}
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <>
+      <SafeAreaView>
+        <MenuHeader style={styles.menuHeader} onMenuPress={() => setIsMenuVisible(true)}>
+          <GroupedButtons
+            width={200}
+            firstButtonText={t('menu_Activity_activeButton')}
+            secondButtonText={t('menu_Activity_recentButton')}
+            isFirstButtonSelected={isFirstButtonSelected}
+            setIsFirstButtonSelected={setIsFirstButtonSelected}
+          />
+        </MenuHeader>
+        {content}
+      </SafeAreaView>
+      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
+    </>
+  );
+};
+
+const ActiveRide = ({ activeRide }: { activeRide: OrderWithTariffInfo }) => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const dispatch = useAppDispatch();
+
+  const tariffIconsData = useTariffsIcons();
+  const TariffImage = tariffIconsData[tariffsNamesByFeKey[activeRide.tariffInfo.feKey]].icon;
+
+  const ridePercentFromPolylines = useSelector(mapRidePercentFromPolylinesSelector);
+
+  const [routeStartDate, setRouteStartDate] = useState<Date | undefined>(undefined);
+  const [routeEndDate, setRouteEndDate] = useState<Date | undefined>(undefined);
+
+  const routeTraffic = useSelector(mapRouteTrafficSelector);
+  const selectedOrderId = useSelector(selectedOrderIdSelector);
+
+  useEffect(() => {
+    if (!activeRide.info) {
+      return;
+    }
+
+    if (activeRide.info.state === 'MoveToPickUp') {
+      setRouteStartDate(new Date(activeRide.info.createdDate));
+      setRouteEndDate(new Date(activeRide.info.estimatedArriveToPickUpDate));
+    } else if (activeRide.info.state === 'MoveToDropOff') {
+      setRouteStartDate(new Date(activeRide.info.pickUpDate));
+      setRouteEndDate(new Date(activeRide.info.estimatedArriveToDropOffDate));
+    }
+  }, [activeRide]);
+
   const trafficSegments: TrafficIndicatorProps['segments'] = [];
   if (routeTraffic !== null) {
     const lastRouteIndex = routeTraffic[routeTraffic.length - 1].polylineEndIndex;
@@ -99,76 +245,64 @@ const ActivityScreen = () => {
     });
   }
 
-  useEffect(() => {
-    if (!orderInfo) {
-      return;
-    }
+  const onActiveRidePress = () => {
+    if (activeRide.info) {
+      dispatch(setTripStatus(getFETripStatusByBETripState(activeRide.info.state)));
+      dispatch(setOrderStatus(OrderStatus.StartRide));
 
-    if (tripStatus === TripStatus.Accepted) {
-      setRouteStartDate(new Date(orderInfo.createdDate));
-      setRouteEndDate(new Date(orderInfo.estimatedArriveToPickUpDate));
-    } else if (tripStatus === TripStatus.Ride) {
-      setRouteStartDate(new Date(orderInfo.pickUpDate));
-      setRouteEndDate(new Date(orderInfo.estimatedArriveToDropOffDate));
-    }
-  }, [tripStatus, orderInfo]);
+      dispatch(getOrderInfo(activeRide.orderId));
+      dispatch(getRouteInfo(activeRide.orderId));
+      dispatch(setSelectedOrderId(activeRide.orderId));
 
-  useEffect(() => {
-    dispatch(getOrdersHistory({ offset: 0, amount: recentAddressesAmount }));
-
-    return () => {
-      dispatch(clearOrdersHistory());
-    };
-  }, [dispatch]);
-
-  const loadMoreRecentAddresses = () => {
-    if (!isOrdersHistoryLoading && !isOrdersHistoryOffsetEmpty) {
-      dispatch(getOrdersHistory({ offset: recentAddressesOffset, amount: recentAddressesAmount }));
-
-      setRecentAddressesOffset(value => value + 1);
+      navigation.replace('Ride');
     }
   };
 
-  const renderActiveRides = (): JSX.Element => {
-    if (isOrdersHistoryLoading && ordersHistory.length === 0) {
-      return <Skeleton skeletonContainerStyle={styles.skeletonActiveRides} />;
-    }
-    if (!tripTariff || !order || !orderInfo || tripStatus === TripStatus.Idle || tripStatus === TripStatus.Finished) {
-      return (
-        <View style={styles.haveNotActiveRidesWrapper}>
-          <Text style={[styles.emptyActivityText, computedStyles.emptyActivityText]}>
-            {t('menu_Activity_haveNotCurrentRides')}
+  const computedStyles = StyleSheet.create({
+    statusContainer: {
+      backgroundColor: colors.backgroundSecondaryColor,
+    },
+    statusText: {
+      color: colors.textPrimaryColor,
+    },
+    text: {
+      color: colors.textSecondaryColor,
+    },
+  });
+
+  return (
+    <Bar style={styles.currentTripContainer} onPress={onActiveRidePress} key={activeRide.orderId}>
+      <View style={styles.imageContainer}>
+        <Image
+          style={styles.avatar}
+          source={
+            activeRide.avatar ? { uri: activeRide.avatar } : require('../../../../assets/images/DefaultAvatar.png')
+          }
+        />
+        <TariffImage style={styles.carImage} />
+      </View>
+      <View style={styles.additionalInfoContainer}>
+        <Text style={[styles.currentTripTitleText, computedStyles.text]}>{t('menu_Activity_activeOrder')}</Text>
+        <View style={[styles.statusContainer, computedStyles.statusContainer]}>
+          <Text style={[styles.statusText, computedStyles.statusText]}>
+            {activeRide.info &&
+              activeRide.info.state !== 'CanceledByContractor' &&
+              activeRide.info.state !== 'CanceledByPassenger' &&
+              activeRide.info.state !== 'CompletedSuccessfully' &&
+              activeRide.info.state !== 'None' &&
+              t(rideStatusTranslateKeyByBEOrderState[activeRide.info.state])}
           </Text>
         </View>
-      );
-    }
-
-    const TariffImage = tariffIconsData[tariffsNamesByFeKey[tripTariff.feKey]].icon;
-
-    return (
-      <Bar style={styles.currentTripContainer}>
-        <View style={styles.imageContainer}>
-          <Image
-            style={styles.avatar}
-            source={order.avatar ? { uri: order.avatar } : require('../../../../assets/images/DefaultAvatar.png')}
-          />
-          <TariffImage style={styles.carImage} />
-        </View>
-        <View style={styles.additionalInfoContainer}>
-          <Text style={[styles.currentTripTitleText, computedStyles.text]}>{t('menu_Activity_activeOrder')}</Text>
-          <View style={[styles.statusContainer, computedStyles.statusContainer]}>
-            <Text style={[styles.statusText, computedStyles.statusText]}>
-              {t(feRideStatusesByOrderStatus[tripStatus])}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.contractorInfoContainer}>
-          <Text style={styles.nameText}>{orderInfo.firstName}</Text>
-          <Text style={[styles.carModelText, computedStyles.text]}>
-            {orderInfo.carBrand} {orderInfo.carModel}
-          </Text>
-        </View>
-        {trafficSegments.length !== 0 && (
+      </View>
+      <View style={styles.contractorInfoContainer}>
+        <Text style={styles.nameText}>{activeRide.info?.firstName}</Text>
+        <Text style={[styles.carModelText, computedStyles.text]}>
+          {activeRide.info?.carBrand} {activeRide.info?.carModel}
+        </Text>
+      </View>
+      {trafficSegments.length !== 0 &&
+        activeRide.orderId === selectedOrderId &&
+        (activeRide.info?.state === 'MoveToDropOff' || activeRide.info?.state === 'MoveToStopPoint') && (
           <TrafficIndicator
             containerStyle={styles.trafficIndicatorContainer}
             currentPercent={ridePercentFromPolylines}
@@ -177,78 +311,27 @@ const ActivityScreen = () => {
             endDate={routeEndDate}
           />
         )}
-      </Bar>
-    );
-  };
-
-  let content = (
-    <>
-      {renderActiveRides()}
-      {(ordersHistory.length || isOrdersHistoryLoading) && (
-        <View style={styles.recentAddressesWrapper}>
-          <Text style={[styles.recentAddressesTitleText, computedStyles.text]}>
-            {t('menu_Activity_recentAddresses')}
-          </Text>
-          <View>
-            {isOrdersHistoryLoading && ordersHistory.length === 0 ? (
-              <Skeleton skeletonsAmount={5} skeletonContainerStyle={styles.skeletonRecentAdress} />
-            ) : (
-              <FlatList
-                contentContainerStyle={styles.recentAddressesContainer}
-                showsVerticalScrollIndicator={false}
-                data={ordersHistory.filter(orderHistory => orderHistory.finishedDate)}
-                renderItem={({ item }) => <RecentAddressesBar order={item} />}
-                onEndReached={loadMoreRecentAddresses}
-                ListFooterComponent={isOrdersHistoryLoading ? <LoadingSpinner /> : <></>}
-              />
-            )}
-          </View>
-        </View>
-      )}
-    </>
-  );
-
-  if (!ordersHistory.length && !order && !isOrdersHistoryLoading) {
-    content = (
-      <View style={[styles.emptyActivityWrapper, computedStyles.emptyActivityWrapper]}>
-        <Text style={[styles.emptyActivityText, computedStyles.emptyActivityText]}>
-          {t('menu_Activity_emptyActivity')}
-        </Text>
-      </View>
-    );
-  }
-
-  return (
-    <>
-      <SafeAreaView>
-        <MenuHeader onMenuPress={() => setIsMenuVisible(true)}>
-          <Text style={styles.headerText}>{t('menu_Activity_title')}</Text>
-        </MenuHeader>
-        {content}
-      </SafeAreaView>
-      {isMenuVisible && <Menu onClose={() => setIsMenuVisible(false)} />}
-    </>
+    </Bar>
   );
 };
 
 const styles = StyleSheet.create({
-  skeletonActiveRides: {
-    height: 200,
+  skeletonActiveRide: {
+    width: '100%',
+    aspectRatio: 2.5,
     borderRadius: 12,
-    marginVertical: 12,
+    marginBottom: 8,
   },
   skeletonRecentAdress: {
     height: 120,
     borderRadius: 12,
     marginBottom: 8,
   },
-  headerText: {
-    fontSize: 17,
-    fontFamily: 'Inter Medium',
+  menuHeader: {
+    marginBottom: 12,
   },
   currentTripContainer: {
     padding: 16,
-    marginTop: 16,
   },
   carImage: {
     width: '45%',
@@ -308,13 +391,6 @@ const styles = StyleSheet.create({
   recentAddressesContainer: {
     gap: 8,
     paddingBottom: 40,
-  },
-  recentAddressesTitleText: {
-    fontSize: 14,
-    fontFamily: 'Inter Medium',
-    lineHeight: 22,
-    marginTop: 16,
-    marginBottom: 12,
   },
   trafficIndicatorContainer: {
     marginTop: 20,

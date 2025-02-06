@@ -28,7 +28,6 @@ export const useGeolocationStartWatch = () => {
         setGeolocationCoordinates({
           latitude: coordinates.latitude,
           longitude: coordinates.longitude,
-          heading: coordinates.heading ?? 0,
         }),
       );
     },

@@ -30,23 +30,24 @@ const ActivityReceiptScreen = () => {
 
   const orderInfo = ordersHistory.find(order => order.orderId === route.params.orderId);
 
-  if (isRouteInfoLoading || isTicketAfterRideLoading || !orderInfo || !routeInfo) {
+  if (isRouteInfoLoading || isTicketAfterRideLoading || !orderInfo?.info || !routeInfo) {
     return <LoadingSpinner iconMode={LoadingSpinnerIconModes.Large} />;
   }
 
-  const isOrderCanceled = orderInfo.state === 'CanceledByContractor' || orderInfo.state === 'CanceledByPassenger';
+  const isOrderCanceled =
+    orderInfo.info.state === 'CanceledByContractor' || orderInfo.info.state === 'CanceledByPassenger';
 
   return (
     <ReceiptScreenLayout
-      contractorName={orderInfo.firstName}
-      carNumber={orderInfo.carNumber}
-      pickUpDate={orderInfo.pickUpDate}
-      finishedDate={orderInfo.finishedDate}
+      contractorName={orderInfo.info.firstName}
+      carNumber={orderInfo.info.carNumber}
+      pickUpDate={orderInfo.info.pickUpDate}
+      finishedDate={orderInfo.info.finishedDate}
       onClose={navigation.goBack}
-      tripPrice={`${getCurrencySign(orderInfo.currencyCode as CurrencyType)}${orderInfo.totalFinalPrice ?? orderInfo.estimatedPrice}`}
+      tripPrice={`${getCurrencySign(orderInfo.info.currencyCode as CurrencyType)}${orderInfo.info.totalFinalPrice ?? orderInfo.info.estimatedPrice}`}
       totalDistanceMtr={routeInfo.totalDistanceMtr}
-      pickUpAddress={orderInfo.pickUpFullAddress}
-      dropOffAddress={orderInfo.dropOffFullAddress}
+      pickUpAddress={orderInfo.info.pickUpFullAddress}
+      dropOffAddress={orderInfo.info.dropOffFullAddress}
       startPoint={routeInfo.waypoints[0].geo}
       endPoint={routeInfo.waypoints[routeInfo.waypoints.length - 1].geo}
       isTripCanceled={isOrderCanceled}

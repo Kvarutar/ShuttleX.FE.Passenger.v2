@@ -23,6 +23,7 @@ import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { setCurrentSelectedTariff, setEstimatedPrice, setTripTariff } from '../../../../../core/ride/redux/offer';
 import {
   groupedTariffsSelector,
+  isTariffsPricesLoadingSelector,
   minDurationTariffSelector,
   offerRoutesSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
@@ -48,6 +49,7 @@ const Tariffs = () => {
   const groupedTariffs = useSelector(groupedTariffsSelector);
   const minDurationTariff = useSelector(minDurationTariffSelector);
   const offerRoutes = useSelector(offerRoutesSelector);
+  const isTariffsPricesLoading = useSelector(isTariffsPricesLoadingSelector);
 
   const [selectedTariffGroup, setSelectedTariffGroup] = useState<TariffCategory | null>(groupedTariffs.economy ?? null);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number | null>(null);
@@ -252,8 +254,10 @@ const Tariffs = () => {
         onPress={onTariffSelect}
         text={t('ride_Ride_Tariffs_nextButton')}
         textStyle={[styles.confirmText, computedStyles.confirmText]}
-        mode={isAvailableSelectedTariffGroup ? SquareButtonModes.Mode1 : SquareButtonModes.Mode4}
-        disabled={!isAvailableSelectedTariffGroup}
+        mode={
+          isAvailableSelectedTariffGroup && !isTariffsPricesLoading ? SquareButtonModes.Mode1 : SquareButtonModes.Mode4
+        }
+        disabled={!isAvailableSelectedTariffGroup || isTariffsPricesLoading}
       />
     </>
   );

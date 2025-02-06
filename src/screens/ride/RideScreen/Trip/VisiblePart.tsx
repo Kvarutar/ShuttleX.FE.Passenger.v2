@@ -138,14 +138,15 @@ const VisiblePart = () => {
   }, [tripStatus, orderInfo]);
 
   useEffect(() => {
-    if (orderInfo && orderInfo.waitingTimeInMilSec < 0) {
+    //!isTripLoading is added because While the information is still loading here the states change based on the previous order
+    if (orderInfo && orderInfo.waitingTimeInMilSec < 0 && !isTripLoading) {
       const waitingTimeInMin = Math.floor(Math.abs(orderInfo.waitingTimeInMilSec) / minToMilSec(1));
 
       setExtraWaiting(true);
       setExtraSum(waitingTimeInMin * orderInfo.paidWaitingTimeFeePricePerMin);
       setExtraWaitingTimeInSec(waitingTimeInMin * 60);
     }
-  }, [orderInfo]);
+  }, [orderInfo, isTripLoading]);
 
   if (orderInfo && tripTariff) {
     const {
@@ -242,45 +243,71 @@ const VisiblePart = () => {
       return (
         <>
           <View style={styles.topTitleContainer}>
-            <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>
-              {t('ride_Ride_Trip_youBeIn')}{' '}
-            </Text>
-            <Text style={styles.nameTimeText}>{formatTime(new Date(arrivedTime))}</Text>
+            {isTripLoading ? (
+              <Skeleton skeletonContainerStyle={styles.skeletonNameTime} />
+            ) : (
+              <>
+                <Text style={[styles.nameTimeText, computedStyles.beInAndLvlAmountText]}>
+                  {t('ride_Ride_Trip_youBeIn')}{' '}
+                </Text>
+                <Text style={styles.nameTimeText}>{formatTime(new Date(arrivedTime))}</Text>
+              </>
+            )}
           </View>
-          <Text style={[styles.carInfoText, styles.carNameAlign]}>{`${carBrand} ${carModel}`}</Text>
-          {trafficSegments.length !== 0 && (
-            <TrafficIndicator
-              containerStyle={styles.trafficIndicatorContainer}
-              currentPercent={ridePercentFromPolylines}
-              segments={trafficSegments}
-              startDate={routeStartDate}
-              endDate={routeEndDate}
-            />
+          {isTripLoading ? (
+            <Skeleton skeletonContainerStyle={styles.skeletonCarInfoText} />
+          ) : (
+            <Text style={[styles.carInfoText, styles.carNameAlign]}>{`${carBrand} ${carModel}`}</Text>
+          )}
+          {isTripLoading ? (
+            <Skeleton skeletonContainerStyle={styles.skeletonTraficIndicator} />
+          ) : (
+            trafficSegments.length !== 0 && (
+              <TrafficIndicator
+                containerStyle={styles.trafficIndicatorContainer}
+                currentPercent={ridePercentFromPolylines}
+                segments={trafficSegments}
+                startDate={routeStartDate}
+                endDate={routeEndDate}
+              />
+            )
           )}
           <View style={styles.driverInfoWrapper}>
-            <View style={styles.driverInfoContainer}>
-              {/*TODO: change to default image*/}
-              {contractorAvatar ? (
-                <Image
-                  style={styles.driverInfoImage}
-                  source={{
-                    uri: contractorAvatar,
-                  }}
-                />
-              ) : (
-                <Image
-                  style={[styles.driverInfoImage, computedStyles.defaultAvatar]}
-                  source={require('../../../../../assets/images/DefaultAvatar.png')}
-                />
-              )}
-              <View>
-                <Text style={styles.carInfoText}>{firstName}</Text>
-                <StatsBlock amountLikes={totalLikesCount ?? 0} />
+            {isTripLoading ? (
+              <View style={styles.driverInfoContainer}>
+                <Skeleton skeletonContainerStyle={styles.skeletonAvatar} />
+                <View style={styles.skeletonDriverInfoContainer}>
+                  <Skeleton skeletonsAmount={2} skeletonContainerStyle={styles.skeletonDriverInfo} />
+                </View>
               </View>
-            </View>
-            <View style={[styles.plateNumberContainer, computedStyles.plateNumberContainer]}>
-              <Text style={styles.carInfoText}>{carNumber}</Text>
-            </View>
+            ) : (
+              <View style={styles.driverInfoContainer}>
+                {contractorAvatar ? (
+                  <Image
+                    style={styles.driverInfoImage}
+                    source={{
+                      uri: contractorAvatar,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    style={[styles.driverInfoImage, computedStyles.defaultAvatar]}
+                    source={require('../../../../../assets/images/DefaultAvatar.png')}
+                  />
+                )}
+                <View>
+                  <Text style={styles.carInfoText}>{firstName}</Text>
+                  <StatsBlock amountLikes={totalLikesCount ?? 0} />
+                </View>
+              </View>
+            )}
+            {isTripLoading ? (
+              <Skeleton skeletonContainerStyle={styles.skeletonCarNumber} />
+            ) : (
+              <View style={[styles.plateNumberContainer, computedStyles.plateNumberContainer]}>
+                <Text style={styles.carInfoText}>{carNumber}</Text>
+              </View>
+            )}
           </View>
         </>
       );
@@ -398,6 +425,35 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     borderRadius: 12,
+  },
+  skeletonCarInfoText: {
+    alignSelf: 'center',
+    width: '30%',
+    height: 22,
+    marginTop: 9,
+  },
+  skeletonAvatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 100,
+  },
+  skeletonDriverInfoContainer: {
+    marginLeft: 8,
+    gap: 4,
+  },
+  skeletonDriverInfo: {
+    width: 60,
+    height: 17,
+  },
+  skeletonCarNumber: {
+    width: '30%',
+    height: 40,
+  },
+  skeletonTraficIndicator: {
+    width: '100%',
+    height: 56,
+    marginTop: 18,
+    borderRadius: 8,
   },
   contractorInfoContainer: {
     alignItems: 'center',

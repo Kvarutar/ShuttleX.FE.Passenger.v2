@@ -14,10 +14,16 @@ import {
   endTrip,
   setIsOrderCanceled,
   setIsOrderCanceledAlertVisible,
+  setSelectedOrderId,
   setTripIsCanceled,
   setTripStatus,
 } from '../../ride/redux/trip';
-import { isOrderCanceledSelector, orderInfoSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
+import {
+  isOrderCanceledSelector,
+  orderInfoSelector,
+  selectedOrderIdSelector,
+  tripStatusSelector,
+} from '../../ride/redux/trip/selectors';
 import { getCurrentOrder, getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { NotificationPayload, NotificationRemoteMessage, SSEAndNotificationsEventType } from './types';
@@ -34,18 +40,21 @@ export const notificationHandlers: Record<
   [SSEAndNotificationsEventType.DriverAccepted]: async payload => {
     const tripStatus = tripStatusSelector(store.getState());
 
-    //Check trip status because longpolling can get information earlier
+    //Check trip status because sse can get information earlier
     if (payload?.orderId && tripStatus !== TripStatus.Accepted) {
       await store.dispatch(getOrderInfo(payload.orderId));
       await store.dispatch(getRouteInfo(payload.orderId));
       store.dispatch(setTripStatus(TripStatus.Accepted));
       store.dispatch(setIsOrderCanceled(false));
+      store.dispatch(setSelectedOrderId(payload.orderId));
     }
   },
   [SSEAndNotificationsEventType.TripEnded]: async () => {
     const tripStatus = tripStatusSelector(store.getState());
+    const selectedOrderId = selectedOrderIdSelector(store.getState());
+    const orderInfo = orderInfoSelector(store.getState());
 
-    if (tripStatus !== TripStatus.Finished) {
+    if (orderInfo?.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
       store.dispatch(addFinishedTrips());
       //TODO go to rating page
       store.dispatch(getTicketAfterRide());
@@ -65,7 +74,10 @@ export const notificationHandlers: Record<
   },
   [SSEAndNotificationsEventType.DriverArrived]: async () => {
     const tripStatus = tripStatusSelector(store.getState());
-    if (tripStatus !== TripStatus.Arrived) {
+    const selectedOrderId = selectedOrderIdSelector(store.getState());
+    const orderInfo = orderInfoSelector(store.getState());
+
+    if (tripStatus !== TripStatus.Arrived && orderInfo?.orderId === selectedOrderId) {
       store.dispatch(getCurrentOrder());
     }
   },
@@ -74,9 +86,11 @@ export const notificationHandlers: Record<
   [SSEAndNotificationsEventType.DriverCanceled]: async () => {
     const isOrderCanceled = isOrderCanceledSelector(store.getState());
     const offer = offerSelector(store.getState());
+    const selectedOrderId = selectedOrderIdSelector(store.getState());
+    const orderInfo = orderInfoSelector(store.getState());
 
-    //Because it can be changed in sse or initial setup
-    if (!isOrderCanceled) {
+    //Because it can be changed in sse
+    if (orderInfo?.orderId === selectedOrderId && !isOrderCanceled) {
       store.dispatch(endTrip());
 
       //TODO: Rewrite with saving points on the device
@@ -88,6 +102,7 @@ export const notificationHandlers: Record<
       store.dispatch(createInitialOffer());
       store.dispatch(setOrderStatus(OrderStatus.Confirming));
       store.dispatch(setIsOrderCanceled(true));
+      store.dispatch(setSelectedOrderId(null));
     }
   },
 
@@ -96,18 +111,21 @@ export const notificationHandlers: Record<
     store.dispatch(setTripIsCanceled(true));
     const orderInfo = orderInfoSelector(store.getState());
     const tripStatus = tripStatusSelector(store.getState());
+    const selectedOrderId = selectedOrderIdSelector(store.getState());
 
-    if (tripStatus !== TripStatus.Finished) {
-      if (orderInfo) {
-        store.dispatch(getOrderInfo(orderInfo.orderId));
-      }
+    if (orderInfo?.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
+      store.dispatch(getOrderInfo(orderInfo.orderId));
       store.dispatch(setTripStatus(TripStatus.Finished));
+      store.dispatch(setSelectedOrderId(null));
     }
   },
 
   [SSEAndNotificationsEventType.TripStarted]: async () => {
     const tripStatus = tripStatusSelector(store.getState());
-    if (tripStatus !== TripStatus.Ride) {
+    const selectedOrderId = selectedOrderIdSelector(store.getState());
+    const orderInfo = orderInfoSelector(store.getState());
+
+    if (tripStatus !== TripStatus.Ride && orderInfo?.orderId === selectedOrderId) {
       store.dispatch(getCurrentOrder());
     }
   },

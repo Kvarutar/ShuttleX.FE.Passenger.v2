@@ -9,6 +9,7 @@ import {
   // GameIcon,
   MenuBase,
   MenuNavigation,
+  PlusIcon,
   // PlayIcon,
   // PlusRoundIcon,
   sizes,
@@ -23,6 +24,12 @@ import {
   profilePrefferedNameSelector,
   profileSelectedPhotoSelector,
 } from '../../../core/passenger/redux/selectors';
+import { useAppDispatch } from '../../../core/redux/hooks';
+import { setOrderStatus } from '../../../core/ride/redux/order';
+import { OrderStatus } from '../../../core/ride/redux/order/types';
+import { endTrip } from '../../../core/ride/redux/trip';
+import { selectedOrderIdSelector } from '../../../core/ride/redux/trip/selectors';
+import { getOrderInfo, getRouteInfo } from '../../../core/ride/redux/trip/thunks';
 import { RootStackParamList } from '../../../Navigate/props';
 import { MenuProps } from './types';
 
@@ -30,28 +37,49 @@ const Menu = ({ onClose, isStatusBarTranslucent }: MenuProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const { t } = useTranslation();
+  const { colors } = useTheme();
+
+  const dispatch = useAppDispatch();
+
   const prefferedName = useSelector(profilePrefferedNameSelector);
   const selectedPhoto = useSelector(profileSelectedPhotoSelector);
+  const selectedOrderId = useSelector(selectedOrderIdSelector);
 
   const isPassengerInfoLoading = useSelector(isPassengerInfoLoadingSelector);
   const isPassengerAvatarLoading = useSelector(isPassengerAvatarLoadingSelector);
 
   const currentRoute = useNavigationState(state => state.routes[state.index].name);
 
-  //TODO uncoment all comments when we need this code
-  // const onCreateRide = () => {
-  //   navigation.navigate('Ride', { openAddressSelect: true });
-  //   onClose();
-  // };
+  const computedStyles = StyleSheet.create({
+    createRideButton: {
+      backgroundColor: colors.errorColor,
+    },
+  });
+
+  const onCreateRide = () => {
+    // Means order and other ride info cleaning
+    dispatch(endTrip());
+    dispatch(setOrderStatus(OrderStatus.StartRide));
+    navigation.navigate('Ride', { openAddressSelect: true });
+    onClose();
+  };
 
   const menuNavigation: MenuNavigation = {
     ride: {
       navFunc: () => {
+        if (selectedOrderId) {
+          dispatch(getRouteInfo(selectedOrderId));
+          dispatch(getOrderInfo(selectedOrderId));
+        }
         navigation.navigate('Ride');
         onClose();
       },
       title: t('ride_Menu_navigationMyRide'),
-      // content: <CreateRide onClick={onCreateRide} />,
+      content: (
+        <Pressable onPress={onCreateRide} style={[styles.createRideButton, computedStyles.createRideButton]}>
+          <PlusIcon color={colors.iconTertiaryColor} style={styles.createRideIcon} />
+        </Pressable>
+      ),
     },
     activity: {
       navFunc: () => {
@@ -207,6 +235,16 @@ const styles = StyleSheet.create({
     opacity: 0.4,
     lineHeight: 20.57,
     letterSpacing: -0.4,
+  },
+  createRideButton: {
+    borderRadius: 100,
+    width: 20,
+    height: 20,
+    padding: 6,
+  },
+  createRideIcon: {
+    width: '100%',
+    height: '100%',
   },
 });
 

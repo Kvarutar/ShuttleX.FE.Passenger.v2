@@ -44,6 +44,7 @@ import { TripStatus } from '../../../core/ride/redux/trip/types';
 const updatePassengerGeoInterval = 1000;
 const finalStopPointUpdateIntervalInSec = 30;
 const polylineClearPointDistanceMtr = 25;
+const maxDistanceBetweenGeoAndCameraMtr = 1000000; // 1000 km
 const mapResizeAnimationDuration = 200;
 
 const screenHeight = Dimensions.get('screen').height;
@@ -91,6 +92,23 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     }
     updatePassengerGeoRef.current = setInterval(callback, updatePassengerGeoInterval);
   };
+
+  useEffect(() => {
+    if (tripStatus === TripStatus.Accepted || tripStatus === TripStatus.Ride) {
+      (async () => {
+        const camera = await mapRef.current?.getCamera();
+        if (camera && geolocationCoordinates) {
+          const distance = getDistanceBetweenPoints(camera.center, geolocationCoordinates);
+          if (distance > maxDistanceBetweenGeoAndCameraMtr) {
+            mapRef.current?.setCamera({
+              center: cars[0]?.coordinates ?? geolocationCoordinates, // Because the contractor's geo may be lost
+              zoom: 18, // approximately 6km diameter
+            });
+          }
+        }
+      })();
+    }
+  }, [tripStatus, geolocationCoordinates, cars]);
 
   // Clear interval on dismount
   useEffect(() => {

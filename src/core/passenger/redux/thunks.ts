@@ -4,6 +4,7 @@ import { createAppAsyncThunk } from '../../redux/hooks';
 import { geolocationCoordinatesSelector } from '../../ride/redux/geolocation/selectors';
 import { TariffFromAPI } from '../../ride/redux/offer/types';
 import { getTariffInfoById } from '../../ride/redux/trip/thunks';
+import { OrderWithTariffInfo } from '../../ride/redux/trip/types';
 import {
   AvatarFromAPI,
   AvatarWithoutValueFromAPI,
@@ -11,7 +12,6 @@ import {
   GetOrUpdateZoneAPIResponse,
   GetProfileInfoAPIResponse,
   OrdersHistoryAPIRequest,
-  OrderWithTariffInfoFromAPI,
   Profile,
   SaveAvatarAPIRequest,
   SaveAvatarAPIResponse,
@@ -19,9 +19,9 @@ import {
   ZoneFromAPI,
 } from './types';
 
-export const getOrdersHistory = createAppAsyncThunk<OrderWithTariffInfoFromAPI[], OrdersHistoryAPIRequest>(
+export const getOrdersHistory = createAppAsyncThunk<OrderWithTariffInfo[], OrdersHistoryAPIRequest>(
   'passenger/getOrdersHistory',
-  async (payload, { rejectWithValue, passengerAxios, dispatch }) => {
+  async (payload, { rejectWithValue, passengerAxios, orderAxios, dispatch }) => {
     try {
       const ordersHistory = (
         await passengerAxios.get<GetOrdersHistoryAPIResponse>('/Ride/orders', {
@@ -33,7 +33,6 @@ export const getOrdersHistory = createAppAsyncThunk<OrderWithTariffInfoFromAPI[]
         })
       ).data;
 
-      //To optimize the number of requests
       const uniqueTariffIds = Array.from(new Set(ordersHistory.map(order => order.tariffId)));
 
       const tariffInfoMap: Record<string, TariffFromAPI> = {};
@@ -44,10 +43,27 @@ export const getOrdersHistory = createAppAsyncThunk<OrderWithTariffInfoFromAPI[]
         }),
       );
 
-      const ordersWithTariffInfo = ordersHistory.map(order => ({
-        ...order,
-        tariffInfo: tariffInfoMap[order.tariffId],
-      }));
+      const ordersWithTariffInfo: OrderWithTariffInfo[] = await Promise.all(
+        ordersHistory.map(async order => {
+          let avatar: string | null = null;
+
+          //TODO: Add checking statuses (400, 500) instead of it
+          try {
+            const response = await orderAxios.get<Blob>(`/${order.orderId}/contractors/avatars/${order.avatarIds[0]}`, {
+              responseType: 'blob',
+            });
+
+            avatar = await convertBlobToImgUri(response.data);
+          } catch {}
+
+          return {
+            orderId: order.orderId,
+            info: order,
+            tariffInfo: tariffInfoMap[order.tariffId],
+            avatar,
+          };
+        }),
+      );
 
       return ordersWithTariffInfo;
     } catch (error) {

@@ -24,7 +24,7 @@ const slice = createSlice({
   name: geolocationSliceName,
   initialState,
   reducers: {
-    setGeolocationCoordinates(state, action: PayloadAction<LatLng & { heading: number }>) {
+    setGeolocationCoordinates(state, action: PayloadAction<LatLng>) {
       if (state.coordinates) {
         const res = calculateExtendedHeading({
           current: getAngleBetweenPoints(state.coordinates, action.payload),

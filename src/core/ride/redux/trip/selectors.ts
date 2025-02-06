@@ -1,5 +1,6 @@
 import { type AppState } from '../../../redux/store';
 
+export const selectedOrderIdSelector = (state: AppState) => state.trip.selectedOrderId;
 export const orderSelector = (state: AppState) => state.trip.order;
 export const tripStatusSelector = (state: AppState) => state.trip.status;
 export const tripPickUpRouteSelector = (state: AppState) => state.trip.routeInfo?.pickUp;

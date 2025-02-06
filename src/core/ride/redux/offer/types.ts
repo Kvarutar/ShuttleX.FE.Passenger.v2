@@ -34,6 +34,42 @@ export type EstimatedPrice = {
   currencyCode: string;
 };
 
+export type OfferStateFromAPI =
+  | 'None'
+  | 'Canceled'
+  | 'NoContractorsAvailable'
+  | 'RideIsUnavailable'
+  | 'CashieringActionRequired'
+  | 'InMatching'
+  | 'WaitingForAcceptance'
+  | 'DelayTrip'
+  | 'OrderApplied';
+
+export type OfferTypeFromAPI = {
+  id: string;
+  state: OfferStateFromAPI;
+  pickUpGeo: LatLng;
+  pickUpZoneId: string;
+  pickUpAddress: string;
+  dropOffGeo: LatLng;
+  dropOffZoneId: string;
+  dropOffAddress: string;
+  tariffId: string;
+  paymentMethod: string;
+  estimatedPrice: number;
+  currencyCode: string;
+  estimatedDropOffDate: string;
+  estimatedTotalDistanceKm: number;
+  searchRadiusFactor: number;
+  passengerId: string;
+  createdDate: string;
+  updatedDate: string;
+  pickUpFullAddress: string;
+  dropOffFullAddress: string;
+};
+
+export type GetActiveOffersAPIResponse = OfferTypeFromAPI[];
+
 export type OfferState = {
   offerId: Nullable<string>;
   recentDropoffs: RecentDropoffsFromAPI[];

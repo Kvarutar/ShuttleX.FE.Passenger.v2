@@ -19,6 +19,7 @@ import {
   CreatePhantomOfferAPIResponse,
   EnhancedSearchAddress,
   EnhanceSearchAddressAPIResponse,
+  GetActiveOffersAPIResponse,
   GetAvailableTariffsAPIResponse,
   GetOfferRoutesAPIRequest,
   GetOfferRoutesAPIResoponse,
@@ -26,6 +27,7 @@ import {
   GetTariffsPricesThunkResult,
   GetZoneIdByLocationAPIResponse,
   OfferRoutesFromAPI,
+  OfferTypeFromAPI,
   RecentAddressAPIResponse,
   RecentDropoffsAPIResponse,
   RecentDropoffsFromAPI,
@@ -307,6 +309,23 @@ export const getTariffsPrices = createAppAsyncThunk<GetTariffsPricesThunkResult,
         logger.error('Something wrong with the route in getTariffsPrices thunk', zoneId);
         return null;
       }
+    } catch (error) {
+      return rejectWithValue(getNetworkErrorInfo(error));
+    }
+  },
+);
+
+export const getActiveOffers = createAppAsyncThunk<OfferTypeFromAPI[], void>(
+  'offer/getActiveOffers',
+  async (_, { rejectWithValue, passengerAxios }) => {
+    try {
+      const response = await passengerAxios.get<GetActiveOffersAPIResponse>('/Offer/active', {
+        params: {
+          SortBy: 'CreatedDate:asc',
+        },
+      });
+
+      return response.data;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }

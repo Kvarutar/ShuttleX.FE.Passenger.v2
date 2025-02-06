@@ -2,9 +2,18 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { minToMilSec, NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 
 import { cancelTrip, getCurrentOrder, getOrderInfo, getRouteInfo } from './thunks';
-import { ReceiptInfo, RouteDropOffApiResponse, RoutePickUpApiResponse, TripState, TripStatus } from './types';
+import {
+  OrderWithTariffInfo,
+  ReceiptInfo,
+  RouteDropOffApiResponse,
+  RoutePickUpApiResponse,
+  TripState,
+  TripStatus,
+} from './types';
+import { getFETripStatusByBETripState } from './utils';
 
 const initialState: TripState = {
+  selectedOrderId: null,
   routeInfo: null,
   status: TripStatus.Idle,
   receipt: null,
@@ -42,6 +51,9 @@ const slice = createSlice({
   name: 'trip',
   initialState,
   reducers: {
+    setSelectedOrderId(state, action: PayloadAction<Nullable<string>>) {
+      state.selectedOrderId = action.payload;
+    },
     setTripIsCanceled(state, action: PayloadAction<boolean>) {
       state.isCanceled = action.payload;
     },
@@ -75,6 +87,9 @@ const slice = createSlice({
         state.tip = action.payload;
       }
     },
+    setOrder(state, action: PayloadAction<Nullable<Nullable<OrderWithTariffInfo>>>) {
+      state.order = action.payload;
+    },
     setTripReceipt(state, action: PayloadAction<Nullable<ReceiptInfo>>) {
       state.receipt = action.payload;
     },
@@ -83,6 +98,7 @@ const slice = createSlice({
       state.order = initialState.order;
       state.isCanceled = initialState.isCanceled;
       state.routeInfo = initialState.routeInfo;
+      state.selectedOrderId = initialState.selectedOrderId;
     },
     addFinishedTrips(state) {
       state.finishedTrips++;
@@ -114,23 +130,7 @@ const slice = createSlice({
 
           state.order = action.payload;
 
-          let newTripStatus: TripStatus;
-
-          switch (action.payload.info?.state) {
-            case 'MoveToPickUp':
-              newTripStatus = TripStatus.Accepted;
-              break;
-            case 'InPickUp':
-              newTripStatus = TripStatus.Arrived;
-              break;
-            case 'MoveToDropOff':
-              newTripStatus = TripStatus.Ride;
-              break;
-            default:
-              newTripStatus = TripStatus.Idle;
-              break;
-          }
-          state.status = newTripStatus;
+          state.status = getFETripStatusByBETripState(action.payload.info?.state);
         }
 
         state.loading.currentOrder = false;
@@ -147,26 +147,22 @@ const slice = createSlice({
         state.error.orderInfo = null;
       })
       .addCase(getOrderInfo.fulfilled, (state, action) => {
-        state.order = action.payload;
+        if (action.payload.info) {
+          const { info } = action.payload;
+
+          const { arrivedToPickUpDate } = action.payload.info;
+
+          if (arrivedToPickUpDate) {
+            const timeDifferenceInMilSec = Date.now() - Date.parse(arrivedToPickUpDate);
+            info.waitingTimeInMilSec = minToMilSec(info.freeWaitingTimeMin) - timeDifferenceInMilSec;
+          }
+
+          state.order = action.payload;
+
+          state.status = getFETripStatusByBETripState(action.payload.info?.state);
+        }
         state.loading.tripSuccessfullLongPolling = true;
         state.loading.orderLongpolling = false;
-
-        let newTripStatus: TripStatus;
-        switch (action.payload.info?.state) {
-          case 'MoveToPickUp':
-            newTripStatus = TripStatus.Accepted;
-            break;
-          case 'InPickUp':
-            newTripStatus = TripStatus.Arrived;
-            break;
-          case 'MoveToDropOff':
-            newTripStatus = TripStatus.Ride;
-            break;
-          default:
-            newTripStatus = TripStatus.Idle;
-            break;
-        }
-        state.status = newTripStatus;
 
         state.loading.orderInfo = false;
         state.error.orderInfo = null;
@@ -214,6 +210,8 @@ const slice = createSlice({
 });
 
 export const {
+  setOrder,
+  setSelectedOrderId,
   setTripRouteInfo,
   setTripStatus,
   setIsOrderCanceled,
