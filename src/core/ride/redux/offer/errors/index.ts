@@ -1,23 +1,22 @@
 import { isAxiosError } from 'axios';
 import { getNetworkErrorInfo, NetworkErrorDetailsWithBody, NetworkErrorsStatuses } from 'shuttlex-integration';
 
-import { RoutePointsLocationErrorBody } from './types';
 //TODO: Add code field to all error in Integration
 export const isRoutePointsLocationError = (
-  errorResponse: NetworkErrorDetailsWithBody<RoutePointsLocationErrorBody>,
-): errorResponse is NetworkErrorDetailsWithBody<RoutePointsLocationErrorBody> => {
+  errorResponse: NetworkErrorDetailsWithBody,
+): errorResponse is NetworkErrorDetailsWithBody => {
   return errorResponse.status === NetworkErrorsStatuses.ServerError && errorResponse.body?.code === 10006;
 };
 
 export const isRouteLengthTooShortError = (
-  errorResponse: NetworkErrorDetailsWithBody<RoutePointsLocationErrorBody>,
-): errorResponse is NetworkErrorDetailsWithBody<RoutePointsLocationErrorBody> => {
+  errorResponse: NetworkErrorDetailsWithBody,
+): errorResponse is NetworkErrorDetailsWithBody => {
   return errorResponse.status === NetworkErrorsStatuses.ServerError && errorResponse.body?.code === 10008;
 };
 
 export const isTooManyActiveRidesError = (
-  errorResponse: NetworkErrorDetailsWithBody<RoutePointsLocationErrorBody>,
-): errorResponse is NetworkErrorDetailsWithBody<RoutePointsLocationErrorBody> => {
+  errorResponse: NetworkErrorDetailsWithBody,
+): errorResponse is NetworkErrorDetailsWithBody => {
   return errorResponse.status === NetworkErrorsStatuses.ServerError && errorResponse.body?.code === 10010;
 };
 

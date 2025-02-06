@@ -1,17 +1,16 @@
 import { isAxiosError } from 'axios';
 import { getNetworkErrorInfo, NetworkErrorDetailsWithBody, NetworkErrorsStatuses } from 'shuttlex-integration';
 
-import { DeleteAccountErrorBody } from './types';
 //TODO: Add code field to all error in Integration
 export const isInvalidStateForAccountDeletingError = (
-  errorResponse: NetworkErrorDetailsWithBody<DeleteAccountErrorBody>,
-): errorResponse is NetworkErrorDetailsWithBody<DeleteAccountErrorBody> => {
+  errorResponse: NetworkErrorDetailsWithBody,
+): errorResponse is NetworkErrorDetailsWithBody => {
   return errorResponse.status === NetworkErrorsStatuses.ServerError && errorResponse.body?.code === 10014;
 };
 
 export const isCantDeleteAccountWhileInDebtError = (
-  errorResponse: NetworkErrorDetailsWithBody<DeleteAccountErrorBody>,
-): errorResponse is NetworkErrorDetailsWithBody<DeleteAccountErrorBody> => {
+  errorResponse: NetworkErrorDetailsWithBody,
+): errorResponse is NetworkErrorDetailsWithBody => {
   return errorResponse.status === NetworkErrorsStatuses.ServerError && errorResponse.body?.code === 10015;
 };
 
