@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 import Config from 'react-native-config';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import {
   createLogger,
   getDefaultDevSentryConfig,
@@ -11,7 +12,7 @@ import {
   ThemeProviderV1,
 } from 'shuttlex-integration';
 
-import { store } from './core/redux/store';
+import { persistor, store } from './core/redux/store';
 import InitialSetup from './InitialSetup';
 import Navigate from './Navigate';
 
@@ -32,11 +33,13 @@ const App = (): JSX.Element => (
     <ThemeProviderV1>
       <ThemeProvider>
         <Provider store={store}>
-          <GestureHandlerRootView style={styles.gestureHandlerRootView}>
-            <InitialSetup>
-              <Navigate />
-            </InitialSetup>
-          </GestureHandlerRootView>
+          <PersistGate persistor={persistor}>
+            <GestureHandlerRootView style={styles.gestureHandlerRootView}>
+              <InitialSetup>
+                <Navigate />
+              </InitialSetup>
+            </GestureHandlerRootView>
+          </PersistGate>
         </Provider>
       </ThemeProvider>
     </ThemeProviderV1>
