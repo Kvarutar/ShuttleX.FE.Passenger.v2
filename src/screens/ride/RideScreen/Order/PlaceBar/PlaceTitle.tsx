@@ -4,7 +4,14 @@ import { mtrToKm, PickUpIcon, Text, useTheme } from 'shuttlex-integration';
 
 import { PlaceTitleProps } from './types';
 
-const PlaceTitle = ({ withDistance, place, style, addressesTextNumberOfLines = 3 }: PlaceTitleProps) => {
+const PlaceTitle = ({
+  withDistance,
+  withFullAddress = true,
+  place,
+  style,
+  addressesTextNumberOfLines = 3,
+  addressTextStyle,
+}: PlaceTitleProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
@@ -22,7 +29,10 @@ const PlaceTitle = ({ withDistance, place, style, addressesTextNumberOfLines = 3
   return (
     <View style={[styles.wrapper, style]}>
       <View style={styles.container}>
-        <Text numberOfLines={addressesTextNumberOfLines} style={[styles.address, computedStyles.address]}>
+        <Text
+          numberOfLines={addressesTextNumberOfLines}
+          style={[styles.address, computedStyles.address, addressTextStyle]}
+        >
           {place.dropoffAddress}
         </Text>
         {withDistance && (
@@ -34,7 +44,7 @@ const PlaceTitle = ({ withDistance, place, style, addressesTextNumberOfLines = 3
           </View>
         )}
       </View>
-      {place.fullAddress && (
+      {place.fullAddress && withFullAddress && (
         <Text numberOfLines={addressesTextNumberOfLines} style={[styles.details, computedStyles.details]}>
           {place.fullAddress}
         </Text>

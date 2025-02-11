@@ -5,7 +5,7 @@ import { Bar, BarModes, ClockIcon, LocationIcon, mtrToKm, Text, useTheme } from 
 import PlaceTitle from './PlaceTitle';
 import { PlaceBarModes, PlaceBarProps } from './types';
 
-const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: PlaceBarProps) => {
+const PlaceBar = ({ mode = PlaceBarModes.DefaultAddressSelect, place, onPress, style }: PlaceBarProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
@@ -54,13 +54,25 @@ const PlaceBar = ({ mode = PlaceBarModes.Default, place, onPress, style }: Place
         </Bar>
       );
 
-    case PlaceBarModes.Default:
+    case PlaceBarModes.DefaultAddressSelect:
       return (
         <Bar mode={BarModes.Default} onPress={onPress} style={[styles.barContainer, styles.container, style]}>
           <PlaceTitle place={place} withDistance />
           <Bar mode={BarModes.Disabled} style={[styles.circleIconContainer, styles.defaultIcon]}>
             <LocationIcon />
           </Bar>
+        </Bar>
+      );
+    case PlaceBarModes.DefaultStart:
+      return (
+        <Bar mode={BarModes.Default} onPress={onPress} style={[styles.barContainer, styles.container, style]}>
+          <LocationIcon />
+          <PlaceTitle
+            place={place}
+            withDistance
+            withFullAddress={false}
+            addressTextStyle={styles.placeTitleAddressStyle}
+          />
         </Bar>
       );
   }
@@ -125,6 +137,9 @@ const styles = StyleSheet.create({
   },
   placeTitle: {
     marginLeft: 12,
+  },
+  placeTitleAddressStyle: {
+    fontSize: 14,
   },
 });
 

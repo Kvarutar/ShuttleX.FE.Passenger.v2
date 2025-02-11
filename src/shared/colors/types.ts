@@ -10,6 +10,7 @@ export type PassengerColors = {
     prize: string;
     firstSeason: string;
     helpUkraine: string;
+    navButton: string;
   };
   raffle: {
     surpriseTitleBackgroundColor: string;

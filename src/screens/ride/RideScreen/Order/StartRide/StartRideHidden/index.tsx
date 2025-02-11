@@ -1,40 +1,49 @@
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Button, ButtonProps, Skeleton, Text, useTheme } from 'shuttlex-integration';
+import { Text, useTheme } from 'shuttlex-integration';
 
+import {
+  imageAIAssistantBg,
+  imageAIAssistantFirst,
+  imageAIAssistantSecond,
+  imageAIAssistantThird,
+} from '../../../../../../../assets/images/startRide/ImagesAIAssistant';
+import { profilePrefferedNameSelector } from '../../../../../../core/passenger/redux/selectors';
 //TODO: Add this import when we need block "Bonuses"
 //Removed in Task-418
 //import imageBonuses from '../../../../../../../assets/images/startRide/imageBonusesBackground';
-import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
+//Removed in Task-533
+// import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
 //TODO: Add this import when we need block "Support Ukraine"
 //Removed in Task-418
 //import imageUkraineHeart from '../../../../../../../assets/images/startRide/imageUkraineHeart';
-import { isLotteryLoadingSelector, lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
-import { RootStackParamList } from '../../../../../../Navigate/props';
+//Removed in Task-533
+//TODO: Add it when we need "Lottery"
+// import { isLotteryLoadingSelector, lotteryStartTimeSelector } from '../../../../../../core/lottery/redux/selectors';
+// import { RootStackParamList } from '../../../../../../Navigate/props';
 import passengerColors from '../../../../../../shared/colors/colors';
-import usePrizeTimer from '../utils/usePrizeTimer';
+//Removed in Task-533
+// import usePrizeTimer from '../utils/usePrizeTimer';
 import AdsBlock from './AdsBlock';
 import { AdsBlockProps } from './AdsBlock/types';
-import AdsContent from './AdsContent';
 
 const testData = {
   capiAmount: 16,
 };
 
-const AdsButton = (props: ButtonProps) => {
-  return <Button textStyle={styles.buttonText} style={styles.button} {...props} />;
-};
+// const AdsButton = (props: ButtonProps) => {
+//   return <Button textStyle={styles.buttonText} style={styles.button} {...props} />;
+// };
 
-const StartRideHidden = () => {
+const StartRideHidden = ({ onLayout }: { onLayout?: (e: LayoutChangeEvent) => void }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const lotteryStartTime = useSelector(lotteryStartTimeSelector);
-  const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime ?? 0));
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const isLotteryLoading = useSelector(isLotteryLoadingSelector);
+  // const lotteryStartTime = useSelector(lotteryStartTimeSelector);
+  // const { hours, minutes, seconds } = usePrizeTimer(new Date(lotteryStartTime ?? 0));
+  // const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  // const isLotteryLoading = useSelector(isLotteryLoadingSelector);
+  const prefferedName = useSelector(profilePrefferedNameSelector);
 
   //TODO: uncomment when we need seasons
   // const collectedCapiArr = Array.from({ length: Math.min(testData.capiAmount - 1, 4) });
@@ -64,6 +73,21 @@ const StartRideHidden = () => {
     capiImage: {
       opacity: testData.capiAmount ? 1 : 0.2,
     },
+    adsAITitle: {
+      color: colors.textSecondaryColor,
+    },
+    adsAISubTitle: {
+      color: colors.textPrimaryColor,
+    },
+    adsAISubTitleName: {
+      color: colors.textSecondaryColor,
+    },
+    adsAIDescription: {
+      color: colors.textSecondaryColor,
+    },
+    imageAIAssistantContainer: {
+      backgroundColor: colors.backgroundPrimaryColor,
+    },
   });
 
   //TODO: uncomment when we need seasons
@@ -87,6 +111,64 @@ const StartRideHidden = () => {
   // TODO: Remove or update this blocks when we decide what to do with it
 
   const adsInfoArray: AdsBlockProps[] = [
+    {
+      firstContent: (
+        <>
+          <View style={styles.adsAIContent}>
+            <Text style={[styles.adsAITitle, computedStyles.adsAITitle]}>
+              {t('ride_Ride_StartRideHidden_adsAIAssistantTitle')}
+            </Text>
+            <Text style={[styles.adsAISubTitle, computedStyles.adsAISubTitle]}>
+              {t('ride_Ride_StartRideHidden_adsAIAssistantSubTitle')}
+            </Text>
+            {prefferedName && (
+              <Text style={[styles.adsAISubTitle, computedStyles.adsAISubTitleName]}>{prefferedName}</Text>
+            )}
+            <View style={styles.textAndimagesAIAssistantContainer}>
+              <Text style={[styles.adsAIDescription, computedStyles.adsAIDescription]}>
+                {t('ride_Ride_StartRideHidden_adsAIAssistantDescription')}
+              </Text>
+              <View style={styles.imagesAIAssistantContainer}>
+                <View
+                  style={[
+                    styles.imageAIAssistantContainer,
+                    styles.imageAIAssistantContainerFirst,
+                    computedStyles.imageAIAssistantContainer,
+                  ]}
+                >
+                  <Image source={imageAIAssistantFirst} style={[styles.imageAIAssistant]} />
+                </View>
+                <View
+                  style={[
+                    styles.imageAIAssistantContainer,
+                    styles.imageAIAssistantContainerSecond,
+                    computedStyles.imageAIAssistantContainer,
+                  ]}
+                >
+                  <Image source={imageAIAssistantSecond} style={[styles.imageAIAssistant]} />
+                </View>
+                <View
+                  style={[
+                    styles.imageAIAssistantContainer,
+                    styles.imageAIAssistantContainerThird,
+                    computedStyles.imageAIAssistantContainer,
+                  ]}
+                >
+                  <Image source={imageAIAssistantThird} style={[styles.imageAIAssistant]} />
+                </View>
+              </View>
+            </View>
+          </View>
+        </>
+      ),
+      firstImgUri: imageAIAssistantBg,
+      containerStyle: {
+        height: undefined,
+        minHeight: 260,
+      },
+    },
+    //Removed in Task-533
+    //TODO: Add this block when we need "Lottery"
     // {
     //   firstContent: (
     //     //TODO: add logic for navigation to game screen
@@ -99,41 +181,41 @@ const StartRideHidden = () => {
     //   firstImgUri: imagePlayGameBackground,
     // },
     //TODO: add logic for navigation
-    {
-      firstContent: (
-        <>
-          <AdsContent>
-            <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
-              {t('ride_Ride_StartRideHidden_adsPrizes')}
-            </Text>
-            {isLotteryLoading ? (
-              <Skeleton
-                skeletonContainerStyle={styles.skeletonUpcomingLotteryStartTime}
-                boneColor={passengerColors.lotteryColors.timeTextLoadingColor}
-                highlightColor={passengerColors.adsBackgroundColor.whiteOpacityStrong}
-              />
-            ) : (
-              <Text style={[styles.timeText, computedStyles.lotteryText]}>
-                {`${hours}${t('ride_Ride_StartRide_hours')}:${minutes}${t('ride_Ride_StartRide_minutes')}:${seconds}${t('ride_Ride_StartRide_seconds')}`}
-              </Text>
-            )}
-            <View style={styles.prizesButtonContainer}>
-              <AdsButton
-                text={t('ride_Ride_StartRideHidden_adsPrizesButtonStart')}
-                onPress={() => navigation.navigate('Raffle')}
-              />
-              <View style={[styles.prizeBlock, computedStyles.prizeBlock]}>
-                <Text style={[styles.buttonText, computedStyles.prizeBlockText]}>
-                  {t('ride_Ride_StartRideHidden_adsPrizesButtonWin')}
-                </Text>
-              </View>
-            </View>
-          </AdsContent>
-          <Image source={imageStartRideCarouselPrize} style={styles.prizeImage} />
-        </>
-      ),
-      firstImgUri: passengerColors.adsBackgroundColor.prize,
-    },
+    // {
+    //   firstContent: (
+    //     <>
+    //       <AdsContent>
+    //         <Text style={[styles.textLarge, styles.fontStyle, computedStyles.textColor]}>
+    //           {t('ride_Ride_StartRideHidden_adsPrizes')}
+    //         </Text>
+    //         {isLotteryLoading ? (
+    //           <Skeleton
+    //             skeletonContainerStyle={styles.skeletonUpcomingLotteryStartTime}
+    //             boneColor={passengerColors.lotteryColors.timeTextLoadingColor}
+    //             highlightColor={passengerColors.adsBackgroundColor.whiteOpacityStrong}
+    //           />
+    //         ) : (
+    //           <Text style={[styles.timeText, computedStyles.lotteryText]}>
+    //             {`${hours}${t('ride_Ride_StartRide_hours')}:${minutes}${t('ride_Ride_StartRide_minutes')}:${seconds}${t('ride_Ride_StartRide_seconds')}`}
+    //           </Text>
+    //         )}
+    //         <View style={styles.prizesButtonContainer}>
+    //           <AdsButton
+    //             text={t('ride_Ride_StartRideHidden_adsPrizesButtonStart')}
+    //             onPress={() => navigation.navigate('Raffle')}
+    //           />
+    //           <View style={[styles.prizeBlock, computedStyles.prizeBlock]}>
+    //             <Text style={[styles.buttonText, computedStyles.prizeBlockText]}>
+    //               {t('ride_Ride_StartRideHidden_adsPrizesButtonWin')}
+    //             </Text>
+    //           </View>
+    //         </View>
+    //       </AdsContent>
+    //       <Image source={imageStartRideCarouselPrize} style={styles.prizeImage} />
+    //     </>
+    //   ),
+    //   firstImgUri: passengerColors.adsBackgroundColor.prize,
+    // },
     //TODO: uncomment when we need seasons
     //TODO: add logic for navigation
     // {
@@ -230,7 +312,7 @@ const StartRideHidden = () => {
   ];
 
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.wrapper} onLayout={onLayout}>
       {adsInfoArray.map((item: AdsBlockProps, index: number) => (
         <AdsBlock
           key={`ads_${index}`}
@@ -271,6 +353,62 @@ const styles = StyleSheet.create({
   },
   textSmall: {
     fontSize: 14,
+  },
+  adsAIContent: {
+    paddingTop: 20,
+    paddingBottom: 10,
+    paddingHorizontal: '3%',
+  },
+  adsAITitle: {
+    alignSelf: 'center',
+    fontFamily: 'Inter SemiBold',
+    fontSize: 18,
+    lineHeight: 32,
+  },
+  adsAISubTitle: {
+    alignSelf: 'center',
+    textAlign: 'center',
+    fontFamily: 'Inter SemiBold',
+    fontSize: 40,
+    lineHeight: 42,
+    letterSpacing: 0,
+  },
+  adsAIDescription: {
+    fontSize: 20,
+    lineHeight: 22,
+    marginTop: 14,
+  },
+  textAndimagesAIAssistantContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  imagesAIAssistantContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    marginTop: 4,
+  },
+  imageAIAssistantContainer: {
+    borderRadius: 10,
+    width: '60%',
+    aspectRatio: 1,
+    padding: 2,
+  },
+  imageAIAssistant: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  imageAIAssistantContainerFirst: {
+    transform: [{ rotate: '-10deg' }],
+    left: '-10%',
+  },
+  imageAIAssistantContainerSecond: {
+    transform: [{ rotate: '10deg' }],
+    top: '-20%',
+  },
+  imageAIAssistantContainerThird: {
+    top: '-35%',
+    left: '-10%',
   },
   fontStyle: {
     fontFamily: 'Inter Bold',

@@ -12,6 +12,7 @@ const passengerColors: PassengerColors = {
     prize: '#0033FF',
     firstSeason: '#916B56',
     helpUkraine: '#1C549E',
+    navButton: '#98989885',
   },
   raffle: {
     surpriseTitleBackgroundColor: '#00000080',

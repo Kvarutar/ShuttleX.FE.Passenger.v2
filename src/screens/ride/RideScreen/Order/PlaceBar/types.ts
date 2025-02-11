@@ -1,9 +1,10 @@
-import { StyleProp, ViewStyle } from 'react-native';
+import { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 import { SearchAddressFromAPI } from '../../../../../core/ride/redux/offer/types';
 
 export enum PlaceBarModes {
-  Default = 'default',
+  DefaultAddressSelect = 'default_address_select',
+  DefaultStart = 'default_start',
   Search = 'search',
   Save = 'save',
 }
@@ -17,7 +18,9 @@ export type PlaceBarProps = {
 
 export type PlaceTitleProps = {
   withDistance?: boolean;
+  withFullAddress?: boolean;
   place: SearchAddressFromAPI;
   style?: StyleProp<ViewStyle>;
+  addressTextStyle?: StyleProp<TextStyle>;
   addressesTextNumberOfLines?: number;
 };

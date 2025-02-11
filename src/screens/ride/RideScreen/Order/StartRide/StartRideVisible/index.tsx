@@ -1,20 +1,27 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
-import { Bar, BarModes, SearchIcon, sizes, Text, useTheme } from 'shuttlex-integration';
+import {
+  Bar,
+  BarModes,
+  Button,
+  ButtonShapes,
+  CircleButtonModes,
+  SearchIcon,
+  Text,
+  useTheme,
+} from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { offerRecentDropoffsSelector } from '../../../../../../core/ride/redux/offer/selectors';
 import { RecentDropoffsFromAPI } from '../../../../../../core/ride/redux/offer/types';
 import { setIsAddressSelectVisible } from '../../../../../../core/ride/redux/order';
 import PlaceBar from '../../PlaceBar';
-import HeaderCarousel from './HeaderCarousel';
+import { PlaceBarModes } from '../../PlaceBar/types';
 import { StartRideVisibleProps } from './types';
-
-const windowWidth = Dimensions.get('window').width;
 
 const animationsDurations = {
   container: 500,
@@ -30,7 +37,6 @@ const StartRideVisible = ({ isBottomWindowOpen, setFastAddressSelect }: StartRid
 
   const isRecentDropoffsExist = useMemo(() => recentDropoffs.length > 0, [recentDropoffs]);
 
-  const [isSearchBarVisible, setIsSearchBarVisible] = useState(true);
   const computedStyles = StyleSheet.create({
     textTitle: {
       color: colors.textPrimaryColor,
@@ -39,26 +45,24 @@ const StartRideVisible = ({ isBottomWindowOpen, setFastAddressSelect }: StartRid
       color: colors.textTitleColor,
     },
     container: {
-      marginBottom: isBottomWindowOpen ? 0 : 27,
-    },
-    scrollView: {
-      marginLeft: isSearchBarVisible ? 0 : 70,
+      marginBottom: isBottomWindowOpen ? 0 : 14,
     },
     searchContainer: {
-      marginLeft: isSearchBarVisible ? 0 : -62,
-      marginRight: isSearchBarVisible && isRecentDropoffsExist ? 8 : 0,
-      width: isRecentDropoffsExist ? windowWidth * 0.75 : 'auto',
-      flex: isRecentDropoffsExist ? 0 : 1,
+      width: '100%',
+      flex: 0,
     },
-    scrollViewContainer: {
-      marginRight: isRecentDropoffsExist ? -sizes.paddingHorizontal : 'auto',
+    searchAndScrollViewContainer: {
+      flexDirection: isBottomWindowOpen ? 'row' : 'column',
+      marginTop: isBottomWindowOpen ? 12 : 0,
+    },
+    scrollView: {
+      marginTop: isBottomWindowOpen ? 0 : 8,
+      marginLeft: isBottomWindowOpen ? 8 : 0,
+    },
+    searchIconBWOpened: {
+      color: colors.iconPrimaryColor,
     },
   });
-
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    setIsSearchBarVisible(offsetX <= windowWidth * 0.75 - 62);
-  };
 
   const openAddressSelectHandler = () => dispatch(setIsAddressSelectVisible(true));
 
@@ -67,23 +71,28 @@ const StartRideVisible = ({ isBottomWindowOpen, setFastAddressSelect }: StartRid
     dispatch(setIsAddressSelectVisible(true));
   };
 
-  const searchBar = (
-    <Bar
-      onPress={openAddressSelectHandler}
-      mode={BarModes.Disabled}
-      style={[styles.searchContainer, computedStyles.searchContainer]}
-    >
-      <View style={styles.textContainer}>
-        <Text style={[styles.textSubtitle, computedStyles.textSubtitle]}>
-          {t('ride_Ride_StartRideVisible_buttonStartTrip')}
-        </Text>
-        <Text style={[styles.textTitle, computedStyles.textTitle]}>
-          {t('ride_Ride_StartRideVisible_buttonWhereToGo')}
-        </Text>
-      </View>
-      <SearchIcon style={styles.searchIcon} />
-    </Bar>
-  );
+  const searchBar =
+    isBottomWindowOpen && isRecentDropoffsExist ? (
+      <Button shape={ButtonShapes.Circle} mode={CircleButtonModes.Mode2} onPress={openAddressSelectHandler}>
+        <SearchIcon style={styles.searchIconBWOpened} />
+      </Button>
+    ) : (
+      <Bar
+        onPress={openAddressSelectHandler}
+        mode={BarModes.Disabled}
+        style={[styles.searchContainer, computedStyles.searchContainer]}
+      >
+        <View style={styles.textContainer}>
+          <Text style={[styles.textSubtitle, computedStyles.textSubtitle]}>
+            {t('ride_Ride_StartRideVisible_buttonStartTrip')}
+          </Text>
+          <Text style={[styles.textTitle, computedStyles.textTitle]}>
+            {t('ride_Ride_StartRideVisible_buttonWhereToGo')}
+          </Text>
+        </View>
+        <SearchIcon style={styles.searchIconBWClosed} />
+      </Bar>
+    );
 
   return (
     <Animated.View
@@ -92,40 +101,35 @@ const StartRideVisible = ({ isBottomWindowOpen, setFastAddressSelect }: StartRid
       style={[styles.container, computedStyles.container]}
       layout={FadeIn.duration(animationsDurations.container)}
     >
-      {!isBottomWindowOpen && (
+      {/* Removed in Task-533 */}
+      {/* TOOD: Add it when need header carousel */}
+      {/* {!isBottomWindowOpen && (
         <View style={styles.headerContainer}>
           <HeaderCarousel />
         </View>
-      )}
+      )} */}
       <Animated.View
-        style={[styles.scrollViewContainer, computedStyles.scrollViewContainer]}
+        style={[styles.searchAndScrollViewContainer, computedStyles.searchAndScrollViewContainer]}
         layout={FadeIn.duration(animationsDurations.scrollViewContainer)}
       >
-        {!isSearchBarVisible && (
-          <Bar onPress={openAddressSelectHandler} mode={BarModes.Disabled} style={styles.extraSearchIconContainer}>
-            <SearchIcon />
-          </Bar>
-        )}
-        {isRecentDropoffsExist ? (
+        {searchBar}
+        {isRecentDropoffsExist && (
           <ScrollView
-            style={computedStyles.scrollView}
+            style={[styles.scrollView, computedStyles.scrollView]}
             horizontal
             showsHorizontalScrollIndicator={false}
-            onScroll={handleScroll}
             scrollEventThrottle={16}
           >
-            {searchBar}
             {recentDropoffs.map((place, index) => (
               <PlaceBar
                 key={`${place.dropoffAddress}_${index}`}
                 style={styles.placeBar}
                 place={place}
                 onPress={onFastAddressSelectHandler(place)}
+                mode={PlaceBarModes.DefaultStart}
               />
             ))}
           </ScrollView>
-        ) : (
-          searchBar
         )}
       </Animated.View>
     </Animated.View>
@@ -153,8 +157,7 @@ const styles = StyleSheet.create({
     aspectRatio: 3,
     flexShrink: 1,
   },
-  scrollViewContainer: {
-    flexDirection: 'row',
+  searchAndScrollViewContainer: {
     alignItems: 'center',
   },
   searchContainer: {
@@ -164,6 +167,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  scrollView: {
+    width: '100%',
+  },
   extraSearchIconContainer: {
     width: 62,
     height: 72,
@@ -172,8 +178,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 1,
   },
-  searchIcon: {
+  searchIconBWClosed: {
     marginRight: 6,
+  },
+  searchIconBWOpened: {
+    width: 14,
+    height: 14,
   },
   textTitle: {
     fontFamily: 'Inter Medium',
@@ -187,7 +197,10 @@ const styles = StyleSheet.create({
   },
   placeBar: {
     alignItems: 'center',
+    gap: 8,
     marginRight: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
   },
 });
 
