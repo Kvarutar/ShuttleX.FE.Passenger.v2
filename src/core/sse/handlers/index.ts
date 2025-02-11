@@ -55,6 +55,22 @@ export const driverArrivedSSEHandler = () => {
   }
 };
 
+// Add such event callback type if you need payload(orderId):
+// event: EventSourceEvent<SSEAndNotificationsEventType.DriverArrivedToStopPoint, SSEAndNotificationsEventType>,
+//And data type if you need payload(orderId): SSEDriverArrivedToStopPointEventData
+//If you don't need this payload - remove type
+export const driverArrivedToStopPointSSEHandler = () => {
+  //TODO: Add some logic in task with stop-points
+};
+
+// Add such event callback type if you need payload(orderId):
+// event: EventSourceEvent<SSEAndNotificationsEventType.PickUpOnStopPoint, SSEAndNotificationsEventType>,
+//And data type if you need payload(orderId): SSEPickUpStopPointEventData
+//If you don't need this payload - remove type
+export const pickUpOnStopPointSSEHandler = () => {
+  //TODO: Add some logic in task with stop-points
+};
+
 export const tripStartedSSEHandler = () => {
   const tripStatus = tripStatusSelector(store.getState());
   const selectedOrderId = selectedOrderIdSelector(store.getState());

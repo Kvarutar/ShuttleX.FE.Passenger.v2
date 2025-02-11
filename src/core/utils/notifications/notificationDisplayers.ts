@@ -137,6 +137,14 @@ export const notificationHandlers: Record<
   [SSEAndNotificationsEventType.PaymentTracsactionStatus]: async () => {
     //add logic when payment will be done
   },
+  [SSEAndNotificationsEventType.DriverArrivedToStopPoint]: async () => {
+    //add logic when stop points will be done
+    //payload contains OrderId
+  },
+  [SSEAndNotificationsEventType.PickUpOnStopPoint]: async () => {
+    //add logic when stop points will be done
+    //payload contains OrderId
+  },
 };
 
 export const displayNotificationForAll = async (remoteMessage: NotificationRemoteMessage) => {
