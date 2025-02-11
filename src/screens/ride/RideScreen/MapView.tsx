@@ -5,7 +5,7 @@ import { Easing, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
   calculateNewMapRoute,
-  decodeGooglePolyline,
+  decodeGooglePolylineArr,
   getDistanceBetweenPoints,
   getTimeWithAbbreviation,
   MapMarker,
@@ -39,7 +39,7 @@ import {
   tripPickUpRouteSelector,
   tripStatusSelector,
 } from '../../../core/ride/redux/trip/selectors';
-import { TripStatus } from '../../../core/ride/redux/trip/types';
+import { RouteInfoApiResponse, TripStatus } from '../../../core/ride/redux/trip/types';
 
 const updatePassengerGeoInterval = 1000;
 const finalStopPointUpdateIntervalInSec = 30;
@@ -236,7 +236,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
 
       setPolyline({
         type: 'dashed',
-        options: { coordinates: decodeGooglePolyline(offerRoutes.geometry), color: '#ABC736' },
+        options: { coordinates: decodeGooglePolylineArr(offerRoutes.legs.map(leg => leg.geometry)), color: '#ABC736' },
       });
       setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: pickUpPoint, zIndex: -1 }]);
       setFinalStopPointCoordinates(dropOffPoint);
@@ -269,20 +269,22 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         if (!pickUpRoute) {
           break;
         }
-        const coordinates = decodeGooglePolyline(pickUpRoute.geometry); // TODO: check, maybe need to reverse array
+        const coordinates = decodeGooglePolylineArr(pickUpRoute.legs.map(leg => leg.geometry)); // TODO: check, maybe need to reverse array
         setRoutePolylinePointsCount(coordinates.length);
         setPolyline({ type: 'dashed', options: { coordinates, color: '#ABC736' } });
 
         setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: coordinates[coordinates.length - 1] }]);
 
-        dispatch(setMapRouteTraffic(pickUpRoute.accurateGeometries));
+        const joinedAccurateGeometries: RouteInfoApiResponse['legs'][0]['accurateGeometries'] = [];
+        pickUpRoute.legs.forEach(leg => joinedAccurateGeometries.push(...leg.accurateGeometries));
+        dispatch(setMapRouteTraffic(joinedAccurateGeometries));
         break;
       }
       case TripStatus.Ride: {
         if (!dropOffRoute) {
           break;
         }
-        const coordinates = decodeGooglePolyline(dropOffRoute.geometry);
+        const coordinates = decodeGooglePolylineArr(dropOffRoute.legs.map(leg => leg.geometry));
         setRoutePolylinePointsCount(coordinates.length);
         setPolyline({ type: 'straight', options: { coordinates } });
 
@@ -290,7 +292,9 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
         setFinalStopPointColorMode('mode1');
 
-        dispatch(setMapRouteTraffic(dropOffRoute.accurateGeometries));
+        const joinedAccurateGeometries: RouteInfoApiResponse['legs'][0]['accurateGeometries'] = [];
+        dropOffRoute.legs.forEach(leg => joinedAccurateGeometries.push(...leg.accurateGeometries));
+        dispatch(setMapRouteTraffic(joinedAccurateGeometries));
         break;
       }
       case TripStatus.Idle:

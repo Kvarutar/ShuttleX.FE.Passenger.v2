@@ -66,8 +66,8 @@ __metadata:
   linkType: hard
 
 "@babel/eslint-parser@npm:^7.20.0":
-  version: 7.26.5
-  resolution: "@babel/eslint-parser@npm:7.26.5"
+  version: 7.26.8
+  resolution: "@babel/eslint-parser@npm:7.26.8"
   dependencies:
     "@nicolo-ribaudo/eslint-scope-5-internals": 5.1.1-v1
     eslint-visitor-keys: ^2.1.0
@@ -75,7 +75,7 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.11.0
     eslint: ^7.5.0 || ^8.0.0 || ^9.0.0
-  checksum: 3ed969eabc940aa29a2e5bef525674b47ebccb8dfe686737e84fed2b09fbf4bd23c2503936ed340bde2a870fc1917668ec7ab357b97bab504aceb84e9608d213
+  checksum: a434da9e3099e5f77911baa4eaa21f2ec64768703be1fde2858e8ffdb8be6cb78ff67c611c8c17fe1ece54d925b65487a7455cca93103b017443a51b76320751
   languageName: node
   linkType: hard
 
@@ -7943,12 +7943,12 @@ __metadata:
   linkType: hard
 
 "is-boolean-object@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "is-boolean-object@npm:1.2.1"
+  version: 1.2.2
+  resolution: "is-boolean-object@npm:1.2.2"
   dependencies:
-    call-bound: ^1.0.2
+    call-bound: ^1.0.3
     has-tostringtag: ^1.0.2
-  checksum: 2672609f0f2536172873810a38ec006a415e43ddc6a240f7638a1659cb20dfa91cc75c8a1bed36247bb046aa8f0eab945f20d1203bc69606418bd129c745f861
+  checksum: 0415b181e8f1bfd5d3f8a20f8108e64d372a72131674eea9c2923f39d065b6ad08d654765553bdbffbd92c3746f1007986c34087db1bd89a31f71be8359ccdaa
   languageName: node
   linkType: hard
 
@@ -8204,11 +8204,11 @@ __metadata:
   linkType: hard
 
 "is-weakref@npm:^1.0.2, is-weakref@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "is-weakref@npm:1.1.0"
+  version: 1.1.1
+  resolution: "is-weakref@npm:1.1.1"
   dependencies:
-    call-bound: ^1.0.2
-  checksum: 2a2f3a1746ee1baecf9ac6483d903cd3f8ef3cca88e2baa42f2e85ea064bd246d218eed5f6d479fc1c76dae2231e71133b6b86160e821d176932be9fae3da4da
+    call-bound: ^1.0.3
+  checksum: 1769b9aed5d435a3a989ffc18fc4ad1947d2acdaf530eb2bd6af844861b545047ea51102f75901f89043bed0267ed61d914ee21e6e8b9aa734ec201cdfc0726f
   languageName: node
   linkType: hard
 
@@ -10021,9 +10021,9 @@ __metadata:
   linkType: hard
 
 "object-inspect@npm:^1.13.3":
-  version: 1.13.3
-  resolution: "object-inspect@npm:1.13.3"
-  checksum: 8c962102117241e18ea403b84d2521f78291b774b03a29ee80a9863621d88265ffd11d0d7e435c4c2cea0dc2a2fbf8bbc92255737a05536590f2df2e8756f297
+  version: 1.13.4
+  resolution: "object-inspect@npm:1.13.4"
+  checksum: 582810c6a8d2ef988ea0a39e69e115a138dad8f42dd445383b394877e5816eb4268489f316a6f74ee9c4e0a984b3eab1028e3e79d62b1ed67c726661d55c7a8b
   languageName: node
   linkType: hard
 
@@ -10419,9 +10419,9 @@ __metadata:
   linkType: hard
 
 "possible-typed-array-names@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "possible-typed-array-names@npm:1.0.0"
-  checksum: b32d403ece71e042385cc7856385cecf1cd8e144fa74d2f1de40d1e16035dba097bc189715925e79b67bdd1472796ff168d3a90d296356c9c94d272d5b95f3ae
+  version: 1.1.0
+  resolution: "possible-typed-array-names@npm:1.1.0"
+  checksum: cfcd4f05264eee8fd184cd4897a17890561d1d473434b43ab66ad3673d9c9128981ec01e0cb1d65a52cd6b1eebfb2eae1e53e39b2e0eca86afc823ede7a4f41b
   languageName: node
   linkType: hard
 
@@ -11758,11 +11758,11 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
   linkType: hard
 
 "semver@npm:^7.3.7":
-  version: 7.7.0
-  resolution: "semver@npm:7.7.0"
+  version: 7.7.1
+  resolution: "semver@npm:7.7.1"
   bin:
     semver: bin/semver.js
-  checksum: a4eefdada9c40df120935b73b0b86080d22f375ed9b950403a4b6a90cc036e552d903ff3c7c3e865823c434ee6c6473908b13d64c84aa307423d3a998e654652
+  checksum: 586b825d36874007c9382d9e1ad8f93888d8670040add24a28e06a910aeebd673a2eb9e3bf169c6679d9245e66efb9057e0852e70d9daa6c27372aab1dda7104
   languageName: node
   linkType: hard
 
@@ -11926,7 +11926,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
 
 "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev":
   version: 1.0.0
-  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=ffbec5b6df49405b5baf01d7d9e71bd4883d6f2a"
+  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=e9f0703e4eb49f444d197371579aa5e14634d609"
   dependencies:
     "@googlemaps/polyline-codec": ^1.0.28
     "@react-native/eslint-config": 0.73.2
@@ -11975,7 +11975,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react-native-svg-transformer: "*"
     react-redux: "*"
     uuid: "*"
-  checksum: de0c821bf4a2939097368561b39bbe1c10cb61b737b4bdfa239e5fbcfa05c706d3613271ea4b519aad9bf73e02ead28c2513518608a556032b103f297287ca98
+  checksum: 8026de6a6b23ab11d89c02a0173ba7f1b6d7b908dff41132387a1938fdbc448c22f65afc7a48057e9f215d387a4a7b53eea67c9b426db00ffd043a2a265e9ae3
   languageName: node
   linkType: hard
 

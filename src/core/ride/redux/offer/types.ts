@@ -152,13 +152,18 @@ export type OfferRoutesFromAPI = {
     index: number;
     zoneId: string;
   }[];
-  accurateGeometries: {
-    polylineStartIndex: number;
-    polylineEndIndex: number;
-    trafficLoad: TrafficLoadFromAPI;
+  legs: {
+    accurateGeometries: {
+      polylineStartIndex: number;
+      polylineEndIndex: number;
+      trafficLoad: TrafficLoadFromAPI;
+    }[];
+    durationSec: number;
+    distanceMtr: number;
+    geometry: string;
+    trafficLoad: string;
+    index: number;
   }[];
-  geometry: string;
-  trafficLoad: string;
 };
 
 export type GetOfferRoutesAPIResoponse = OfferRoutesFromAPI;

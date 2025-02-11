@@ -65,20 +65,25 @@ export type TrafficLoadFromAPI = 'Low' | 'Average' | 'High';
 
 export type RouteInfoApiResponse = {
   routeId: string;
+  orderId: string;
   totalDistanceMtr: number;
   totalDurationSec: number;
   waypoints: {
     geo: LatLng;
     index: number;
   }[];
-  accurateGeometries: {
-    polylineStartIndex: number;
-    polylineEndIndex: number;
-    trafficLoad: TrafficLoadFromAPI;
+  legs: {
+    accurateGeometries: {
+      polylineStartIndex: number;
+      polylineEndIndex: number;
+      trafficLoad: TrafficLoadFromAPI;
+    }[];
+    durationSec: number;
+    distanceMtr: number;
+    geometry: string;
+    trafficLoad: string;
+    index: number;
   }[];
-  geometry: string;
-  trafficLoad: string;
-  orderId: string;
 };
 
 export type RoutePickUpApiResponse = RouteInfoApiResponse;

@@ -59,7 +59,7 @@ const ReceiptScreen = () => {
       endPoint={receipt.routeInfo.waypoints[receipt.routeInfo.waypoints.length - 1].geo}
       isTripCanceled={isTripCanceled}
       ticket={ticket?.ticketNumber}
-      geometry={receipt.routeInfo.geometry}
+      geometries={receipt.routeInfo.legs.map(leg => leg.geometry)}
     />
   );
 };

@@ -13,5 +13,5 @@ export type MapState = {
   polylines: Exclude<MapViewProps['polylines'], undefined>;
   stopPoints: LatLng[];
   ridePercentFromPolylines: string;
-  routeTraffic: RouteInfoApiResponse['accurateGeometries'] | null;
+  routeTraffic: RouteInfoApiResponse['legs'][0]['accurateGeometries'] | null;
 };
