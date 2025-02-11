@@ -2,7 +2,17 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Keyboard, LayoutChangeEvent, Linking, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Keyboard,
+  LayoutChangeEvent,
+  Linking,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
@@ -40,11 +50,15 @@ import AlertInitializer from '../../../../../shared/AlertInitializer';
 import passengerColors from '../../../../../shared/colors/colors';
 import MapCameraModeButton from '../../MapCameraModeButton';
 import UnsupportedDestinationPopup from '../../popups/UnsupportedDestinationPopup';
+import AIPopup from '../popups/AIPopup';
+// import AIPopup from '../popups/AIPopup';
 import TooShortRouteLengthPopup from '../popups/TooShortRouteLengthPopup';
 import AddressSelect from './AddressSelect';
 import StartRideHidden from './StartRideHidden';
 import StartRideVisible from './StartRideVisible';
 import { StartRideRef } from './types';
+
+const windowHeight = Dimensions.get('window').height;
 
 const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const addressSelectRef = useRef<BottomWindowWithGestureRef>(null);
@@ -68,6 +82,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const [isUnsupportedCityPopupVisible, setIsUnsupportedCityPopupVisible] = useState<boolean>(false);
   const [isUnsupportedDestinationPopupVisible, setIsUnsupportedDestinationPopupVisible] = useState<boolean>(false);
   const [selectedBottomWindowIdx, setSelectedBottomWindowIdx] = useState<number>(0);
+  const [isAiPopupVisible, setIsAiPopupVisible] = useState(false);
 
   const computedStyles = StyleSheet.create({
     navButtonContainerStyle: {
@@ -232,8 +247,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
           mode={CircleButtonModes.Mode4}
           containerStyle={[styles.navButtonContainerStyle, computedStyles.navButtonContainerStyle]}
           style={styles.navButtonStyle}
-          //TODO: Add navigation to the AI screen or add opening AI chat
-          onPress={() => console.log('open AI BW or navigate to AI screen')}
+          onPress={() => setIsAiPopupVisible(true)}
         >
           <Text style={styles.AIButtonTextStyle}>{t('ride_Ride_StartRide_navButtonAI')}</Text>
         </Button>
@@ -266,6 +280,18 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
         />
       )}
       {isTooShortRouteLengthPopupVisible && <TooShortRouteLengthPopup />}
+
+      {isAiPopupVisible && (
+        <BottomWindowWithGesture
+          setIsOpened={() => setIsAiPopupVisible(false)}
+          opened
+          hiddenPart={<AIPopup />}
+          hiddenPartStyle={styles.hiddenPartChange}
+          bottomWindowStyle={styles.bottomWindowBackground}
+          hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
+          headerWrapperStyle={styles.bottomWindowBackground}
+        />
+      )}
     </>
   );
 });
@@ -280,6 +306,15 @@ const styles = StyleSheet.create({
   },
   hiddenPartStyle: {
     marginTop: 0,
+  },
+  hiddenPartChange: {
+    height: windowHeight * 0.85,
+  },
+  hiddenPartContainerStyle: {
+    flex: 1,
+  },
+  bottomWindowBackground: {
+    backgroundColor: '#F7F6F7',
   },
   navButtonsContainer: {
     position: 'absolute',
