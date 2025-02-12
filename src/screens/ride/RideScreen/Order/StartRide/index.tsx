@@ -13,6 +13,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
@@ -54,8 +55,10 @@ import AIPopup from '../popups/AIPopup';
 // import AIPopup from '../popups/AIPopup';
 import TooShortRouteLengthPopup from '../popups/TooShortRouteLengthPopup';
 import AddressSelect from './AddressSelect';
+import CategoriesList from './CategoryList';
 import StartRideHidden from './StartRideHidden';
 import StartRideVisible from './StartRideVisible';
+import EventsList, { bigEvents } from './StartRideVisible/EventList';
 import { StartRideRef } from './types';
 
 const windowHeight = Dimensions.get('window').height;
@@ -67,7 +70,8 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const hiddenPartHeightShared = useSharedValue(0);
+  const BWhiddenPartFirstHeightShared = useSharedValue(0);
+  const BWhiddenPartSecondHeightShared = useSharedValue(0);
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
   const isCityAvailable = useSelector(isCityAvailableSelector);
@@ -136,19 +140,21 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
     EarthIcon,
   ];
 
-  const onFakeHiddenPartLayout = (e: LayoutChangeEvent) => {
-    hiddenPartHeightShared.value = e.nativeEvent.layout.height / 2;
+  const onFakeHiddenPartFirstLayout = (e: LayoutChangeEvent) => {
+    BWhiddenPartFirstHeightShared.value = e.nativeEvent.layout.height / 2;
   };
 
-  const fakeHiddenPartAnimatedStyle = useAnimatedStyle(() => ({ height: hiddenPartHeightShared.value }));
+  const onFakeHiddenPartSecondLayout = (e: LayoutChangeEvent) => {
+    BWhiddenPartSecondHeightShared.value = e.nativeEvent.layout.height / 2;
+  };
+
+  const fakeHiddenPartFirstAnimatedStyle = useAnimatedStyle(() => ({ height: BWhiddenPartFirstHeightShared.value }));
+  const fakeHiddenPartSecondAnimatedStyle = useAnimatedStyle(() => ({ height: BWhiddenPartSecondHeightShared.value }));
 
   //TODO: Add BottomWindows to other cases
   const renderCurrentBottomWindow = () => {
     switch (selectedBottomWindowIdx) {
       case 0:
-      case 1:
-      case 2:
-      default:
         return (
           <BottomWindowWithGesture
             maxHeight={0.6}
@@ -167,14 +173,74 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
               <>
                 <StartRideVisible isBottomWindowOpen={isBottomWindowOpen} setFastAddressSelect={setFastAddressSelect} />
                 {!isBottomWindowOpen && (
-                  <Animated.View style={fakeHiddenPartAnimatedStyle}>
-                    <StartRideHidden onLayout={onFakeHiddenPartLayout} />
+                  <Animated.View style={fakeHiddenPartFirstAnimatedStyle}>
+                    <StartRideHidden onLayout={onFakeHiddenPartFirstLayout} />
                   </Animated.View>
                 )}
               </>
             }
             setIsOpened={setIsBottomWindowOpen}
             hiddenPart={isBottomWindowOpen && <StartRideHidden />}
+            hiddenPartStyle={styles.hiddenPartStyle}
+            hiddenPartWrapperStyle={styles.hiddenPartWrapper}
+            additionalTopContent={<MapCameraModeButton />}
+            alerts={alerts.map(alertData => (
+              <AlertInitializer
+                key={alertData.id}
+                id={alertData.id}
+                priority={alertData.priority}
+                type={alertData.type}
+                options={'options' in alertData ? alertData.options : undefined}
+              />
+            ))}
+          />
+        );
+      case 1:
+        break;
+      case 2:
+        return (
+          <BottomWindowWithGesture
+            maxHeight={0.6}
+            onAnimationEnd={values => dispatch(setActiveBottomWindowYCoordinate(values.pageY))}
+            onGestureStart={event => {
+              if (event.velocityY > 0) {
+                dispatch(setActiveBottomWindowYCoordinate(null));
+              }
+            }}
+            onHiddenOrVisibleHeightChange={values => {
+              if (!values.isWindowAnimating) {
+                dispatch(setActiveBottomWindowYCoordinate(values.pageY));
+              }
+            }}
+            visiblePart={
+              <>
+                {!isBottomWindowOpen && (
+                  <View>
+                    <CategoriesList />
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEventThrottle={16}>
+                      <EventsList />
+                    </ScrollView>
+                    <Animated.View style={[fakeHiddenPartSecondAnimatedStyle, styles.bigEventImagesContainer]}>
+                      <View style={styles.bigCard} onLayout={onFakeHiddenPartSecondLayout}>
+                        <Image source={bigEvents[0]} style={styles.bigEventImage} />
+                      </View>
+                      <View style={styles.bigCard} onLayout={onFakeHiddenPartSecondLayout}>
+                        <Image source={bigEvents[1]} style={styles.bigEventImage} />
+                      </View>
+                    </Animated.View>
+                  </View>
+                )}
+              </>
+            }
+            setIsOpened={setIsBottomWindowOpen}
+            hiddenPart={
+              isBottomWindowOpen && (
+                <Animated.View>
+                  <CategoriesList />
+                  <EventsList isBottomWindowOpen={isBottomWindowOpen} />
+                </Animated.View>
+              )
+            }
             hiddenPartStyle={styles.hiddenPartStyle}
             hiddenPartWrapperStyle={styles.hiddenPartWrapper}
             additionalTopContent={<MapCameraModeButton />}
@@ -362,6 +428,19 @@ const styles = StyleSheet.create({
     height: '100%',
     aspectRatio: 1,
     borderRadius: 100,
+  },
+  bigEventImagesContainer: {
+    gap: 10,
+  },
+  bigCard: {
+    width: '100%',
+    height: 200,
+    borderRadius: 15,
+    overflow: 'hidden',
+  },
+  bigEventImage: {
+    width: '100%',
+    height: '100%',
   },
 });
 
