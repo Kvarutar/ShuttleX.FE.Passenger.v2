@@ -14,7 +14,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
   BottomWindowWithGesture,
@@ -56,12 +56,14 @@ import AIPopup from '../popups/AIPopup';
 import TooShortRouteLengthPopup from '../popups/TooShortRouteLengthPopup';
 import AddressSelect from './AddressSelect';
 import CategoriesList from './CategoryList';
+import EventsList, { bigEvents } from './EventList';
 import StartRideHidden from './StartRideHidden';
 import StartRideVisible from './StartRideVisible';
-import EventsList, { bigEvents } from './StartRideVisible/EventList';
 import { StartRideRef } from './types';
 
 const windowHeight = Dimensions.get('window').height;
+
+const animationDuration = 300;
 
 const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const addressSelectRef = useRef<BottomWindowWithGestureRef>(null);
@@ -214,10 +216,18 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
             }}
             visiblePart={
               <>
+                <CategoriesList />
                 {!isBottomWindowOpen && (
-                  <View>
-                    <CategoriesList />
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEventThrottle={16}>
+                  <Animated.View
+                    entering={FadeIn.duration(animationDuration)}
+                    exiting={FadeOut.duration(animationDuration)}
+                  >
+                    <ScrollView
+                      style={styles.secondBWScrollView}
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      scrollEventThrottle={16}
+                    >
                       <EventsList />
                     </ScrollView>
                     <Animated.View style={[fakeHiddenPartSecondAnimatedStyle, styles.bigEventImagesContainer]}>
@@ -228,15 +238,17 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
                         <Image source={bigEvents[1]} style={styles.bigEventImage} />
                       </View>
                     </Animated.View>
-                  </View>
+                  </Animated.View>
                 )}
               </>
             }
             setIsOpened={setIsBottomWindowOpen}
             hiddenPart={
               isBottomWindowOpen && (
-                <Animated.View>
-                  <CategoriesList />
+                <Animated.View
+                  entering={FadeIn.duration(animationDuration)}
+                  exiting={FadeOut.duration(animationDuration)}
+                >
                   <EventsList isBottomWindowOpen={isBottomWindowOpen} />
                 </Animated.View>
               )
@@ -441,6 +453,9 @@ const styles = StyleSheet.create({
   bigEventImage: {
     width: '100%',
     height: '100%',
+  },
+  secondBWScrollView: {
+    marginRight: -12,
   },
 });
 

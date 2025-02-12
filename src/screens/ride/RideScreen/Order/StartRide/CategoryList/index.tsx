@@ -1,24 +1,41 @@
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Bar, BarModes, SearchIcon, Text } from 'shuttlex-integration';
+import { Bar, BarModes, SearchIcon, Text, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { setIsAddressSelectVisible } from '../../../../../../core/ride/redux/order';
 
-export const categories = ['Events', 'Places', 'Services', 'Landmarks'];
+const categories = ['Events', 'Places', 'Services', 'Landmarks'];
 
 const CategoriesList = () => {
+  const { colors } = useTheme();
   const dispatch = useAppDispatch();
+  //Use in future
+  const selectedCategory = categories[0];
 
   const openAddressSelectHandler = () => dispatch(setIsAddressSelectVisible(true));
+
+  const computedStyles = StyleSheet.create({
+    button: {
+      backgroundColor: colors.backgroundPrimaryColor,
+      borderColor: colors.backgroundSecondaryColor,
+    },
+    selected: {
+      backgroundColor: colors.backgroundSecondaryColor,
+    },
+  });
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEventThrottle={16} style={styles.scrollView}>
       <Bar onPress={openAddressSelectHandler} mode={BarModes.Disabled} style={[styles.searchContainer]}>
         <SearchIcon />
       </Bar>
+
       {categories.map(item => (
-        <TouchableOpacity key={item} style={[styles.button]}>
+        <TouchableOpacity
+          key={item}
+          style={[styles.button, computedStyles.button, selectedCategory === item ? computedStyles.selected : null]}
+        >
           <Text style={[styles.buttonText]}>{item}</Text>
         </TouchableOpacity>
       ))}
@@ -43,12 +60,10 @@ const styles = StyleSheet.create({
     height: 40,
     paddingHorizontal: 17,
     borderRadius: 20,
-    backgroundColor: '#ffffff',
     marginRight: 10,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#F3F3F3',
     borderWidth: 1,
   },
 
