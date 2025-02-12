@@ -273,7 +273,13 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         setRoutePolylinePointsCount(coordinates.length);
         setPolyline({ type: 'dashed', options: { coordinates, color: '#ABC736' } });
 
-        setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: coordinates[coordinates.length - 1] }]);
+        setMarkers([
+          {
+            type: 'simple',
+            colorMode: 'mode1',
+            coordinates: pickUpRoute.waypoints[pickUpRoute.waypoints.length - 1].geo,
+          },
+        ]);
 
         const joinedAccurateGeometries: RouteInfoApiResponse['legs'][0]['accurateGeometries'] = [];
         pickUpRoute.legs.forEach(leg => joinedAccurateGeometries.push(...leg.accurateGeometries));
@@ -288,7 +294,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         setRoutePolylinePointsCount(coordinates.length);
         setPolyline({ type: 'straight', options: { coordinates } });
 
-        setFinalStopPointCoordinates(coordinates[coordinates.length - 1]);
+        setFinalStopPointCoordinates(dropOffRoute.waypoints[dropOffRoute.waypoints.length - 1].geo);
         setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
         setFinalStopPointColorMode('mode1');
 
