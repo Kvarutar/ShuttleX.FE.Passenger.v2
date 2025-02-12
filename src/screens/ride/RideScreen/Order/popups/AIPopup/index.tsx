@@ -1,25 +1,25 @@
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
-import { useSelector } from 'react-redux';
 import {
   Bar,
   Button,
   ButtonShapes,
   CameraIcon,
   CircleButtonModes,
+  HeaderWithTwoTitles,
   ScrollViewWithCustomScroll,
   Text,
   useTheme,
 } from 'shuttlex-integration';
 
-import aipopup from '../../../../../../assets/images/aipopup';
-import { profilePrefferedNameSelector } from '../../../../../core/passenger/redux/selectors';
+import aipopup from '../../../../../../../assets/images/aipopup';
+import FirstCard from './FirstCard';
+import FourthCard from './FourthCard';
+import SecondCard from './SecondCard';
+import ThirdCard from './ThirdCard';
+import { CardWrapperProps } from './types';
 
-const imageArray = [aipopup.firstCard, aipopup.secondCard];
-const imageArray2 = [aipopup.thirdCard, aipopup.fourthCard];
-
-const AIPopup = () => {
-  const prefferedName = useSelector(profilePrefferedNameSelector);
+const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
@@ -30,12 +30,6 @@ const AIPopup = () => {
     descript: {
       color: colors.textQuadraticColor,
     },
-    firstCardTitle: {
-      color: colors.textQuadraticColor,
-    },
-    secondCardTitle: {
-      color: colors.textPrimaryColor,
-    },
   });
   return (
     <ScrollViewWithCustomScroll contentContainerStyle={styles.container}>
@@ -45,21 +39,27 @@ const AIPopup = () => {
           <Text style={styles.greeting}>{t('ride_AiPopup_greeting', { name: prefferedName })}</Text>
           <Text style={[styles.descript, computedStyles.descript]}>{t('ride_AiPopup_description')}</Text>
         </View>
-        <View style={styles.photoContainer}>
-          <View style={styles.imageContainer}>
-            {imageArray.map(i => (
-              <View style={styles.imageWrapper}>
-                <Image source={i} style={styles.image} />
-              </View>
-            ))}
-          </View>
-          <View style={styles.imageContainer}>
-            {imageArray2.map(i => (
-              <View style={styles.imageWrapper}>
-                <Image source={i} style={styles.image} />
-              </View>
-            ))}
-          </View>
+        <View style={styles.cardWrapperContainer}>
+          <CardWrapper
+            firstTitle={t('ride_AiPopup_firstCard_header')}
+            secondTitle={t('ride_AiPopup_firstCard_description')}
+            children={<FirstCard />}
+          />
+          <CardWrapper
+            firstTitle={t('ride_AiPopup_secondCard_header')}
+            secondTitle={t('ride_AiPopup_secondCard_description')}
+            children={<SecondCard />}
+          />
+          <CardWrapper
+            firstTitle={t('ride_AiPopup_thirdCard_header')}
+            secondTitle={t('ride_AiPopup_thirdCard_description')}
+            children={<ThirdCard />}
+          />
+          <CardWrapper
+            firstTitle={t('ride_AiPopup_fourthCard_header')}
+            secondTitle={t('ride_AiPopup_fourthCard_description')}
+            children={<FourthCard />}
+          />
         </View>
       </View>
       <View style={styles.barWrapper}>
@@ -68,49 +68,78 @@ const AIPopup = () => {
           <Text style={styles.searchBarText}>{t('ride_AiPopup_searchBar')}</Text>
         </Bar>
         <Button mode={CircleButtonModes.Mode4} shape={ButtonShapes.Circle}>
-          <CameraIcon style={styles.cameraIconStyle} />
+          <CameraIcon style={styles.cameraIcon} />
         </Button>
         <Button mode={CircleButtonModes.Mode4} shape={ButtonShapes.Circle}>
-          <Image source={aipopup.voiceImage} />
+          <Image source={aipopup.voiceImage} resizeMode="contain" style={styles.voiceIcon} />
         </Button>
       </View>
     </ScrollViewWithCustomScroll>
   );
 };
 
+const CardWrapper = ({ firstTitle, secondTitle, children }: CardWrapperProps) => {
+  const { colors } = useTheme();
+
+  const computedStyles = StyleSheet.create({
+    firstCardTitle: {
+      color: colors.textQuadraticColor,
+    },
+    secondCardTitle: {
+      color: colors.textPrimaryColor,
+    },
+  });
+  return (
+    <View style={styles.cardWrapper}>
+      <HeaderWithTwoTitles
+        firstTitle={firstTitle}
+        secondTitle={secondTitle}
+        firstTextStyle={[styles.firstCardTitle, computedStyles.firstCardTitle]}
+        secondTextStyle={[styles.secondCardTitle, computedStyles.secondCardTitle]}
+      />
+      <View style={styles.childrenWrapper}>{children}</View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  photoContainer: {
-    gap: 6,
-    alignItems: 'center',
-  },
-  bottomWindowStyle: {
-    backgroundColor: '#F7F6F7',
-    flex: 1,
-  },
   container: {
     paddingTop: 20,
     justifyContent: 'space-between',
     backgroundColor: '#F7F6F7',
-    flex: 1,
+    flexGrow: 1,
     alignItems: 'center',
+    gap: 20,
   },
   wrapper: {
     gap: 15,
+  },
+  childrenWrapper: {
+    alignItems: 'center',
+  },
+  cardWrapper: {
+    flex: 1,
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 20,
+    gap: 3,
+    overflow: 'hidden',
+    minWidth: 150,
+  },
+  cardWrapperContainer: {
+    flexDirection: 'row',
+    gap: 5,
+    alignItems: 'stretch',
+    flexWrap: 'wrap',
   },
   textContainer: {
     alignItems: 'center',
     gap: 7,
     paddingHorizontal: 60,
   },
-
-  imageContainer: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-  imageWrapper: {
-    backgroundColor: '#FFF',
-    paddingVertical: 12,
-    borderRadius: 20,
+  voiceIcon: {
+    width: 36,
+    height: 36,
   },
   image: {
     height: 'auto',
@@ -137,7 +166,6 @@ const styles = StyleSheet.create({
   firstCardTitle: {
     fontSize: 14,
     fontFamily: 'Inter Bold',
-    lineHeight: 42,
     letterSpacing: 0,
   },
   secondCardTitle: {
@@ -145,6 +173,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter Bold',
     lineHeight: 20,
     letterSpacing: 0,
+    maxWidth: 120,
   },
   barWrapper: {
     flexDirection: 'row',
@@ -163,7 +192,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Inter Medium',
   },
-  cameraIconStyle: {
+  cameraIcon: {
     width: 23,
     height: 24,
   },

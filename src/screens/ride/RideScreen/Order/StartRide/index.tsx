@@ -52,7 +52,6 @@ import passengerColors from '../../../../../shared/colors/colors';
 import MapCameraModeButton from '../../MapCameraModeButton';
 import UnsupportedDestinationPopup from '../../popups/UnsupportedDestinationPopup';
 import AIPopup from '../popups/AIPopup';
-// import AIPopup from '../popups/AIPopup';
 import TooShortRouteLengthPopup from '../popups/TooShortRouteLengthPopup';
 import AddressSelect from './AddressSelect';
 import CategoriesList from './CategoryList';
@@ -363,7 +362,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
         <BottomWindowWithGesture
           setIsOpened={() => setIsAiPopupVisible(false)}
           opened
-          hiddenPart={<AIPopup />}
+          hiddenPart={<AIPopup prefferedName={profile?.names[0].value} />}
           hiddenPartStyle={styles.hiddenPartChange}
           bottomWindowStyle={styles.bottomWindowBackground}
           hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
