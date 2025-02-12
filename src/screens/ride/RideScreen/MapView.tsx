@@ -369,11 +369,11 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
           : (geolocationCoordinates ?? undefined)
       }
       geolocationCalculatedHeading={geolocationCalculatedHeading}
-      // TODO: * 0.85 - temporary solution, need to make smart waiting of finishing previous animation and then start next
+      // TODO: * 0.75 - temporary solution, need to make smart waiting of finishing previous animation and then start next
       // (maybe drop few animations if queue is too big)
       // or alternatively do the next request when animation is done (or few miliseconds before ending)
-      // TODO: it's bug - animationDuration is dont change anything ;(
-      cars={{ data: cars, animationDuration: 0 }}
+      // TODO: it's bug - animationDuration is dont change anything ;( (a little correction: it changes something only on android)
+      cars={{ data: cars, animationDuration: updatePassengerGeoInterval * 0.75 }}
       polylines={memoizedPolyline}
       stopPoints={stopPoints}
       markers={
