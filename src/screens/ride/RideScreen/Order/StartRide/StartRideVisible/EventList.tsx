@@ -29,7 +29,6 @@ const EventsList = ({ isBottomWindowOpen = false }: { isBottomWindowOpen?: boole
   });
 
   const cards = isBottomWindowOpen ? bigEvents : events;
-  console.log(cards);
 
   return (
     <View style={[styles.container, computedStyles.container]}>
