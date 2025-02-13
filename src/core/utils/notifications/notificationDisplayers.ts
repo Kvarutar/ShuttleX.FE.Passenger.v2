@@ -49,12 +49,11 @@ export const notificationHandlers: Record<
       store.dispatch(setSelectedOrderId(payload.orderId));
     }
   },
-  [SSEAndNotificationsEventType.TripEnded]: async () => {
+  [SSEAndNotificationsEventType.TripEnded]: async payload => {
     const tripStatus = tripStatusSelector(store.getState());
     const selectedOrderId = selectedOrderIdSelector(store.getState());
-    const orderInfo = orderInfoSelector(store.getState());
 
-    if (orderInfo?.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
+    if (payload?.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
       store.dispatch(addFinishedTrips());
       //TODO go to rating page
       store.dispatch(getTicketAfterRide());
@@ -72,25 +71,23 @@ export const notificationHandlers: Record<
       );
     }
   },
-  [SSEAndNotificationsEventType.DriverArrived]: async () => {
+  [SSEAndNotificationsEventType.DriverArrived]: async payload => {
     const tripStatus = tripStatusSelector(store.getState());
     const selectedOrderId = selectedOrderIdSelector(store.getState());
-    const orderInfo = orderInfoSelector(store.getState());
 
-    if (tripStatus !== TripStatus.Arrived && orderInfo?.orderId === selectedOrderId) {
+    if (tripStatus !== TripStatus.Arrived && payload?.orderId === selectedOrderId) {
       store.dispatch(getCurrentOrder());
     }
   },
 
   // BeforePickup when trip doesnt start and driver rejected - go to search driver again
-  [SSEAndNotificationsEventType.DriverCanceled]: async () => {
+  [SSEAndNotificationsEventType.DriverCanceled]: async payload => {
     const isOrderCanceled = isOrderCanceledSelector(store.getState());
     const offer = offerSelector(store.getState());
     const selectedOrderId = selectedOrderIdSelector(store.getState());
-    const orderInfo = orderInfoSelector(store.getState());
 
     //Because it can be changed in sse
-    if (orderInfo?.orderId === selectedOrderId && !isOrderCanceled) {
+    if (payload?.orderId === selectedOrderId && !isOrderCanceled) {
       store.dispatch(endTrip());
 
       //TODO: Rewrite with saving points on the device
@@ -107,25 +104,24 @@ export const notificationHandlers: Record<
   },
 
   //AfterPickUp when trip started and driver canceled trip - go to receipt screen
-  [SSEAndNotificationsEventType.DriverRejected]: async () => {
+  [SSEAndNotificationsEventType.DriverRejected]: async payload => {
     store.dispatch(setTripIsCanceled(true));
     const orderInfo = orderInfoSelector(store.getState());
     const tripStatus = tripStatusSelector(store.getState());
     const selectedOrderId = selectedOrderIdSelector(store.getState());
 
-    if (orderInfo?.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
+    if (orderInfo && payload?.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
       store.dispatch(getOrderInfo(orderInfo.orderId));
       store.dispatch(setTripStatus(TripStatus.Finished));
       store.dispatch(setSelectedOrderId(null));
     }
   },
 
-  [SSEAndNotificationsEventType.TripStarted]: async () => {
+  [SSEAndNotificationsEventType.TripStarted]: async payload => {
     const tripStatus = tripStatusSelector(store.getState());
     const selectedOrderId = selectedOrderIdSelector(store.getState());
-    const orderInfo = orderInfoSelector(store.getState());
 
-    if (tripStatus !== TripStatus.Ride && orderInfo?.orderId === selectedOrderId) {
+    if (tripStatus !== TripStatus.Ride && payload?.orderId === selectedOrderId) {
       store.dispatch(getCurrentOrder());
     }
   },

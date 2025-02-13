@@ -16,16 +16,18 @@ import {
   setTripIsCanceled,
   setTripStatus,
 } from '../../ride/redux/trip';
-import {
-  isOrderCanceledSelector,
-  orderInfoSelector,
-  selectedOrderIdSelector,
-  tripStatusSelector,
-} from '../../ride/redux/trip/selectors';
+import { isOrderCanceledSelector, selectedOrderIdSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
 import { getCurrentOrder, getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { SSEAndNotificationsEventType } from '../../utils/notifications/types';
-import { SSEDriverAcceptedEventData } from './types';
+import {
+  SSEDriverAcceptedEventData,
+  SSEDriverArrivedEventData,
+  SSEDriverCanceledEventData,
+  SSEDriverRejectedEventData,
+  SSETripEndedEventData,
+  SSETripStartedEventData,
+} from './types';
 
 export const driverAcceptedSSEHandler = (
   event: EventSourceEvent<SSEAndNotificationsEventType.DriverAccepted, SSEAndNotificationsEventType>,
@@ -45,13 +47,17 @@ export const driverAcceptedSSEHandler = (
   }
 };
 
-export const driverArrivedSSEHandler = () => {
-  const tripStatus = tripStatusSelector(store.getState());
-  const selectedOrderId = selectedOrderIdSelector(store.getState());
-  const orderInfo = orderInfoSelector(store.getState());
+export const driverArrivedSSEHandler = (
+  event: EventSourceEvent<SSEAndNotificationsEventType.DriverArrived, SSEAndNotificationsEventType>,
+) => {
+  if (event.data) {
+    const tripStatus = tripStatusSelector(store.getState());
+    const selectedOrderId = selectedOrderIdSelector(store.getState());
+    const data: SSEDriverArrivedEventData = JSON.parse(event.data);
 
-  if (orderInfo?.orderId === selectedOrderId && tripStatus !== TripStatus.Arrived) {
-    store.dispatch(getCurrentOrder());
+    if (data.orderId === selectedOrderId && tripStatus !== TripStatus.Arrived) {
+      store.dispatch(getCurrentOrder());
+    }
   }
 };
 
@@ -71,58 +77,80 @@ export const pickUpOnStopPointSSEHandler = () => {
   //TODO: Add some logic in task with stop-points
 };
 
-export const tripStartedSSEHandler = () => {
-  const tripStatus = tripStatusSelector(store.getState());
-  const selectedOrderId = selectedOrderIdSelector(store.getState());
-  const orderInfo = orderInfoSelector(store.getState());
+export const tripStartedSSEHandler = (
+  event: EventSourceEvent<SSEAndNotificationsEventType.TripStarted, SSEAndNotificationsEventType>,
+) => {
+  if (event.data) {
+    const tripStatus = tripStatusSelector(store.getState());
+    const selectedOrderId = selectedOrderIdSelector(store.getState());
+    const data: SSETripStartedEventData = JSON.parse(event.data);
 
-  if (orderInfo?.orderId === selectedOrderId && tripStatus !== TripStatus.Ride) {
-    store.dispatch(getCurrentOrder());
-  }
-};
-
-export const tripEndedSSEHandler = () => {
-  const { getState, dispatch } = store;
-  const tripStatus = tripStatusSelector(getState());
-
-  if (tripStatus !== TripStatus.Finished) {
-    dispatch(addFinishedTrips());
-    //TODO go to rating page
-    dispatch(getTicketAfterRide());
-    dispatch(setTripStatus(TripStatus.Finished));
-    dispatch(getRecentDropoffs({ amount: 10 }));
-  }
-};
-
-export const driverCanceledSSEHandler = () => {
-  const { getState, dispatch } = store;
-  const isOrderCanceled = isOrderCanceledSelector(getState());
-  const offer = offerSelector(getState());
-
-  //Because it can be changed in notifications or initial setup
-  if (!isOrderCanceled) {
-    dispatch(endTrip());
-
-    //TODO: Rewrite with saving points on the device
-    if (isCoordinatesEqualZero(offer.points[0]) || isCoordinatesEqualZero(offer.points[1])) {
-      dispatch(setIsOrderCanceledAlertVisible(true));
-      return;
+    if (data.orderId === selectedOrderId && tripStatus !== TripStatus.Ride) {
+      store.dispatch(getCurrentOrder());
     }
-
-    dispatch(createInitialOffer());
-    dispatch(setOrderStatus(OrderStatus.Confirming));
-    dispatch(setIsOrderCanceled(true));
-    store.dispatch(setSelectedOrderId(null));
   }
 };
 
-export const driverRejectedSSEHandler = () => {
-  const { getState, dispatch } = store;
-  const tripStatus = tripStatusSelector(getState());
+export const tripEndedSSEHandler = (
+  event: EventSourceEvent<SSEAndNotificationsEventType.TripEnded, SSEAndNotificationsEventType>,
+) => {
+  if (event.data) {
+    const { getState, dispatch } = store;
+    const tripStatus = tripStatusSelector(getState());
+    const selectedOrderId = selectedOrderIdSelector(store.getState());
+    const data: SSETripEndedEventData = JSON.parse(event.data);
 
-  if (tripStatus !== TripStatus.Finished) {
-    dispatch(setTripIsCanceled(true));
-    dispatch(setTripStatus(TripStatus.Finished));
-    dispatch(setIsOrderCanceled(true));
+    if (data.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
+      dispatch(addFinishedTrips());
+      //TODO go to rating page
+      dispatch(getTicketAfterRide());
+      dispatch(setTripStatus(TripStatus.Finished));
+      dispatch(getRecentDropoffs({ amount: 10 }));
+    }
+  }
+};
+
+export const driverCanceledSSEHandler = (
+  event: EventSourceEvent<SSEAndNotificationsEventType.DriverCanceled, SSEAndNotificationsEventType>,
+) => {
+  if (event.data) {
+    const { getState, dispatch } = store;
+    const isOrderCanceled = isOrderCanceledSelector(getState());
+    const offer = offerSelector(getState());
+    const selectedOrderId = selectedOrderIdSelector(store.getState());
+    const data: SSEDriverCanceledEventData = JSON.parse(event.data);
+
+    //Because it can be changed in notifications or initial setup
+    if (data.orderId === selectedOrderId && !isOrderCanceled) {
+      dispatch(endTrip());
+
+      //TODO: Rewrite with saving points on the device
+      if (isCoordinatesEqualZero(offer.points[0]) || isCoordinatesEqualZero(offer.points[1])) {
+        dispatch(setIsOrderCanceledAlertVisible(true));
+        return;
+      }
+
+      dispatch(createInitialOffer());
+      dispatch(setOrderStatus(OrderStatus.Confirming));
+      dispatch(setIsOrderCanceled(true));
+      store.dispatch(setSelectedOrderId(null));
+    }
+  }
+};
+
+export const driverRejectedSSEHandler = (
+  event: EventSourceEvent<SSEAndNotificationsEventType.DriverRejected, SSEAndNotificationsEventType>,
+) => {
+  if (event.data) {
+    const { getState, dispatch } = store;
+    const tripStatus = tripStatusSelector(getState());
+    const selectedOrderId = selectedOrderIdSelector(getState());
+    const data: SSEDriverRejectedEventData = JSON.parse(event.data);
+
+    if (data.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
+      dispatch(setTripIsCanceled(true));
+      dispatch(setTripStatus(TripStatus.Finished));
+      dispatch(setIsOrderCanceled(true));
+    }
   }
 };
