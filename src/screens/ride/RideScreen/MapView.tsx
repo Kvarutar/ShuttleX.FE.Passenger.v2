@@ -242,21 +242,12 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       setFinalStopPointCoordinates(dropOffPoint);
       setFinalStopPointColorMode('mode2');
 
-      let ratio = 35;
+      let ratio;
       if (orderStatus === OrderStatus.Payment) {
         ratio = 40;
       }
       if (mapRef.current) {
-        const delta = getDistanceBetweenPoints(pickUpPoint, dropOffPoint) / (ratio * 1000);
-        mapRef.current.animateToRegion(
-          {
-            latitude: (pickUpPoint.latitude + dropOffPoint.latitude) / 2,
-            longitude: (pickUpPoint.longitude + dropOffPoint.longitude) / 2,
-            latitudeDelta: delta,
-            longitudeDelta: delta,
-          },
-          700,
-        );
+        mapRef.current.setCameraBetweenTwoPoints(pickUpPoint, dropOffPoint, ratio);
       }
     } else {
       setMarkers([]);
