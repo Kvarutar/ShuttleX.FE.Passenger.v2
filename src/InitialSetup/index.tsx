@@ -102,7 +102,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
     dispatch(
       updateOfferPoint({
         id: 0,
-        address: lastOffer.pickUpAddress,
+        address: lastOffer.pickUpPlace,
         fullAddress: lastOffer.pickUpFullAddress,
         latitude: lastOffer.pickUpGeo.latitude,
         longitude: lastOffer.pickUpGeo.longitude,
@@ -111,7 +111,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
     dispatch(
       updateOfferPoint({
         id: 1,
-        address: lastOffer.dropOffAddress,
+        address: lastOffer.dropOffPlace,
         fullAddress: lastOffer.dropOffFullAddress,
         latitude: lastOffer.dropOffGeo.latitude,
         longitude: lastOffer.dropOffGeo.longitude,

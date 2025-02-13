@@ -50,10 +50,10 @@ export type OfferTypeFromAPI = {
   state: OfferStateFromAPI;
   pickUpGeo: LatLng;
   pickUpZoneId: string;
-  pickUpAddress: string;
+  pickUpPlace: string;
   dropOffGeo: LatLng;
   dropOffZoneId: string;
-  dropOffAddress: string;
+  dropOffPlace: string;
   tariffId: string;
   paymentMethod: string;
   estimatedPrice: number;
