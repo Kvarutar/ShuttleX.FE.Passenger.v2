@@ -45,7 +45,7 @@ const StartRideVisible = ({ isBottomWindowOpen, setFastAddressSelect }: StartRid
       color: colors.textTitleColor,
     },
     container: {
-      marginBottom: isBottomWindowOpen ? 0 : 14,
+      marginBottom: 14,
     },
     searchContainer: {
       width: '100%',

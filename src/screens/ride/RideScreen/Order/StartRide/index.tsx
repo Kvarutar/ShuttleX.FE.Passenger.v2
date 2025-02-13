@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
@@ -70,6 +70,8 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const bottomWindowRef = useRef<BottomWindowWithGestureRef>(null);
 
   const BWhiddenPartFirstHeightShared = useSharedValue(0);
   const BWhiddenPartSecondHeightShared = useSharedValue(0);
@@ -142,136 +144,108 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   ];
 
   const onFakeHiddenPartFirstLayout = (e: LayoutChangeEvent) => {
-    BWhiddenPartFirstHeightShared.value = e.nativeEvent.layout.height / 2;
+    BWhiddenPartFirstHeightShared.value = e.nativeEvent.layout.height;
   };
 
   const onFakeHiddenPartSecondLayout = (e: LayoutChangeEvent) => {
-    BWhiddenPartSecondHeightShared.value = e.nativeEvent.layout.height / 2;
+    BWhiddenPartSecondHeightShared.value = e.nativeEvent.layout.height;
   };
 
   const fakeHiddenPartFirstAnimatedStyle = useAnimatedStyle(() => ({ height: BWhiddenPartFirstHeightShared.value }));
   const fakeHiddenPartSecondAnimatedStyle = useAnimatedStyle(() => ({ height: BWhiddenPartSecondHeightShared.value }));
 
-  //TODO: Add BottomWindows to other cases
-  const renderCurrentBottomWindow = () => {
+  const getBottomWindowProps = (): {
+    visiblePart: ReactNode;
+    minHeight: number;
+  } => {
     switch (selectedBottomWindowIdx) {
       case 0:
-        return (
-          <BottomWindowWithGesture
-            maxHeight={0.6}
-            onAnimationEnd={values => dispatch(setActiveBottomWindowYCoordinate(values.pageY))}
-            onGestureStart={event => {
-              if (event.velocityY > 0) {
-                dispatch(setActiveBottomWindowYCoordinate(null));
-              }
-            }}
-            onHiddenOrVisibleHeightChange={values => {
-              if (!values.isWindowAnimating) {
-                dispatch(setActiveBottomWindowYCoordinate(values.pageY));
-              }
-            }}
-            visiblePart={
-              <>
-                <StartRideVisible isBottomWindowOpen={isBottomWindowOpen} setFastAddressSelect={setFastAddressSelect} />
-                {!isBottomWindowOpen && (
-                  <Animated.View style={fakeHiddenPartFirstAnimatedStyle}>
-                    <StartRideHidden onLayout={onFakeHiddenPartFirstLayout} />
-                  </Animated.View>
-                )}
-              </>
-            }
-            setIsOpened={setIsBottomWindowOpen}
-            hiddenPart={isBottomWindowOpen && <StartRideHidden />}
-            hiddenPartStyle={styles.hiddenPartStyle}
-            hiddenPartWrapperStyle={styles.hiddenPartWrapper}
-            additionalTopContent={<MapCameraModeButton />}
-            alerts={alerts.map(alertData => (
-              <AlertInitializer
-                key={alertData.id}
-                id={alertData.id}
-                priority={alertData.priority}
-                type={alertData.type}
-                options={'options' in alertData ? alertData.options : undefined}
-              />
-            ))}
-          />
-        );
+        return {
+          visiblePart: (
+            <>
+              <StartRideVisible isBottomWindowOpen={isBottomWindowOpen} setFastAddressSelect={setFastAddressSelect} />
+              <Animated.View style={fakeHiddenPartFirstAnimatedStyle}>
+                <StartRideHidden onLayout={onFakeHiddenPartFirstLayout} />
+              </Animated.View>
+            </>
+          ),
+          minHeight: 0.3,
+        };
       case 1:
-        break;
+        return {
+          visiblePart: <></>,
+          minHeight: 0,
+        };
       case 2:
-        return (
-          <BottomWindowWithGesture
-            maxHeight={0.6}
-            onAnimationEnd={values => dispatch(setActiveBottomWindowYCoordinate(values.pageY))}
-            onGestureStart={event => {
-              if (event.velocityY > 0) {
-                dispatch(setActiveBottomWindowYCoordinate(null));
-              }
-            }}
-            onHiddenOrVisibleHeightChange={values => {
-              if (!values.isWindowAnimating) {
-                dispatch(setActiveBottomWindowYCoordinate(values.pageY));
-              }
-            }}
-            visiblePart={
-              <>
-                <CategoriesList />
-                {!isBottomWindowOpen && (
-                  <Animated.View
-                    entering={FadeIn.duration(animationDuration)}
-                    exiting={FadeOut.duration(animationDuration)}
-                  >
-                    <ScrollView
-                      style={styles.secondBWScrollView}
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      scrollEventThrottle={16}
-                    >
-                      <EventsList />
-                    </ScrollView>
-                    <Animated.View style={[fakeHiddenPartSecondAnimatedStyle, styles.bigEventImagesContainer]}>
-                      <View style={styles.bigCard} onLayout={onFakeHiddenPartSecondLayout}>
-                        <Image source={bigEvents[0]} style={styles.bigEventImage} />
-                      </View>
-                      <View style={styles.bigCard} onLayout={onFakeHiddenPartSecondLayout}>
-                        <Image source={bigEvents[1]} style={styles.bigEventImage} />
-                      </View>
-                    </Animated.View>
-                  </Animated.View>
-                )}
-              </>
-            }
-            setIsOpened={setIsBottomWindowOpen}
-            hiddenPart={
-              isBottomWindowOpen && (
-                <Animated.View
-                  entering={FadeIn.duration(animationDuration)}
-                  exiting={FadeOut.duration(animationDuration)}
+        return {
+          visiblePart: (
+            <>
+              <CategoriesList />
+              <Animated.View
+                entering={FadeIn.duration(animationDuration)}
+                exiting={FadeOut.duration(animationDuration)}
+              >
+                <ScrollView
+                  style={styles.secondBWScrollView}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  scrollEventThrottle={16}
                 >
-                  <EventsList isBottomWindowOpen={isBottomWindowOpen} />
+                  <EventsList />
+                </ScrollView>
+                <Animated.View style={[fakeHiddenPartSecondAnimatedStyle, styles.bigEventImagesContainer]}>
+                  <View style={styles.bigCard} onLayout={onFakeHiddenPartSecondLayout}>
+                    <Image source={bigEvents[0]} style={styles.bigEventImage} />
+                  </View>
+                  <View style={styles.bigCard} onLayout={onFakeHiddenPartSecondLayout}>
+                    <Image source={bigEvents[1]} style={styles.bigEventImage} />
+                  </View>
                 </Animated.View>
-              )
-            }
-            hiddenPartStyle={styles.hiddenPartStyle}
-            hiddenPartWrapperStyle={styles.hiddenPartWrapper}
-            additionalTopContent={<MapCameraModeButton />}
-            alerts={alerts.map(alertData => (
-              <AlertInitializer
-                key={alertData.id}
-                id={alertData.id}
-                priority={alertData.priority}
-                type={alertData.type}
-                options={'options' in alertData ? alertData.options : undefined}
-              />
-            ))}
-          />
-        );
+              </Animated.View>
+            </>
+          ),
+          minHeight: 0.4,
+        };
+      default:
+        return {
+          visiblePart: <></>,
+          minHeight: 0,
+        };
     }
   };
 
+  const { minHeight, visiblePart } = getBottomWindowProps();
+
   return (
     <>
-      {renderCurrentBottomWindow()}
+      <BottomWindowWithGesture
+        ref={bottomWindowRef}
+        maxHeight={0.6}
+        minHeight={minHeight}
+        onAnimationEnd={values => dispatch(setActiveBottomWindowYCoordinate(values.pageY))}
+        onGestureStart={event => {
+          if (event.velocityY > 0) {
+            dispatch(setActiveBottomWindowYCoordinate(null));
+          }
+        }}
+        onHiddenOrVisibleHeightChange={values => {
+          if (!values.isWindowAnimating) {
+            dispatch(setActiveBottomWindowYCoordinate(values.pageY));
+          }
+        }}
+        visiblePart={visiblePart}
+        setIsOpened={setIsBottomWindowOpen}
+        additionalTopContent={<MapCameraModeButton />}
+        alerts={alerts.map(alertData => (
+          <AlertInitializer
+            key={alertData.id}
+            id={alertData.id}
+            priority={alertData.priority}
+            type={alertData.type}
+            options={'options' in alertData ? alertData.options : undefined}
+          />
+        ))}
+      />
       <View style={styles.navButtonsContainer}>
         <Button
           shape={ButtonShapes.Circle}
@@ -311,7 +285,10 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
                     backgroundColor: selectedBottomWindowIdx === index ? colors.secondaryGradientStartColor : undefined,
                   },
                 ]}
-                onPress={() => setSelectedBottomWindowIdx(index)}
+                onPress={() => {
+                  bottomWindowRef.current?.closeWindow();
+                  setSelectedBottomWindowIdx(index);
+                }}
               >
                 {/* //TODO: Remove condition when need play button */}
                 <NavBWButtonIcon style={iconStyle} />
@@ -324,7 +301,10 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
           mode={CircleButtonModes.Mode4}
           containerStyle={[styles.navButtonContainerStyle, computedStyles.navButtonContainerStyle]}
           style={styles.navButtonStyle}
-          onPress={() => setIsAiPopupVisible(true)}
+          onPress={() => {
+            bottomWindowRef.current?.closeWindow();
+            setIsAiPopupVisible(true);
+          }}
         >
           <Text style={styles.AIButtonTextStyle}>{t('ride_Ride_StartRide_navButtonAI')}</Text>
         </Button>
@@ -360,7 +340,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
 
       {isAiPopupVisible && (
         <BottomWindowWithGesture
-          setIsOpened={() => setIsAiPopupVisible(false)}
+          setIsOpened={setIsAiPopupVisible}
           opened
           hiddenPart={<AIPopup prefferedName={profile?.names[0].value} />}
           hiddenPartStyle={styles.hiddenPartChange}
@@ -380,9 +360,6 @@ const styles = StyleSheet.create({
   },
   hiddenPartWrapper: {
     paddingBottom: 0,
-  },
-  hiddenPartStyle: {
-    marginTop: 0,
   },
   hiddenPartChange: {
     height: windowHeight * 0.85,
