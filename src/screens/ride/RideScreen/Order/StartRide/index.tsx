@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import {
   BottomWindowWithGesture,
@@ -71,6 +72,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const insets = useSafeAreaInsets();
 
   const bottomWindowRef = useRef<BottomWindowWithGestureRef>(null);
 
@@ -96,6 +98,9 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const [isAiPopupVisible, setIsAiPopupVisible] = useState(false);
 
   const computedStyles = StyleSheet.create({
+    navButtonsContainer: {
+      bottom: insets.bottom ?? windowHeight * 0.03,
+    },
     navButtonContainerStyle: {
       backgroundColor: passengerColors.adsBackgroundColor.navButton,
     },
@@ -245,7 +250,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
           />
         ))}
       />
-      <View style={styles.navButtonsContainer}>
+      <View style={[styles.navButtonsContainer, computedStyles.navButtonsContainer]}>
         <Button
           shape={ButtonShapes.Circle}
           mode={CircleButtonModes.Mode4}
@@ -371,7 +376,6 @@ const styles = StyleSheet.create({
   },
   navButtonsContainer: {
     position: 'absolute',
-    bottom: 36,
     gap: 8,
     alignSelf: 'center',
     alignItems: 'center',
