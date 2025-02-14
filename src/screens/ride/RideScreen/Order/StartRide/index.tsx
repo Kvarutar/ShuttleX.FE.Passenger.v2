@@ -42,7 +42,7 @@ import {
   isCityAvailableSelector,
   isTooShortRouteLengthPopupVisibleSelector,
   offerRecentDropoffsSelector,
-  offerRoutesErrorSelector,
+  offerRouteErrorSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
 import { RecentDropoffsFromAPI } from '../../../../../core/ride/redux/offer/types';
 import { setIsAddressSelectVisible } from '../../../../../core/ride/redux/order';
@@ -81,7 +81,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const isCityAvailable = useSelector(isCityAvailableSelector);
   const isCityAvailableLoading = useSelector(isCityAvailableLoadingSelector);
   const isAddressSelectVisible = useSelector(isOrderAddressSelectVisibleSelector);
-  const offerRoutesError = useSelector(offerRoutesErrorSelector);
+  const offerRouteError = useSelector(offerRouteErrorSelector);
   const isTooShortRouteLengthPopupVisible = useSelector(isTooShortRouteLengthPopupVisibleSelector);
   const profile = useSelector(profileSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
@@ -112,10 +112,10 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   }));
 
   useEffect(() => {
-    if (offerRoutesError && isRouteLengthTooShortError(offerRoutesError)) {
+    if (offerRouteError && isRouteLengthTooShortError(offerRouteError)) {
       dispatch(setIsTooShortRouteLengthPopupVisible(true));
     }
-  }, [dispatch, offerRoutesError]);
+  }, [dispatch, offerRouteError]);
 
   useEffect(() => {
     if (isAddressSelectVisible) {
@@ -227,11 +227,6 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
         maxHeight={0.6}
         minHeight={minHeight}
         onAnimationEnd={values => dispatch(setActiveBottomWindowYCoordinate(values.pageY))}
-        onGestureStart={event => {
-          if (event.velocityY > 0) {
-            dispatch(setActiveBottomWindowYCoordinate(null));
-          }
-        }}
         onHiddenOrVisibleHeightChange={values => {
           if (!values.isWindowAnimating) {
             dispatch(setActiveBottomWindowYCoordinate(values.pageY));

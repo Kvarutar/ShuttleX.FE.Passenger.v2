@@ -1,22 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 import { LatLng } from 'react-native-maps';
-import { Easing, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
   calculateNewMapRoute,
   decodeGooglePolylineArr,
-  getDistanceBetweenPoints,
   getTimeWithAbbreviation,
   MapMarker,
   MapPolyline,
   MapView as MapViewIntegration,
-  MapViewRef,
   MarkerTypeWithLabel,
   Nullable,
   secToMilSec,
 } from 'shuttlex-integration';
 
+import { useMap } from '../../../core/map/mapContext';
 import { activeBottomWindowYCoordinateSelector } from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { updatePassengerGeo } from '../../../core/redux/signalr';
@@ -29,7 +27,9 @@ import { mapCameraModeSelector, mapCarsSelector, mapStopPointsSelector } from '.
 import {
   currentSelectedTariffSelector,
   offerPointsSelector,
-  offerRoutesSelector,
+  offerRouteFirstWaypointSelector,
+  offerRouteLastWaypointSelector,
+  offerRouteSelector,
 } from '../../../core/ride/redux/offer/selectors';
 import { orderStatusSelector } from '../../../core/ride/redux/order/selectors';
 import { OrderStatus } from '../../../core/ride/redux/order/types';
@@ -44,13 +44,12 @@ import { RouteInfoApiResponse, TripStatus } from '../../../core/ride/redux/trip/
 const updatePassengerGeoInterval = 1000;
 const finalStopPointUpdateIntervalInSec = 30;
 const polylineClearPointDistanceMtr = 25;
-const maxDistanceBetweenGeoAndCameraMtr = 1000000; // 1000 km
-const mapResizeAnimationDuration = 200;
 
 const screenHeight = Dimensions.get('screen').height;
 
 const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationComplete: () => void }): JSX.Element => {
   const dispatch = useAppDispatch();
+  const { mapRef } = useMap();
 
   const geolocationCoordinates = useSelector(geolocationCoordinatesSelector);
   const geolocationCalculatedHeading = useSelector(geolocationCalculatedHeadingSelector);
@@ -60,7 +59,9 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   const orderId = useSelector(orderIdSelector);
   const orderStatus = useSelector(orderStatusSelector);
   const offerPoints = useSelector(offerPointsSelector);
-  const offerRoutes = useSelector(offerRoutesSelector);
+  const offerRoute = useSelector(offerRouteSelector);
+  const offerRouteFirstWaypoint = useSelector(offerRouteFirstWaypointSelector);
+  const offerRouteLastWaypoint = useSelector(offerRouteLastWaypointSelector);
   const tripStatus = useSelector(tripStatusSelector);
   const pickUpRoute = useSelector(tripPickUpRouteSelector);
   const dropOffRoute = useSelector(tripDropOffRouteSelector);
@@ -68,7 +69,6 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   const activeBottomWindowYCoordinate = useSelector(activeBottomWindowYCoordinateSelector);
 
   const updatePassengerGeoRef = useRef<NodeJS.Timeout | null>(null);
-  const mapRef = useRef<MapViewRef>(null);
   const geolocationCoordinatesRef = useRef<Nullable<LatLng>>(null);
 
   useEffect(() => {
@@ -92,23 +92,6 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     }
     updatePassengerGeoRef.current = setInterval(callback, updatePassengerGeoInterval);
   };
-
-  useEffect(() => {
-    if (tripStatus === TripStatus.Accepted || tripStatus === TripStatus.Ride) {
-      (async () => {
-        const camera = await mapRef.current?.getCamera();
-        if (camera && geolocationCoordinates) {
-          const distance = getDistanceBetweenPoints(camera.center, geolocationCoordinates);
-          if (distance > maxDistanceBetweenGeoAndCameraMtr) {
-            mapRef.current?.setCamera({
-              center: cars[0]?.coordinates ?? geolocationCoordinates, // Because the contractor's geo may be lost
-              zoom: 18, // approximately 6km diameter
-            });
-          }
-        }
-      })();
-    }
-  }, [tripStatus, geolocationCoordinates, cars]);
 
   // Clear interval on dismount
   useEffect(() => {
@@ -166,7 +149,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   // Polyline clearing from moving car
   useEffect(() => {
     switch (tripStatus) {
-      case TripStatus.Accepted:
+      case TripStatus.Accepted: // Contarctor -> Pickup
         setPolyline(prev => {
           const type: MapPolyline['type'] = 'dashed';
           if (prev && prev.type === type && cars.length > 0) {
@@ -180,7 +163,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
           return prev;
         });
         break;
-      case TripStatus.Ride:
+      case TripStatus.Ride: // Pickup -> DropOff
         setPolyline(prev => {
           const type: MapPolyline['type'] = 'straight';
           if (prev && prev.type === type && cars.length > 0) {
@@ -195,7 +178,6 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         });
         break;
       default:
-        break;
     }
   }, [tripStatus, cars]);
 
@@ -213,15 +195,6 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   useEffect(() => {
     const startOfferPoint = offerPoints[0];
     if (orderStatus === OrderStatus.Confirming && tripStatus === TripStatus.Idle) {
-      mapRef.current?.animateCamera(
-        {
-          pitch: 0,
-          heading: 0,
-          center: { latitude: startOfferPoint.latitude, longitude: startOfferPoint.longitude },
-          zoom: 12, // approximately 9km diameter
-        },
-        { duration: 1500 },
-      );
       setMarkers([
         {
           type: 'simple',
@@ -230,32 +203,27 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
           zIndex: -1,
         },
       ]);
-    } else if ((orderStatus === OrderStatus.ChoosingTariff || orderStatus === OrderStatus.Payment) && offerRoutes) {
-      const pickUpPoint = offerRoutes.waypoints[0].geo;
-      const dropOffPoint = offerRoutes.waypoints[offerRoutes.waypoints.length - 1].geo;
-
+    } else if (
+      (orderStatus === OrderStatus.ChoosingTariff || orderStatus === OrderStatus.Payment) &&
+      offerRoute &&
+      offerRouteFirstWaypoint &&
+      offerRouteLastWaypoint
+    ) {
       setPolyline({
         type: 'dashed',
-        options: { coordinates: decodeGooglePolylineArr(offerRoutes.legs.map(leg => leg.geometry)), color: '#ABC736' },
+        options: { coordinates: decodeGooglePolylineArr(offerRoute.legs.map(leg => leg.geometry)), color: '#ABC736' },
       });
-      setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: pickUpPoint, zIndex: -1 }]);
-      setFinalStopPointCoordinates(dropOffPoint);
+      setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: offerRouteFirstWaypoint.geo, zIndex: -1 }]);
+      setFinalStopPointCoordinates(offerRouteLastWaypoint.geo);
       setFinalStopPointColorMode('mode2');
-
-      let ratio;
-      if (orderStatus === OrderStatus.Payment) {
-        ratio = 40;
-      }
-      if (mapRef.current) {
-        mapRef.current.setCameraBetweenTwoPoints(pickUpPoint, dropOffPoint, ratio);
-      }
     } else {
       setMarkers([]);
     }
-  }, [orderStatus, offerPoints, offerRoutes, tripStatus]);
+  }, [mapRef, orderStatus, offerPoints, offerRoute, offerRouteFirstWaypoint, offerRouteLastWaypoint, tripStatus]);
 
   useEffect(() => {
     switch (tripStatus) {
+      // Contarctor -> Pickup
       case TripStatus.Accepted: {
         if (!pickUpRoute) {
           break;
@@ -277,6 +245,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         dispatch(setMapRouteTraffic(joinedAccurateGeometries));
         break;
       }
+      // Pickup -> DropOff
       case TripStatus.Ride: {
         if (!dropOffRoute) {
           break;
@@ -307,14 +276,14 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
 
   //TODO: dumb logic while backend don't have normal way for algorythms
   useEffect(() => {
-    if (orderStatus === OrderStatus.ChoosingTariff && offerRoutes) {
+    if (orderStatus === OrderStatus.ChoosingTariff && offerRoute) {
       if (currentSelectedTariff?.time) {
-        setFinalStopPointTimeInSec(offerRoutes.totalDurationSec + currentSelectedTariff.time);
+        setFinalStopPointTimeInSec(offerRoute.totalDurationSec + currentSelectedTariff.time);
       } else {
-        setFinalStopPointTimeInSec(offerRoutes.totalDurationSec);
+        setFinalStopPointTimeInSec(offerRoute.totalDurationSec);
       }
     }
-  }, [orderStatus, offerRoutes, currentSelectedTariff]);
+  }, [orderStatus, offerRoute, currentSelectedTariff]);
 
   // Section: final stop point time updating
   useEffect(() => {
@@ -342,17 +311,11 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     [finalStopPointTimeInSec],
   );
 
-  const mapAnimatedStyle = useAnimatedStyle(() => ({
-    bottom: withTiming(activeBottomWindowYCoordinate ? screenHeight - activeBottomWindowYCoordinate - 32 : 0, {
-      duration: mapResizeAnimationDuration,
-      easing: Easing.linear,
-    }),
-  }));
-
   return (
     <MapViewIntegration
       ref={mapRef}
-      style={[styles.map, mapAnimatedStyle]}
+      style={StyleSheet.absoluteFill}
+      mapPadding={{ bottom: activeBottomWindowYCoordinate ? screenHeight - activeBottomWindowYCoordinate : 0 }}
       // Hide current geolocation if in Accepted or Ride status
       geolocationCoordinates={
         tripStatus === TripStatus.Accepted || tripStatus === TripStatus.Ride
@@ -386,17 +349,9 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       onDragComplete={setMapCameraCoordinates}
       onFirstCameraAnimationComplete={onFirstCameraAnimationComplete}
       withCarsThinkingAnimation={orderStatus === OrderStatus.Confirming && tripStatus === TripStatus.Idle}
+      disableSetCameraOnGeolocationAvailable={tripStatus !== TripStatus.Idle}
     />
   );
 };
-
-const styles = StyleSheet.create({
-  map: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-  },
-});
 
 export default MapView;

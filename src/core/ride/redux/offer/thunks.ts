@@ -21,12 +21,12 @@ import {
   EnhanceSearchAddressAPIResponse,
   GetActiveOffersAPIResponse,
   GetAvailableTariffsAPIResponse,
-  GetOfferRoutesAPIRequest,
-  GetOfferRoutesAPIResoponse,
+  GetOfferRouteAPIRequest,
+  GetOfferRouteAPIResoponse,
   GetTariffsPricesAPIResponse,
   GetTariffsPricesThunkResult,
   GetZoneIdByLocationAPIResponse,
-  OfferRoutesFromAPI,
+  OfferRouteFromAPI,
   OfferTypeFromAPI,
   RecentAddressAPIResponse,
   RecentDropoffsAPIResponse,
@@ -168,14 +168,14 @@ export const saveSearchResult = createAppAsyncThunk<void, EnhancedSearchAddress>
   },
 );
 
-export const getOfferRoutes = createAppAsyncThunk<OfferRoutesFromAPI, void>(
-  'offer/getOfferRoutes',
+export const getOfferRoute = createAppAsyncThunk<OfferRouteFromAPI, void>(
+  'offer/getOfferRoute',
   async (_, { rejectWithValue, passengerAxios, getState }) => {
     const { points } = offerSelector(getState());
 
     //TODO: rewrite this logic for stop points
     try {
-      const response = await passengerAxios.post<GetOfferRoutesAPIResoponse>('/Ride/route/search', {
+      const response = await passengerAxios.post<GetOfferRouteAPIResoponse>('/Ride/route/search', {
         pointA: {
           latitude: points[0].latitude,
           longitude: points[0].longitude,
@@ -185,7 +185,7 @@ export const getOfferRoutes = createAppAsyncThunk<OfferRoutesFromAPI, void>(
           longitude: points[1].longitude,
         },
         rotationDegOnPointA: 0,
-      } as GetOfferRoutesAPIRequest);
+      } as GetOfferRouteAPIRequest);
 
       return response.data;
     } catch (error) {
@@ -299,9 +299,9 @@ export const getTariffsPrices = createAppAsyncThunk<GetTariffsPricesThunkResult,
     const zoneId = state.offer.zoneId ?? state.passenger.zone?.id;
 
     try {
-      if (state.offer.offerRoutes && zoneId) {
+      if (state.offer.offerRoute && zoneId) {
         const response = await cashieringAxios.get<GetTariffsPricesAPIResponse>(
-          `/cashiering/ride/routes/${state.offer.offerRoutes.routeId}/zones/${zoneId}/cost`,
+          `/cashiering/ride/routes/${state.offer.offerRoute.routeId}/zones/${zoneId}/cost`,
         );
 
         return response.data;
@@ -335,14 +335,14 @@ export const getActiveOffers = createAppAsyncThunk<OfferTypeFromAPI[], void>(
 export const createInitialOffer = createAppAsyncThunk<string, void>(
   'offer/createInitialOffer',
   async (_, { rejectWithValue, passengerAxios, getState, dispatch }) => {
-    const { points, selectedTariff, offerRoutes } = offerSelector(getState());
+    const { points, selectedTariff, offerRoute } = offerSelector(getState());
 
     //todo: change payment method to real one
     //todo: ask backend to do endpoint for currency
 
     let pickUpPoint = points[0];
 
-    const route = await dispatch(getOfferRoutes()).unwrap();
+    const route = await dispatch(getOfferRoute()).unwrap();
 
     if (pickUpPoint.address === '') {
       const addressWithFullInfo = await dispatch(
@@ -364,14 +364,14 @@ export const createInitialOffer = createAppAsyncThunk<string, void>(
         latitude: pickUpPoint.latitude,
         longitude: pickUpPoint.longitude,
       },
-      pickUpZoneId: offerRoutes?.waypoints[0].zoneId,
+      pickUpZoneId: offerRoute?.waypoints[0].zoneId,
       pickUpFullAddress: pickUpPoint.fullAddress ?? pickUpPoint.address,
       pickUpPlace: pickUpPoint.address,
       dropOffGeo: {
         latitude: points[1].latitude,
         longitude: points[1].longitude,
       },
-      dropOffZoneId: offerRoutes?.waypoints[0].zoneId,
+      dropOffZoneId: offerRoute?.waypoints[0].zoneId,
       dropOffFullAddress: points[1].fullAddress,
       dropOffPlace: points[1].address,
     };

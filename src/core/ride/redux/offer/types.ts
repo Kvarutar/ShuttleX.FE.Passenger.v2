@@ -77,7 +77,7 @@ export type OfferState = {
   loading: {
     searchAdresses: boolean;
     avaliableTariffs: boolean;
-    offerRoutes: boolean;
+    offerRoute: boolean;
     recentDropoffs: boolean;
     tariffsPrices: boolean;
     offerCreate: boolean;
@@ -86,7 +86,7 @@ export type OfferState = {
   };
   errors: {
     avaliableTariffs: Nullable<NetworkErrorDetailsWithBody<any>>;
-    offerRoutes: Nullable<NetworkErrorDetailsWithBody<any>>;
+    offerRoute: Nullable<NetworkErrorDetailsWithBody<any>>;
     recentDropoffs: Nullable<NetworkErrorDetailsWithBody<any>>;
     tariffsPrices: Nullable<NetworkErrorDetailsWithBody<any>>;
     offerCreate: Nullable<NetworkErrorDetailsWithBody<any>>;
@@ -95,7 +95,7 @@ export type OfferState = {
     isTooShortRouteLengthPopupVisible: boolean;
     isTooManyRidesPopupVisible: boolean;
   };
-  offerRoutes: Nullable<OfferRoutesFromAPI>;
+  offerRoute: Nullable<OfferRouteFromAPI>;
   avaliableTariffs: Nullable<TariffWithMatching[]>;
   selectedTariff: Nullable<SelectedTariff>;
   currentSelectedTariff: Nullable<SelectedTariff>;
@@ -143,7 +143,7 @@ export type EnhanceSearchAddressAPIResponse = {
   cityOrLocality: string;
 };
 
-export type OfferRoutesFromAPI = {
+export type OfferRouteFromAPI = {
   routeId: string;
   totalDistanceMtr: number;
   totalDurationSec: number;
@@ -166,8 +166,8 @@ export type OfferRoutesFromAPI = {
   }[];
 };
 
-export type GetOfferRoutesAPIResoponse = OfferRoutesFromAPI;
-export type GetOfferRoutesAPIRequest = {
+export type GetOfferRouteAPIResoponse = OfferRouteFromAPI;
+export type GetOfferRouteAPIRequest = {
   pointA: LatLng;
   pointB: LatLng;
 };

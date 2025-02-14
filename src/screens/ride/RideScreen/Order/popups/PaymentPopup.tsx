@@ -35,7 +35,9 @@ import { BottomWindowRef } from 'shuttlex-integration/lib/typescript/src/shared/
 import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
 import { logger } from '../../../../../App';
+import { useMap } from '../../../../../core/map/mapContext';
 import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/redux';
+import { activeBottomWindowYCoordinateSelector } from '../../../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { setMapCars } from '../../../../../core/ride/redux/map';
 import { setIsTooManyRidesPopupVisible } from '../../../../../core/ride/redux/offer';
@@ -43,6 +45,8 @@ import { isTooManyActiveRidesError } from '../../../../../core/ride/redux/offer/
 import {
   isOfferCreateLoadingSelector,
   offerCreateErrorSelector,
+  offerRouteFirstWaypointSelector,
+  offerRouteLastWaypointSelector,
   offerSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
 import { createInitialOffer } from '../../../../../core/ride/redux/offer/thunks';
@@ -136,6 +140,7 @@ const PaymentPopup = () => {
   const dispatch = useAppDispatch();
   const tariffIconsData = useTariffsIcons();
   const { t } = useTranslation();
+  const { mapRef } = useMap();
 
   const datePickerRef = useRef<BottomWindowWithGestureRef>(null);
   const bottomWindowRef = useRef<BottomWindowRef>(null);
@@ -143,6 +148,9 @@ const PaymentPopup = () => {
   const { points, selectedTariff, estimatedPrice } = useSelector(offerSelector);
   const isOfferCreateLoading = useSelector(isOfferCreateLoadingSelector);
   const offerCreateError = useSelector(offerCreateErrorSelector);
+  const offerRouteFirstWaypoint = useSelector(offerRouteFirstWaypointSelector);
+  const offerRouteLastWaypoint = useSelector(offerRouteLastWaypointSelector);
+  const activeBottomWindowYCoordinate = useSelector(activeBottomWindowYCoordinateSelector);
 
   const TariffIcon = selectedTariff ? tariffIconsData[selectedTariff.name].icon : null;
   const availableTestPlans = selectedTariff ? selectedTariff.matching.filter(item => item.durationSec !== null) : null;
@@ -160,19 +168,6 @@ const PaymentPopup = () => {
   const [dateTimeTitle, setDateTimeTitle] = useState(t('ride_Ride_PaymentPopup_defaultTime'));
   const [confirmDateChecker, setConfirmDateChecker] = useState(false);
   //const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!isOfferCreateLoading) {
-      if (paymentStatus === 'success' && !offerCreateError) {
-        dispatch(setMapCars([]));
-        dispatch(setOrderStatus(OrderStatus.Confirming));
-      }
-      // Add other errors handling if need
-      else if (offerCreateError && isTooManyActiveRidesError(offerCreateError)) {
-        dispatch(setIsTooManyRidesPopupVisible(true));
-      }
-    }
-  }, [dispatch, paymentStatus, offerCreateError, isOfferCreateLoading]);
 
   const computedStyles = StyleSheet.create({
     wrapper: {
@@ -212,12 +207,31 @@ const PaymentPopup = () => {
   });
 
   useEffect(() => {
+    if (!isOfferCreateLoading) {
+      if (paymentStatus === 'success' && !offerCreateError) {
+        dispatch(setMapCars([]));
+        dispatch(setOrderStatus(OrderStatus.Confirming));
+      }
+      // Add other errors handling if need
+      else if (offerCreateError && isTooManyActiveRidesError(offerCreateError)) {
+        dispatch(setIsTooManyRidesPopupVisible(true));
+      }
+    }
+  }, [dispatch, paymentStatus, offerCreateError, isOfferCreateLoading]);
+
+  useEffect(() => {
     setTimeout(() => {
       bottomWindowRef.current?.measure((_, __, ___, ____, _____, pageY) => {
         dispatch(setActiveBottomWindowYCoordinate(pageY));
       });
     }, 0);
   }, [dispatch]);
+
+  useEffect(() => {
+    if (activeBottomWindowYCoordinate !== null && offerRouteFirstWaypoint && offerRouteLastWaypoint) {
+      mapRef.current?.fitToCoordinates([offerRouteFirstWaypoint.geo, offerRouteLastWaypoint.geo]);
+    }
+  }, [mapRef, activeBottomWindowYCoordinate, offerRouteFirstWaypoint, offerRouteLastWaypoint]);
 
   useEffect(() => {
     if (isDatePickerVisible) {

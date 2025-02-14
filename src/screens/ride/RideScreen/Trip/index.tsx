@@ -1,8 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
+import { LatLng } from 'react-native-maps';
 import { useSelector } from 'react-redux';
 import {
   BottomWindowWithGesture,
@@ -17,9 +18,11 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { useMap } from '../../../../core/map/mapContext';
 import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
+import { mapCarsSelector } from '../../../../core/ride/redux/map/selectors';
 import { tariffsNamesByFeKey } from '../../../../core/ride/redux/offer/utils';
 import {
   isTripCanceledLoadingSelector,
@@ -28,6 +31,8 @@ import {
   orderIdSelector,
   orderSelector,
   orderTariffInfoSelector,
+  tripDropOffRouteLastWaypointSelector,
+  tripPickUpRouteLastWaypointSelector,
   tripStatusSelector,
 } from '../../../../core/ride/redux/trip/selectors';
 import { cancelTrip } from '../../../../core/ride/redux/trip/thunks';
@@ -42,10 +47,13 @@ const timerSizeMode = TimerSizesModes.S;
 const Trip = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>>();
   const { colors } = useTheme();
   const tariffIconsData = useTariffsIcons();
+  const { mapRef } = useMap();
 
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>>();
+  const contractorCarCoordinatesRef = useRef<LatLng | null>(null);
+  const [isContractorCarCoordinatesAvailable, setIsContractorCarCoordinatesAvailable] = useState<boolean>(false);
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
   const tripStatus = useSelector(tripStatusSelector);
@@ -55,6 +63,9 @@ const Trip = () => {
   const isTripCanceledLoading = useSelector(isTripCanceledLoadingSelector);
   const order = useSelector(orderSelector);
   const tripTariff = useSelector(orderTariffInfoSelector);
+  const tripPickUpRouteLastWaypoint = useSelector(tripPickUpRouteLastWaypointSelector);
+  const tripDropOffRouteLastWaypoint = useSelector(tripDropOffRouteLastWaypointSelector);
+  const mapCars = useSelector(mapCarsSelector);
 
   const arrivedTime = order?.info ? Date.parse(order?.info?.estimatedArriveToDropOffDate) : 0;
   const TariffIcon = tripTariff?.name ? tariffIconsData[tariffsNamesByFeKey[tripTariff.feKey]].icon : null;
@@ -68,6 +79,42 @@ const Trip = () => {
       backgroundColor: colors.backgroundPrimaryColor,
     },
   });
+
+  // contractorCarCoordinatesRef only needed to avoid putting it inside the useEffect hook below
+  useEffect(() => {
+    contractorCarCoordinatesRef.current = mapCars.length > 0 ? mapCars[0].coordinates : null;
+    if (mapCars.length > 0) {
+      contractorCarCoordinatesRef.current = mapCars[0].coordinates;
+      setIsContractorCarCoordinatesAvailable(true);
+    } else {
+      contractorCarCoordinatesRef.current = null;
+      setIsContractorCarCoordinatesAvailable(false);
+    }
+  }, [mapCars]);
+
+  useEffect(() => {
+    // If contractor geo not available - dont zoom
+    if (!contractorCarCoordinatesRef.current) {
+      return;
+    }
+
+    const coordinates: LatLng[] = [contractorCarCoordinatesRef.current];
+    if (tripStatus === TripStatus.Accepted && tripPickUpRouteLastWaypoint) {
+      // Contarctor -> Pickup
+      coordinates.push(tripPickUpRouteLastWaypoint.geo);
+    } else if (tripStatus === TripStatus.Ride && tripDropOffRouteLastWaypoint) {
+      // Pickup -> DropOff
+      coordinates.push(tripDropOffRouteLastWaypoint.geo);
+    }
+
+    mapRef.current?.fitToCoordinates(coordinates);
+  }, [
+    mapRef,
+    isContractorCarCoordinatesAvailable,
+    tripStatus,
+    tripPickUpRouteLastWaypoint,
+    tripDropOffRouteLastWaypoint,
+  ]);
 
   useEffect(() => {
     if (tripStatus === TripStatus.Finished && !isTripCanceledLoading) {

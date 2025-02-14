@@ -12,6 +12,7 @@ import {
   ThemeProviderV1,
 } from 'shuttlex-integration';
 
+import { MapProvider } from './core/map/mapContext';
 import { persistor, store } from './core/redux/store';
 import InitialSetup from './InitialSetup';
 import Navigate from './Navigate';
@@ -30,19 +31,21 @@ export const logger = createLogger({ sentryConfig });
 const App = (): JSX.Element => (
   /* {TODO: Remove one of ThemeProviders when we won't need it} */
   <Sentry.ErrorBoundary>
-    <ThemeProviderV1>
-      <ThemeProvider>
-        <Provider store={store}>
-          <PersistGate persistor={persistor}>
-            <GestureHandlerRootView style={styles.gestureHandlerRootView}>
-              <InitialSetup>
-                <Navigate />
-              </InitialSetup>
-            </GestureHandlerRootView>
-          </PersistGate>
-        </Provider>
-      </ThemeProvider>
-    </ThemeProviderV1>
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <ThemeProviderV1>
+          <ThemeProvider>
+            <MapProvider>
+              <GestureHandlerRootView style={styles.gestureHandlerRootView}>
+                <InitialSetup>
+                  <Navigate />
+                </InitialSetup>
+              </GestureHandlerRootView>
+            </MapProvider>
+          </ThemeProvider>
+        </ThemeProviderV1>
+      </PersistGate>
+    </Provider>
   </Sentry.ErrorBoundary>
 );
 

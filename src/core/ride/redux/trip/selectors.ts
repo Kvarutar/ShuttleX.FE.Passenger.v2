@@ -1,3 +1,5 @@
+import { createSelector } from '@reduxjs/toolkit';
+
 import { type AppState } from '../../../redux/store';
 
 export const selectedOrderIdSelector = (state: AppState) => state.trip.selectedOrderId;
@@ -5,8 +7,6 @@ export const orderSelector = (state: AppState) => state.trip.order;
 export const tripStatusSelector = (state: AppState) => state.trip.status;
 export const tripPickUpRouteSelector = (state: AppState) => state.trip.routeInfo?.pickUp;
 export const tripDropOffRouteSelector = (state: AppState) => state.trip.routeInfo?.dropOff;
-export const routePickUpCoordinatesSelector = (state: AppState) => state.trip.routeInfo?.pickUp.waypoints[0].geo;
-export const routeDropOffCoordinatesSelector = (state: AppState) => state.trip.routeInfo?.dropOff.waypoints[0].geo;
 export const tripTipSelector = (state: AppState) => state.trip.tip;
 export const finishedTripsSelector = (state: AppState) => state.trip.finishedTrips;
 export const orderIdSelector = (state: AppState) => state.trip.order?.orderId;
@@ -33,3 +33,20 @@ export const orderInfoErrorSelector = (state: AppState) => state.trip.error.orde
 
 //UI
 export const isOrderCanceledAlertVisibleSelector = (state: AppState) => state.trip.ui.isOrderCanceledAlertVisible;
+
+export const tripPickUpRouteFirstWaypointSelector = createSelector(
+  [tripPickUpRouteSelector],
+  route => route?.waypoints[0],
+);
+export const tripPickUpRouteLastWaypointSelector = createSelector(
+  [tripPickUpRouteSelector],
+  route => route?.waypoints[route.waypoints.length - 1],
+);
+export const tripDropOffRouteFirstWaypointSelector = createSelector(
+  [tripDropOffRouteSelector],
+  route => route?.waypoints[0],
+);
+export const tripDropOffRouteLastWaypointSelector = createSelector(
+  [tripDropOffRouteSelector],
+  route => route?.waypoints[route.waypoints.length - 1],
+);

@@ -10,13 +10,33 @@ export const offerLoadingsSelector = (state: AppState) => state.offer.loading;
 export const offerIsTariffsPricesLoadingSelector = (state: AppState) => state.offer.loading.tariffsPrices;
 export const isPhantomOfferLoadingSelector = (state: AppState) => state.offer.loading.phantomOffer;
 
-export const offerRoutesSelector = (state: AppState) => state.offer.offerRoutes;
+export const offerRouteSelector = (state: AppState) => state.offer.offerRoute;
 export const offerRecentDropoffsSelector = (state: AppState) => state.offer.recentDropoffs;
 export const offerPointsSelector = (state: AppState) => state.offer.points;
 export const offerSelectedTariffSelector = (state: AppState) => state.offer.selectedTariff;
 export const offerAvaliableTariffsSelector = (state: AppState) => state.offer.avaliableTariffs;
 export const isCityAvailableSelector = (state: AppState) => state.offer.isCityAvailable;
 export const currentSelectedTariffSelector = (state: AppState) => state.offer.currentSelectedTariff;
+
+//UI
+export const isTooShortRouteLengthPopupVisibleSelector = (state: AppState) =>
+  state.offer.ui.isTooShortRouteLengthPopupVisible;
+export const isTooManyRidesPopupVisibleSelector = (state: AppState) => state.offer.ui.isTooManyRidesPopupVisible;
+
+//Loadings
+export const isSearchAdressesLoadingSelector = (state: AppState) => state.offer.loading.searchAdresses;
+export const isRecentDropoffsLoadingSelector = (state: AppState) => state.offer.loading.recentDropoffs;
+export const isTariffsPricesLoadingSelector = (state: AppState) => state.offer.loading.tariffsPrices;
+export const isAvailableTariffsLoadingSelector = (state: AppState) => state.offer.loading.avaliableTariffs;
+export const isOfferRouteLoadingSelector = (state: AppState) => state.offer.loading.offerRoute;
+export const isOfferCreateLoadingSelector = (state: AppState) => state.offer.loading.offerCreate;
+export const isCityAvailableLoadingSelector = (state: AppState) => state.offer.loading.isCityAvailable;
+
+//Errors
+export const recentDropoffsErrorSelector = (state: AppState) => state.offer.errors.recentDropoffs;
+export const tariffsPricesErrorSelector = (state: AppState) => state.offer.errors.tariffsPrices;
+export const offerRouteErrorSelector = (state: AppState) => state.offer.errors.offerRoute;
+export const offerCreateErrorSelector = (state: AppState) => state.offer.errors.offerCreate;
 
 export const tariffByIdSelector = createSelector(
   [offerAvaliableTariffsSelector, (_, tariffId: string | undefined) => tariffId],
@@ -59,22 +79,8 @@ export const minDurationTariffSelector = createSelector(
       })[0],
 );
 
-//UI
-export const isTooShortRouteLengthPopupVisibleSelector = (state: AppState) =>
-  state.offer.ui.isTooShortRouteLengthPopupVisible;
-export const isTooManyRidesPopupVisibleSelector = (state: AppState) => state.offer.ui.isTooManyRidesPopupVisible;
-
-//Loadings
-export const isSearchAdressesLoadingSelector = (state: AppState) => state.offer.loading.searchAdresses;
-export const isRecentDropoffsLoadingSelector = (state: AppState) => state.offer.loading.recentDropoffs;
-export const isTariffsPricesLoadingSelector = (state: AppState) => state.offer.loading.tariffsPrices;
-export const isAvailableTariffsLoadingSelector = (state: AppState) => state.offer.loading.avaliableTariffs;
-export const isOfferRoutesLoadingSelector = (state: AppState) => state.offer.loading.offerRoutes;
-export const isOfferCreateLoadingSelector = (state: AppState) => state.offer.loading.offerCreate;
-export const isCityAvailableLoadingSelector = (state: AppState) => state.offer.loading.isCityAvailable;
-
-//Errors
-export const recentDropoffsErrorSelector = (state: AppState) => state.offer.errors.recentDropoffs;
-export const tariffsPricesErrorSelector = (state: AppState) => state.offer.errors.tariffsPrices;
-export const offerRoutesErrorSelector = (state: AppState) => state.offer.errors.offerRoutes;
-export const offerCreateErrorSelector = (state: AppState) => state.offer.errors.offerCreate;
+export const offerRouteFirstWaypointSelector = createSelector([offerRouteSelector], route => route?.waypoints[0]);
+export const offerRouteLastWaypointSelector = createSelector(
+  [offerRouteSelector],
+  route => route?.waypoints[route.waypoints.length - 1],
+);

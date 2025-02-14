@@ -19,7 +19,7 @@ import {
   createPhantomOffer,
   getActiveOffers,
   getAvailableTariffs,
-  getOfferRoutes,
+  getOfferRoute,
   getRecentDropoffs,
   getTariffsPrices,
 } from '../core/ride/redux/offer/thunks';
@@ -119,7 +119,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
     );
     dispatch(createPhantomOffer());
 
-    await dispatch(getOfferRoutes());
+    await dispatch(getOfferRoute());
     dispatch(getTariffsPrices());
     dispatch(setOrderStatus(OrderStatus.Confirming));
   }, [dispatch]);

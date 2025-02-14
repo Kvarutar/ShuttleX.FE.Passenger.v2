@@ -17,14 +17,14 @@ import {
 } from '../../core/ride/redux/offer/errors';
 import {
   offerCreateErrorSelector,
-  offerRoutesErrorSelector,
+  offerRouteErrorSelector,
   tariffsPricesErrorSelector,
 } from '../../core/ride/redux/offer/selectors';
 import { orderInfoErrorSelector } from '../../core/ride/redux/trip/selectors';
 
 const useServerErrorHandler = () => {
   const errors = [
-    useSelector(offerRoutesErrorSelector),
+    useSelector(offerRouteErrorSelector),
     useSelector(deleteAccountErrorSelector),
     useSelector(offerCreateErrorSelector),
     useSelector(authErrorSelector),
@@ -36,7 +36,7 @@ const useServerErrorHandler = () => {
   const serverError = errors.find((error, index) => {
     if (error) {
       switch (index) {
-        // if error from offerRoutesErrorSelector
+        // if error from offerRouteErrorSelector
         case 0:
           return !isRoutePointsLocationError(error) && !isRouteLengthTooShortError(error) && isServerError(error);
         // if error from deleteAccountError

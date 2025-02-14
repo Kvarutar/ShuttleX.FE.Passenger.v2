@@ -7,7 +7,7 @@ import {
   createOffer,
   createPhantomOffer,
   getAvailableTariffs,
-  getOfferRoutes,
+  getOfferRoute,
   getRecentDropoffs,
   getTariffsPrices,
   getZoneIdByLocation,
@@ -17,7 +17,7 @@ import {
   AddressPoint,
   EstimatedPrice,
   MatchingFromAPI,
-  OfferRoutesFromAPI,
+  OfferRouteFromAPI,
   OfferState,
   RecentDropoffsAPIResponse,
   SelectedTariff,
@@ -33,11 +33,11 @@ const initialState: OfferState = {
     { id: 0, address: '', fullAddress: '', longitude: 0, latitude: 0 },
     { id: 1, address: '', fullAddress: '', longitude: 0, latitude: 0 },
   ],
-  offerRoutes: null,
+  offerRoute: null,
   loading: {
     searchAdresses: false,
     avaliableTariffs: false,
-    offerRoutes: false,
+    offerRoute: false,
     recentDropoffs: false,
     tariffsPrices: false,
     offerCreate: false,
@@ -48,7 +48,7 @@ const initialState: OfferState = {
   avaliableTariffs: null,
   errors: {
     avaliableTariffs: null,
-    offerRoutes: null,
+    offerRoute: null,
     recentDropoffs: null,
     tariffsPrices: null,
     offerCreate: null,
@@ -133,8 +133,8 @@ const slice = createSlice({
     cleanOfferPoints(state) {
       state.points = initialState.points;
     },
-    setOfferRoutes(state, action: PayloadAction<OfferRoutesFromAPI>) {
-      state.offerRoutes = action.payload;
+    setOfferRoute(state, action: PayloadAction<OfferRouteFromAPI>) {
+      state.offerRoute = action.payload;
     },
     setEstimatedPrice(state, action: PayloadAction<Nullable<EstimatedPrice>>) {
       state.estimatedPrice = action.payload;
@@ -143,8 +143,8 @@ const slice = createSlice({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       state = initialState;
     },
-    setOfferRoutesLoading(state, action: PayloadAction<boolean>) {
-      state.loading.offerRoutes = action.payload;
+    setOfferRouteLoading(state, action: PayloadAction<boolean>) {
+      state.loading.offerRoute = action.payload;
     },
     setTariffsPricesLoading(state, action: PayloadAction<boolean>) {
       state.loading.tariffsPrices = action.payload;
@@ -226,30 +226,30 @@ const slice = createSlice({
         state.loading.tariffsPrices = false;
         state.errors.tariffsPrices = action.payload as NetworkErrorDetailsWithBody<any>;
       })
-      .addCase(getOfferRoutes.pending, state => {
-        slice.caseReducers.setOfferRoutesLoading(state, {
+      .addCase(getOfferRoute.pending, state => {
+        slice.caseReducers.setOfferRouteLoading(state, {
           payload: true,
-          type: setOfferRoutesLoading.type,
+          type: setOfferRouteLoading.type,
         });
-        state.errors.offerRoutes = null;
+        state.errors.offerRoute = null;
       })
-      .addCase(getOfferRoutes.fulfilled, (state, action) => {
-        slice.caseReducers.setOfferRoutes(state, {
+      .addCase(getOfferRoute.fulfilled, (state, action) => {
+        slice.caseReducers.setOfferRoute(state, {
           payload: action.payload,
-          type: setOfferRoutes.type,
+          type: setOfferRoute.type,
         });
-        slice.caseReducers.setOfferRoutesLoading(state, {
+        slice.caseReducers.setOfferRouteLoading(state, {
           payload: false,
-          type: setOfferRoutesLoading.type,
+          type: setOfferRouteLoading.type,
         });
-        state.errors.offerRoutes = null;
+        state.errors.offerRoute = null;
       })
-      .addCase(getOfferRoutes.rejected, (state, action) => {
-        slice.caseReducers.setOfferRoutesLoading(state, {
+      .addCase(getOfferRoute.rejected, (state, action) => {
+        slice.caseReducers.setOfferRouteLoading(state, {
           payload: false,
-          type: setOfferRoutesLoading.type,
+          type: setOfferRouteLoading.type,
         });
-        state.errors.offerRoutes = action.payload as NetworkErrorDetailsWithBody<any>;
+        state.errors.offerRoute = action.payload as NetworkErrorDetailsWithBody<any>;
       })
 
       // offerCreate
@@ -337,10 +337,10 @@ export const {
   cleanOfferPoints,
   updateTariffMatching,
   setIsAvaliableTariff,
-  setOfferRoutes,
+  setOfferRoute,
   updateTariffsCost,
   clearOffer,
-  setOfferRoutesLoading,
+  setOfferRouteLoading,
   setOfferId,
   setEstimatedPrice,
   setTariffsPricesLoading,

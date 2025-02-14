@@ -14,8 +14,11 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
+import { useMap } from '../../../../core/map/mapContext';
 import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
+import { activeBottomWindowYCoordinateSelector } from '../../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../../core/redux/hooks';
+import { offerPointsSelector } from '../../../../core/ride/redux/offer/selectors';
 import { cancelOffer } from '../../../../core/ride/redux/offer/thunks';
 import { isCancelOfferLoadingSelector } from '../../../../core/ride/redux/trip/selectors';
 
@@ -24,23 +27,13 @@ const Confirming = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const tariffsIconsData = useTariffsIcons();
+  const { mapRef } = useMap();
 
   const isCancelOfferLoading = useSelector(isCancelOfferLoadingSelector);
+  const offerPoints = useSelector(offerPointsSelector);
+  const activeBottomWindowYCoordinate = useSelector(activeBottomWindowYCoordinateSelector);
+
   const [dotsCounter, setDotsCounter] = useState(3);
-
-  const TariffImage = tariffsIconsData.Basic.icon;
-
-  const computedStyles = StyleSheet.create({
-    button: {
-      backgroundColor: colors.backgroundPrimaryColor,
-    },
-    buttonText: {
-      color: colors.textSecondaryColor,
-    },
-    closeButtonContainer: {
-      marginBottom: sizes.paddingVertical / 2,
-    },
-  });
 
   useEffect(() => {
     dispatch(setActiveBottomWindowYCoordinate(null));
@@ -56,6 +49,39 @@ const Confirming = () => {
 
     return () => clearInterval(interval);
   }, [dispatch]);
+
+  useEffect(() => {
+    // If map finished resizing
+    if (activeBottomWindowYCoordinate === null) {
+      const offerPoint = offerPoints[0];
+      setTimeout(() => {
+        // TODO: make camera autozoom to fit both all thinking cars and start point marker
+        mapRef.current?.animateCamera(
+          {
+            pitch: 0,
+            heading: 0,
+            center: { latitude: offerPoint.latitude, longitude: offerPoint.longitude },
+            zoom: 12, // approximately 9km diameter
+          },
+          { duration: 1500 },
+        );
+      }, 0);
+    }
+  }, [mapRef, offerPoints, activeBottomWindowYCoordinate]);
+
+  const TariffImage = tariffsIconsData.Basic.icon;
+
+  const computedStyles = StyleSheet.create({
+    button: {
+      backgroundColor: colors.backgroundPrimaryColor,
+    },
+    buttonText: {
+      color: colors.textSecondaryColor,
+    },
+    closeButtonContainer: {
+      marginBottom: sizes.paddingVertical / 2,
+    },
+  });
 
   return (
     <>

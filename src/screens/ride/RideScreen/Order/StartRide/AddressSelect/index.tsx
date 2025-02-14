@@ -28,18 +28,18 @@ import { isRouteLengthTooShortError, isRoutePointsLocationError } from '../../..
 import {
   isAvailableTariffsLoadingSelector,
   isCityAvailableSelector,
-  isOfferRoutesLoadingSelector,
+  isOfferRouteLoadingSelector,
   isSearchAdressesLoadingSelector,
   offerPointByIdSelector,
   offerPointsSelector,
   offerRecentDropoffsSelector,
-  offerRoutesErrorSelector,
+  offerRouteErrorSelector,
 } from '../../../../../../core/ride/redux/offer/selectors';
 import {
   deleteRecentAddress,
   enhanceAddress,
   getAddressSearchHistory,
-  getOfferRoutes,
+  getOfferRoute,
   saveSearchResult,
   searchAddress,
 } from '../../../../../../core/ride/redux/offer/thunks';
@@ -65,10 +65,10 @@ const AddressSelect = ({
 
   const isLoading = useSelector(isSearchAdressesLoadingSelector);
   const isAvailableTariffsLoading = useSelector(isAvailableTariffsLoadingSelector);
-  const isOfferRoutesLoading = useSelector(isOfferRoutesLoadingSelector);
+  const isOfferRouteLoading = useSelector(isOfferRouteLoadingSelector);
 
   const isCityAvailable = useSelector(isCityAvailableSelector);
-  const offerRoutesError = useSelector(offerRoutesErrorSelector);
+  const offerRouteError = useSelector(offerRouteErrorSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
   const offerPoints = useSelector(offerPointsSelector);
   const [isAddressSelected, setIsAddressSelected] = useState(false);
@@ -175,17 +175,17 @@ const AddressSelect = ({
 
   useEffect(() => {
     if (isAllOfferPointsFilled) {
-      dispatch(getOfferRoutes());
+      dispatch(getOfferRoute());
     }
   }, [dispatch, isAllOfferPointsFilled]);
 
   useEffect(() => {
     if (isAllOfferPointsFilled) {
-      const isIncorrect = offerRoutesError !== null && isRoutePointsLocationError(offerRoutesError);
+      const isIncorrect = offerRouteError !== null && isRoutePointsLocationError(offerRouteError);
       setIncorrectWaypoints(isIncorrect);
       setIsUnsupportedDestinationPopupVisible(isIncorrect);
     }
-  }, [isAllOfferPointsFilled, offerRoutesError, setIsUnsupportedDestinationPopupVisible, offerPoints]);
+  }, [isAllOfferPointsFilled, offerRouteError, setIsUnsupportedDestinationPopupVisible, offerPoints]);
 
   const onSelectOnMapPress = () => {
     let coordinates: LatLng | undefined;
@@ -311,8 +311,8 @@ const AddressSelect = ({
     !isAllOfferPointsFilled ||
     incorrectWaypoints ||
     !isCityAvailable ||
-    (offerRoutesError !== null &&
-      (isRoutePointsLocationError(offerRoutesError) || isRouteLengthTooShortError(offerRoutesError)));
+    (offerRouteError !== null &&
+      (isRoutePointsLocationError(offerRouteError) || isRouteLengthTooShortError(offerRouteError)));
 
   return (
     <>
@@ -399,7 +399,7 @@ const AddressSelect = ({
             )}
           </ScrollView>
           <Button
-            isLoading={isAvailableTariffsLoading || isOfferRoutesLoading}
+            isLoading={isAvailableTariffsLoading || isOfferRouteLoading}
             disabled={isButtonDisabled}
             onPress={onConfirm}
             mode={isAllOfferPointsFilled && !isButtonDisabled ? CircleButtonModes.Mode1 : CircleButtonModes.Mode5}

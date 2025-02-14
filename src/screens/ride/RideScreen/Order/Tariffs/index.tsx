@@ -12,11 +12,14 @@ import {
   ButtonShapes,
   ButtonSizes,
   CircleButtonModes,
+  MapViewRef,
   SquareButtonModes,
+  useDebounceCallback,
   useTheme,
 } from 'shuttlex-integration';
 import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/currency/types';
 
+import { useMap } from '../../../../../core/map/mapContext';
 import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/redux';
 //TODO: rewrite all tariffs files, current solution is not flexible
 import { useAppDispatch } from '../../../../../core/redux/hooks';
@@ -25,7 +28,9 @@ import {
   groupedTariffsSelector,
   isTariffsPricesLoadingSelector,
   minDurationTariffSelector,
-  offerRoutesSelector,
+  offerRouteFirstWaypointSelector,
+  offerRouteLastWaypointSelector,
+  offerRouteSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
 import { getTariffsPrices } from '../../../../../core/ride/redux/offer/thunks';
 import { SelectedTariff, TariffCategory, TariffsType } from '../../../../../core/ride/redux/offer/types';
@@ -45,11 +50,14 @@ const Tariffs = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { colors } = useTheme();
+  const { mapRef } = useMap();
 
   const groupedTariffs = useSelector(groupedTariffsSelector);
   const minDurationTariff = useSelector(minDurationTariffSelector);
-  const offerRoutes = useSelector(offerRoutesSelector);
+  const offerRoute = useSelector(offerRouteSelector);
   const isTariffsPricesLoading = useSelector(isTariffsPricesLoadingSelector);
+  const offerRouteFirstWaypoint = useSelector(offerRouteFirstWaypointSelector);
+  const offerRouteLastWaypoint = useSelector(offerRouteLastWaypointSelector);
 
   const [selectedTariffGroup, setSelectedTariffGroup] = useState<TariffCategory | null>(groupedTariffs.economy ?? null);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number | null>(null);
@@ -58,6 +66,11 @@ const Tariffs = () => {
   const [windowIsOpened, setWindowIsOpened] = useState(false);
 
   const withAnimatedBigCars = useRef(true);
+
+  const debouncedMapFitToCoordinates = useDebounceCallback<MapViewRef['fitToCoordinates']>(
+    (...args) => mapRef.current?.fitToCoordinates(...args),
+    600,
+  );
 
   const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs?.some(trf => trf.cost !== null && trf.cost !== 0);
   // const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs?.some(trf =>
@@ -74,10 +87,10 @@ const Tariffs = () => {
   }, [dispatch, tariff]);
 
   useEffect(() => {
-    if (offerRoutes) {
+    if (offerRoute) {
       dispatch(getTariffsPrices());
     }
-  }, [offerRoutes, dispatch]);
+  }, [offerRoute, dispatch]);
 
   useEffect(() => {
     let foundAvailableTariffGroup = null;
@@ -264,15 +277,16 @@ const Tariffs = () => {
 
   return (
     <BottomWindowWithGesture
-      onAnimationEnd={values => dispatch(setActiveBottomWindowYCoordinate(values.pageY))}
-      onGestureStart={event => {
-        if (event.velocityY > 0 && windowIsOpened) {
-          dispatch(setActiveBottomWindowYCoordinate(null));
-        }
+      onAnimationEnd={values => {
+        dispatch(setActiveBottomWindowYCoordinate(values.pageY));
       }}
       onHiddenOrVisibleHeightChange={values => {
-        if (!values.isWindowAnimating) {
-          dispatch(setActiveBottomWindowYCoordinate(values.pageY));
+        if (values.isWindowAnimating) {
+          return;
+        }
+        dispatch(setActiveBottomWindowYCoordinate(values.pageY));
+        if (!values.isOpened && offerRouteFirstWaypoint && offerRouteLastWaypoint) {
+          debouncedMapFitToCoordinates([offerRouteFirstWaypoint.geo, offerRouteLastWaypoint.geo]);
         }
       }}
       setIsOpened={value => {
