@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
-  Bar,
   Button,
   ButtonShapes,
   CameraIcon,
   CircleButtonModes,
   HeaderWithTwoTitles,
   ScrollViewWithCustomScroll,
+  sizes,
   Text,
+  TextInput,
+  TextInputInputMode,
   useTheme,
 } from 'shuttlex-integration';
 
@@ -19,54 +23,94 @@ import SecondCard from './SecondCard';
 import ThirdCard from './ThirdCard';
 import { CardWrapperProps } from './types';
 
+const iconWidth = 23;
+const iconPaddingLeft = 14;
+
 const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
+
+  const [searchBarHeight, setSearchBarHeight] = useState(0);
+  const [searchData, setSearchData] = useState('');
+
+  const onValueChange = (value: string) => {
+    setSearchData(value);
+  };
 
   const computedStyles = StyleSheet.create({
+    container: {
+      paddingBottom: searchBarHeight,
+    },
     header: {
       color: colors.textQuadraticColor,
     },
     descript: {
       color: colors.textQuadraticColor,
     },
+    barWrapper: {
+      paddingHorizontal: sizes.paddingHorizontal,
+      bottom: insets.bottom !== 0 ? 20 : 0,
+    },
+    inputContainer: {
+      paddingLeft: iconWidth + iconPaddingLeft + 8,
+    },
+    trueTypeIcon: {
+      width: iconWidth,
+      left: iconPaddingLeft,
+    },
   });
   return (
-    <ScrollViewWithCustomScroll contentContainerStyle={styles.container}>
-      <View style={styles.wrapper}>
-        <View style={styles.textContainer}>
-          <Text style={[styles.header, computedStyles.header]}>{t('ride_AiPopup_header')}</Text>
-          <Text style={styles.greeting}>{t('ride_AiPopup_greeting', { name: prefferedName })}</Text>
-          <Text style={[styles.descript, computedStyles.descript]}>{t('ride_AiPopup_description')}</Text>
+    <>
+      <ScrollViewWithCustomScroll contentContainerStyle={[styles.container, computedStyles.container]}>
+        <View style={styles.wrapper}>
+          <View style={styles.textContainer}>
+            <Text style={[styles.header, computedStyles.header]}>{t('ride_AiPopup_header')}</Text>
+            <Text style={styles.greeting}>{t('ride_AiPopup_greeting', { name: prefferedName })}</Text>
+            <Text style={[styles.descript, computedStyles.descript]}>{t('ride_AiPopup_description')}</Text>
+          </View>
+          <View style={styles.cardWrapperContainer}>
+            <CardWrapper
+              firstTitle={t('ride_AiPopup_firstCard_header')}
+              secondTitle={t('ride_AiPopup_firstCard_description')}
+              children={<FirstCard />}
+            />
+            <CardWrapper
+              firstTitle={t('ride_AiPopup_secondCard_header')}
+              secondTitle={t('ride_AiPopup_secondCard_description')}
+              children={<SecondCard />}
+            />
+            <CardWrapper
+              firstTitle={t('ride_AiPopup_thirdCard_header')}
+              secondTitle={t('ride_AiPopup_thirdCard_description')}
+              children={<ThirdCard />}
+            />
+            <CardWrapper
+              firstTitle={t('ride_AiPopup_fourthCard_header')}
+              secondTitle={t('ride_AiPopup_fourthCard_description')}
+              children={<FourthCard />}
+            />
+          </View>
         </View>
-        <View style={styles.cardWrapperContainer}>
-          <CardWrapper
-            firstTitle={t('ride_AiPopup_firstCard_header')}
-            secondTitle={t('ride_AiPopup_firstCard_description')}
-            children={<FirstCard />}
-          />
-          <CardWrapper
-            firstTitle={t('ride_AiPopup_secondCard_header')}
-            secondTitle={t('ride_AiPopup_secondCard_description')}
-            children={<SecondCard />}
-          />
-          <CardWrapper
-            firstTitle={t('ride_AiPopup_thirdCard_header')}
-            secondTitle={t('ride_AiPopup_thirdCard_description')}
-            children={<ThirdCard />}
-          />
-          <CardWrapper
-            firstTitle={t('ride_AiPopup_fourthCard_header')}
-            secondTitle={t('ride_AiPopup_fourthCard_description')}
-            children={<FourthCard />}
+      </ScrollViewWithCustomScroll>
+
+      <View
+        style={[styles.barWrapper, computedStyles.barWrapper]}
+        onLayout={event => setSearchBarHeight(event.nativeEvent.layout.height)}
+      >
+        <View style={styles.inputWrapper}>
+          <Image source={aipopup.TrueTypeIcon} style={[styles.trueTypeIcon, computedStyles.trueTypeIcon]} />
+          <TextInput
+            maxLength={50}
+            inputMode={TextInputInputMode.Search}
+            value={searchData}
+            placeholder={t('ride_AiPopup_searchBar')}
+            withClearButton
+            onChangeText={onValueChange}
+            containerStyle={[styles.inputContainer, computedStyles.inputContainer]}
+            inputStyle={styles.input}
           />
         </View>
-      </View>
-      <View style={styles.barWrapper}>
-        <Bar style={styles.barContainer}>
-          <Image source={aipopup.TrueTypeIcon} />
-          <Text style={styles.searchBarText}>{t('ride_AiPopup_searchBar')}</Text>
-        </Bar>
         <Button mode={CircleButtonModes.Mode4} shape={ButtonShapes.Circle}>
           <CameraIcon style={styles.cameraIcon} />
         </Button>
@@ -74,7 +118,7 @@ const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
           <Image source={aipopup.voiceImage} resizeMode="contain" style={styles.voiceIcon} />
         </Button>
       </View>
-    </ScrollViewWithCustomScroll>
+    </>
   );
 };
 
@@ -88,9 +132,12 @@ const CardWrapper = ({ firstTitle, secondTitle, children }: CardWrapperProps) =>
     secondCardTitle: {
       color: colors.textPrimaryColor,
     },
+    cardWrapper: {
+      backgroundColor: colors.backgroundPrimaryColor,
+    },
   });
   return (
-    <View style={styles.cardWrapper}>
+    <View style={[styles.cardWrapper, computedStyles.cardWrapper]}>
       <HeaderWithTwoTitles
         firstTitle={firstTitle}
         secondTitle={secondTitle}
@@ -105,11 +152,8 @@ const CardWrapper = ({ firstTitle, secondTitle, children }: CardWrapperProps) =>
 const styles = StyleSheet.create({
   container: {
     paddingTop: 20,
-    justifyContent: 'space-between',
     backgroundColor: '#F7F6F7',
-    flexGrow: 1,
     alignItems: 'center',
-    gap: 20,
   },
   wrapper: {
     gap: 15,
@@ -119,7 +163,6 @@ const styles = StyleSheet.create({
   },
   cardWrapper: {
     flex: 1,
-    backgroundColor: 'white',
     padding: 10,
     borderRadius: 20,
     gap: 3,
@@ -177,7 +220,11 @@ const styles = StyleSheet.create({
   },
   barWrapper: {
     flexDirection: 'row',
-    gap: 5,
+    gap: 4,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
   },
   barContainer: {
     paddingHorizontal: 24,
@@ -195,6 +242,21 @@ const styles = StyleSheet.create({
   cameraIcon: {
     width: 23,
     height: 24,
+  },
+  input: {
+    height: 56,
+  },
+  inputContainer: {
+    borderRadius: 50,
+    backgroundColor: '#F7F6F7',
+  },
+  inputWrapper: {
+    flex: 1,
+  },
+  trueTypeIcon: {
+    position: 'absolute',
+    zIndex: 2,
+    top: 16,
   },
 });
 
