@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, ReactNode, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
@@ -41,6 +41,7 @@ import {
   isCityAvailableLoadingSelector,
   isCityAvailableSelector,
   isTooShortRouteLengthPopupVisibleSelector,
+  offerRecentDropoffsSelector,
   offerRoutesErrorSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
 import { RecentDropoffsFromAPI } from '../../../../../core/ride/redux/offer/types';
@@ -83,6 +84,9 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const offerRoutesError = useSelector(offerRoutesErrorSelector);
   const isTooShortRouteLengthPopupVisible = useSelector(isTooShortRouteLengthPopupVisibleSelector);
   const profile = useSelector(profileSelector);
+  const recentDropoffs = useSelector(offerRecentDropoffsSelector);
+
+  const isRecentDropoffsExist = useMemo(() => recentDropoffs.length > 0, [recentDropoffs]);
 
   const [isBottomWindowOpen, setIsBottomWindowOpen] = useState(false);
   const [fastAddressSelect, setFastAddressSelect] = useState<Nullable<RecentDropoffsFromAPI>>(null);
@@ -169,7 +173,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
               </Animated.View>
             </>
           ),
-          minHeight: 0.3,
+          minHeight: isRecentDropoffsExist ? 0.3 : 0.23,
         };
       case 1:
         return {
