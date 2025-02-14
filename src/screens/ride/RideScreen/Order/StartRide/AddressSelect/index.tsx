@@ -194,6 +194,8 @@ const AddressSelect = ({
       // TODO: remove when offerPoint will be without zero latitude and longitude
       if (!isCoordinatesEqualZero(latlng)) {
         coordinates = latlng;
+      } else {
+        coordinates = offerPoints.find(offerPoint => !isCoordinatesEqualZero(offerPoint));
       }
     }
     navigation.navigate('MapAddressSelection', { orderPointId: focusedInput.id, pointCoordinates: coordinates });
