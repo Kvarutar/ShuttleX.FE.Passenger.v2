@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Button,
   ButtonShapes,
@@ -29,7 +28,6 @@ const iconPaddingLeft = 14;
 const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const insets = useSafeAreaInsets();
 
   const [searchBarHeight, setSearchBarHeight] = useState(0);
   const [searchData, setSearchData] = useState('');
@@ -50,7 +48,7 @@ const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
     },
     barWrapper: {
       paddingHorizontal: sizes.paddingHorizontal,
-      bottom: insets.bottom !== 0 ? 20 : 0,
+      bottom: 0,
     },
     inputContainer: {
       paddingLeft: iconWidth + iconPaddingLeft + 8,
