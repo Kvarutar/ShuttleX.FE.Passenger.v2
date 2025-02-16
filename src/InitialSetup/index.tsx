@@ -77,7 +77,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
 
     const lastOffer = activeOffers[activeOffers.length - 1];
 
-    const availableTariffs = await dispatch(getAvailableTariffs()).unwrap();
+    const availableTariffs = await dispatch(getAvailableTariffs(lastOffer.pickUpGeo)).unwrap();
     if (!availableTariffs) {
       return;
     }
@@ -155,10 +155,8 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
   }, [locationLoaded, dispatch]);
 
   useEffect(() => {
-    if (locationLoaded && passengerZone) {
-      updatePassengerState();
-    }
-  }, [dispatch, updatePassengerState, locationLoaded, passengerZone]);
+    updatePassengerState();
+  }, [updatePassengerState]);
 
   useEffect(() => {
     if (defaultLocation && !locationLoaded) {
