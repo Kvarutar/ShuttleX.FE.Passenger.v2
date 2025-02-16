@@ -128,17 +128,19 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
 
   useEffect(() => {
     if (tripStatus === TripStatus.Idle && orderStatus !== OrderStatus.Confirming) {
+      const position = offerRouteFirstWaypoint ? offerRouteFirstWaypoint.geo : mapCameraCoordinates;
+
       setUpdatePassengerGeoInterval(() => {
         dispatch(
           updatePassengerGeo({
-            position: mapCameraCoordinates,
+            position,
             state: 'InRadius',
             orderId: null,
           }),
         );
       });
     }
-  }, [dispatch, tripStatus, orderStatus, mapCameraCoordinates]);
+  }, [dispatch, tripStatus, orderStatus, mapCameraCoordinates, offerRouteFirstWaypoint]);
 
   // Section: polylines
   const resetPoints = useCallback(() => {

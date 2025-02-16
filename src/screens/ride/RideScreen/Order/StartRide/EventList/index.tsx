@@ -1,4 +1,5 @@
 import { Image, StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 import {
   eventFirstBigImg,
@@ -16,6 +17,10 @@ const EventsList = ({ isBottomWindowOpen = false }: { isBottomWindowOpen?: boole
   const computedStyles = StyleSheet.create({
     container: {
       flexDirection: isBottomWindowOpen ? 'column' : 'row',
+      marginBottom: isBottomWindowOpen ? 120 : 10,
+    },
+    scrollView: {
+      marginRight: isBottomWindowOpen ? 0 : -12,
     },
     card: {
       width: isBottomWindowOpen ? '100%' : 152,
@@ -31,20 +36,25 @@ const EventsList = ({ isBottomWindowOpen = false }: { isBottomWindowOpen?: boole
   const cards = isBottomWindowOpen ? bigEvents : events;
 
   return (
-    <View style={[styles.container, computedStyles.container]}>
-      {cards.map((item, index) => (
-        <View key={index} style={computedStyles.card}>
-          <Image source={item} style={styles.image} />
-        </View>
-      ))}
-    </View>
+    <ScrollView
+      style={computedStyles.scrollView}
+      showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}
+      horizontal={!isBottomWindowOpen}
+      scrollEventThrottle={16}
+    >
+      <View style={[computedStyles.container]}>
+        {cards.map((item, index) => (
+          <View key={index} style={computedStyles.card}>
+            <Image source={item} style={styles.image} />
+          </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 36,
-  },
   image: {
     width: '100%',
     height: '100%',

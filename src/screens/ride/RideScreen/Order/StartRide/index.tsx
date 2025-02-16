@@ -13,7 +13,6 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
@@ -36,7 +35,11 @@ import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/
 import { profileSelector } from '../../../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
-import { cleanOfferPoints, setIsTooShortRouteLengthPopupVisible } from '../../../../../core/ride/redux/offer';
+import {
+  cleanOfferPoints,
+  setIsTooShortRouteLengthPopupVisible,
+  setOfferRoute,
+} from '../../../../../core/ride/redux/offer';
 import { isRouteLengthTooShortError } from '../../../../../core/ride/redux/offer/errors';
 import {
   isCityAvailableLoadingSelector,
@@ -128,6 +131,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
     } else {
       dispatch(cleanOfferPoints());
       setFastAddressSelect(null);
+      dispatch(setOfferRoute(null));
     }
   }, [dispatch, isAddressSelectVisible]);
 
@@ -189,27 +193,21 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
         return {
           visiblePart: (
             <>
-              <CategoriesList />
               <Animated.View
                 entering={FadeIn.duration(animationDuration)}
                 exiting={FadeOut.duration(animationDuration)}
               >
-                <ScrollView
-                  style={styles.secondBWScrollView}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  scrollEventThrottle={16}
-                >
-                  <EventsList />
-                </ScrollView>
-                <Animated.View style={[fakeHiddenPartSecondAnimatedStyle, styles.bigEventImagesContainer]}>
-                  <View style={styles.bigCard} onLayout={onFakeHiddenPartSecondLayout}>
-                    <Image source={bigEvents[0]} style={styles.bigEventImage} />
-                  </View>
-                  <View style={styles.bigCard} onLayout={onFakeHiddenPartSecondLayout}>
-                    <Image source={bigEvents[1]} style={styles.bigEventImage} />
-                  </View>
-                </Animated.View>
+                <CategoriesList />
+
+                <EventsList isBottomWindowOpen={isBottomWindowOpen} />
+
+                {!isBottomWindowOpen && (
+                  <Animated.View style={[fakeHiddenPartSecondAnimatedStyle, styles.bigEventImagesContainer]}>
+                    <View style={styles.bigCard} onLayout={onFakeHiddenPartSecondLayout}>
+                      <Image source={bigEvents[0]} style={styles.bigEventImage} />
+                    </View>
+                  </Animated.View>
+                )}
               </Animated.View>
             </>
           ),
@@ -432,9 +430,6 @@ const styles = StyleSheet.create({
   bigEventImage: {
     width: '100%',
     height: '100%',
-  },
-  secondBWScrollView: {
-    marginRight: -12,
   },
 });
 

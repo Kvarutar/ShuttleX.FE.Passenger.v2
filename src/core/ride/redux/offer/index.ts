@@ -133,7 +133,7 @@ const slice = createSlice({
     cleanOfferPoints(state) {
       state.points = initialState.points;
     },
-    setOfferRoute(state, action: PayloadAction<OfferRouteFromAPI>) {
+    setOfferRoute(state, action: PayloadAction<Nullable<OfferRouteFromAPI>>) {
       state.offerRoute = action.payload;
     },
     setEstimatedPrice(state, action: PayloadAction<Nullable<EstimatedPrice>>) {
