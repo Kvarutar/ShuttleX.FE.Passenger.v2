@@ -2,16 +2,18 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { LatLng } from 'react-native-maps';
 import { useSelector } from 'react-redux';
 import {
   Bar,
+  BarModes,
   Button,
   CircleButtonModes,
   isCoordinatesEqualZero,
   LoadingSpinner,
+  PinIcon,
   SelectOnMapIcon,
   sizes,
   SliderWithCustomGesture,
@@ -23,6 +25,7 @@ import {
 
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
+import { convertGeoToAddress } from '../../../../../../core/ride/redux/geolocation/thunks';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
 import { isRouteLengthTooShortError, isRoutePointsLocationError } from '../../../../../../core/ride/redux/offer/errors';
 import {
@@ -75,6 +78,7 @@ const AddressSelect = ({
   const [addresses, setAddresses] = useState<SearchAddressFromAPI[]>([]);
   const [addressesHistory, setAddressesHistory] = useState<RecentDropoffsFromAPI[]>([]);
   const [incorrectWaypoints, setIncorrectWaypoints] = useState(false);
+  const [myLocation, setMyLocation] = useState({ place: '', fullAddress: '' });
 
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
   const [focusedInput, setFocusedInput] = useState<FocusedInput>({
@@ -107,6 +111,9 @@ const AddressSelect = ({
     sliderContainer: {
       backgroundColor: colors.backgroundPrimaryColor,
     },
+    textPlace: {
+      color: colors.textQuadraticColor,
+    },
   });
 
   const getSearchHistory = useCallback(async () => {
@@ -125,6 +132,24 @@ const AddressSelect = ({
   useEffect(() => {
     getSearchHistory();
   }, [dispatch, getSearchHistory]);
+
+  useEffect(() => {
+    if (defaultLocation) {
+      (async () => {
+        try {
+          const addressWithFullInfo = await dispatch(
+            convertGeoToAddress({
+              latitude: defaultLocation.latitude,
+              longitude: defaultLocation.longitude,
+            }),
+          ).unwrap();
+          setMyLocation({ place: addressWithFullInfo.place, fullAddress: addressWithFullInfo.fullAddress });
+        } catch (error) {
+          console.error('Error fetching address:', error);
+        }
+      })();
+    }
+  }, [dispatch, defaultLocation]);
 
   useEffect(() => {
     if (debounceInputValue.trim() === '') {
@@ -177,15 +202,7 @@ const AddressSelect = ({
     if (isAllOfferPointsFilled) {
       dispatch(getOfferRoute());
     }
-  }, [dispatch, isAllOfferPointsFilled]);
-
-  useEffect(() => {
-    if (isAllOfferPointsFilled) {
-      const isIncorrect = offerRouteError !== null && isRoutePointsLocationError(offerRouteError);
-      setIncorrectWaypoints(isIncorrect);
-      setIsUnsupportedDestinationPopupVisible(isIncorrect);
-    }
-  }, [isAllOfferPointsFilled, offerRouteError, setIsUnsupportedDestinationPopupVisible, offerPoints]);
+  }, [dispatch, isAllOfferPointsFilled, incorrectWaypoints]);
 
   const onSelectOnMapPress = () => {
     let coordinates: LatLng | undefined;
@@ -270,6 +287,7 @@ const AddressSelect = ({
         currentPointId={point.id}
         isInFocus={focusedInput.id === point.id}
         updateFocusedInput={setFocusedInput}
+        onFocus={() => setIncorrectWaypoints(false)}
       />
     );
   });
@@ -303,16 +321,37 @@ const AddressSelect = ({
   }
 
   const onConfirm = async () => {
-    setIsAddressSelectVisible(false);
-    dispatch(setOrderStatus(OrderStatus.ChoosingTariff));
+    if (isAllOfferPointsFilled) {
+      const isIncorrect = offerRouteError !== null && isRoutePointsLocationError(offerRouteError);
+      setIncorrectWaypoints(isIncorrect);
+      setIsUnsupportedDestinationPopupVisible(isIncorrect);
+
+      if (!isIncorrect) {
+        setIsAddressSelectVisible(false);
+        dispatch(setOrderStatus(OrderStatus.ChoosingTariff));
+      }
+    }
+  };
+
+  const onMyLocationPress = () => {
+    if (defaultLocation) {
+      onAddressSelect(
+        {
+          id: offerPoints[0] ? '0' : '1',
+          fullAddress: t('ride_Ride_AddressSelect_addressButtonMyLocation'),
+          dropoffGeo: { latitude: defaultLocation.latitude, longitude: defaultLocation.longitude },
+          dropoffAddress: t('ride_Ride_AddressSelect_addressButtonMyLocation'),
+        },
+        true,
+      );
+    }
   };
 
   const isButtonDisabled =
     !isAllOfferPointsFilled ||
     incorrectWaypoints ||
     !isCityAvailable ||
-    (offerRouteError !== null &&
-      (isRoutePointsLocationError(offerRouteError) || isRouteLengthTooShortError(offerRouteError)));
+    (offerRouteError !== null && isRouteLengthTooShortError(offerRouteError));
 
   return (
     <>
@@ -324,6 +363,21 @@ const AddressSelect = ({
           onPress={onSelectOnMapPress}
         />
       </View>
+
+      <Pressable style={[styles.myLocationButtonContainer]} onPress={onMyLocationPress}>
+        <View style={styles.myLocationButtonWrapper}>
+          <Bar mode={BarModes.Disabled} style={styles.circleIconContainer}>
+            <PinIcon />
+          </Bar>
+        </View>
+        <View>
+          <Text style={styles.buttonTextMyLocation}>{t('ride_Ride_AddressSelect_addressButtonMyLocation')}</Text>
+          <Text style={[styles.textPlace, computedStyles.textPlace]}>
+            {myLocation.place ? myLocation.place : t('ride_Ride_AddressSelect_addressButtonMyLocation')}
+          </Text>
+        </View>
+      </Pressable>
+
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.scrollViewSearchContainer}>
           <ScrollView
@@ -387,7 +441,10 @@ const AddressSelect = ({
                               style={styles.placeBarStyle}
                               mode={PlaceBarModes.Search}
                               place={item}
-                              onPress={() => onAddressSelect(item, true)}
+                              onPress={() => {
+                                setIncorrectWaypoints(false);
+                                onAddressSelect(item, true);
+                              }}
                             />
                           }
                         />
@@ -425,7 +482,6 @@ const styles = StyleSheet.create({
   },
   scrollViewSearchWrapper: {
     flex: 1,
-    marginTop: 22,
   },
   recentPlaceBarWrapper: {
     marginTop: 12,
@@ -468,6 +524,35 @@ const styles = StyleSheet.create({
   },
   placeBarStyle: {
     paddingVertical: 16,
+  },
+  myLocationButtonContainer: {
+    flexDirection: 'row',
+    marginTop: 8,
+    alignItems: 'center',
+    gap: 12,
+  },
+  circleIconContainer: {
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 40,
+    height: 40,
+  },
+  myLocationButtonWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexShrink: 1,
+  },
+  buttonTextMyLocation: {
+    fontSize: 17,
+    fontFamily: 'Inter Medium',
+    lineHeight: 22,
+    letterSpacing: 0,
+  },
+  textPlace: {
+    fontSize: 14,
+    lineHeight: 22,
+    letterSpacing: 0,
   },
 });
 

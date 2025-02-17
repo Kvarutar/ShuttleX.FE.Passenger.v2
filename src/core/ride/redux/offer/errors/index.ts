@@ -11,7 +11,7 @@ export const isRoutePointsLocationError = (
 export const isRouteLengthTooShortError = (
   errorResponse: NetworkErrorDetailsWithBody,
 ): errorResponse is NetworkErrorDetailsWithBody => {
-  return errorResponse.status === NetworkErrorsStatuses.BadRequest && errorResponse.body?.code === 10008;
+  return errorResponse.status === NetworkErrorsStatuses.BadRequest && errorResponse.body?.code === 10011;
 };
 
 export const isTooManyActiveRidesError = (

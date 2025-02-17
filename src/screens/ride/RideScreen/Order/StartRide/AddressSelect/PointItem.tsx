@@ -15,7 +15,7 @@ import { PointItemProps } from './types';
 
 const fadeAnimationDuration = 100;
 
-const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput, isInFocus }: PointItemProps) => {
+const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput, isInFocus, onFocus }: PointItemProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -64,6 +64,7 @@ const PointItem = ({ style, pointMode, currentPointId, updateFocusedInput, isInF
   }, [isFocused, point, currentPointId, dispatch]);
 
   const isFocusedHandler = (state: boolean) => () => {
+    onFocus?.();
     if (!state && point && !point?.address) {
       dispatch(updateOfferPoint({ id: point?.id, address: '', fullAddress: '', longitude: 0, latitude: 0 }));
       if (!defaultLocation) {

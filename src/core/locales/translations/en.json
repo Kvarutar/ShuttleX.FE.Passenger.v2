@@ -90,6 +90,7 @@
   "ride_Ride_AddressSelect_addressWhereInputPlaceholder": "Where to?",
   "ride_Ride_AddressSelect_addressFromInputPlaceholder": "From",
   "ride_Ride_AddressSelect_addressInputMyLocation": "My location",
+  "ride_Ride_AddressSelect_addressButtonMyLocation": "My location",
   "ride_Ride_AddressSelect_chooseAddress": "Choose an address",
   "ride_Ride_AddressSelect_confirmButton": "Next",
   "ride_Ride_MysteryBoxPopup_subTitle": "Mystery Box",

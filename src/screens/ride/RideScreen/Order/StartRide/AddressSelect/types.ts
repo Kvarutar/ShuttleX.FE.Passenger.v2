@@ -19,6 +19,7 @@ export type PointItemProps = {
   updateFocusedInput: (input: FocusedInput) => void;
   onRemovePoint?: () => void;
   isInFocus: boolean;
+  onFocus?: () => void;
 };
 
 export type AddressButtonProps = {
