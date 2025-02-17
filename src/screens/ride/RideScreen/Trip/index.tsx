@@ -1,12 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
-import { LatLng } from 'react-native-maps';
 import { useSelector } from 'react-redux';
 import {
   BottomWindowWithGesture,
+  Button,
+  ButtonShapes,
+  CircleButtonModes,
+  RouteIcon,
   Skeleton,
   SwipeButton,
   SwipeButtonModes,
@@ -22,7 +25,6 @@ import { useMap } from '../../../../core/map/mapContext';
 import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
-import { mapCarsSelector } from '../../../../core/ride/redux/map/selectors';
 import { tariffsNamesByFeKey } from '../../../../core/ride/redux/offer/utils';
 import {
   isTripCanceledLoadingSelector,
@@ -31,8 +33,6 @@ import {
   orderIdSelector,
   orderSelector,
   orderTariffInfoSelector,
-  tripDropOffRouteLastWaypointSelector,
-  tripPickUpRouteLastWaypointSelector,
   tripStatusSelector,
 } from '../../../../core/ride/redux/trip/selectors';
 import { cancelTrip } from '../../../../core/ride/redux/trip/thunks';
@@ -50,10 +50,7 @@ const Trip = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>>();
   const { colors } = useTheme();
   const tariffIconsData = useTariffsIcons();
-  const { mapRef } = useMap();
-
-  const contractorCarCoordinatesRef = useRef<LatLng | null>(null);
-  const [isContractorCarCoordinatesAvailable, setIsContractorCarCoordinatesAvailable] = useState<boolean>(false);
+  const { focusOnRoute, setIsRouteAutofocusEnabled } = useMap();
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
   const tripStatus = useSelector(tripStatusSelector);
@@ -63,9 +60,6 @@ const Trip = () => {
   const isTripCanceledLoading = useSelector(isTripCanceledLoadingSelector);
   const order = useSelector(orderSelector);
   const tripTariff = useSelector(orderTariffInfoSelector);
-  const tripPickUpRouteLastWaypoint = useSelector(tripPickUpRouteLastWaypointSelector);
-  const tripDropOffRouteLastWaypoint = useSelector(tripDropOffRouteLastWaypointSelector);
-  const mapCars = useSelector(mapCarsSelector);
 
   const arrivedTime = order?.info ? Date.parse(order?.info?.estimatedArriveToDropOffDate) : 0;
   const TariffIcon = tripTariff?.name ? tariffIconsData[tariffsNamesByFeKey[tripTariff.feKey]].icon : null;
@@ -80,41 +74,12 @@ const Trip = () => {
     },
   });
 
-  // contractorCarCoordinatesRef only needed to avoid putting it inside the useEffect hook below
   useEffect(() => {
-    contractorCarCoordinatesRef.current = mapCars.length > 0 ? mapCars[0].coordinates : null;
-    if (mapCars.length > 0) {
-      contractorCarCoordinatesRef.current = mapCars[0].coordinates;
-      setIsContractorCarCoordinatesAvailable(true);
-    } else {
-      contractorCarCoordinatesRef.current = null;
-      setIsContractorCarCoordinatesAvailable(false);
-    }
-  }, [mapCars]);
-
-  useEffect(() => {
-    // If contractor geo not available - dont zoom
-    if (!contractorCarCoordinatesRef.current) {
-      return;
-    }
-
-    const coordinates: LatLng[] = [contractorCarCoordinatesRef.current];
-    if (tripStatus === TripStatus.Accepted && tripPickUpRouteLastWaypoint) {
-      // Contarctor -> Pickup
-      coordinates.push(tripPickUpRouteLastWaypoint.geo);
-    } else if (tripStatus === TripStatus.Ride && tripDropOffRouteLastWaypoint) {
-      // Pickup -> DropOff
-      coordinates.push(tripDropOffRouteLastWaypoint.geo);
-    }
-
-    mapRef.current?.fitToCoordinates(coordinates);
-  }, [
-    mapRef,
-    isContractorCarCoordinatesAvailable,
-    tripStatus,
-    tripPickUpRouteLastWaypoint,
-    tripDropOffRouteLastWaypoint,
-  ]);
+    setIsRouteAutofocusEnabled(true);
+    return () => {
+      setIsRouteAutofocusEnabled(false);
+    };
+  }, [setIsRouteAutofocusEnabled]);
 
   useEffect(() => {
     if (tripStatus === TripStatus.Finished && !isTripCanceledLoading) {
@@ -183,6 +148,17 @@ const Trip = () => {
       headerElement={headerElementBlock}
       withAllPartsScroll
       withHiddenPartScroll={false}
+      additionalTopContent={
+        <Button
+          style={styles.routeButton}
+          onPress={focusOnRoute}
+          mode={CircleButtonModes.Mode2}
+          shape={ButtonShapes.Circle}
+          withBorder={false}
+        >
+          <RouteIcon />
+        </Button>
+      }
       alerts={alerts.map(alertData => (
         <AlertInitializer
           key={alertData.id}
@@ -207,21 +183,9 @@ const Trip = () => {
 };
 
 const styles = StyleSheet.create({
-  skeletonAvatar: {
-    borderRadius: 1000,
-  },
   skeletonTimer: {
     borderRadius: 100,
     alignSelf: 'center',
-  },
-  visiblePartStyle: {
-    marginBottom: 16,
-    paddingTop: 5,
-  },
-  headerWrapperStyle: {
-    height: 40,
-    justifyContent: 'flex-end',
-    marginBottom: 20,
   },
   timerWrapper: {
     position: 'absolute',
@@ -236,6 +200,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -45,
   },
+  carImage: {
+    resizeMode: 'contain',
+    width: '65%',
+    height: undefined,
+    aspectRatio: 3.1,
+  },
   avatarWrapper: {
     padding: 3,
     borderRadius: 100,
@@ -244,16 +214,27 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
   },
+  skeletonAvatar: {
+    borderRadius: 1000,
+  },
   avatar: {
     flex: 1,
     objectFit: 'contain',
     borderRadius: 100,
   },
-  carImage: {
-    resizeMode: 'contain',
-    width: '65%',
-    height: undefined,
-    aspectRatio: 3.1,
+  headerWrapperStyle: {
+    height: 40,
+    justifyContent: 'flex-end',
+    marginBottom: 20,
+  },
+  routeButton: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+  },
+  visiblePartStyle: {
+    marginBottom: 16,
+    paddingTop: 5,
   },
 });
 

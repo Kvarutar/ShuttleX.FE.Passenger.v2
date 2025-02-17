@@ -13,6 +13,7 @@ import {
   ButtonSizes,
   CircleButtonModes,
   MapViewRef,
+  RouteIcon,
   SquareButtonModes,
   useDebounceCallback,
   useTheme,
@@ -64,6 +65,9 @@ const Tariffs = () => {
   const [selectedPriceIdx, setSelectedPriceIdx] = useState<number | null>(null);
   const [tariff, setTariff] = useState<SelectedTariff | null>(null);
   const [windowIsOpened, setWindowIsOpened] = useState(false);
+
+  // TODO: remove when bug with bottomwindow onHiddenOrVisibleHeightChange callback frequent calls will be fixed
+  const [isDebouncedMapFitToCoordinatesCalled, setIsDebouncedMapFitToCoordinatesCalled] = useState(false);
 
   const withAnimatedBigCars = useRef(true);
 
@@ -117,6 +121,12 @@ const Tariffs = () => {
     dispatch(setOrderStatus(OrderStatus.StartRide));
     dispatch(setIsAddressSelectVisible(true));
     dispatch(setTripRouteInfo(null));
+  };
+
+  const onRouteButtonPress = () => {
+    if (offerRouteFirstWaypoint && offerRouteLastWaypoint) {
+      mapRef.current?.fitToCoordinates([offerRouteFirstWaypoint.geo, offerRouteLastWaypoint.geo]);
+    }
   };
 
   const resetTariffPrice = useCallback(
@@ -285,7 +295,13 @@ const Tariffs = () => {
           return;
         }
         dispatch(setActiveBottomWindowYCoordinate(values.pageY));
-        if (!values.isOpened && offerRouteFirstWaypoint && offerRouteLastWaypoint) {
+        if (
+          !values.isOpened &&
+          offerRouteFirstWaypoint &&
+          offerRouteLastWaypoint &&
+          !isDebouncedMapFitToCoordinatesCalled
+        ) {
+          setIsDebouncedMapFitToCoordinatesCalled(true);
           debouncedMapFitToCoordinates([offerRouteFirstWaypoint.geo, offerRouteLastWaypoint.geo]);
         }
       }}
@@ -297,12 +313,28 @@ const Tariffs = () => {
       }}
       minHeight={0.6}
       additionalTopContent={
-        <View style={styles.additionalTopContent}>
-          <Button onPress={onBackPress} mode={CircleButtonModes.Mode2} shape={ButtonShapes.Circle} withBorder={false}>
+        <>
+          <Button
+            style={styles.additionalTopContentLeftButton}
+            onPress={onBackPress}
+            mode={CircleButtonModes.Mode2}
+            shape={ButtonShapes.Circle}
+            withBorder={false}
+          >
             <ArrowIcon style={styles.backIcon} />
           </Button>
-          <MapCameraModeButton />
-        </View>
+          <View style={styles.additionalTopContentRightButtonsContainer}>
+            <Button
+              onPress={onRouteButtonPress}
+              mode={CircleButtonModes.Mode2}
+              shape={ButtonShapes.Circle}
+              withBorder={false}
+            >
+              <RouteIcon />
+            </Button>
+            <MapCameraModeButton />
+          </View>
+        </>
       }
       visiblePartStyle={styles.visiblePartStyle}
       visiblePart={content}
@@ -311,10 +343,20 @@ const Tariffs = () => {
 };
 
 const styles = StyleSheet.create({
-  additionalTopContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  additionalTopContentLeftButton: {
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
   },
+  additionalTopContentRightButtonsContainer: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    gap: 8,
+  },
+  // additionalTopContentRightButton: {
+
+  // },
   backIcon: {
     transform: [{ rotate: '180deg' }],
   },

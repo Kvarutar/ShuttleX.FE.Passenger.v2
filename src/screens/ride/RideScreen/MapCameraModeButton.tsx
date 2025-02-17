@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MapCameraModeButton as MapCameraModeButtonIntegration } from 'shuttlex-integration';
 
@@ -6,7 +6,7 @@ import { useAppDispatch } from '../../../core/redux/hooks';
 import { setMapCameraMode } from '../../../core/ride/redux/map';
 import { mapCameraModeSelector } from '../../../core/ride/redux/map/selectors';
 
-const MapCameraModeButton = () => {
+const MapCameraModeButton = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const dispatch = useAppDispatch();
 
   const cameraMode = useSelector(mapCameraModeSelector);
@@ -25,7 +25,7 @@ const MapCameraModeButton = () => {
     }
   };
 
-  return <MapCameraModeButtonIntegration mode={cameraMode} onPress={onPress} style={styles.button} />;
+  return <MapCameraModeButtonIntegration mode={cameraMode} onPress={onPress} style={[styles.button, style]} />;
 };
 
 const styles = StyleSheet.create({
