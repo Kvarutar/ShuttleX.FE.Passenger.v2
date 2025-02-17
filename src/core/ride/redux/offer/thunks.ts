@@ -63,7 +63,7 @@ export const getRecentDropoffs = createAppAsyncThunk<RecentDropoffsFromAPI[], Re
       const recentDropoffs = response.data;
       const coordinates = recentDropoffs.map(el => el.dropoffGeo);
 
-      const fullAddresses = await Promise.all(
+      const fullAddresses = await Promise.allSettled(
         coordinates.map(geo =>
           dispatch(
             convertGeoToAddress({
@@ -74,11 +74,17 @@ export const getRecentDropoffs = createAppAsyncThunk<RecentDropoffsFromAPI[], Re
         ),
       );
 
-      const enrichedDropoffs = recentDropoffs.map((dropoff, index) => ({
-        ...dropoff,
-        fullAddress: fullAddresses[index].fullAddress,
-        id: dropoff.id,
-      }));
+      const enrichedDropoffs: RecentDropoffsFromAPI[] = [];
+
+      fullAddresses.forEach((addressPromise, index) => {
+        if (addressPromise.status === 'fulfilled') {
+          enrichedDropoffs.push({
+            ...recentDropoffs[index],
+            fullAddress: addressPromise.value.fullAddress,
+            id: recentDropoffs[index].id,
+          });
+        }
+      });
 
       return enrichedDropoffs;
     } catch (error) {
