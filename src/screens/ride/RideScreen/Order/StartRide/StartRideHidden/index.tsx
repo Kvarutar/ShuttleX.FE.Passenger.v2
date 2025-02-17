@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Image, LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Text, useTheme } from 'shuttlex-integration';
 
@@ -36,7 +36,7 @@ const testData = {
 //   return <Button textStyle={styles.buttonText} style={styles.button} {...props} />;
 // };
 
-const StartRideHidden = ({ onLayout }: { onLayout?: (e: LayoutChangeEvent) => void }) => {
+const StartRideHidden = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   // const lotteryStartTime = useSelector(lotteryStartTimeSelector);
@@ -312,7 +312,7 @@ const StartRideHidden = ({ onLayout }: { onLayout?: (e: LayoutChangeEvent) => vo
   ];
 
   return (
-    <View style={styles.wrapper} onLayout={onLayout}>
+    <View style={styles.wrapper}>
       {adsInfoArray.map((item: AdsBlockProps, index: number) => (
         <AdsBlock
           key={`ads_${index}`}

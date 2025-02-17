@@ -2,18 +2,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { forwardRef, ReactNode, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Dimensions,
-  Image,
-  Keyboard,
-  LayoutChangeEvent,
-  Linking,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from 'react-native';
-import Animated, { FadeIn, FadeOut, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { Dimensions, Image, Keyboard, Linking, ScrollView, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import {
@@ -79,9 +69,6 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
 
   const bottomWindowRef = useRef<BottomWindowWithGestureRef>(null);
 
-  const BWhiddenPartFirstHeightShared = useSharedValue(0);
-  const BWhiddenPartSecondHeightShared = useSharedValue(0);
-
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
   const isCityAvailable = useSelector(isCityAvailableSelector);
   const isCityAvailableLoading = useSelector(isCityAvailableLoadingSelector);
@@ -102,13 +89,16 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
 
   const computedStyles = StyleSheet.create({
     navButtonsContainer: {
-      bottom: insets.bottom ?? windowHeight * 0.03,
+      bottom: insets.bottom === 0 ? (isRecentDropoffsExist ? windowHeight * 0.03 : 0) : insets.bottom,
     },
     navButtonContainerStyle: {
       backgroundColor: passengerColors.adsBackgroundColor.navButton,
     },
     navBWButtonsContainer: {
       backgroundColor: passengerColors.adsBackgroundColor.navButton,
+    },
+    firstVisiblePartWrapper: {
+      height: isBottomWindowOpen ? '100%' : 'auto', //TODO: think of clever way(problem is: i can't calculate visible part height in opened state before it's opened. This problem occure because of we don't use hidden part in this component and in opened state height of visible part lesser then 93% of widow height)
     },
   });
 
@@ -156,17 +146,6 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
     EarthIcon,
   ];
 
-  const onFakeHiddenPartFirstLayout = (e: LayoutChangeEvent) => {
-    BWhiddenPartFirstHeightShared.value = e.nativeEvent.layout.height;
-  };
-
-  const onFakeHiddenPartSecondLayout = (e: LayoutChangeEvent) => {
-    BWhiddenPartSecondHeightShared.value = e.nativeEvent.layout.height;
-  };
-
-  const fakeHiddenPartFirstAnimatedStyle = useAnimatedStyle(() => ({ height: BWhiddenPartFirstHeightShared.value }));
-  const fakeHiddenPartSecondAnimatedStyle = useAnimatedStyle(() => ({ height: BWhiddenPartSecondHeightShared.value }));
-
   const getBottomWindowProps = (): {
     visiblePart: ReactNode;
     minHeight: number;
@@ -175,14 +154,14 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
       case 0:
         return {
           visiblePart: (
-            <>
+            <View style={computedStyles.firstVisiblePartWrapper}>
               <StartRideVisible isBottomWindowOpen={isBottomWindowOpen} setFastAddressSelect={setFastAddressSelect} />
-              <Animated.View style={fakeHiddenPartFirstAnimatedStyle}>
-                <StartRideHidden onLayout={onFakeHiddenPartFirstLayout} />
-              </Animated.View>
-            </>
+              <ScrollView>
+                <StartRideHidden />
+              </ScrollView>
+            </View>
           ),
-          minHeight: isRecentDropoffsExist ? 0.3 : 0.23,
+          minHeight: isRecentDropoffsExist ? 0.3 : 0.23 + insets.bottom / windowHeight,
         };
       case 1:
         return {
@@ -192,24 +171,21 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
       case 2:
         return {
           visiblePart: (
-            <>
-              <Animated.View
-                entering={FadeIn.duration(animationDuration)}
-                exiting={FadeOut.duration(animationDuration)}
-              >
-                <CategoriesList />
-
-                <EventsList isBottomWindowOpen={isBottomWindowOpen} />
-
-                {!isBottomWindowOpen && (
-                  <Animated.View style={[fakeHiddenPartSecondAnimatedStyle, styles.bigEventImagesContainer]}>
-                    <View style={styles.bigCard} onLayout={onFakeHiddenPartSecondLayout}>
-                      <Image source={bigEvents[0]} style={styles.bigEventImage} />
-                    </View>
-                  </Animated.View>
-                )}
-              </Animated.View>
-            </>
+            <Animated.View
+              style={computedStyles.firstVisiblePartWrapper}
+              entering={FadeIn.duration(animationDuration)}
+              exiting={FadeOut.duration(animationDuration)}
+            >
+              <CategoriesList />
+              <EventsList isBottomWindowOpen={isBottomWindowOpen} />
+              {!isBottomWindowOpen && (
+                <Animated.View style={[styles.bigEventImagesContainer]}>
+                  <View style={styles.bigCard}>
+                    <Image source={bigEvents[0]} style={styles.bigEventImage} />
+                  </View>
+                </Animated.View>
+              )}
+            </Animated.View>
           ),
           minHeight: 0.4,
         };

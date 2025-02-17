@@ -17,7 +17,7 @@ const EventsList = ({ isBottomWindowOpen = false }: { isBottomWindowOpen?: boole
   const computedStyles = StyleSheet.create({
     container: {
       flexDirection: isBottomWindowOpen ? 'column' : 'row',
-      marginBottom: isBottomWindowOpen ? 120 : 10,
+      marginBottom: isBottomWindowOpen ? 0 : 10,
     },
     scrollView: {
       marginRight: isBottomWindowOpen ? 0 : -12,

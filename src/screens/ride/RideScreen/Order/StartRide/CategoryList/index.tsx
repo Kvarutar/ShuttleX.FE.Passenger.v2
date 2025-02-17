@@ -46,10 +46,12 @@ const CategoriesList = () => {
 const styles = StyleSheet.create({
   scrollView: {
     marginVertical: 8,
+    height: 40,
+    maxHeight: 40,
+    minHeight: 40,
   },
   searchContainer: {
     width: 40,
-    height: 40,
     borderRadius: 20,
     marginRight: 8,
     justifyContent: 'center',
@@ -57,7 +59,6 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    height: 40,
     paddingHorizontal: 17,
     borderRadius: 20,
     marginRight: 10,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    fontSize: 16,
+    fontFamily: 'Inter Medium',
     lineHeight: 22,
   },
 });
