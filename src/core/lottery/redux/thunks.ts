@@ -129,9 +129,7 @@ export const getTicketAfterRide = createAppAsyncThunk<GetTicketAfterRideAPIRespo
   async (_, { rejectWithValue, lotteryAxios, getState, dispatch }) => {
     const orderId = orderIdSelector(getState());
     try {
-      const result = await lotteryAxios.post<GetTicketAfterRideAPIResponse>(
-        `/events/current/tickets/orders/${orderId}`,
-      );
+      const result = await lotteryAxios.get<GetTicketAfterRideAPIResponse>(`/events/current/tickets/orders/${orderId}`);
       dispatch(setTicketAfterRide(result.data));
       return result.data;
     } catch (error) {
@@ -144,7 +142,7 @@ export const getTicketByOrderId = createAppAsyncThunk<GetTicketAfterRideAPIRespo
   'lottery/getTicketByOrderId',
   async (payload, { rejectWithValue, lotteryAxios }) => {
     try {
-      const result = await lotteryAxios.post<GetTicketAfterRideAPIResponse>(
+      const result = await lotteryAxios.get<GetTicketAfterRideAPIResponse>(
         `/events/current/tickets/orders/${payload.orderId}`,
       );
 
