@@ -49,7 +49,7 @@ const screenHeight = Dimensions.get('screen').height;
 
 const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationComplete: () => void }): JSX.Element => {
   const dispatch = useAppDispatch();
-  const { mapRef } = useMap();
+  const { mapRef, mapPolyline, setMapPolyline } = useMap();
 
   const geolocationCoordinates = useSelector(geolocationCoordinatesSelector);
   const geolocationCalculatedHeading = useSelector(geolocationCalculatedHeadingSelector);
@@ -75,7 +75,6 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     geolocationCoordinatesRef.current = geolocationCoordinates;
   }, [geolocationCoordinates]);
 
-  const [polyline, setPolyline] = useState<MapPolyline | null>(null);
   const [routePolylinePointsCount, setRoutePolylinePointsCount] = useState<number>(0);
   const [finalStopPointCoordinates, setFinalStopPointCoordinates] = useState<LatLng | null>(null);
   const [finalStopPointTimeInSec, setFinalStopPointTimeInSec] = useState<number>(0);
@@ -83,7 +82,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [mapCameraCoordinates, setMapCameraCoordinates] = useState<LatLng | null>(null);
 
-  const memoizedPolyline = useMemo(() => (polyline ? [polyline] : undefined), [polyline]);
+  const memoizedPolyline = useMemo(() => (mapPolyline ? [mapPolyline] : undefined), [mapPolyline]);
 
   // Section: getting geo of contractors and send geo of passenger
   const setUpdatePassengerGeoInterval = (callback: () => void) => {
@@ -144,15 +143,15 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
 
   // Section: polylines
   const resetPoints = useCallback(() => {
-    setPolyline(null);
+    setMapPolyline(null);
     setFinalStopPointCoordinates(null);
-  }, []);
+  }, [setMapPolyline]);
 
   // Polyline clearing from moving car
   useEffect(() => {
     switch (tripStatus) {
       case TripStatus.Accepted: // Contarctor -> Pickup
-        setPolyline(prev => {
+        setMapPolyline(prev => {
           const type: MapPolyline['type'] = 'dashed';
           if (prev && prev.type === type && cars.length > 0) {
             const newCoordinates = calculateNewMapRoute(
@@ -166,7 +165,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         });
         break;
       case TripStatus.Ride: // Pickup -> DropOff
-        setPolyline(prev => {
+        setMapPolyline(prev => {
           const type: MapPolyline['type'] = 'straight';
           if (prev && prev.type === type && cars.length > 0) {
             const newCoordinates = calculateNewMapRoute(
@@ -181,17 +180,17 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         break;
       default:
     }
-  }, [tripStatus, cars]);
+  }, [setMapPolyline, tripStatus, cars]);
 
   useEffect(() => {
-    if (polyline && polyline.type !== 'arc') {
+    if (mapPolyline && mapPolyline.type !== 'arc') {
       dispatch(
         setMapRidePercentFromPolylines(
-          `${Math.floor((1 - polyline.options.coordinates.length / routePolylinePointsCount) * 100)}%`,
+          `${Math.floor((1 - mapPolyline.options.coordinates.length / routePolylinePointsCount) * 100)}%`,
         ),
       );
     }
-  }, [dispatch, polyline, routePolylinePointsCount]);
+  }, [dispatch, mapPolyline, routePolylinePointsCount]);
 
   // Section: Markers
   useEffect(() => {
@@ -211,7 +210,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       offerRouteFirstWaypoint &&
       offerRouteLastWaypoint
     ) {
-      setPolyline({
+      setMapPolyline({
         type: 'dashed',
         options: { coordinates: decodeGooglePolylineArr(offerRoute.legs.map(leg => leg.geometry)), color: '#ABC736' },
       });
@@ -221,7 +220,16 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
     } else {
       setMarkers([]);
     }
-  }, [mapRef, orderStatus, offerPoints, offerRoute, offerRouteFirstWaypoint, offerRouteLastWaypoint, tripStatus]);
+  }, [
+    mapRef,
+    setMapPolyline,
+    orderStatus,
+    offerPoints,
+    offerRoute,
+    offerRouteFirstWaypoint,
+    offerRouteLastWaypoint,
+    tripStatus,
+  ]);
 
   useEffect(() => {
     switch (tripStatus) {
@@ -232,7 +240,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         }
         const coordinates = decodeGooglePolylineArr(pickUpRoute.legs.map(leg => leg.geometry)); // TODO: check, maybe need to reverse array
         setRoutePolylinePointsCount(coordinates.length);
-        setPolyline({ type: 'dashed', options: { coordinates, color: '#ABC736' } });
+        setMapPolyline({ type: 'dashed', options: { coordinates, color: '#ABC736' } });
 
         setMarkers([
           {
@@ -254,7 +262,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         }
         const coordinates = decodeGooglePolylineArr(dropOffRoute.legs.map(leg => leg.geometry));
         setRoutePolylinePointsCount(coordinates.length);
-        setPolyline({ type: 'straight', options: { coordinates } });
+        setMapPolyline({ type: 'straight', options: { coordinates } });
 
         setFinalStopPointCoordinates(dropOffRoute.waypoints[dropOffRoute.waypoints.length - 1].geo);
         setFinalStopPointTimeInSec(dropOffRoute.totalDurationSec);
@@ -274,7 +282,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         break;
       default:
     }
-  }, [dispatch, tripStatus, orderStatus, pickUpRoute, dropOffRoute, resetPoints]);
+  }, [dispatch, setMapPolyline, tripStatus, orderStatus, pickUpRoute, dropOffRoute, resetPoints]);
 
   //TODO: dumb logic while backend don't have normal way for algorythms
   useEffect(() => {

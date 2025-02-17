@@ -45,8 +45,6 @@ import { isTooManyActiveRidesError } from '../../../../../core/ride/redux/offer/
 import {
   isOfferCreateLoadingSelector,
   offerCreateErrorSelector,
-  offerRouteFirstWaypointSelector,
-  offerRouteLastWaypointSelector,
   offerSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
 import { createInitialOffer } from '../../../../../core/ride/redux/offer/thunks';
@@ -140,7 +138,7 @@ const PaymentPopup = () => {
   const dispatch = useAppDispatch();
   const tariffIconsData = useTariffsIcons();
   const { t } = useTranslation();
-  const { mapRef } = useMap();
+  const { fitToPolyline } = useMap();
 
   const datePickerRef = useRef<BottomWindowWithGestureRef>(null);
   const bottomWindowRef = useRef<BottomWindowRef>(null);
@@ -148,8 +146,6 @@ const PaymentPopup = () => {
   const { points, selectedTariff, estimatedPrice } = useSelector(offerSelector);
   const isOfferCreateLoading = useSelector(isOfferCreateLoadingSelector);
   const offerCreateError = useSelector(offerCreateErrorSelector);
-  const offerRouteFirstWaypoint = useSelector(offerRouteFirstWaypointSelector);
-  const offerRouteLastWaypoint = useSelector(offerRouteLastWaypointSelector);
   const activeBottomWindowYCoordinate = useSelector(activeBottomWindowYCoordinateSelector);
 
   const TariffIcon = selectedTariff ? tariffIconsData[selectedTariff.name].icon : null;
@@ -207,6 +203,12 @@ const PaymentPopup = () => {
   });
 
   useEffect(() => {
+    if (activeBottomWindowYCoordinate !== null) {
+      fitToPolyline();
+    }
+  }, [fitToPolyline, activeBottomWindowYCoordinate]);
+
+  useEffect(() => {
     if (!isOfferCreateLoading) {
       if (paymentStatus === 'success' && !offerCreateError) {
         dispatch(setMapCars([]));
@@ -226,12 +228,6 @@ const PaymentPopup = () => {
       });
     }, 0);
   }, [dispatch]);
-
-  useEffect(() => {
-    if (activeBottomWindowYCoordinate !== null && offerRouteFirstWaypoint && offerRouteLastWaypoint) {
-      mapRef.current?.fitToCoordinates([offerRouteFirstWaypoint.geo, offerRouteLastWaypoint.geo]);
-    }
-  }, [mapRef, activeBottomWindowYCoordinate, offerRouteFirstWaypoint, offerRouteLastWaypoint]);
 
   useEffect(() => {
     if (isDatePickerVisible) {

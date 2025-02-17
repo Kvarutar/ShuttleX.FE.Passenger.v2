@@ -12,7 +12,6 @@ import {
   ButtonShapes,
   ButtonSizes,
   CircleButtonModes,
-  MapViewRef,
   RouteIcon,
   SquareButtonModes,
   useDebounceCallback,
@@ -29,8 +28,6 @@ import {
   groupedTariffsSelector,
   isTariffsPricesLoadingSelector,
   minDurationTariffSelector,
-  offerRouteFirstWaypointSelector,
-  offerRouteLastWaypointSelector,
   offerRouteSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
 import { getTariffsPrices } from '../../../../../core/ride/redux/offer/thunks';
@@ -51,14 +48,12 @@ const Tariffs = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const { mapRef } = useMap();
+  const { fitToPolyline } = useMap();
 
   const groupedTariffs = useSelector(groupedTariffsSelector);
   const minDurationTariff = useSelector(minDurationTariffSelector);
   const offerRoute = useSelector(offerRouteSelector);
   const isTariffsPricesLoading = useSelector(isTariffsPricesLoadingSelector);
-  const offerRouteFirstWaypoint = useSelector(offerRouteFirstWaypointSelector);
-  const offerRouteLastWaypoint = useSelector(offerRouteLastWaypointSelector);
 
   const [selectedTariffGroup, setSelectedTariffGroup] = useState<TariffCategory | null>(groupedTariffs.economy ?? null);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number | null>(null);
@@ -71,10 +66,7 @@ const Tariffs = () => {
 
   const withAnimatedBigCars = useRef(true);
 
-  const debouncedMapFitToCoordinates = useDebounceCallback<MapViewRef['fitToCoordinates']>(
-    (...args) => mapRef.current?.fitToCoordinates(...args),
-    600,
-  );
+  const debouncedMapFitToPolyline = useDebounceCallback(fitToPolyline, 600);
 
   const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs?.some(trf => trf.cost !== null && trf.cost !== 0);
   // const isAvailableSelectedTariffGroup = selectedTariffGroup?.tariffs?.some(trf =>
@@ -121,12 +113,6 @@ const Tariffs = () => {
     dispatch(setOrderStatus(OrderStatus.StartRide));
     dispatch(setIsAddressSelectVisible(true));
     dispatch(setTripRouteInfo(null));
-  };
-
-  const onRouteButtonPress = () => {
-    if (offerRouteFirstWaypoint && offerRouteLastWaypoint) {
-      mapRef.current?.fitToCoordinates([offerRouteFirstWaypoint.geo, offerRouteLastWaypoint.geo]);
-    }
   };
 
   const resetTariffPrice = useCallback(
@@ -295,14 +281,9 @@ const Tariffs = () => {
           return;
         }
         dispatch(setActiveBottomWindowYCoordinate(values.pageY));
-        if (
-          !values.isOpened &&
-          offerRouteFirstWaypoint &&
-          offerRouteLastWaypoint &&
-          !isDebouncedMapFitToCoordinatesCalled
-        ) {
+        if (!values.isOpened && !isDebouncedMapFitToCoordinatesCalled) {
           setIsDebouncedMapFitToCoordinatesCalled(true);
-          debouncedMapFitToCoordinates([offerRouteFirstWaypoint.geo, offerRouteLastWaypoint.geo]);
+          debouncedMapFitToPolyline();
         }
       }}
       setIsOpened={value => {
@@ -325,7 +306,7 @@ const Tariffs = () => {
           </Button>
           <View style={styles.additionalTopContentRightButtonsContainer}>
             <Button
-              onPress={onRouteButtonPress}
+              onPress={fitToPolyline}
               mode={CircleButtonModes.Mode2}
               shape={ButtonShapes.Circle}
               withBorder={false}

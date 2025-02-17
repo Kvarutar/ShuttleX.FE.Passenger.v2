@@ -1,23 +1,30 @@
-import { createContext, RefObject, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { LatLng } from 'react-native-maps';
 import { useSelector } from 'react-redux';
-import { MapViewRef } from 'shuttlex-integration';
+import { MapPolyline, MapViewRef } from 'shuttlex-integration';
 
 import { mapCarsSelector } from '../ride/redux/map/selectors';
-import {
-  tripDropOffRouteLastWaypointSelector,
-  tripPickUpRouteLastWaypointSelector,
-  tripStatusSelector,
-} from '../ride/redux/trip/selectors';
-import { TripStatus } from '../ride/redux/trip/types';
 
 type MapContextType = {
   mapRef: RefObject<MapViewRef>;
-  focusOnRoute: () => void;
+  mapPolyline: MapPolyline | null;
+  setMapPolyline: Dispatch<SetStateAction<MapPolyline | null>>;
+  fitToPolyline: (options?: { onlyWhenCarGeoAvailable?: boolean }) => void;
+  // focusOnRoute: () => void;
   /**
    * If enabled, the camera will be focused between geopoint and car once when TripStatus changes to "Accepted" or "Ride"
    */
-  setIsRouteAutofocusEnabled: (isEnabled: boolean) => void;
+  // setIsRouteAutofocusEnabled: (isEnabled: boolean) => void;
 };
 
 const MapContext = createContext<MapContextType | null>(null);
@@ -35,16 +42,20 @@ type MapProviderProps = {
 };
 
 const MapProvider = ({ children }: MapProviderProps): JSX.Element => {
-  const tripStatus = useSelector(tripStatusSelector);
+  // const tripStatus = useSelector(tripStatusSelector);
   const mapCars = useSelector(mapCarsSelector);
-  const tripPickUpRouteLastWaypoint = useSelector(tripPickUpRouteLastWaypointSelector);
-  const tripDropOffRouteLastWaypoint = useSelector(tripDropOffRouteLastWaypointSelector);
+  // const tripPickUpRouteLastWaypoint = useSelector(tripPickUpRouteLastWaypointSelector);
+  // const tripDropOffRouteLastWaypoint = useSelector(tripDropOffRouteLastWaypointSelector);
+  // const tripPickUpRoute = useSelector(tripPickUpRouteSelector);
+  // const tripDropOffRoute = useSelector(tripDropOffRouteSelector);
 
   const mapRef = useRef<MapViewRef>(null);
   const contractorCarCoordinatesRef = useRef<LatLng | null>(null);
+  const polylineRef = useRef<MapPolyline | null>(null);
 
   const [isContractorCarCoordinatesAvailable, setIsContractorCarCoordinatesAvailable] = useState<boolean>(false);
-  const [isRouteAutofocusEnabled, setIsRouteAutofocusEnabled] = useState<boolean>(false);
+  // const [isRouteAutofocusEnabled, setIsRouteAutofocusEnabled] = useState<boolean>(false);
+  const [polyline, setPolyline] = useState<MapPolyline | null>(null);
 
   // contractorCarCoordinatesRef only needed to avoid putting it inside the useEffect hook below
   useEffect(() => {
@@ -58,32 +69,67 @@ const MapProvider = ({ children }: MapProviderProps): JSX.Element => {
     }
   }, [mapCars]);
 
-  const focusOnRoute = useCallback(() => {
-    // If contractor geo not available - dont focus
-    if (!contractorCarCoordinatesRef.current) {
-      return;
-    }
-
-    const coordinates: LatLng[] = [contractorCarCoordinatesRef.current];
-    if (tripStatus === TripStatus.Accepted && tripPickUpRouteLastWaypoint) {
-      // Contarctor -> Pickup
-      coordinates.push(tripPickUpRouteLastWaypoint.geo);
-    } else if (tripStatus === TripStatus.Ride && tripDropOffRouteLastWaypoint) {
-      // Pickup -> DropOff
-      coordinates.push(tripDropOffRouteLastWaypoint.geo);
-    }
-
-    mapRef.current?.fitToCoordinates(coordinates);
-  }, [mapRef, tripStatus, tripPickUpRouteLastWaypoint, tripDropOffRouteLastWaypoint]);
-
   useEffect(() => {
-    if (isRouteAutofocusEnabled) {
-      focusOnRoute();
-    }
-  }, [focusOnRoute, isRouteAutofocusEnabled, isContractorCarCoordinatesAvailable]);
+    polylineRef.current = polyline;
+  }, [polyline]);
+
+  const fitToPolyline = useCallback<MapContextType['fitToPolyline']>(
+    options => {
+      if (!polylineRef.current || !('coordinates' in polylineRef.current.options)) {
+        return;
+      }
+      if (options?.onlyWhenCarGeoAvailable) {
+        if (isContractorCarCoordinatesAvailable) {
+          mapRef.current?.fitToCoordinates(polylineRef.current.options.coordinates);
+        }
+        return;
+      }
+      mapRef.current?.fitToCoordinates(polylineRef.current.options.coordinates);
+    },
+    [isContractorCarCoordinatesAvailable],
+  );
+
+  // const focusOnRoute = useCallback(() => {
+  //   if (contractorCarCoordinatesRef.current && tripStatus === TripStatus.Arrived) {
+  //     mapRef.current?.animateCamera(
+  //       { center: contractorCarCoordinatesRef.current },
+  //       { duration: mapConstants.cameraAndPositionAnimationDuration },
+  //     );
+  //   }
+
+  //   // If contractor geo not available or bad status - dont focus
+  //   if (
+  //     !contractorCarCoordinatesRef.current ||
+  //     !(tripStatus === TripStatus.Accepted || tripStatus === TripStatus.Ride)
+  //   ) {
+  //     return;
+  //   }
+
+  //   const coordinates: LatLng[] = [contractorCarCoordinatesRef.current];
+  //   if (polylineRef.current && 'coordinates' in polylineRef.current.options) {
+  //     coordinates.push(...polylineRef.current.options.coordinates);
+  //   }
+
+  //   mapRef.current?.fitToCoordinates(coordinates);
+  // }, [mapRef, tripStatus]);
+
+  // useEffect(() => {
+  //   if (isRouteAutofocusEnabled) {
+  //     focusOnRoute();
+  //   }
+  // }, [focusOnRoute, isRouteAutofocusEnabled, isContractorCarCoordinatesAvailable, isPolylineRendered]);
 
   return (
-    <MapContext.Provider value={{ mapRef, focusOnRoute, setIsRouteAutofocusEnabled }}>{children}</MapContext.Provider>
+    <MapContext.Provider
+      value={{
+        mapRef,
+        mapPolyline: polyline,
+        setMapPolyline: setPolyline,
+        fitToPolyline,
+      }}
+    >
+      {children}
+    </MapContext.Provider>
   );
 };
 

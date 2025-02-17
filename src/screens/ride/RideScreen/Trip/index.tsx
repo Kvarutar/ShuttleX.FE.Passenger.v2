@@ -23,6 +23,7 @@ import {
 
 import { useMap } from '../../../../core/map/mapContext';
 import { setActiveBottomWindowYCoordinate } from '../../../../core/passenger/redux';
+import { activeBottomWindowYCoordinateSelector } from '../../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../core/ride/redux/alerts/selectors';
 import { tariffsNamesByFeKey } from '../../../../core/ride/redux/offer/utils';
@@ -50,7 +51,7 @@ const Trip = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Ride', undefined>>();
   const { colors } = useTheme();
   const tariffIconsData = useTariffsIcons();
-  const { focusOnRoute, setIsRouteAutofocusEnabled } = useMap();
+  const { fitToPolyline } = useMap();
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
   const tripStatus = useSelector(tripStatusSelector);
@@ -60,6 +61,7 @@ const Trip = () => {
   const isTripCanceledLoading = useSelector(isTripCanceledLoadingSelector);
   const order = useSelector(orderSelector);
   const tripTariff = useSelector(orderTariffInfoSelector);
+  const activeBottomWindowYCoordinate = useSelector(activeBottomWindowYCoordinateSelector);
 
   const arrivedTime = order?.info ? Date.parse(order?.info?.estimatedArriveToDropOffDate) : 0;
   const TariffIcon = tripTariff?.name ? tariffIconsData[tariffsNamesByFeKey[tripTariff.feKey]].icon : null;
@@ -75,11 +77,8 @@ const Trip = () => {
   });
 
   useEffect(() => {
-    setIsRouteAutofocusEnabled(true);
-    return () => {
-      setIsRouteAutofocusEnabled(false);
-    };
-  }, [setIsRouteAutofocusEnabled]);
+    setTimeout(() => fitToPolyline({ onlyWhenCarGeoAvailable: true }), 0);
+  }, [fitToPolyline, tripStatus, activeBottomWindowYCoordinate]);
 
   useEffect(() => {
     if (tripStatus === TripStatus.Finished && !isTripCanceledLoading) {
@@ -151,7 +150,7 @@ const Trip = () => {
       additionalTopContent={
         <Button
           style={styles.routeButton}
-          onPress={focusOnRoute}
+          onPress={fitToPolyline}
           mode={CircleButtonModes.Mode2}
           shape={ButtonShapes.Circle}
           withBorder={false}
