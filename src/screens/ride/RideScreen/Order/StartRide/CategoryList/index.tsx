@@ -20,6 +20,10 @@ const CategoriesList = () => {
       backgroundColor: colors.backgroundPrimaryColor,
       borderColor: colors.backgroundSecondaryColor,
     },
+    searchContainer: {
+      backgroundColor: colors.backgroundPrimaryColor,
+      borderColor: colors.backgroundSecondaryColor,
+    },
     selected: {
       backgroundColor: colors.backgroundSecondaryColor,
     },
@@ -27,7 +31,11 @@ const CategoriesList = () => {
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEventThrottle={16} style={styles.scrollView}>
-      <Bar onPress={openAddressSelectHandler} mode={BarModes.Disabled} style={[styles.searchContainer]}>
+      <Bar
+        onPress={openAddressSelectHandler}
+        mode={BarModes.Disabled}
+        style={[styles.searchContainer, computedStyles.searchContainer]}
+      >
         <SearchIcon />
       </Bar>
 
@@ -56,6 +64,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
   },
 
   button: {
