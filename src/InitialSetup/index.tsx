@@ -6,7 +6,7 @@ import { getTokens, isCoordinatesEqualZero, Nullable, ServerErrorModal, useTheme
 
 import { setIsLoggedIn } from '../core/auth/redux';
 import { isLoggedInSelector } from '../core/auth/redux/selectors';
-import { getAllCurrentTickets } from '../core/lottery/redux/thunks';
+import { getAllCurrentTickets, getTicketAfterRide } from '../core/lottery/redux/thunks';
 import { passengerZoneSelector } from '../core/passenger/redux/selectors';
 import { getOrUpdateZone, getProfileInfo, updateProfileLanguage } from '../core/passenger/redux/thunks';
 import { useAppDispatch } from '../core/redux/hooks';
@@ -27,9 +27,11 @@ import { setOrderStatus } from '../core/ride/redux/order';
 import { orderStatusSelector } from '../core/ride/redux/order/selectors';
 import { OrderStatus } from '../core/ride/redux/order/types';
 import {
+  addFinishedTrips,
   endTrip,
   setIsOrderCanceled,
   setIsOrderCanceledAlertVisible,
+  setSelectedOrderId,
   setTripIsCanceled,
   setTripStatus,
 } from '../core/ride/redux/trip';
@@ -66,6 +68,52 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
 
   const [locationLoaded, setLocationLoaded] = useState(false);
   const [isServerErrorModalVisible, setIsServerErrorModalVisible] = useState(false);
+
+  const changeCanceledOrderStateByCurrentOrder = useCallback(
+    (orderData: Nullable<OrderWithTariffInfo>) => {
+      if (orderData === null && order) {
+        switch (order.info?.state) {
+          case 'MoveToPickUp':
+          case 'InPickUp':
+          case 'InPreviousOrder':
+            //Because it can be changed in sse or notofications
+            if (!isOrderCanceled) {
+              dispatch(endTrip());
+              dispatch(setIsOrderCanceled(true));
+              dispatch(setSelectedOrderId(null));
+
+              //TODO: Rewrite this logic (navigate user to AddressSelect, without creating offer)
+
+              //TODO: Rewrite with saving points on the device
+              if (isCoordinatesEqualZero(offer.points[0]) || isCoordinatesEqualZero(offer.points[1])) {
+                dispatch(setIsOrderCanceledAlertVisible(true));
+                return;
+              }
+
+              dispatch(createInitialOffer());
+              dispatch(setOrderStatus(OrderStatus.Confirming));
+            }
+            break;
+          case 'InStopPoint':
+          case 'MoveToDropOff':
+          case 'MoveToStopPoint':
+            dispatch(setTripIsCanceled(true));
+            dispatch(setSelectedOrderId(null));
+
+            if (tripStatus === TripStatus.Finished || !order.info) {
+              break;
+            }
+
+            dispatch(getOrderInfo(order.info.orderId));
+            dispatch(setTripStatus(TripStatus.Finished));
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    [dispatch, isOrderCanceled, offer.points, order, tripStatus],
+  );
 
   const updatePassengerState = useCallback(async () => {
     const activeOffers = await dispatch(getActiveOffers()).unwrap();
@@ -192,46 +240,6 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
   }, [isErrorAvailable]);
 
   useEffect(() => {
-    const changeOrderStateByCurrentOrder = (orderData: Nullable<OrderWithTariffInfo>) => {
-      if (orderData === null && order) {
-        switch (order.info?.state) {
-          case 'MoveToPickUp':
-          case 'InPickUp':
-          case 'InPreviousOrder':
-            //Because it can be changed in sse or notofications
-            if (!isOrderCanceled) {
-              dispatch(endTrip());
-
-              //TODO: Rewrite with saving points on the device
-              if (isCoordinatesEqualZero(offer.points[0]) || isCoordinatesEqualZero(offer.points[1])) {
-                dispatch(setIsOrderCanceledAlertVisible(true));
-                return;
-              }
-
-              dispatch(createInitialOffer());
-              dispatch(setOrderStatus(OrderStatus.Confirming));
-              dispatch(setIsOrderCanceled(true));
-            }
-            break;
-          case 'InStopPoint':
-          case 'MoveToDropOff':
-          case 'MoveToStopPoint':
-            dispatch(setTripIsCanceled(true));
-
-            if (tripStatus === TripStatus.Finished || !order.info) {
-              break;
-            }
-
-            dispatch(getOrderInfo(order.info.orderId));
-            dispatch(setTripStatus(TripStatus.Finished));
-
-            break;
-          default:
-            break;
-        }
-      }
-    };
-
     const subscription = AppState.addEventListener('change', async nextAppState => {
       if (!appState.current.match(/inactive|background/) && nextAppState !== 'active') {
         return;
@@ -241,8 +249,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
         const activeOffers = await dispatch(getActiveOffers()).unwrap();
 
         if (activeOffers.length === 0) {
-          const orderData = await dispatch(getCurrentOrder()).unwrap();
-          changeOrderStateByCurrentOrder(orderData);
+          dispatch(getCurrentOrder());
         }
       } else if (selectedOrderId) {
         const orderData = await dispatch(getOrderInfo(selectedOrderId)).unwrap();
@@ -257,8 +264,20 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
             case 'InPreviousOrder':
               dispatch(getRouteInfo(orderData.orderId));
               break;
+            case 'CanceledByContractor':
+              changeCanceledOrderStateByCurrentOrder(null);
+              break;
+            case 'CompletedSuccessfully':
+              if (tripStatus !== TripStatus.Finished) {
+                dispatch(addFinishedTrips());
+                //TODO go to rating page
+                dispatch(getTicketAfterRide());
+                dispatch(setTripStatus(TripStatus.Finished));
+                dispatch(getRecentDropoffs({ amount: 10 }));
+              }
+              break;
+            // State 'None' or "PassengerCanceled" (because passenger can't cancel order when he on background)
             default:
-              changeOrderStateByCurrentOrder(null);
               break;
           }
         }
@@ -270,7 +289,16 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
     return () => {
       subscription.remove();
     };
-  }, [dispatch, isOrderCanceled, offer.points, order, tripStatus, selectedOrderId, orderStatus]);
+  }, [
+    dispatch,
+    changeCanceledOrderStateByCurrentOrder,
+    isOrderCanceled,
+    offer.points,
+    order,
+    tripStatus,
+    selectedOrderId,
+    orderStatus,
+  ]);
 
   return (
     <>

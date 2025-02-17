@@ -8,7 +8,7 @@ import { CurrencyType } from 'shuttlex-integration/lib/typescript/src/utils/curr
 import { lotteryTicketAfterRideSelector } from '../../../core/lottery/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { cleanOrder } from '../../../core/ride/redux/order';
-import { endTrip, setTripReceipt, setTripRouteInfo } from '../../../core/ride/redux/trip';
+import { endTrip, setIsOrderCanceled, setTripReceipt, setTripRouteInfo } from '../../../core/ride/redux/trip';
 import {
   isTripCanceledSelector,
   orderSelector,
@@ -38,6 +38,9 @@ const ReceiptScreen = () => {
   const onEndTrip = async () => {
     dispatch(setTripReceipt(null));
     dispatch(endTrip());
+    //Because this state sometimes changes before we end up to this screen, here it's cleaning
+    //TODO: Think about cleaner way
+    dispatch(setIsOrderCanceled(false));
 
     navigation.navigate('Ride');
   };

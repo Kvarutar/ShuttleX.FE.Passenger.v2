@@ -20,6 +20,7 @@ import { activeBottomWindowYCoordinateSelector } from '../../../../core/passenge
 import { useAppDispatch } from '../../../../core/redux/hooks';
 import { offerPointsSelector } from '../../../../core/ride/redux/offer/selectors';
 import { cancelOffer } from '../../../../core/ride/redux/offer/thunks';
+import { setIsOrderCanceled } from '../../../../core/ride/redux/trip';
 import { isCancelOfferLoadingSelector } from '../../../../core/ride/redux/trip/selectors';
 
 const Confirming = () => {
@@ -83,6 +84,15 @@ const Confirming = () => {
     },
   });
 
+  const onPressCancel = () => {
+    if (!isCancelOfferLoading) {
+      dispatch(cancelOffer());
+      //Because this state sometimes changes before we end up to this screen, here it's cleaning
+      //TODO: Think about cleaner way
+      dispatch(setIsOrderCanceled(false));
+    }
+  };
+
   return (
     <>
       <Fog withAnimation />
@@ -94,11 +104,7 @@ const Confirming = () => {
           </Text>
         </View>
         <View style={computedStyles.closeButtonContainer}>
-          <Bar
-            mode={BarModes.Disabled}
-            style={[styles.button, computedStyles.button]}
-            onPress={() => !isCancelOfferLoading && dispatch(cancelOffer())}
-          >
+          <Bar mode={BarModes.Disabled} style={[styles.button, computedStyles.button]} onPress={onPressCancel}>
             {isCancelOfferLoading ? (
               <LoadingSpinner iconMode={{ size: 60, strokeWidth: 5 }} />
             ) : (

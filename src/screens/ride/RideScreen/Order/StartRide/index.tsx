@@ -358,13 +358,14 @@ const styles = StyleSheet.create({
     height: 54,
   },
   navButtonContainerStyle: {
-    padding: 4,
-    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 54,
     aspectRatio: 1,
     borderRadius: 100,
   },
   navButtonStyle: {
-    height: '100%',
+    height: 48,
     aspectRatio: 1,
   },
   navBWButtonsContainer: {

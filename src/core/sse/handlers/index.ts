@@ -120,9 +120,13 @@ export const driverCanceledSSEHandler = (
     const selectedOrderId = selectedOrderIdSelector(store.getState());
     const data: SSEDriverCanceledEventData = JSON.parse(event.data);
 
+    //TODO: Rewrite this logic (navigate user to AddressSelect, without creating offer)
+
     //Because it can be changed in notifications or initial setup
     if (data.orderId === selectedOrderId && !isOrderCanceled) {
       dispatch(endTrip());
+      dispatch(setIsOrderCanceled(true));
+      dispatch(setSelectedOrderId(null));
 
       //TODO: Rewrite with saving points on the device
       if (isCoordinatesEqualZero(offer.points[0]) || isCoordinatesEqualZero(offer.points[1])) {
@@ -132,8 +136,6 @@ export const driverCanceledSSEHandler = (
 
       dispatch(createInitialOffer());
       dispatch(setOrderStatus(OrderStatus.Confirming));
-      dispatch(setIsOrderCanceled(true));
-      store.dispatch(setSelectedOrderId(null));
     }
   }
 };
@@ -142,15 +144,16 @@ export const driverRejectedSSEHandler = (
   event: EventSourceEvent<SSEAndNotificationsEventType.DriverRejected, SSEAndNotificationsEventType>,
 ) => {
   if (event.data) {
+    store.dispatch(setTripIsCanceled(true));
     const { getState, dispatch } = store;
     const tripStatus = tripStatusSelector(getState());
     const selectedOrderId = selectedOrderIdSelector(getState());
     const data: SSEDriverRejectedEventData = JSON.parse(event.data);
 
     if (data.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
-      dispatch(setTripIsCanceled(true));
+      dispatch(getOrderInfo(data.orderId));
       dispatch(setTripStatus(TripStatus.Finished));
-      dispatch(setIsOrderCanceled(true));
+      dispatch(setSelectedOrderId(null));
     }
   }
 };

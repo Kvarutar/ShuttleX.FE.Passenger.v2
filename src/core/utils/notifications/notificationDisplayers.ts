@@ -18,12 +18,7 @@ import {
   setTripIsCanceled,
   setTripStatus,
 } from '../../ride/redux/trip';
-import {
-  isOrderCanceledSelector,
-  orderInfoSelector,
-  selectedOrderIdSelector,
-  tripStatusSelector,
-} from '../../ride/redux/trip/selectors';
+import { isOrderCanceledSelector, selectedOrderIdSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
 import { getCurrentOrder, getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { NotificationPayload, NotificationRemoteMessage, SSEAndNotificationsEventType } from './types';
@@ -86,9 +81,13 @@ export const notificationHandlers: Record<
     const offer = offerSelector(store.getState());
     const selectedOrderId = selectedOrderIdSelector(store.getState());
 
+    //TODO: Rewrite this logic (navigate user to AddressSelect, without creating offer)
+
     //Because it can be changed in sse
     if (payload?.orderId === selectedOrderId && !isOrderCanceled) {
       store.dispatch(endTrip());
+      store.dispatch(setIsOrderCanceled(true));
+      store.dispatch(setSelectedOrderId(null));
 
       //TODO: Rewrite with saving points on the device
       if (isCoordinatesEqualZero(offer.points[0]) || isCoordinatesEqualZero(offer.points[1])) {
@@ -98,20 +97,17 @@ export const notificationHandlers: Record<
 
       store.dispatch(createInitialOffer());
       store.dispatch(setOrderStatus(OrderStatus.Confirming));
-      store.dispatch(setIsOrderCanceled(true));
-      store.dispatch(setSelectedOrderId(null));
     }
   },
 
   //AfterPickUp when trip started and driver canceled trip - go to receipt screen
   [SSEAndNotificationsEventType.DriverRejected]: async payload => {
     store.dispatch(setTripIsCanceled(true));
-    const orderInfo = orderInfoSelector(store.getState());
     const tripStatus = tripStatusSelector(store.getState());
     const selectedOrderId = selectedOrderIdSelector(store.getState());
 
-    if (orderInfo && payload?.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
-      store.dispatch(getOrderInfo(orderInfo.orderId));
+    if (payload?.orderId === selectedOrderId && tripStatus !== TripStatus.Finished) {
+      store.dispatch(getOrderInfo(payload.orderId));
       store.dispatch(setTripStatus(TripStatus.Finished));
       store.dispatch(setSelectedOrderId(null));
     }
