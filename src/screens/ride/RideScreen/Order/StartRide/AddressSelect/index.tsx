@@ -2,18 +2,18 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { LatLng } from 'react-native-maps';
 import { useSelector } from 'react-redux';
 import {
   Bar,
-  BarModes,
+  // BarModes,
   Button,
   CircleButtonModes,
   isCoordinatesEqualZero,
   LoadingSpinner,
-  PinIcon,
+  // PinIcon,
   SelectOnMapIcon,
   sizes,
   SliderWithCustomGesture,
@@ -25,7 +25,7 @@ import {
 
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
-import { convertGeoToAddress } from '../../../../../../core/ride/redux/geolocation/thunks';
+// import { convertGeoToAddress } from '../../../../../../core/ride/redux/geolocation/thunks';
 import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
 import { isRouteLengthTooShortError, isRoutePointsLocationError } from '../../../../../../core/ride/redux/offer/errors';
 import {
@@ -78,7 +78,9 @@ const AddressSelect = ({
   const [addresses, setAddresses] = useState<SearchAddressFromAPI[]>([]);
   const [addressesHistory, setAddressesHistory] = useState<RecentDropoffsFromAPI[]>([]);
   const [incorrectWaypoints, setIncorrectWaypoints] = useState(false);
-  const [myLocation, setMyLocation] = useState({ place: '', fullAddress: '' });
+
+  // {/* TODO uncoment when we will need myLocation button */}
+  // const [myLocation, setMyLocation] = useState({ place: '', fullAddress: '' });
 
   const defaultLocation = useSelector(geolocationCoordinatesSelector);
   const [focusedInput, setFocusedInput] = useState<FocusedInput>({
@@ -133,23 +135,24 @@ const AddressSelect = ({
     getSearchHistory();
   }, [dispatch, getSearchHistory]);
 
-  useEffect(() => {
-    if (defaultLocation) {
-      (async () => {
-        try {
-          const addressWithFullInfo = await dispatch(
-            convertGeoToAddress({
-              latitude: defaultLocation.latitude,
-              longitude: defaultLocation.longitude,
-            }),
-          ).unwrap();
-          setMyLocation({ place: addressWithFullInfo.place, fullAddress: addressWithFullInfo.fullAddress });
-        } catch (error) {
-          console.error('Error fetching address:', error);
-        }
-      })();
-    }
-  }, [dispatch, defaultLocation]);
+  // {/* TODO uncoment when we will need myLocation button */}
+  // useEffect(() => {
+  //   if (defaultLocation) {
+  //     (async () => {
+  //       try {
+  //         const addressWithFullInfo = await dispatch(
+  //           convertGeoToAddress({
+  //             latitude: defaultLocation.latitude,
+  //             longitude: defaultLocation.longitude,
+  //           }),
+  //         ).unwrap();
+  //         setMyLocation({ place: addressWithFullInfo.place, fullAddress: addressWithFullInfo.fullAddress });
+  //       } catch (error) {
+  //         console.error('Error fetching address:', error);
+  //       }
+  //     })();
+  //   }
+  // }, [dispatch, defaultLocation]);
 
   useEffect(() => {
     if (debounceInputValue.trim() === '') {
@@ -333,19 +336,20 @@ const AddressSelect = ({
     }
   };
 
-  const onMyLocationPress = () => {
-    if (defaultLocation) {
-      onAddressSelect(
-        {
-          id: offerPoints[0] ? '0' : '1',
-          fullAddress: t('ride_Ride_AddressSelect_addressButtonMyLocation'),
-          dropoffGeo: { latitude: defaultLocation.latitude, longitude: defaultLocation.longitude },
-          dropoffAddress: t('ride_Ride_AddressSelect_addressButtonMyLocation'),
-        },
-        true,
-      );
-    }
-  };
+  // {/* TODO uncoment when we will need myLocation button */}
+  // const onMyLocationPress = () => {
+  //   if (defaultLocation) {
+  //     onAddressSelect(
+  //       {
+  //         id: offerPoints[0] ? '0' : '1',
+  //         fullAddress: t('ride_Ride_AddressSelect_addressButtonMyLocation'),
+  //         dropoffGeo: { latitude: defaultLocation.latitude, longitude: defaultLocation.longitude },
+  //         dropoffAddress: t('ride_Ride_AddressSelect_addressButtonMyLocation'),
+  //       },
+  //       true,
+  //     );
+  //   }
+  // };
 
   const isButtonDisabled =
     !isAllOfferPointsFilled ||
@@ -364,7 +368,8 @@ const AddressSelect = ({
         />
       </View>
 
-      <Pressable style={[styles.myLocationButtonContainer]} onPress={onMyLocationPress}>
+      {/* TODO uncoment when we will need this button */}
+      {/* <Pressable style={[styles.myLocationButtonContainer]} onPress={onMyLocationPress}>
         <View style={styles.myLocationButtonWrapper}>
           <Bar mode={BarModes.Disabled} style={styles.circleIconContainer}>
             <PinIcon />
@@ -376,7 +381,7 @@ const AddressSelect = ({
             {myLocation.place ? myLocation.place : t('ride_Ride_AddressSelect_addressButtonMyLocation')}
           </Text>
         </View>
-      </Pressable>
+      </Pressable> */}
 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.scrollViewSearchContainer}>
@@ -482,6 +487,7 @@ const styles = StyleSheet.create({
   },
   scrollViewSearchWrapper: {
     flex: 1,
+    marginTop: 22,
   },
   recentPlaceBarWrapper: {
     marginTop: 12,
@@ -525,35 +531,36 @@ const styles = StyleSheet.create({
   placeBarStyle: {
     paddingVertical: 16,
   },
-  myLocationButtonContainer: {
-    flexDirection: 'row',
-    marginTop: 8,
-    alignItems: 'center',
-    gap: 12,
-  },
-  circleIconContainer: {
-    borderRadius: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 40,
-    height: 40,
-  },
-  myLocationButtonWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexShrink: 1,
-  },
-  buttonTextMyLocation: {
-    fontSize: 17,
-    fontFamily: 'Inter Medium',
-    lineHeight: 22,
-    letterSpacing: 0,
-  },
-  textPlace: {
-    fontSize: 14,
-    lineHeight: 22,
-    letterSpacing: 0,
-  },
+  // {/* TODO uncoment when we will need myLocation button */}
+  // myLocationButtonContainer: {
+  //   flexDirection: 'row',
+  //   marginTop: 8,
+  //   alignItems: 'center',
+  //   gap: 12,
+  // },
+  // circleIconContainer: {
+  //   borderRadius: 100,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   width: 40,
+  //   height: 40,
+  // },
+  // myLocationButtonWrapper: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   flexShrink: 1,
+  // },
+  // buttonTextMyLocation: {
+  //   fontSize: 17,
+  //   fontFamily: 'Inter Medium',
+  //   lineHeight: 22,
+  //   letterSpacing: 0,
+  // },
+  // textPlace: {
+  //   fontSize: 14,
+  //   lineHeight: 22,
+  //   letterSpacing: 0,
+  // },
 });
 
 export default AddressSelect;
