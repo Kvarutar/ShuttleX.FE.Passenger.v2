@@ -338,6 +338,7 @@ const styles = StyleSheet.create({
     height: undefined,
     aspectRatio: 3.3,
     flexShrink: 1,
+    resizeMode: 'contain',
   },
   avatar: {
     width: 52,
