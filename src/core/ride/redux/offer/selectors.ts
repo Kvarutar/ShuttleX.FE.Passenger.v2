@@ -22,6 +22,7 @@ export const currentSelectedTariffSelector = (state: AppState) => state.offer.cu
 export const isTooShortRouteLengthPopupVisibleSelector = (state: AppState) =>
   state.offer.ui.isTooShortRouteLengthPopupVisible;
 export const isTooManyRidesPopupVisibleSelector = (state: AppState) => state.offer.ui.isTooManyRidesPopupVisible;
+export const isAllOfferPointsFilledSelector = (state: AppState) => state.offer.isAllOfferPointsFilled;
 
 //Loadings
 export const isSearchAdressesLoadingSelector = (state: AppState) => state.offer.loading.searchAdresses;

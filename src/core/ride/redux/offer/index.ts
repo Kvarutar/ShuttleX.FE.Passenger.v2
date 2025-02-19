@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 
 import { cancelTrip } from '../trip/thunks';
+import { isRoutePointsLocationError } from './errors';
 import {
   createInitialOffer,
   createOffer,
@@ -33,6 +34,7 @@ const initialState: OfferState = {
     { id: 0, address: '', fullAddress: '', longitude: 0, latitude: 0 },
     { id: 1, address: '', fullAddress: '', longitude: 0, latitude: 0 },
   ],
+  isAllOfferPointsFilled: false,
   offerRoute: null,
   loading: {
     searchAdresses: false,
@@ -75,6 +77,9 @@ const slice = createSlice({
     },
     setTripTariff(state, action: PayloadAction<SelectedTariff>) {
       state.selectedTariff = action.payload;
+    },
+    setIsAllOfferPointsFilled(state, action) {
+      state.isAllOfferPointsFilled = action.payload;
     },
     updateTariffMatching(state, action: PayloadAction<MatchingFromAPI[]>) {
       if (state.avaliableTariffs && action.payload.length > 0) {
@@ -234,6 +239,7 @@ const slice = createSlice({
         state.errors.offerRoute = null;
       })
       .addCase(getOfferRoute.fulfilled, (state, action) => {
+        state.isCityAvailable = true;
         slice.caseReducers.setOfferRoute(state, {
           payload: action.payload,
           type: setOfferRoute.type,
@@ -249,7 +255,10 @@ const slice = createSlice({
           payload: false,
           type: setOfferRouteLoading.type,
         });
-        state.errors.offerRoute = action.payload as NetworkErrorDetailsWithBody<any>;
+        const error = action.payload as NetworkErrorDetailsWithBody<any>;
+        state.errors.offerRoute = error;
+
+        state.isCityAvailable = !isRoutePointsLocationError(error);
       })
 
       // offerCreate
@@ -299,8 +308,8 @@ const slice = createSlice({
           payload: action.payload,
           type: setOfferZoneId.type,
         });
-
-        state.isCityAvailable = action.payload !== null;
+        //TODO need to comment it because of the changed map, maybe we need it for future
+        // state.isCityAvailable = action.payload !== null;
         state.loading.isCityAvailable = false;
       })
       .addCase(getZoneIdByLocation.rejected, state => {
@@ -348,6 +357,7 @@ export const {
   setCurrentSelectedTariff,
   setIsTooShortRouteLengthPopupVisible,
   setIsTooManyRidesPopupVisible,
+  setIsAllOfferPointsFilled,
 } = slice.actions;
 
 export default slice.reducer;

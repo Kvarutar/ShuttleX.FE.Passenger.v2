@@ -74,6 +74,7 @@ export type OfferState = {
   offerId: Nullable<string>;
   recentDropoffs: RecentDropoffsFromAPI[];
   points: AddressPoint[];
+  isAllOfferPointsFilled: boolean;
   loading: {
     searchAdresses: boolean;
     avaliableTariffs: boolean;

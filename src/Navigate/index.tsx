@@ -1,6 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Platform } from 'react-native';
 import BootSplash from 'react-native-bootsplash';
 import { useSelector } from 'react-redux';
 
@@ -47,7 +46,7 @@ const Navigate = (): JSX.Element => {
               options={{
                 animation: 'none',
                 statusBarTranslucent: true,
-                statusBarStyle: Platform.OS === 'android' ? 'dark' : undefined,
+                statusBarStyle: 'dark',
                 statusBarColor: 'transparent',
               }}
             />

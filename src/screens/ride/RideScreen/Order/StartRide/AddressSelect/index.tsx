@@ -26,7 +26,7 @@ import {
 import { useAppDispatch } from '../../../../../../core/redux/hooks';
 import { geolocationCoordinatesSelector } from '../../../../../../core/ride/redux/geolocation/selectors';
 // import { convertGeoToAddress } from '../../../../../../core/ride/redux/geolocation/thunks';
-import { updateOfferPoint } from '../../../../../../core/ride/redux/offer';
+import { setIsAllOfferPointsFilled, updateOfferPoint } from '../../../../../../core/ride/redux/offer';
 import { isRouteLengthTooShortError, isRoutePointsLocationError } from '../../../../../../core/ride/redux/offer/errors';
 import {
   isAvailableTariffsLoadingSelector,
@@ -135,6 +135,9 @@ const AddressSelect = ({
     getSearchHistory();
   }, [dispatch, getSearchHistory]);
 
+  useEffect(() => {
+    dispatch(setIsAllOfferPointsFilled(isAllOfferPointsFilled));
+  }, [isAllOfferPointsFilled, dispatch]);
   // {/* TODO uncoment when we will need myLocation button */}
   // useEffect(() => {
   //   if (defaultLocation) {
@@ -325,6 +328,7 @@ const AddressSelect = ({
 
   const onConfirm = async () => {
     if (isAllOfferPointsFilled) {
+      //TODO this code wont work for now, we need to change logic for both of the popups because for now they are trigered by the same isRoutePointsLocationError
       const isIncorrect = offerRouteError !== null && isRoutePointsLocationError(offerRouteError);
       setIncorrectWaypoints(isIncorrect);
       setIsUnsupportedDestinationPopupVisible(isIncorrect);

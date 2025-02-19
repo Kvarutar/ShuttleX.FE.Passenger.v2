@@ -30,10 +30,9 @@ import {
   setIsTooShortRouteLengthPopupVisible,
   setOfferRoute,
 } from '../../../../../core/ride/redux/offer';
-import { isRouteLengthTooShortError } from '../../../../../core/ride/redux/offer/errors';
+import { isRouteLengthTooShortError, isRoutePointsLocationError } from '../../../../../core/ride/redux/offer/errors';
 import {
-  isCityAvailableLoadingSelector,
-  isCityAvailableSelector,
+  isAllOfferPointsFilledSelector,
   isTooShortRouteLengthPopupVisibleSelector,
   offerRecentDropoffsSelector,
   offerRouteErrorSelector,
@@ -70,13 +69,12 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const bottomWindowRef = useRef<BottomWindowWithGestureRef>(null);
 
   const alerts = useSelector(twoHighestPriorityAlertsSelector);
-  const isCityAvailable = useSelector(isCityAvailableSelector);
-  const isCityAvailableLoading = useSelector(isCityAvailableLoadingSelector);
   const isAddressSelectVisible = useSelector(isOrderAddressSelectVisibleSelector);
   const offerRouteError = useSelector(offerRouteErrorSelector);
   const isTooShortRouteLengthPopupVisible = useSelector(isTooShortRouteLengthPopupVisibleSelector);
   const profile = useSelector(profileSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
+  const isAllOfferPointsFilled = useSelector(isAllOfferPointsFilledSelector);
 
   const isRecentDropoffsExist = useMemo(() => recentDropoffs.length > 0, [recentDropoffs]);
 
@@ -126,10 +124,11 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   }, [dispatch, isAddressSelectVisible]);
 
   useEffect(() => {
-    if (isCityAvailable !== null && !isCityAvailableLoading) {
-      setIsUnsupportedCityPopupVisible(!isCityAvailable);
+    if (isAllOfferPointsFilled) {
+      const isIncorrect = offerRouteError !== null && isRoutePointsLocationError(offerRouteError);
+      setIsUnsupportedCityPopupVisible(isIncorrect);
     }
-  }, [isCityAvailable, isCityAvailableLoading]);
+  }, [dispatch, isAllOfferPointsFilled, offerRouteError, setIsUnsupportedCityPopupVisible]);
 
   useEffect(() => {
     if (!isUnsupportedCityPopupVisible) {
