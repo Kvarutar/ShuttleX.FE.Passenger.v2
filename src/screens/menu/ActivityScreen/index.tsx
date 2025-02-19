@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -254,7 +254,15 @@ const ActiveRide = ({ activeRide }: { activeRide: OrderWithTariffInfo }) => {
       dispatch(getRouteInfo(activeRide.orderId));
       dispatch(setSelectedOrderId(activeRide.orderId));
 
-      navigation.replace('Ride');
+      //This action kills screens, all logic is processing again
+      //It resolves problem with infinity adding loops
+      navigation.dispatch(state => {
+        return CommonActions.reset({
+          ...state,
+          routes: [{ name: 'Ride' }], // Start from one screen - "Ride"
+          index: 0,
+        });
+      });
     }
   };
 
