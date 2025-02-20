@@ -201,7 +201,6 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
           type: 'simple',
           colorMode: 'mode1',
           coordinates: { latitude: startOfferPoint.latitude, longitude: startOfferPoint.longitude },
-          zIndex: -1,
         },
       ]);
     } else if (
@@ -214,7 +213,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
         type: 'dashed',
         options: { coordinates: decodeGooglePolylineArr(offerRoute.legs.map(leg => leg.geometry)), color: '#ABC736' },
       });
-      setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: offerRouteFirstWaypoint.geo, zIndex: -1 }]);
+      setMarkers([{ type: 'simple', colorMode: 'mode1', coordinates: offerRouteFirstWaypoint.geo }]);
       setFinalStopPointCoordinates(offerRouteLastWaypoint.geo);
       setFinalStopPointColorMode('mode2');
     } else {
