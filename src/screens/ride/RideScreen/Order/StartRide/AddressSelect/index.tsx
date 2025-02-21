@@ -328,7 +328,6 @@ const AddressSelect = ({
 
   const onConfirm = async () => {
     if (isAllOfferPointsFilled) {
-      //TODO this code wont work for now, we need to change logic for both of the popups because for now they are trigered by the same isRoutePointsLocationError
       const isIncorrect = offerRouteError !== null && isRoutePointsLocationError(offerRouteError);
       setIncorrectWaypoints(isIncorrect);
       setIsUnsupportedDestinationPopupVisible(isIncorrect);

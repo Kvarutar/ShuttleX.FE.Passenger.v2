@@ -30,9 +30,11 @@ import {
   setIsTooShortRouteLengthPopupVisible,
   setOfferRoute,
 } from '../../../../../core/ride/redux/offer';
-import { isRouteLengthTooShortError, isRoutePointsLocationError } from '../../../../../core/ride/redux/offer/errors';
+import { isRouteLengthTooShortError } from '../../../../../core/ride/redux/offer/errors';
 import {
   isAllOfferPointsFilledSelector,
+  isCityAvailableLoadingSelector,
+  isCityAvailableSelector,
   isTooShortRouteLengthPopupVisibleSelector,
   offerRecentDropoffsSelector,
   offerRouteErrorSelector,
@@ -75,6 +77,8 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const profile = useSelector(profileSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
   const isAllOfferPointsFilled = useSelector(isAllOfferPointsFilledSelector);
+  const isCityAvailable = useSelector(isCityAvailableSelector);
+  const isCityAvailableLoading = useSelector(isCityAvailableLoadingSelector);
 
   const isRecentDropoffsExist = useMemo(() => recentDropoffs.length > 0, [recentDropoffs]);
 
@@ -124,11 +128,10 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   }, [dispatch, isAddressSelectVisible]);
 
   useEffect(() => {
-    if (isAllOfferPointsFilled) {
-      const isIncorrect = offerRouteError !== null && isRoutePointsLocationError(offerRouteError);
-      setIsUnsupportedCityPopupVisible(isIncorrect);
+    if (isCityAvailable !== null && !isCityAvailableLoading && isAllOfferPointsFilled) {
+      setIsUnsupportedCityPopupVisible(!isCityAvailable);
     }
-  }, [dispatch, isAllOfferPointsFilled, offerRouteError, setIsUnsupportedCityPopupVisible]);
+  }, [isCityAvailable, isCityAvailableLoading, isAllOfferPointsFilled]);
 
   useEffect(() => {
     if (!isUnsupportedCityPopupVisible) {

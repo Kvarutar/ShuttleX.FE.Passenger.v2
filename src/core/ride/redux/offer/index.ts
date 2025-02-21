@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NetworkErrorDetailsWithBody, Nullable } from 'shuttlex-integration';
 
 import { cancelTrip } from '../trip/thunks';
-import { isRoutePointsLocationError } from './errors';
 import {
   createInitialOffer,
   createOffer,
@@ -239,7 +238,6 @@ const slice = createSlice({
         state.errors.offerRoute = null;
       })
       .addCase(getOfferRoute.fulfilled, (state, action) => {
-        state.isCityAvailable = true;
         slice.caseReducers.setOfferRoute(state, {
           payload: action.payload,
           type: setOfferRoute.type,
@@ -255,10 +253,7 @@ const slice = createSlice({
           payload: false,
           type: setOfferRouteLoading.type,
         });
-        const error = action.payload as NetworkErrorDetailsWithBody<any>;
-        state.errors.offerRoute = error;
-
-        state.isCityAvailable = !isRoutePointsLocationError(error);
+        state.errors.offerRoute = action.payload as NetworkErrorDetailsWithBody<any>;
       })
 
       // offerCreate
@@ -308,8 +303,8 @@ const slice = createSlice({
           payload: action.payload,
           type: setOfferZoneId.type,
         });
-        //TODO need to comment it because of the changed map, maybe we need it for future
-        // state.isCityAvailable = action.payload !== null;
+
+        state.isCityAvailable = action.payload !== null;
         state.loading.isCityAvailable = false;
       })
       .addCase(getZoneIdByLocation.rejected, state => {
