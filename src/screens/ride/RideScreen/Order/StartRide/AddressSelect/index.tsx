@@ -76,6 +76,7 @@ const AddressSelect = ({
   const offerPoints = useSelector(offerPointsSelector);
   const [isAddressSelected, setIsAddressSelected] = useState(false);
   const [addresses, setAddresses] = useState<SearchAddressFromAPI[]>([]);
+  const [activeSwipeId, setActiveSwipeId] = useState<string>('');
   const [addressesHistory, setAddressesHistory] = useState<RecentDropoffsFromAPI[]>([]);
   const [incorrectWaypoints, setIncorrectWaypoints] = useState(false);
 
@@ -438,6 +439,12 @@ const AddressSelect = ({
                           text={t('menu_Wallet_delete')}
                           textStyle={styles.testStyle}
                           wipeBlockStyle={styles.wipeBlockStyle}
+                          isActive={activeSwipeId === item.id}
+                          onSwipeStart={() => {
+                            if (item.id) {
+                              setActiveSwipeId(item.id);
+                            }
+                          }}
                           onSwipeEnd={() => {
                             if (item.id) {
                               handleDeleteAddress(item.id);
