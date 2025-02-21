@@ -24,4 +24,5 @@ export type RootStackParamList = {
   TicketWallet: undefined;
   ProfilePhoto: undefined;
   ActivityReceiptScreen: { orderId: string };
+  VideosScreen: undefined;
 };

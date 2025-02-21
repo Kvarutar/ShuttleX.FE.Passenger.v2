@@ -96,7 +96,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
     navButtonContainerStyle: {
       backgroundColor: passengerColors.adsBackgroundColor.navButton,
     },
-    navBWButtonsContainer: {
+    navBottomWindowButtonsContainer: {
       backgroundColor: passengerColors.adsBackgroundColor.navButton,
     },
     firstVisiblePartWrapper: {
@@ -142,7 +142,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
     return keyboardDidShowListener.remove;
   }, [isUnsupportedCityPopupVisible]);
 
-  const navBWButtonsIcons: (({ style }: { style?: StyleProp<ViewStyle> }) => JSX.Element)[] = [
+  const navBottomWindowButtonsIcons: (({ style }: { style?: StyleProp<ViewStyle> }) => JSX.Element)[] = [
     CarIcon,
     PlayVideoIcon,
     EarthIcon,
@@ -243,35 +243,33 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
             }
           />
         </Button>
-        <View style={[styles.navBWButtonsContainer, computedStyles.navBWButtonsContainer]}>
-          {navBWButtonsIcons.map((NavBWButtonIcon, index) => {
-            const iconStyle = { opacity: index === 1 ? 0.3 : 1 };
+        <View style={[styles.navBottomWindowButtonsContainer, computedStyles.navBottomWindowButtonsContainer]}>
+          {navBottomWindowButtonsIcons.map((NavBottomWindowButtonIcon, index) => {
             return (
               <Button
-                key={`navBWButtonIcon_${index}`}
-                //TODO: Remove condition when need play button
-                disabled={index === 1}
+                key={`navBottomWindowButtonIcon_${index}`}
                 containerStyle={[
-                  styles.navBWButtonContainerStyle,
+                  styles.navBottomWindowButtonContainerStyle,
                   {
-                    //TODO: Remove condition when need play button
-                    backgroundColor:
-                      index === 1 ? colors.iconSecondaryColor : colors.squareButtonModes.mode5.backgroundColor,
+                    backgroundColor: colors.squareButtonModes.mode5.backgroundColor,
                   },
                 ]}
                 style={[
-                  styles.navBWButtonStyle,
+                  styles.navBottomWindowButtonStyle,
                   {
                     backgroundColor: selectedBottomWindowIdx === index ? colors.secondaryGradientStartColor : undefined,
                   },
                 ]}
                 onPress={() => {
                   bottomWindowRef.current?.closeWindow();
-                  setSelectedBottomWindowIdx(index);
+                  if (index === 1) {
+                    navigation.navigate('VideosScreen');
+                  } else {
+                    setSelectedBottomWindowIdx(index);
+                  }
                 }}
               >
-                {/* //TODO: Remove condition when need play button */}
-                <NavBWButtonIcon style={iconStyle} />
+                <NavBottomWindowButtonIcon />
               </Button>
             );
           })}
@@ -370,7 +368,7 @@ const styles = StyleSheet.create({
     height: 48,
     aspectRatio: 1,
   },
-  navBWButtonsContainer: {
+  navBottomWindowButtonsContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -379,12 +377,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     padding: 4,
   },
-  navBWButtonContainerStyle: {
+  navBottomWindowButtonContainerStyle: {
     flex: 1,
     padding: 2,
     borderRadius: 24,
   },
-  navBWButtonStyle: {
+  navBottomWindowButtonStyle: {
     borderRadius: 24,
     height: '100%',
   },

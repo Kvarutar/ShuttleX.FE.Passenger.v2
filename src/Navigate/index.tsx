@@ -23,6 +23,7 @@ import MapAddressSelectionScreen from '../screens/ride/MapAddressSelectionScreen
 import RatingScreen from '../screens/ride/RatingScreen';
 import ReceiptScreen from '../screens/ride/ReceiptScreen';
 import RideScreen from '../screens/ride/RideScreen';
+import VideosScreen from '../screens/VideosScreen';
 import { RootStackParamList } from './props';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -73,6 +74,7 @@ const Navigate = (): JSX.Element => {
             <Stack.Screen name="TicketWallet" component={TicketWalletScreen} />
             <Stack.Screen name="Raffle" component={RaffleScreen} />
             <Stack.Screen name="ActivityReceiptScreen" component={ActivityReceiptScreen} />
+            <Stack.Screen name="VideosScreen" component={VideosScreen} />
           </>
         ) : (
           <>
