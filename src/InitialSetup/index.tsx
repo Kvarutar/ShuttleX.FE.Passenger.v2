@@ -7,6 +7,7 @@ import { getTokens, isCoordinatesEqualZero, Nullable, ServerErrorModal, useTheme
 import { setIsLoggedIn } from '../core/auth/redux';
 import { isLoggedInSelector } from '../core/auth/redux/selectors';
 import { getAllCurrentTickets, getTicketAfterRide } from '../core/lottery/redux/thunks';
+import { setIsLoadingStubVisible } from '../core/passenger/redux';
 import { passengerZoneSelector } from '../core/passenger/redux/selectors';
 import { getOrUpdateZone, getProfileInfo, updateProfileLanguage } from '../core/passenger/redux/thunks';
 import { useAppDispatch } from '../core/redux/hooks';
@@ -190,6 +191,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
 
         dispatch(getOrUpdateZone());
       } else {
+        dispatch(setIsLoadingStubVisible(false));
         dispatch(setIsLoggedIn(false));
       }
     })();

@@ -6,6 +6,7 @@ import { CodeVerificationScreen, isLockedError, milSecToTime } from 'shuttlex-in
 
 import { authErrorSelector, isAuthLoadingSelector, isLoggedInSelector } from '../../../core/auth/redux/selectors';
 import { signIn, verifyCode } from '../../../core/auth/redux/thunks';
+import { setIsLoadingStubVisible } from '../../../core/passenger/redux';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { SignInCodeScreenProps } from './props';
 
@@ -31,9 +32,10 @@ const SignInCodeScreen = ({ navigation, route }: SignInCodeScreenProps): JSX.Ele
   });
 
   const handleCodeChange = useCallback(
-    (newCode: string) => {
+    async (newCode: string) => {
       if (newCode.length === 4) {
-        dispatch(verifyCode({ method: verificationType, code: newCode, body: data }));
+        await dispatch(verifyCode({ method: verificationType, code: newCode, body: data }));
+        dispatch(setIsLoadingStubVisible(true));
       } else {
         setIsIncorrectCode(false);
       }

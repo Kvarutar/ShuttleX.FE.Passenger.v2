@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { LoadingBrandIconModes, LoadingStub, MenuHeader, sizes, useTheme } from 'shuttlex-integration';
+import { MenuHeader, sizes, useTheme } from 'shuttlex-integration';
 
 import { lotteryWinnerSelector } from '../../../core/lottery/redux/selectors';
 import {
@@ -13,7 +13,6 @@ import {
 } from '../../../core/lottery/redux/thunks';
 import { getAccountSettingsVerifyStatus } from '../../../core/menu/redux/accountSettings/thunks';
 import { setIsLoadingStubVisible } from '../../../core/passenger/redux';
-import { isLoadingStubVisibleSelector } from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { useGeolocationStartWatch, useNetworkConnectionStartWatch } from '../../../core/ride/hooks';
 import { isTooManyRidesPopupVisibleSelector } from '../../../core/ride/redux/offer/selectors';
@@ -49,8 +48,6 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
 
   const orderInfo = useSelector(orderSelector);
   const isOrderCanceledAlertVisible = useSelector(isOrderCanceledAlertVisibleSelector);
-
-  const isLoadingStubVisible = useSelector(isLoadingStubVisibleSelector);
 
   useEffect(() => {
     if (lotteryWinner?.ticket.length !== 0) {
@@ -164,9 +161,6 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
 
   return (
     <>
-      {isLoadingStubVisible && (
-        <LoadingStub mode={LoadingBrandIconModes.Mode2} onTimeout={() => dispatch(setIsLoadingStubVisible(false))} />
-      )}
       <SafeAreaView style={styles.wrapper}>
         <MapView onFirstCameraAnimationComplete={() => dispatch(setIsLoadingStubVisible(false))} />
         {topMenu[orderStatus]}
