@@ -27,6 +27,7 @@ import {
 import { setOrderStatus } from '../core/ride/redux/order';
 import { orderStatusSelector } from '../core/ride/redux/order/selectors';
 import { OrderStatus } from '../core/ride/redux/order/types';
+import { getVideos } from '../core/ride/redux/streaming/thunks.ts';
 import {
   addFinishedTrips,
   endTrip,
@@ -187,6 +188,7 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
         dispatch(getProfileInfo());
         console.log('accessToken', accessToken);
         dispatch(getAllCurrentTickets());
+        dispatch(getVideos());
         dispatch(setIsLoggedIn(true));
 
         dispatch(getOrUpdateZone());

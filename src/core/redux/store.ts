@@ -15,6 +15,7 @@ import geolocationReducer from '../ride/redux/geolocation';
 import mapReducer from '../ride/redux/map';
 import offerReducer from '../ride/redux/offer';
 import orderReducer from '../ride/redux/order';
+import streamingReducer from '../ride/redux/streaming';
 import tripReducer from '../ride/redux/trip';
 import signalRReducer from './signalr';
 
@@ -40,6 +41,7 @@ const rootReducer = combineReducers({
   signalr: signalRReducer,
   accountSettings: accountSettingsReducer,
   lottery: lotteryReducer,
+  streaming: streamingReducer,
 });
 
 const sentryReduxEnhancer = Sentry.createReduxEnhancer();

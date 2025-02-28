@@ -9,6 +9,7 @@ import notificatorInstanceInitializer from './notificatorClient';
 import orderInstanceInitializer from './orderClient';
 import passengerInstanceInitializer from './passengerClient';
 import profileInstanceInitializer from './profileClient';
+import streamingInstanceInitializer from './streamingClient.ts';
 
 const axiosInitilizers = {
   authAxios: authInstanceInitializer,
@@ -16,6 +17,7 @@ const axiosInitilizers = {
   cashieringAxios: cashieringInstanceInitializer,
   configAxios: configInstanceInitializer,
   lotteryAxios: lotteryInstanceInitializer,
+  streamingAxios: streamingInstanceInitializer,
   matchingAxios: matchingInstanceInitializer,
   notificatorAxios: notificatorInstanceInitializer,
   orderAxios: orderInstanceInitializer,

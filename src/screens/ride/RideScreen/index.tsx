@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
@@ -11,6 +13,7 @@ import {
   getCurrentUpcomingLottery,
   getPreviousLottery,
 } from '../../../core/lottery/redux/thunks';
+import { useMap } from '../../../core/map/mapContext.tsx';
 import { getAccountSettingsVerifyStatus } from '../../../core/menu/redux/accountSettings/thunks';
 import { setIsLoadingStubVisible } from '../../../core/passenger/redux';
 import { useAppDispatch } from '../../../core/redux/hooks';
@@ -21,6 +24,7 @@ import { OrderStatus } from '../../../core/ride/redux/order/types';
 import { setIsOrderCanceledAlertVisible } from '../../../core/ride/redux/trip';
 import { isOrderCanceledAlertVisibleSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
 import { TripStatus } from '../../../core/ride/redux/trip/types';
+import { RootStackParamList } from '../../../Navigate/props.ts';
 import Menu from '../Menu';
 import MapView from './MapView';
 import Order from './Order';
@@ -31,10 +35,14 @@ import Trip from './Trip';
 import { RideScreenProps } from './types';
 
 const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
+  const mapMarkerCoordinates = route.params?.mapMarkerCoordinates;
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const { colors } = useTheme();
   const { t } = useTranslation();
   const orderRef = useRef<OrderRef>(null);
   const dispatch = useAppDispatch();
+  const { mapRef } = useMap();
 
   const orderStatus = useSelector(orderStatusSelector);
   const lotteryWinner = useSelector(lotteryWinnerSelector);
@@ -48,6 +56,22 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
 
   const orderInfo = useSelector(orderSelector);
   const isOrderCanceledAlertVisible = useSelector(isOrderCanceledAlertVisibleSelector);
+
+  useEffect(() => {
+    if (mapMarkerCoordinates) {
+      mapRef.current?.animateCamera(
+        {
+          pitch: 0,
+          heading: 0,
+          center: { latitude: mapMarkerCoordinates.latitude, longitude: mapMarkerCoordinates.longitude },
+          zoom: 16,
+        },
+        { duration: 1500 },
+      );
+
+      navigation.setParams({ mapMarkerCoordinates: undefined });
+    }
+  }, [mapRef, navigation, mapMarkerCoordinates]);
 
   useEffect(() => {
     if (lotteryWinner?.ticket.length !== 0) {

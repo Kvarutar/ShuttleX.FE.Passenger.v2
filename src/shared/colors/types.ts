@@ -18,4 +18,13 @@ export type PassengerColors = {
   tariffsColors: {
     tariffGroupPriceLoadingColor: string;
   };
+  videosColors: {
+    headerButton: string;
+    secondaryText: string;
+    logoBg: string;
+    bottomContentBg: string;
+    textInBar: string;
+    bottomButtonWithOpacity: string;
+    overlay: string;
+  };
 };

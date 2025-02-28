@@ -4,7 +4,7 @@ import { AccountSettingsVerificationMethod, CountryPhoneMaskDto } from 'shuttlex
 export type RootStackParamList = {
   Splash: undefined;
   Auth: { state: 'SignIn' | 'SignUp' };
-  Ride?: { openAddressSelect?: boolean };
+  Ride?: { openAddressSelect?: boolean; mapMarkerCoordinates?: LatLng };
   SignInCode: { verificationType: 'phone' | 'email'; data: string };
   AddressSelection: { orderPointId: number };
   MapAddressSelection: { orderPointId: number; pointCoordinates?: LatLng };
