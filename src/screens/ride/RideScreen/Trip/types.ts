@@ -9,7 +9,7 @@ export type SquareBarProps = {
 };
 
 export type TimerStateDataType = {
-  timerTime: number;
+  timerTime: number | null;
   mode: TimerColorModes;
   title: ReactNode;
   timerLabel?: string;

@@ -159,6 +159,7 @@ const VisiblePart = () => {
       totalRidesCount,
       phoneNumber,
       currencyCode,
+      arrivedToPickUpDate,
       waitingTimeInMilSec,
     } = orderInfo;
 
@@ -197,7 +198,9 @@ const VisiblePart = () => {
         case TripStatus.Arrived: {
           return {
             //TODO: Remove "secToMilSec(1)" when fix a timer
-            timerTime: Date.now() + waitingTimeInMilSec - secToMilSec(1), // For correct time rendering in timer
+            timerTime: arrivedToPickUpDate
+              ? new Date(arrivedToPickUpDate).getTime() + waitingTimeInMilSec - secToMilSec(1)
+              : null, // For correct time rendering in timer
             mode: TimerColorModes.Mode2,
             timerLabel: t('ride_Ride_Trip_timerLabelArrived'),
             title: <Text style={styles.nameTimeText}>{t('ride_Ride_Trip_titleArrived')}</Text>,
@@ -370,7 +373,7 @@ const VisiblePart = () => {
             </Button>
             <Text style={[styles.buttonText, computedStyles.buttonText]}>{t('ride_Ride_Trip_call')}</Text>
           </View>
-          {isTripLoading ? (
+          {isTripLoading || timerState?.timerTime === null ? (
             <Skeleton skeletonContainerStyle={[styles.skeletonTimer, computedStyles.skeletonTimer]} />
           ) : (
             <View>
