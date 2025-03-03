@@ -4,13 +4,13 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonShapes,
   ButtonSizes,
   InputXIcon,
+  SafeAreaView,
   SearchIcon,
   Text,
   TriangleIcon,
@@ -80,7 +80,7 @@ const VideosScreen = () => {
         />
       )}
 
-      <SafeAreaView style={styles.safeAreaView}>
+      <SafeAreaView wrapperStyle={styles.safeAreaView} withTransparentBackground>
         <View style={styles.headerMenuButtonsContainer}>
           <Button
             shape={ButtonShapes.Circle}
@@ -129,9 +129,6 @@ const styles = StyleSheet.create({
   },
   safeAreaView: {
     position: 'absolute',
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
   },
   headerMenuButtonsContainer: {
     flexDirection: 'row',

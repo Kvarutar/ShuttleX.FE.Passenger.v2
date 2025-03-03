@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, ImageBackground, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, runOnJS, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import Video from 'react-native-video';
+import Video, { VideoRef } from 'react-native-video';
 import {
   Bar,
   BarModes,
@@ -47,6 +47,8 @@ const coordinates = {
 };
 
 const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
+  const videoRef = useRef<VideoRef>(null);
+
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
 
@@ -56,7 +58,6 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
   const [showDescription, setShowDescription] = useState(false);
   const [descriptionNumberOfLines, setDescriptionNumberOfLines] = useState<number | undefined>(1);
   const [paused, setPaused] = useState(false);
-  const [isVideoLoading, setIsVideoLoading] = useState(true);
   const [isCreateRideLoading, setIsCreateRideLoading] = useState(false);
 
   const computedStyles = StyleSheet.create({
@@ -148,6 +149,7 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
 
   useEffect(() => {
     if (!isActive) {
+      videoRef.current?.seek(0);
       setPaused(false);
     }
   }, [isActive]);
@@ -193,22 +195,16 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
   return (
     <>
       <Video
+        ref={videoRef}
         source={{ uri: videoUri }}
         resizeMode="cover"
         style={styles.video}
         paused={!isActive || paused}
-        onLoadStart={() => setIsVideoLoading(true)}
-        onLoad={() => setIsVideoLoading(false)}
         repeat
+        renderLoader={() => (
+          <LoadingSpinner endColor={colors.primaryColor} startColor={passengerColors.videosColors.bottomContentBg} />
+        )}
       />
-
-      {isVideoLoading && (
-        <LoadingSpinner
-          endColor={colors.primaryColor}
-          startColor={passengerColors.videosColors.bottomContentBg}
-          style={styles.loadingSpinner}
-        />
-      )}
 
       <Animated.View style={[StyleSheet.absoluteFill, animatedControlsStyles]}>
         <Pressable style={[styles.overlay, computedStyles.overlay]} onPress={() => setPaused(!paused)}>
@@ -240,7 +236,7 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
         </View>
 
         <Animated.View style={[styles.descriptionWrapper, animatedDescriptionStyles]}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={showDescription}>
             <Pressable onPress={() => setShowDescription(!showDescription)}>
               <Text numberOfLines={descriptionNumberOfLines} style={[styles.description, computedStyles.description]}>
                 {t('ride_Videos_description')}
@@ -468,10 +464,6 @@ const styles = StyleSheet.create({
   mapBackgroundImage: {
     width: 46,
     height: 46,
-  },
-  loadingSpinner: {
-    alignSelf: 'center',
-    top: '50%',
   },
 });
 
