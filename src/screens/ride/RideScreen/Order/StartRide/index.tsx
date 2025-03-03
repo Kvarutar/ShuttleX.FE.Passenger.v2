@@ -21,8 +21,14 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
-import { setActiveBottomWindowYCoordinate } from '../../../../../core/passenger/redux';
-import { profileSelector } from '../../../../../core/passenger/redux/selectors';
+import {
+  setActiveBottomWindowYCoordinate,
+  setSelectedStartRideBottomWindowMenuTabIdx,
+} from '../../../../../core/passenger/redux';
+import {
+  profileSelector,
+  selectedStartRideBottomWindowMenuTabIdxSelector,
+} from '../../../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../../../core/redux/hooks';
 import { twoHighestPriorityAlertsSelector } from '../../../../../core/ride/redux/alerts/selectors';
 import {
@@ -79,6 +85,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const isAllOfferPointsFilled = useSelector(isAllOfferPointsFilledSelector);
   const isCityAvailable = useSelector(isCityAvailableSelector);
   const isCityAvailableLoading = useSelector(isCityAvailableLoadingSelector);
+  const selectedStartRideBottomWindowMenuTabIdx = useSelector(selectedStartRideBottomWindowMenuTabIdxSelector);
 
   const isRecentDropoffsExist = useMemo(() => recentDropoffs.length > 0, [recentDropoffs]);
 
@@ -86,7 +93,6 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const [fastAddressSelect, setFastAddressSelect] = useState<Nullable<RecentDropoffsFromAPI>>(null);
   const [isUnsupportedCityPopupVisible, setIsUnsupportedCityPopupVisible] = useState<boolean>(false);
   const [isUnsupportedDestinationPopupVisible, setIsUnsupportedDestinationPopupVisible] = useState<boolean>(false);
-  const [selectedBottomWindowIdx, setSelectedBottomWindowIdx] = useState<number>(0);
   const [isAiPopupVisible, setIsAiPopupVisible] = useState(false);
 
   const computedStyles = StyleSheet.create({
@@ -152,7 +158,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
     visiblePart: ReactNode;
     minHeight: number;
   } => {
-    switch (selectedBottomWindowIdx) {
+    switch (selectedStartRideBottomWindowMenuTabIdx) {
       case 0:
         return {
           visiblePart: (
@@ -257,7 +263,10 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
                 style={[
                   styles.navBottomWindowButtonStyle,
                   {
-                    backgroundColor: selectedBottomWindowIdx === index ? colors.secondaryGradientStartColor : undefined,
+                    backgroundColor:
+                      selectedStartRideBottomWindowMenuTabIdx === index
+                        ? colors.secondaryGradientStartColor
+                        : undefined,
                   },
                 ]}
                 onPress={() => {
@@ -265,7 +274,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
                   if (index === 1) {
                     navigation.navigate('VideosScreen');
                   } else {
-                    setSelectedBottomWindowIdx(index);
+                    dispatch(setSelectedStartRideBottomWindowMenuTabIdx(index));
                   }
                 }}
               >

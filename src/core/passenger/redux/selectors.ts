@@ -29,3 +29,5 @@ export const passengerInfoErrorSelector = (state: AppState) => state.passenger.e
 export const isLoadingStubVisibleSelector = (state: AppState) => state.passenger.ui.isLoadingStubVisible;
 export const activeBottomWindowYCoordinateSelector = (state: AppState) =>
   state.passenger.ui.activeBottomWindowYCoordinate;
+export const selectedStartRideBottomWindowMenuTabIdxSelector = (state: AppState) =>
+  state.passenger.ui.selectedStartRideBottomWindowMenuTabIdx;

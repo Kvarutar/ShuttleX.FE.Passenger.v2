@@ -13,6 +13,7 @@ import { getOrUpdateZone, getProfileInfo, updateProfileLanguage } from '../core/
 import { useAppDispatch } from '../core/redux/hooks';
 import { signalRThunks, updateSignalRAccessToken } from '../core/redux/signalr';
 import { geolocationCoordinatesSelector } from '../core/ride/redux/geolocation/selectors';
+import { getInterestingPlaces } from '../core/ride/redux/map/thunks';
 import { setEstimatedPrice, setOfferId, setTripTariff, updateOfferPoint } from '../core/ride/redux/offer';
 import { offerSelector } from '../core/ride/redux/offer/selectors';
 import {
@@ -213,8 +214,9 @@ const InitialSetup = ({ children }: InitialSetupProps) => {
   useEffect(() => {
     if (defaultLocation && !locationLoaded) {
       setLocationLoaded(true);
+      dispatch(getInterestingPlaces());
     }
-  }, [defaultLocation, locationLoaded]);
+  }, [dispatch, defaultLocation, locationLoaded]);
 
   useEffect(() => {
     if (isLoggedIn) {

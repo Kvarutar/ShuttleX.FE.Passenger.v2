@@ -2931,6 +2931,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mapbox/geo-viewport@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@mapbox/geo-viewport@npm:0.4.1"
+  dependencies:
+    "@mapbox/sphericalmercator": ~1.1.0
+  checksum: 5e2482b3d513e266bf051dff9f525966ffc0152a89af12f95ae2d370832e5dbb21c8806102fefec3ac0a5037dad6c8e1757604722d2c05b41bda865a0f3ccdb0
+  languageName: node
+  linkType: hard
+
+"@mapbox/sphericalmercator@npm:~1.1.0":
+  version: 1.1.0
+  resolution: "@mapbox/sphericalmercator@npm:1.1.0"
+  bin:
+    bbox: bin/bbox.js
+    to4326: bin/to4326.js
+    to900913: bin/to900913.js
+    xyz: bin/xyz.js
+  checksum: d1bd2cdff0d70a6b093f100078575d8abbfb99bc3471482ba9071739a9143dc860a642040f440c5f715eaaa6ab34589e67f4cc5d3e57da86ca505ee9648572e7
+  languageName: node
+  linkType: hard
+
 "@microsoft/signalr@npm:^8.0.0":
   version: 8.0.7
   resolution: "@microsoft/signalr@npm:8.0.7"
@@ -4150,6 +4171,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/geojson@npm:*":
+  version: 7946.0.16
+  resolution: "@types/geojson@npm:7946.0.16"
+  checksum: d66e5e023f43b3e7121448117af1930af7d06410a32a585a8bc9c6bb5d97e0d656cd93d99e31fa432976c32e98d4b780f82bf1fd1acd20ccf952eb6b8e39edf2
+  languageName: node
+  linkType: hard
+
 "@types/geojson@npm:^7946.0.13":
   version: 7946.0.15
   resolution: "@types/geojson@npm:7946.0.15"
@@ -4302,6 +4330,15 @@ __metadata:
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
   checksum: 72576cc1522090fe497337c2b99d9838e320659ac57fa5560fcbdcbafcf5d0216c6b3a0a8a4ee4fdb3b1f5e3420aa4f6223ab57b82fef3578bec3206425c6cf5
+  languageName: node
+  linkType: hard
+
+"@types/supercluster@npm:^7.1.3":
+  version: 7.1.3
+  resolution: "@types/supercluster@npm:7.1.3"
+  dependencies:
+    "@types/geojson": "*"
+  checksum: 724188fb6ebdf0835821559da5480e5951c3e51afa86fcf83f5bf6984b89652f947081a3f6835cb082a6865fe5f1f8f667e92346f237d3518c2159121bb7c5cc
   languageName: node
   linkType: hard
 
@@ -5312,12 +5349,12 @@ __metadata:
   linkType: hard
 
 "call-bound@npm:^1.0.2, call-bound@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "call-bound@npm:1.0.3"
+  version: 1.0.4
+  resolution: "call-bound@npm:1.0.4"
   dependencies:
-    call-bind-apply-helpers: ^1.0.1
-    get-intrinsic: ^1.2.6
-  checksum: a93bbe0f2d0a2d6c144a4349ccd0593d5d0d5d9309b69101710644af8964286420062f2cc3114dca120b9bc8cc07507952d4b1b3ea7672e0d7f6f1675efedb32
+    call-bind-apply-helpers: ^1.0.2
+    get-intrinsic: ^1.3.0
+  checksum: 2f6399488d1c272f56306ca60ff696575e2b7f31daf23bc11574798c84d9f2759dceb0cb1f471a85b77f28962a7ac6411f51d283ea2e45319009a19b6ccab3b2
   languageName: node
   linkType: hard
 
@@ -7459,7 +7496,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-intrinsic@npm:^1.2.4, get-intrinsic@npm:^1.2.5, get-intrinsic@npm:^1.2.6, get-intrinsic@npm:^1.2.7":
+"get-intrinsic@npm:^1.2.4, get-intrinsic@npm:^1.2.5, get-intrinsic@npm:^1.2.6, get-intrinsic@npm:^1.2.7, get-intrinsic@npm:^1.3.0":
   version: 1.3.0
   resolution: "get-intrinsic@npm:1.3.0"
   dependencies:
@@ -9129,6 +9166,13 @@ __metadata:
     object.assign: ^4.1.4
     object.values: ^1.1.6
   checksum: f4b05fa4d7b5234230c905cfa88d36dc8a58a6666975a3891429b1a8cdc8a140bca76c297225cb7a499fad25a2c052ac93934449a2c31a44fc9edd06c773780a
+  languageName: node
+  linkType: hard
+
+"kdbush@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "kdbush@npm:3.0.0"
+  checksum: bc5fa433958e42664a8a92457e4f0d1db55b3b8e36956aac0102964adb2eab043bdbff156570dc8d867144ceff588fb7a1c6e099ba9be068cd1767a73e1ace92
   languageName: node
   linkType: hard
 
@@ -11098,6 +11142,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-map-clustering@npm:^3.4.2":
+  version: 3.4.2
+  resolution: "react-native-map-clustering@npm:3.4.2"
+  dependencies:
+    "@mapbox/geo-viewport": ^0.4.1
+    supercluster: ^7.1.0
+  peerDependencies:
+    react-native: "*"
+    react-native-maps: "*"
+  checksum: 4ded7c6d1a1f02340f380c6253f4e29b784e26b6b4fdf8f2f5fe6ee597c1a2bdb3eb175be58900d145c24494ea5575d33ee5cb419efee7558e6e166a14b9cff6
+  languageName: node
+  linkType: hard
+
 "react-native-maps@npm:1.14.0":
   version: 1.14.0
   resolution: "react-native-maps@npm:1.14.0"
@@ -11125,12 +11182,12 @@ __metadata:
   linkType: hard
 
 "react-native-otp-entry@npm:^1.8.2":
-  version: 1.8.2
-  resolution: "react-native-otp-entry@npm:1.8.2"
+  version: 1.8.3
+  resolution: "react-native-otp-entry@npm:1.8.3"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: f5c1f99a142048efa4c406796aea5d2bec306685f886225316066ec2f96ab6ef145e8c115f876c480e46d6b3ed956899c297d088aeb3e2834f3cdd7293ef5256
+  checksum: 5c2948a828354f5b72220359381240910eb1f7a8096b2fc95878dcfebc479a11e21c4de3896da3922178920ae3d8f11ae6e99cba30532846d30564f2daf3ebf4
   languageName: node
   linkType: hard
 
@@ -12162,12 +12219,13 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
 
 "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev":
   version: 1.0.0
-  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=a5683410984dd0283eb4833843fffe3ec5633d80"
+  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=3ea9a4b9cf0bae2d9d9b50ffcd9b3137d79a8603"
   dependencies:
     "@googlemaps/polyline-codec": ^1.0.28
     "@react-native-voice/voice": ^3.2.4
     "@react-native/eslint-config": 0.73.2
     "@shopify/flash-list": ^1.7.3
+    "@types/supercluster": ^7.1.3
     axios: ^1.7.2
     axios-retry: ^4.4.2
     color-interpolate: ^1.0.5
@@ -12183,6 +12241,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react-native-image-picker: 7.1.0
     react-native-image-viewing: ^0.2.2
     react-native-keyboard-controller: ^1.16.6
+    react-native-map-clustering: ^3.4.2
     react-native-otp-entry: ^1.8.2
     react-native-reanimated-skeleton: ^1.5.1
     react-native-slide-to-unlock: DevShuttleXInc/react-native-slide-to-unlock
@@ -12216,7 +12275,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react-native-svg-transformer: "*"
     react-redux: "*"
     uuid: "*"
-  checksum: 83d7e91cb3e3e5763842c49513d9d521f8f1964aaec8a57586ff1de55ac1f76aa9f483948d244453085da33a583702f8731acfaea6e5a3295f8b1e64789f515b
+  checksum: 625726635a1220f6d9ac496f20bbc773ffa0e5557c00d4e5e3202e6af9458c5c28878480b1dcf514f4067954e81ccf37f516e340a8897a41fa8aceae2511df96
   languageName: node
   linkType: hard
 
@@ -12735,6 +12794,15 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
   version: 9.2.1
   resolution: "sudo-prompt@npm:9.2.1"
   checksum: 50a29eec2f264f2b78d891452a64112d839a30bffbff4ec065dba4af691a35b23cdb8f9107d413e25c1a9f1925644a19994c00602495cab033d53f585fdfd665
+  languageName: node
+  linkType: hard
+
+"supercluster@npm:^7.1.0":
+  version: 7.1.5
+  resolution: "supercluster@npm:7.1.5"
+  dependencies:
+    kdbush: ^3.0.0
+  checksum: 69863238870093b96617135884721b6343746e14f396b2d67d6b55c52c362ec0516c5e386aa21815e75a9cef2054e831ac34023d0d8b600091d28cea0794f027
   languageName: node
   linkType: hard
 

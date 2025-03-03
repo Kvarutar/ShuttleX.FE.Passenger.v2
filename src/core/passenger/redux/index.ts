@@ -13,6 +13,7 @@ const initialState: PassengerState = {
   ui: {
     isLoadingStubVisible: true,
     activeBottomWindowYCoordinate: null,
+    selectedStartRideBottomWindowMenuTabIdx: 0,
   },
   loading: {
     passengerAvatar: false,
@@ -34,6 +35,9 @@ const slice = createSlice({
   reducers: {
     setProfile(state, action: PayloadAction<Profile>) {
       state.profile = action.payload;
+    },
+    setSelectedStartRideBottomWindowMenuTabIdx(state, action: PayloadAction<number>) {
+      state.ui.selectedStartRideBottomWindowMenuTabIdx = action.payload;
     },
     setIsLoadingStubVisible(state, action: PayloadAction<boolean>) {
       state.ui.isLoadingStubVisible = action.payload;
@@ -135,6 +139,7 @@ export const {
   setZone,
   setIsLoadingStubVisible,
   setActiveBottomWindowYCoordinate,
+  setSelectedStartRideBottomWindowMenuTabIdx,
 } = slice.actions;
 
 export default slice.reducer;

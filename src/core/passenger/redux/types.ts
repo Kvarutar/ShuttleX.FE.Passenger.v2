@@ -80,6 +80,7 @@ export type PassengerState = {
   ui: {
     isLoadingStubVisible: boolean;
     activeBottomWindowYCoordinate: number | null;
+    selectedStartRideBottomWindowMenuTabIdx: number;
   };
   error: {
     passengerAvatar: Nullable<NetworkErrorDetailsWithBody<any>>;

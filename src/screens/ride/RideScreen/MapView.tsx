@@ -15,7 +15,10 @@ import {
 } from 'shuttlex-integration';
 
 import { useMap } from '../../../core/map/mapContext';
-import { activeBottomWindowYCoordinateSelector } from '../../../core/passenger/redux/selectors';
+import {
+  activeBottomWindowYCoordinateSelector,
+  selectedStartRideBottomWindowMenuTabIdxSelector,
+} from '../../../core/passenger/redux/selectors';
 import { useAppDispatch } from '../../../core/redux/hooks';
 import { updatePassengerGeo } from '../../../core/redux/signalr';
 import {
@@ -23,7 +26,12 @@ import {
   geolocationCoordinatesSelector,
 } from '../../../core/ride/redux/geolocation/selectors';
 import { setMapCameraMode, setMapRidePercentFromPolylines, setMapRouteTraffic } from '../../../core/ride/redux/map';
-import { mapCameraModeSelector, mapCarsSelector, mapStopPointsSelector } from '../../../core/ride/redux/map/selectors';
+import {
+  mapCameraModeSelector,
+  mapCarsSelector,
+  mapInterestingPlacesSelector,
+  mapStopPointsSelector,
+} from '../../../core/ride/redux/map/selectors';
 import {
   currentSelectedTariffSelector,
   offerPointsSelector,
@@ -56,6 +64,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   const stopPoints = useSelector(mapStopPointsSelector);
   const cameraMode = useSelector(mapCameraModeSelector);
   const cars = useSelector(mapCarsSelector);
+  const interestingPlaces = useSelector(mapInterestingPlacesSelector);
   const orderId = useSelector(orderIdSelector);
   const orderStatus = useSelector(orderStatusSelector);
   const offerPoints = useSelector(offerPointsSelector);
@@ -67,6 +76,7 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
   const dropOffRoute = useSelector(tripDropOffRouteSelector);
   const currentSelectedTariff = useSelector(currentSelectedTariffSelector);
   const activeBottomWindowYCoordinate = useSelector(activeBottomWindowYCoordinateSelector);
+  const selectedStartRideBottomWindowMenuTabIdx = useSelector(selectedStartRideBottomWindowMenuTabIdxSelector);
 
   const updatePassengerGeoRef = useRef<NodeJS.Timeout | null>(null);
   const geolocationCoordinatesRef = useRef<Nullable<LatLng>>(null);
@@ -336,7 +346,12 @@ const MapView = ({ onFirstCameraAnimationComplete }: { onFirstCameraAnimationCom
       // (maybe drop few animations if queue is too big)
       // or alternatively do the next request when animation is done (or few miliseconds before ending)
       // TODO: it's bug - animationDuration is dont change anything ;( (a little correction: it changes something only on android)
-      cars={{ data: cars, animationDuration: updatePassengerGeoInterval * 0.75 }}
+      cars={
+        selectedStartRideBottomWindowMenuTabIdx === 0
+          ? { data: cars, animationDuration: updatePassengerGeoInterval * 0.75 }
+          : undefined
+      }
+      interestingPlaces={selectedStartRideBottomWindowMenuTabIdx === 2 ? interestingPlaces : undefined}
       polylines={memoizedPolyline}
       stopPoints={stopPoints}
       markers={

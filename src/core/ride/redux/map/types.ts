@@ -1,5 +1,5 @@
 import { LatLng } from 'react-native-maps';
-import { MapCameraMode, MapViewProps } from 'shuttlex-integration';
+import { MapCameraMode, MapInterestingPlace, MapViewProps } from 'shuttlex-integration';
 
 import { RouteInfoApiResponse } from '../trip/types';
 
@@ -10,6 +10,7 @@ export type MapState = {
     coordinates: LatLng;
     heading: number;
   }[];
+  interestingPlaces: MapInterestingPlace[];
   polylines: Exclude<MapViewProps['polylines'], undefined>;
   stopPoints: LatLng[];
   ridePercentFromPolylines: string;
