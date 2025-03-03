@@ -1,61 +1,31 @@
-import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import { Image, StyleSheet, View } from 'react-native';
-import {
-  Button,
-  ButtonShapes,
-  CameraIcon,
-  CircleButtonModes,
-  HeaderWithTwoTitles,
-  ScrollViewWithCustomScroll,
-  sizes,
-  Text,
-  TextInput,
-  TextInputInputMode,
-  useTheme,
-} from 'shuttlex-integration';
+import { StyleSheet, View } from 'react-native';
+import { Button, HeaderWithTwoTitles, ScrollViewWithCustomScroll, Text, useTheme } from 'shuttlex-integration';
 
-import aipopup from '../../../../../../../assets/images/aipopup';
+import { RootStackParamList } from '../../../../../Navigate/props';
 import FirstCard from './FirstCard';
 import FourthCard from './FourthCard';
 import SecondCard from './SecondCard';
 import ThirdCard from './ThirdCard';
 import { CardWrapperProps } from './types';
 
-const iconWidth = 23;
-const iconPaddingLeft = 14;
-
 const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
+  const navigation = useNavigation<NativeStackScreenProps<RootStackParamList, 'Ride'>['navigation']>();
+
   const { t } = useTranslation();
   const { colors } = useTheme();
 
-  const [searchBarHeight, setSearchBarHeight] = useState(0);
-  const [searchData, setSearchData] = useState('');
-
-  const onValueChange = (value: string) => {
-    setSearchData(value);
-  };
-
   const computedStyles = StyleSheet.create({
-    container: {
-      paddingBottom: searchBarHeight,
-    },
     header: {
       color: colors.textQuadraticColor,
     },
     descript: {
       color: colors.textQuadraticColor,
     },
-    barWrapper: {
-      paddingHorizontal: sizes.paddingHorizontal,
-      bottom: 0,
-    },
-    inputContainer: {
-      paddingLeft: iconWidth + iconPaddingLeft + 8,
-    },
-    trueTypeIcon: {
-      width: iconWidth,
-      left: iconPaddingLeft,
+    container: {
+      backgroundColor: colors.chat.popupBackgroundColor,
     },
   });
   return (
@@ -92,30 +62,11 @@ const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
         </View>
       </ScrollViewWithCustomScroll>
 
-      <View
-        style={[styles.barWrapper, computedStyles.barWrapper]}
-        onLayout={event => setSearchBarHeight(event.nativeEvent.layout.height)}
-      >
-        <View style={styles.inputWrapper}>
-          <Image source={aipopup.TrueTypeIcon} style={[styles.trueTypeIcon, computedStyles.trueTypeIcon]} />
-          <TextInput
-            maxLength={50}
-            inputMode={TextInputInputMode.Search}
-            value={searchData}
-            placeholder={t('ride_AiPopup_searchBar')}
-            withClearButton
-            onChangeText={onValueChange}
-            containerStyle={[styles.inputContainer, computedStyles.inputContainer]}
-            inputStyle={styles.input}
-          />
-        </View>
-        <Button mode={CircleButtonModes.Mode4} shape={ButtonShapes.Circle}>
-          <CameraIcon style={styles.cameraIcon} />
-        </Button>
-        <Button mode={CircleButtonModes.Mode4} shape={ButtonShapes.Circle}>
-          <Image source={aipopup.voiceImage} resizeMode="contain" style={styles.voiceIcon} />
-        </Button>
-      </View>
+      <Button
+        text={t('ride_AiPopup_button')}
+        style={styles.chatButton}
+        onPress={() => navigation.navigate('AiChatScreen')}
+      />
     </>
   );
 };
@@ -150,7 +101,6 @@ const CardWrapper = ({ firstTitle, secondTitle, children }: CardWrapperProps) =>
 const styles = StyleSheet.create({
   container: {
     paddingTop: 20,
-    backgroundColor: '#F7F6F7',
     alignItems: 'center',
   },
   wrapper: {
@@ -216,46 +166,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     maxWidth: 120,
   },
-  barWrapper: {
-    flexDirection: 'row',
-    gap: 4,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-  barContainer: {
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    borderRadius: 50,
-    flexDirection: 'row',
-    gap: 8,
-    alignItems: 'center',
-    backgroundColor: '#F7F6F7',
-  },
-  searchBarText: {
-    fontSize: 14,
-    fontFamily: 'Inter Medium',
-  },
-  cameraIcon: {
-    width: 23,
-    height: 24,
-  },
-  input: {
-    height: 56,
-  },
-  inputContainer: {
-    borderRadius: 50,
-    backgroundColor: '#F7F6F7',
-  },
-  inputWrapper: {
-    flex: 1,
-  },
-  trueTypeIcon: {
-    position: 'absolute',
-    zIndex: 2,
-    top: 16,
-  },
+  chatButton: { borderRadius: 50 },
 });
 
 export default AIPopup;

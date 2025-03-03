@@ -9,6 +9,7 @@ import {
   driverArrivedToStopPointSSEHandler,
   driverCanceledSSEHandler,
   driverRejectedSSEHandler,
+  newMessageSSEHandler,
   pickUpOnStopPointSSEHandler,
   tripEndedSSEHandler,
   tripStartedSSEHandler,
@@ -34,6 +35,7 @@ export const initializeSSEConnection = (accessToken: string) => {
   eventSource.addEventListener(SSEAndNotificationsEventType.TripEnded, tripEndedSSEHandler);
   eventSource.addEventListener(SSEAndNotificationsEventType.DriverCanceled, driverCanceledSSEHandler);
   eventSource.addEventListener(SSEAndNotificationsEventType.DriverRejected, driverRejectedSSEHandler);
+  eventSource.addEventListener(SSEAndNotificationsEventType.NewMessage, newMessageSSEHandler);
 };
 
 export const removeAllSSEListeners = () => {

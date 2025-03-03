@@ -2,14 +2,20 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
-import { Text } from 'shuttlex-integration';
+import { HomeIcon, Text, useTheme, WorkIcon } from 'shuttlex-integration';
 
-import aipopup from '../../../../../../../assets/images/aipopup';
+import aipopup from '../../../../../../assets/images/aipopup';
 
 const FirstCard = () => {
   const [cardSize, setCardSize] = useState({ width: 100, height: 100 });
   const { t } = useTranslation();
+  const { colors } = useTheme();
 
+  const computedStyles = StyleSheet.create({
+    tagWrapper: {
+      backgroundColor: colors.chat.cardsBackgroundColor,
+    },
+  });
   return (
     <View
       onLayout={event => {
@@ -17,15 +23,15 @@ const FirstCard = () => {
         setCardSize({ width, height });
       }}
     >
-      <View style={[styles.tagWrapper, styles.homeTagPosition]}>
-        <Image source={aipopup.HomeIcon} style={styles.homeIcon} />
+      <View style={[styles.tagWrapper, styles.homeTagPosition, computedStyles.tagWrapper]}>
+        <HomeIcon />
         <Text style={styles.tagStyle}>{t('ride_AiPopup_firstCard_tagText')}</Text>
       </View>
       <View style={styles.imageContainer}>
         <Image source={aipopup.dmapImage} style={styles.image} />
       </View>
-      <View style={[styles.tagWrapper, styles.workTagPosition]}>
-        <Image source={aipopup.WorkIcon} style={styles.workIcon} />
+      <View style={[styles.tagWrapper, styles.workTagPosition, computedStyles.tagWrapper]}>
+        <WorkIcon />
         <Text style={styles.tagStyle}>{t('ride_AiPopup_firstCard_secondTagText')}</Text>
       </View>
       <Svg height="100%" width="100%" viewBox={`0 0 ${cardSize.width} ${cardSize.height}`} style={styles.line}>
@@ -34,7 +40,7 @@ const FirstCard = () => {
           y1={cardSize.height * 0.45}
           x2={cardSize.width * 0.2}
           y2={cardSize.height * 0.1}
-          stroke="#A0B84A"
+          stroke={colors.chat.strokeColor}
           strokeWidth="3"
           strokeDasharray="5,5"
         />
@@ -43,7 +49,7 @@ const FirstCard = () => {
           y1={cardSize.height * 0.45}
           x2={cardSize.width * 0.8}
           y2={cardSize.height * 0.8}
-          stroke="#A0B84A"
+          stroke={colors.chat.strokeColor}
           strokeWidth="3"
           strokeDasharray="5,5"
         />
@@ -57,7 +63,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 2,
-    backgroundColor: '#E6E6E6',
     padding: 6,
     borderRadius: 10,
     position: 'absolute',

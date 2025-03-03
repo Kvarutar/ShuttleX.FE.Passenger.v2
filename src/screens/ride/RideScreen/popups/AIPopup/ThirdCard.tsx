@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
-import { Text, useTheme } from 'shuttlex-integration';
+import { StarIcon, Text, useTheme } from 'shuttlex-integration';
 
-import aipopup from '../../../../../../../assets/images/aipopup';
+import aipopup from '../../../../../../assets/images/aipopup';
 
 const ThirdCard = () => {
   const { t } = useTranslation();
@@ -12,12 +12,18 @@ const ThirdCard = () => {
     secondTagText: {
       color: colors.textTertiaryColor,
     },
+    firstTag: {
+      backgroundColor: colors.chat.cardsBackgroundColor,
+    },
+    secondTag: {
+      backgroundColor: colors.chat.tagColor,
+    },
   });
 
   return (
     <View>
-      <View style={styles.firstTag}>
-        <Image source={aipopup.starIcon} style={styles.image} />
+      <View style={[styles.firstTag, computedStyles.firstTag]}>
+        <StarIcon style={styles.image} color={colors.chat.starIconColor} />
         <Text style={styles.firstTagText}>{t('ride_AiPopup_thirdCard_tagText')}</Text>
       </View>
       <View style={styles.userPhotoWrapper}>
@@ -26,7 +32,7 @@ const ThirdCard = () => {
       <View style={styles.mainImageWrapper}>
         <Image source={aipopup.thirdCardImage} style={[styles.imageStyle, styles.mainImage]} />
       </View>
-      <View style={styles.secondTag}>
+      <View style={[styles.secondTag, computedStyles.secondTag]}>
         <Text style={[styles.secondTagText, computedStyles.secondTagText]}>
           {t('ride_AiPopup_thirdCard_secondTagText')}
         </Text>
@@ -40,7 +46,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#E6E6E6',
     opacity: 0.9,
     paddingHorizontal: 7,
     paddingVertical: 5,
@@ -55,7 +60,6 @@ const styles = StyleSheet.create({
   },
   secondTag: {
     alignItems: 'center',
-    backgroundColor: '#B0C1D1',
     opacity: 0.9,
     paddingVertical: 4,
     paddingHorizontal: 6,

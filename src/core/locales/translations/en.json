@@ -163,7 +163,7 @@
   "ride_AiPopup_header": "AI Assistant",
   "ride_AiPopup_greeting": "Hello, {{name}}",
   "ride_AiPopup_description": "You can't interact with me yet, but we'll see you very soon!",
-  "ride_AiPopup_searchBar": "What are you looking for?",
+  "ride_AiPopup_button": "Start Chat",
   "ride_AiPopup_firstCard_header": "AI Help",
   "ride_AiPopup_secondCard_header": "Place",
   "ride_AiPopup_thirdCard_header": "Estimates",

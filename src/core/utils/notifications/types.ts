@@ -22,6 +22,7 @@ export enum SSEAndNotificationsEventType {
   DriverCanceled = 'driver_canceled',
   Custom = 'user_custom_notification',
   PaymentTracsactionStatus = 'passenger_payment_transaction_status',
+  NewMessage = 'new_message',
 }
 
 export type NotificationPayload = {
@@ -31,4 +32,6 @@ export type NotificationPayload = {
   paymentTransactionId?: string;
   status?: string;
   errorMessage?: string;
+  chatId?: string;
+  messageId?: string;
 };

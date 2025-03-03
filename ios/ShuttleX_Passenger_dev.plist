@@ -45,6 +45,10 @@
 	<string>Photo library access is needed to upload your profile picture.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access is needed to upload your profile photo.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to the microphone to capture your voice for voice commands and communication.</string>
+  	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>We require access to speech recognition to convert your spoken words into text for a better user experience.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Inter Black.ttf</string>

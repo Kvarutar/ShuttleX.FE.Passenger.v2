@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'shuttlex-integration';
 
-import aipopup from '../../../../../../../assets/images/aipopup';
+import aipopup from '../../../../../../assets/images/aipopup';
 
 const FourthCard = () => {
   const { t } = useTranslation();

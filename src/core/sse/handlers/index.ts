@@ -77,6 +77,15 @@ export const pickUpOnStopPointSSEHandler = () => {
   //TODO: Add some logic in task with stop-points
 };
 
+export const newMessageSSEHandler = (
+  event: EventSourceEvent<SSEAndNotificationsEventType.NewMessage, SSEAndNotificationsEventType>,
+) => {
+  if (event.data) {
+    //TODO for test
+    console.log('BACKEND', event.data);
+  }
+};
+
 export const tripStartedSSEHandler = (
   event: EventSourceEvent<SSEAndNotificationsEventType.TripStarted, SSEAndNotificationsEventType>,
 ) => {

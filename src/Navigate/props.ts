@@ -25,4 +25,5 @@ export type RootStackParamList = {
   ProfilePhoto: undefined;
   ActivityReceiptScreen: { orderId: string };
   VideosScreen: undefined;
+  AiChatScreen: undefined;
 };

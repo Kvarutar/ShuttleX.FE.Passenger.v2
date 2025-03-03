@@ -1,7 +1,7 @@
 import { Image, StyleSheet, View } from 'react-native';
 import { useTheme } from 'shuttlex-integration';
 
-import aipopup from '../../../../../../../assets/images/aipopup';
+import aipopup from '../../../../../../assets/images/aipopup';
 
 const SecondCard = () => {
   const { colors } = useTheme();
@@ -42,14 +42,14 @@ const styles = StyleSheet.create({
   firstPhoto: {
     transform: [{ rotate: '15deg' }],
     marginLeft: '50%',
-    top: '5%',
+    marginTop: '5%',
   },
   secondPhoto: {
     marginLeft: '-20%',
   },
   thirdPhoto: {
     marginLeft: '-10%',
-    top: '5%',
+    marginTop: '5%',
     transform: [{ rotate: '-15deg' }],
   },
   image: {

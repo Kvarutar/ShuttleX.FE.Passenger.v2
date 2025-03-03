@@ -137,6 +137,10 @@ export const notificationHandlers: Record<
     //add logic when stop points will be done
     //payload contains OrderId
   },
+  [SSEAndNotificationsEventType.NewMessage]: async () => {
+    //TODO add logic
+    //payload contains  chatId, messageId
+  },
 };
 
 export const displayNotificationForAll = async (remoteMessage: NotificationRemoteMessage) => {

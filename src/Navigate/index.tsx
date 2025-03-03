@@ -24,6 +24,7 @@ import TicketWalletScreen from '../screens/menu/TicketWalletScreen';
 import AddPaymentScreen from '../screens/menu/wallet/AddPaymentScreen';
 import WalletScreen from '../screens/menu/wallet/WalletScreen';
 import RaffleScreen from '../screens/raffle';
+import AiChatScreen from '../screens/ride/AiChatScreen';
 import MapAddressSelectionScreen from '../screens/ride/MapAddressSelectionScreen';
 import RatingScreen from '../screens/ride/RatingScreen';
 import ReceiptScreen from '../screens/ride/ReceiptScreen';
@@ -88,6 +89,7 @@ const Navigate = (): JSX.Element => {
               <Stack.Screen name="Raffle" component={RaffleScreen} />
               <Stack.Screen name="ActivityReceiptScreen" component={ActivityReceiptScreen} />
               <Stack.Screen name="VideosScreen" component={VideosScreen} />
+              <Stack.Screen name="AiChatScreen" component={AiChatScreen} />
             </>
           ) : (
             <>
