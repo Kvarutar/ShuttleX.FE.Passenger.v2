@@ -1,11 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, ImageBackground, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, runOnJS, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import Video, { VideoRef } from 'react-native-video';
 import {
   Bar,
   BarModes,
@@ -13,7 +12,6 @@ import {
   Button,
   ButtonShapes,
   ChatIcon2,
-  LoadingSpinner,
   LocationIcon,
   NoteIcon,
   PauseRoundIcon,
@@ -36,6 +34,7 @@ import { OrderStatus } from '../../core/ride/redux/order/types.ts';
 import { endTrip } from '../../core/ride/redux/trip';
 import { RootStackParamList } from '../../Navigate/props.ts';
 import passengerColors from '../../shared/colors/colors.ts';
+import BitmovinPlayer from './BitmovinPlayer.tsx';
 import { VideoCardProps } from './types';
 
 const windowHeight = Dimensions.get('window').height;
@@ -47,8 +46,6 @@ const coordinates = {
 };
 
 const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
-  const videoRef = useRef<VideoRef>(null);
-
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
 
@@ -149,7 +146,6 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
 
   useEffect(() => {
     if (!isActive) {
-      videoRef.current?.seek(0);
       setPaused(false);
     }
   }, [isActive]);
@@ -194,17 +190,7 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
 
   return (
     <>
-      <Video
-        ref={videoRef}
-        source={{ uri: videoUri }}
-        resizeMode="cover"
-        style={styles.video}
-        paused={!isActive || paused}
-        repeat
-        renderLoader={() => (
-          <LoadingSpinner endColor={colors.primaryColor} startColor={passengerColors.videosColors.bottomContentBg} />
-        )}
-      />
+      <BitmovinPlayer videoUri={videoUri} pause={paused} isActive={isActive} />
 
       <Animated.View style={[StyleSheet.absoluteFill, animatedControlsStyles]}>
         <Pressable style={[styles.overlay, computedStyles.overlay]} onPress={() => setPaused(!paused)}>
@@ -309,9 +295,6 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
 });
 
 const styles = StyleSheet.create({
-  video: {
-    height: windowHeight,
-  },
   overlay: {
     height: windowHeight,
     alignItems: 'center',

@@ -46,5 +46,8 @@
     <meta-data
       android:name="com.google.android.geo.API_KEY"
       android:value="AIzaSyAjBFOgUC3977Pth4-AlsM9YAEIMswPZPk" />
+    <meta-data
+      android:name="BITMOVIN_PLAYER_LICENSE_KEY"
+      android:value="59aa6de1-b5f3-47e5-86cc-997ca64ba4a9" />
   </application>
 </manifest>

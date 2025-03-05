@@ -83,5 +83,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>BitmovinPlayerLicenseKey</key>
+	<string>59aa6de1-b5f3-47e5-86cc-997ca64ba4a9</string>
 </dict>
 </plist>

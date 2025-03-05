@@ -1,15 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
+import { ICarouselInstance } from 'react-native-reanimated-carousel/lib/typescript/types';
 import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonShapes,
   ButtonSizes,
   InputXIcon,
+  LoadingSpinner,
   SafeAreaView,
   SearchIcon,
   Text,
@@ -17,7 +19,9 @@ import {
   useTheme,
 } from 'shuttlex-integration';
 
-import { streamingVideosSelector } from '../../core/ride/redux/streaming/selectors.ts';
+import { useAppDispatch } from '../../core/redux/hooks.ts';
+import { isVideosLoadingSelector, streamingVideosSelector } from '../../core/ride/redux/streaming/selectors.ts';
+import { getVideos } from '../../core/ride/redux/streaming/thunks.ts';
 import { RootStackParamList } from '../../Navigate/props';
 import passengerColors from '../../shared/colors/colors.ts';
 import VideoCard from './VideoCard.tsx';
@@ -25,11 +29,15 @@ import VideoCard from './VideoCard.tsx';
 const windowHeight = Dimensions.get('window').height;
 
 const VideosScreen = () => {
+  const carouselRef = useRef<ICarouselInstance | null>(null);
+
+  const dispatch = useAppDispatch();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { colors } = useTheme();
   const { t } = useTranslation();
 
   const streamingVideos = useSelector(streamingVideosSelector);
+  const isVideosLoading = useSelector(isVideosLoadingSelector);
 
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
 
@@ -60,24 +68,47 @@ const VideosScreen = () => {
     },
   });
 
+  useEffect(() => {
+    if (streamingVideos.length === 0) {
+      dispatch(getVideos());
+    }
+  }, [dispatch, streamingVideos.length]);
+
+  const onProgressChangeCarouselHandler = (_offsetProgress: number, absoluteProgress: number) => {
+    const currentIndex = carouselRef.current?.getCurrentIndex() ?? 0;
+    if (absoluteProgress > 0.5 || currentIndex === 0) {
+      setCurrentVideoIndex(currentIndex);
+    }
+  };
+
+  const videoList =
+    streamingVideos.length === 0 ? (
+      <View style={[styles.centralContainer, computedStyles.bottomContentBgColor]}>
+        <Text style={computedStyles.noItems}>{t('ride_Videos_noVideos')}</Text>
+      </View>
+    ) : (
+      <Carousel
+        ref={carouselRef}
+        loop={false}
+        vertical
+        height={windowHeight}
+        containerStyle={computedStyles.bottomContentBgColor}
+        data={streamingVideos}
+        onProgressChange={onProgressChangeCarouselHandler}
+        windowSize={2}
+        scrollAnimationDuration={300}
+        renderItem={({ item, index }) => <VideoCard videoUri={item} isActive={index === currentVideoIndex} />}
+      />
+    );
+
   return (
     <>
-      {streamingVideos.length === 0 ? (
+      {isVideosLoading && streamingVideos.length === 0 ? (
         <View style={[styles.centralContainer, computedStyles.bottomContentBgColor]}>
-          <Text style={computedStyles.noItems}>{t('ride_Videos_noVideos')}</Text>
+          <LoadingSpinner endColor={colors.primaryColor} startColor={passengerColors.videosColors.bottomContentBg} />
         </View>
       ) : (
-        <Carousel
-          loop={false}
-          vertical
-          height={windowHeight}
-          containerStyle={computedStyles.bottomContentBgColor}
-          data={streamingVideos}
-          onSnapToItem={setCurrentVideoIndex}
-          windowSize={2}
-          scrollAnimationDuration={300}
-          renderItem={({ item, index }) => <VideoCard videoUri={item} isActive={index === currentVideoIndex} />}
-        />
+        videoList
       )}
 
       <SafeAreaView wrapperStyle={styles.safeAreaView} withTransparentBackground>
