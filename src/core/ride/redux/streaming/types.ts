@@ -1,10 +1,16 @@
 export type StreamingState = {
-  videos: string[];
+  videos: VideosFromAPI[];
   loading: {
     videos: boolean;
   };
 };
 
+export type VideosFromAPI = {
+  vodManifestUrl: string;
+  name: string;
+  description: string;
+};
+
 export type VideosAPIResponse = {
-  vodManifestUrls: string[];
+  vodManifests: VideosFromAPI[];
 };

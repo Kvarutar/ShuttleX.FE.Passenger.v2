@@ -1,10 +1,12 @@
+import { VideosFromAPI } from '../../core/ride/redux/streaming/types.ts';
+
 export type VideoCardProps = {
-  videoUri: string;
+  videoData: VideosFromAPI;
   isActive: boolean;
 };
 
 export type BitmovinPlayerProps = {
-  videoUri: string;
+  videoUrl: string;
   isActive: boolean;
   pause: boolean;
 };

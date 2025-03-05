@@ -45,7 +45,7 @@ const coordinates = {
   longitude: 55.26546275654638,
 };
 
-const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
+const VideoCard = memo(({ videoData, isActive }: VideoCardProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
 
@@ -56,6 +56,8 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
   const [descriptionNumberOfLines, setDescriptionNumberOfLines] = useState<number | undefined>(1);
   const [paused, setPaused] = useState(false);
   const [isCreateRideLoading, setIsCreateRideLoading] = useState(false);
+
+  const { vodManifestUrl, name, description } = videoData;
 
   const computedStyles = StyleSheet.create({
     overlay: {
@@ -190,7 +192,7 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
 
   return (
     <>
-      <BitmovinPlayer videoUri={videoUri} pause={paused} isActive={isActive} />
+      <BitmovinPlayer videoUrl={vodManifestUrl} pause={paused} isActive={isActive} />
 
       <Animated.View style={[StyleSheet.absoluteFill, animatedControlsStyles]}>
         <Pressable style={[styles.overlay, computedStyles.overlay]} onPress={() => setPaused(!paused)}>
@@ -213,7 +215,7 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
             <TriangleIcon color={computedStyles.triangleIcon.color} />
           </View>
           <View style={styles.titleAndRatingContainer}>
-            <Text style={[styles.title, computedStyles.title]}>Brea Dubai</Text>
+            <Text style={[styles.title, computedStyles.title]}>{name}</Text>
             <View style={styles.ratingContainer}>
               <StarIcon color={computedStyles.starIcon.color} style={styles.starIcon} />
               <Text style={[styles.rating, computedStyles.rating]}>4,6</Text>
@@ -225,7 +227,7 @@ const VideoCard = memo(({ videoUri, isActive }: VideoCardProps) => {
           <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={showDescription}>
             <Pressable onPress={() => setShowDescription(!showDescription)}>
               <Text numberOfLines={descriptionNumberOfLines} style={[styles.description, computedStyles.description]}>
-                {t('ride_Videos_description')}
+                {description}
               </Text>
               <ScrollView
                 showsHorizontalScrollIndicator={false}

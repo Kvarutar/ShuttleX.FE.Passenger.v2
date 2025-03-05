@@ -97,7 +97,7 @@ const VideosScreen = () => {
         onProgressChange={onProgressChangeCarouselHandler}
         windowSize={2}
         scrollAnimationDuration={300}
-        renderItem={({ item, index }) => <VideoCard videoUri={item} isActive={index === currentVideoIndex} />}
+        renderItem={({ item, index }) => <VideoCard videoData={item} isActive={index === currentVideoIndex} />}
       />
     );
 

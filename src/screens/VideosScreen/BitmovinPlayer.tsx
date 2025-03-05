@@ -6,7 +6,7 @@ import { LoadingSpinner, useTheme } from 'shuttlex-integration';
 import passengerColors from '../../shared/colors/colors.ts';
 import { BitmovinPlayerProps } from './types.tsx';
 
-const BitmovinPlayer = ({ videoUri, pause, isActive }: BitmovinPlayerProps) => {
+const BitmovinPlayer = ({ videoUrl, pause, isActive }: BitmovinPlayerProps) => {
   const { colors } = useTheme();
 
   const player = usePlayer({
@@ -31,6 +31,17 @@ const BitmovinPlayer = ({ videoUri, pause, isActive }: BitmovinPlayerProps) => {
   const onSourceLoadHandler = useCallback((isLoad: boolean) => () => setIsLoading(isLoad), []);
 
   useEffect(() => {
+    player.load({
+      url: videoUrl,
+      type: Platform.OS === 'ios' ? SourceType.HLS : SourceType.DASH,
+    });
+
+    return () => {
+      player.destroy();
+    };
+  }, [player, videoUrl]);
+
+  useEffect(() => {
     onReady();
   }, [onReady]);
 
@@ -39,17 +50,6 @@ const BitmovinPlayer = ({ videoUri, pause, isActive }: BitmovinPlayerProps) => {
       player.seek(0);
     }
   }, [isActive, player]);
-
-  useEffect(() => {
-    player.load({
-      url: videoUri,
-      type: Platform.OS === 'ios' ? SourceType.HLS : SourceType.DASH,
-    });
-
-    return () => {
-      player.destroy();
-    };
-  }, [player, videoUri]);
 
   return (
     <>

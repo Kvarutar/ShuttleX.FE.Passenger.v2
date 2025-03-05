@@ -2,9 +2,9 @@ import { Platform } from 'react-native';
 import { getNetworkErrorInfo } from 'shuttlex-integration';
 
 import { createAppAsyncThunk } from '../../../redux/hooks.ts';
-import { VideosAPIResponse } from './types.ts';
+import { VideosAPIResponse, VideosFromAPI } from './types.ts';
 
-export const getVideos = createAppAsyncThunk<string[], void>(
+export const getVideos = createAppAsyncThunk<VideosFromAPI[], void>(
   'streaming/getVideos',
   async (_, { rejectWithValue, streamingAxios }) => {
     try {
@@ -14,7 +14,7 @@ export const getVideos = createAppAsyncThunk<string[], void>(
 
       const result = await streamingAxios.get<VideosAPIResponse>(`/vod/random-manifests/${manifestType}/${userId}`);
 
-      return result.data.vodManifestUrls;
+      return result.data.vodManifests;
     } catch (error) {
       return rejectWithValue(getNetworkErrorInfo(error));
     }
