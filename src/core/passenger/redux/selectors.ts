@@ -1,6 +1,7 @@
 import { AppState } from '../../redux/store';
 
 export const profileSelector = (state: AppState) => state.passenger.profile;
+export const profileIdSelector = (state: AppState) => state.passenger.profile?.id;
 export const profileZoneSelector = (state: AppState) => state.passenger.zone;
 export const profilePrefferedNameSelector = (state: AppState) =>
   state.passenger.profile?.names?.find(name => name.type === 'Preferred')?.value;

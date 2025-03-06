@@ -5,6 +5,8 @@ import { logger } from '../../../App';
 import { setWinnerPrizes } from '../../lottery/redux';
 import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
+import { setNewMessageFromBack } from '../../ride/redux/chat';
+import { newMessageFromBackSelector } from '../../ride/redux/chat/selectors';
 import { offerSelector } from '../../ride/redux/offer/selectors';
 import { createInitialOffer, getRecentDropoffs } from '../../ride/redux/offer/thunks';
 import { setOrderStatus } from '../../ride/redux/order';
@@ -137,9 +139,16 @@ export const notificationHandlers: Record<
     //add logic when stop points will be done
     //payload contains OrderId
   },
-  [SSEAndNotificationsEventType.NewMessage]: async () => {
-    //TODO add logic
-    //payload contains  chatId, messageId
+  [SSEAndNotificationsEventType.NewMessage]: async payload => {
+    const newMessage = newMessageFromBackSelector(store.getState());
+    if (newMessage === null && payload?.messageId && payload.chatId) {
+      store.dispatch(
+        setNewMessageFromBack({
+          chatId: payload.chatId,
+          messageId: payload.messageId,
+        }),
+      );
+    }
   },
 };
 

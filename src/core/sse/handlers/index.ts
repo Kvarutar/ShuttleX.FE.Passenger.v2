@@ -3,6 +3,8 @@ import { isCoordinatesEqualZero } from 'shuttlex-integration';
 
 import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
+import { setNewMessageFromBack } from '../../ride/redux/chat';
+import { newMessageFromBackSelector } from '../../ride/redux/chat/selectors';
 import { offerSelector } from '../../ride/redux/offer/selectors';
 import { createInitialOffer, getRecentDropoffs } from '../../ride/redux/offer/thunks';
 import { setOrderStatus } from '../../ride/redux/order';
@@ -25,6 +27,7 @@ import {
   SSEDriverArrivedEventData,
   SSEDriverCanceledEventData,
   SSEDriverRejectedEventData,
+  SSENewMessageEventData,
   SSETripEndedEventData,
   SSETripStartedEventData,
 } from './types';
@@ -81,8 +84,17 @@ export const newMessageSSEHandler = (
   event: EventSourceEvent<SSEAndNotificationsEventType.NewMessage, SSEAndNotificationsEventType>,
 ) => {
   if (event.data) {
-    //TODO for test
-    console.log('BACKEND', event.data);
+    const newMessage = newMessageFromBackSelector(store.getState());
+    const data: SSENewMessageEventData = JSON.parse(event.data);
+
+    if (newMessage === null && data.messageId && data.chatId) {
+      store.dispatch(
+        setNewMessageFromBack({
+          chatId: data.chatId,
+          messageId: data.messageId,
+        }),
+      );
+    }
   }
 };
 

@@ -1,9 +1,14 @@
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import { Button, HeaderWithTwoTitles, ScrollViewWithCustomScroll, Text, useTheme } from 'shuttlex-integration';
 
+import { useAppDispatch } from '../../../../../core/redux/hooks';
+import { chatIdSelector, messagesAmountSelector } from '../../../../../core/ride/redux/chat/selectors';
+import { createChat, getAllMessagesByChatId, getLastChat } from '../../../../../core/ride/redux/chat/thunks';
 import { RootStackParamList } from '../../../../../Navigate/props';
 import FirstCard from './FirstCard';
 import FourthCard from './FourthCard';
@@ -13,9 +18,31 @@ import { CardWrapperProps } from './types';
 
 const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
   const navigation = useNavigation<NativeStackScreenProps<RootStackParamList, 'Ride'>['navigation']>();
-
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { colors } = useTheme();
+
+  const messagesAmount = useSelector(messagesAmountSelector);
+  const chatId = useSelector(chatIdSelector);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (chatId) {
+        dispatch(getAllMessagesByChatId({ amount: messagesAmount, page: 0 }));
+      }
+    }, [dispatch, messagesAmount, chatId]),
+  );
+
+  useEffect(() => {
+    dispatch(getLastChat());
+  }, [dispatch]);
+
+  const onChatPress = async () => {
+    if (!chatId) {
+      dispatch(createChat());
+    }
+    navigation.navigate('AiChatScreen');
+  };
 
   const computedStyles = StyleSheet.create({
     header: {
@@ -62,11 +89,7 @@ const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
         </View>
       </ScrollViewWithCustomScroll>
 
-      <Button
-        text={t('ride_AiPopup_button')}
-        style={styles.chatButton}
-        onPress={() => navigation.navigate('AiChatScreen')}
-      />
+      <Button text={t('ride_AiPopup_button')} style={styles.chatButton} onPress={onChatPress} />
     </>
   );
 };

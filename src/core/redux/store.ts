@@ -11,6 +11,7 @@ import notificationsReducer from '../menu/redux/notifications';
 import walletRedicer from '../menu/redux/wallet';
 import passengerReducer from '../passenger/redux';
 import alertsReducer from '../ride/redux/alerts';
+import chatReducer from '../ride/redux/chat';
 import geolocationReducer from '../ride/redux/geolocation';
 import mapReducer from '../ride/redux/map';
 import offerReducer from '../ride/redux/offer';
@@ -42,6 +43,7 @@ const rootReducer = combineReducers({
   accountSettings: accountSettingsReducer,
   lottery: lotteryReducer,
   streaming: streamingReducer,
+  chat: chatReducer,
 });
 
 const sentryReduxEnhancer = Sentry.createReduxEnhancer();
