@@ -61,7 +61,6 @@ const Tariffs = () => {
   const [tariff, setTariff] = useState<SelectedTariff | null>(null);
   const [windowIsOpened, setWindowIsOpened] = useState(false);
 
-  // TODO: remove when bug with bottomwindow onHiddenOrVisibleHeightChange callback frequent calls will be fixed
   const [isDebouncedMapFitToCoordinatesCalled, setIsDebouncedMapFitToCoordinatesCalled] = useState(false);
 
   const withAnimatedBigCars = useRef(true);

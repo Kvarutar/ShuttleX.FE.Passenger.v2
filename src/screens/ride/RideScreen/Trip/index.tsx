@@ -115,13 +115,10 @@ const Trip = () => {
           <View style={[styles.avatarWrapper, computedStyles.avatarWrapper]}>
             {isTripLoading ? (
               <Skeleton skeletonContainerStyle={styles.skeletonAvatar} />
+            ) : order?.avatar ? (
+              <Image style={styles.avatar} source={{ uri: order.avatar }} />
             ) : (
-              <Image
-                style={styles.avatar}
-                source={{
-                  uri: order?.avatar ?? undefined, //TODO: change to default image
-                }}
-              />
+              <Image style={styles.defaultAvatar} source={require('../../../../../assets/images/DefaultAvatar.png')} />
             )}
           </View>
         </View>
@@ -212,6 +209,10 @@ const styles = StyleSheet.create({
     right: 25,
     width: 72,
     height: 72,
+  },
+  defaultAvatar: {
+    flex: 1,
+    width: '100%',
   },
   skeletonAvatar: {
     borderRadius: 1000,
