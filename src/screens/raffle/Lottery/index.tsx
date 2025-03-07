@@ -304,7 +304,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
           )
         }
         containerStyle={styles.bottomWindowContainer}
-        visiblePartStyle={[styles.visiblePartStyle, previousLotteryId ? computedStyles.visiblePartStyle : {}]}
+        visiblePartWrapperStyle={[styles.visiblePartStyle, previousLotteryId ? computedStyles.visiblePartStyle : {}]}
       />
 
       <PrizesSlider

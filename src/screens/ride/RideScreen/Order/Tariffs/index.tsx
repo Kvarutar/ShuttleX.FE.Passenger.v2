@@ -316,7 +316,7 @@ const Tariffs = () => {
           </View>
         </>
       }
-      visiblePartStyle={styles.visiblePartStyle}
+      visiblePartWrapperStyle={styles.visiblePartWrapperStyle}
       visiblePart={content}
     />
   );
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   backIcon: {
     transform: [{ rotate: '180deg' }],
   },
-  visiblePartStyle: {
+  visiblePartWrapperStyle: {
     flexShrink: 1,
     marginTop: 20,
     paddingBottom: 0,
