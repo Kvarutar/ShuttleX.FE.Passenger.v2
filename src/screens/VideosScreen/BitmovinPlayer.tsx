@@ -36,9 +36,15 @@ const BitmovinPlayer = ({ videoUrl, pause, isActive }: BitmovinPlayerProps) => {
       type: Platform.OS === 'ios' ? SourceType.HLS : SourceType.DASH,
     });
 
-    return () => {
-      player.destroy();
-    };
+    (async () => {
+      const isMuted = await player.isMuted();
+
+      if (isMuted) {
+        player.unmute();
+      }
+    })();
+
+    return player.destroy;
   }, [player, videoUrl]);
 
   useEffect(() => {

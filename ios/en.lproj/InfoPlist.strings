@@ -2,5 +2,5 @@
 "NSPhotoLibraryUsageDescription" = "Photo library access is needed to upload your profile picture.";
 "NSPhotoLibraryAddUsageDescription" = "Photo library access is needed to upload your profile picture.";
 "NSCameraUsageDescription" = "Camera access is needed to upload your profile photo.";
-"NSMicrophoneUsageDescription" = "We need access to the microphone to capture your voice for voice commands and communication."
-"NSSpeechRecognitionUsageDescription" = "We require access to speech recognition to convert your spoken words into text for a better user experience."
+"NSMicrophoneUsageDescription" = "We need access to the microphone to capture your voice for voice commands and communication.";
+"NSSpeechRecognitionUsageDescription" = "We require access to speech recognition to convert your spoken words into text for a better user experience.";

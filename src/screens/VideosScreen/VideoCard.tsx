@@ -4,11 +4,11 @@ import { memo, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, ImageBackground, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import LinearGradient from 'react-native-linear-gradient';
 import Animated, { FadeIn, FadeOut, runOnJS, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import {
   Bar,
   BarModes,
-  BottomWindow,
   Button,
   ButtonShapes,
   ChatIcon2,
@@ -80,9 +80,6 @@ const VideoCard = memo(({ videoData, isActive }: VideoCardProps) => {
     },
     rating: {
       color: passengerColors.videosColors.secondaryText,
-    },
-    windowStyle: {
-      backgroundColor: 'transparent',
     },
     description: {
       color: passengerColors.videosColors.secondaryText,
@@ -204,7 +201,11 @@ const VideoCard = memo(({ videoData, isActive }: VideoCardProps) => {
         </Pressable>
       </Animated.View>
 
-      <BottomWindow windowStyle={[styles.windowStyle, computedStyles.windowStyle]}>
+      <LinearGradient
+        colors={['transparent', colors.backgroundTertiaryColor]}
+        locations={[0, 0.99]}
+        style={styles.contentWrapper}
+      >
         <View style={styles.logoAndTitleContainer}>
           {/* TODO: Rewrite with the real data (maybe remove this block if we receive an image) */}
           <View style={[styles.logo, computedStyles.logo]}>
@@ -272,7 +273,7 @@ const VideoCard = memo(({ videoData, isActive }: VideoCardProps) => {
           <Button onPress={undefined} style={[styles.reservationButton, computedStyles.reservationButton]}>
             <PhoneIcon color={computedStyles.phoneIcon.color} />
             <Text style={[styles.reservationButtonText, computedStyles.reservationButtonText]}>
-              {t('ride_Videos_recervationButton')}
+              {t('ride_Videos_reservationButton')}
             </Text>
           </Button>
           <Button
@@ -291,12 +292,20 @@ const VideoCard = memo(({ videoData, isActive }: VideoCardProps) => {
           {/*  </Text>*/}
           {/*</View>*/}
         </View>
-      </BottomWindow>
+      </LinearGradient>
     </>
   );
 });
 
 const styles = StyleSheet.create({
+  contentWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingVertical: sizes.paddingVertical,
+    paddingHorizontal: sizes.paddingHorizontal,
+  },
   overlay: {
     height: windowHeight,
     alignItems: 'center',
@@ -345,9 +354,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
     letterSpacing: 0,
-  },
-  windowStyle: {
-    paddingTop: 0,
   },
   descriptionWrapper: {
     marginTop: 4,

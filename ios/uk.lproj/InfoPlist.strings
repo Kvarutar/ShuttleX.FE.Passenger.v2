@@ -2,5 +2,5 @@
 "NSPhotoLibraryUsageDescription" = "Доступ до галереї потрібен для завантаження фото вашого профілю.";
 "NSPhotoLibraryAddUsageDescription" = "Доступ до галереї потрібен для завантаження фото вашого профілю.";
 "NSCameraUsageDescription" = "Доступ до камери потрібен для завантаження фото профілю.";
-"NSMicrophoneUsageDescription" = "Доступ до мікрофону потрібен для голосових команд та комунікації."
-"NSSpeechRecognitionUsageDescription" = "Доступ до розпізнавання голосу потрібен для конвертації голосових повідомлень в текст."
+"NSMicrophoneUsageDescription" = "Доступ до мікрофону потрібен для голосових команд та комунікації.";
+"NSSpeechRecognitionUsageDescription" = "Доступ до розпізнавання голосу потрібен для конвертації голосових повідомлень в текст.";

@@ -11,6 +11,7 @@ import {
   ButtonShapes,
   CircleButtonModes,
   SearchIcon,
+  sizes,
   Text,
   useTheme,
 } from 'shuttlex-integration';
@@ -58,6 +59,9 @@ const StartRideVisible = ({ isBottomWindowOpen, setFastAddressSelect }: StartRid
     scrollView: {
       marginTop: isBottomWindowOpen ? 0 : 8,
       marginLeft: isBottomWindowOpen ? 8 : 0,
+    },
+    scrollViewContentContainer: {
+      paddingRight: sizes.paddingHorizontal / 2,
     },
     searchIconBWOpened: {
       color: colors.iconPrimaryColor,
@@ -116,6 +120,7 @@ const StartRideVisible = ({ isBottomWindowOpen, setFastAddressSelect }: StartRid
         {isRecentDropoffsExist && (
           <ScrollView
             style={[styles.scrollView, computedStyles.scrollView]}
+            contentContainerStyle={computedStyles.scrollViewContentContainer}
             horizontal
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={16}
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollView: {
-    width: '100%',
+    marginRight: -sizes.paddingHorizontal,
   },
   extraSearchIconContainer: {
     width: 62,
