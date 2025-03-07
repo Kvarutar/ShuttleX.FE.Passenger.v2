@@ -42,6 +42,7 @@ import {
   isCityAvailableLoadingSelector,
   isCityAvailableSelector,
   isTooShortRouteLengthPopupVisibleSelector,
+  offerPointsSelector,
   offerRecentDropoffsSelector,
   offerRouteErrorSelector,
 } from '../../../../../core/ride/redux/offer/selectors';
@@ -83,6 +84,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
   const profile = useSelector(profileSelector);
   const recentDropoffs = useSelector(offerRecentDropoffsSelector);
   const isAllOfferPointsFilled = useSelector(isAllOfferPointsFilledSelector);
+  const offerPoints = useSelector(offerPointsSelector);
   const isCityAvailable = useSelector(isCityAvailableSelector);
   const isCityAvailableLoading = useSelector(isCityAvailableLoadingSelector);
   const selectedStartRideBottomWindowMenuTabIdx = useSelector(selectedStartRideBottomWindowMenuTabIdxSelector);
@@ -131,7 +133,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
       setFastAddressSelect(null);
       dispatch(setOfferRoute(null));
     }
-  }, [dispatch, isAddressSelectVisible]);
+  }, [dispatch, offerPoints, isAddressSelectVisible]);
 
   useEffect(() => {
     if (isCityAvailable !== null && !isCityAvailableLoading && isAllOfferPointsFilled) {

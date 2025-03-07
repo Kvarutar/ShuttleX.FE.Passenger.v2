@@ -1,13 +1,12 @@
 import { EventSourceEvent } from 'react-native-sse';
-import { isCoordinatesEqualZero } from 'shuttlex-integration';
 
 import { getTicketAfterRide } from '../../lottery/redux/thunks';
 import { store } from '../../redux/store';
 import { setNewMessageFromBack } from '../../ride/redux/chat';
 import { newMessageFromBackSelector } from '../../ride/redux/chat/selectors';
-import { offerSelector } from '../../ride/redux/offer/selectors';
-import { createInitialOffer, getRecentDropoffs } from '../../ride/redux/offer/thunks';
-import { setOrderStatus } from '../../ride/redux/order';
+import { updateOfferPoint } from '../../ride/redux/offer';
+import { getRecentDropoffs } from '../../ride/redux/offer/thunks';
+import { setIsAddressSelectVisible, setOrderStatus } from '../../ride/redux/order';
 import { OrderStatus } from '../../ride/redux/order/types';
 import {
   addFinishedTrips,
@@ -18,7 +17,14 @@ import {
   setTripIsCanceled,
   setTripStatus,
 } from '../../ride/redux/trip';
-import { isOrderCanceledSelector, selectedOrderIdSelector, tripStatusSelector } from '../../ride/redux/trip/selectors';
+import {
+  isOrderCanceledSelector,
+  orderInfoSelector,
+  selectedOrderIdSelector,
+  tripDropOffRouteLastWaypointSelector,
+  tripPickUpRouteFirstWaypointSelector,
+  tripStatusSelector,
+} from '../../ride/redux/trip/selectors';
 import { getCurrentOrder, getOrderInfo, getRouteInfo } from '../../ride/redux/trip/thunks';
 import { TripStatus } from '../../ride/redux/trip/types';
 import { SSEAndNotificationsEventType } from '../../utils/notifications/types';
@@ -137,26 +143,41 @@ export const driverCanceledSSEHandler = (
   if (event.data) {
     const { getState, dispatch } = store;
     const isOrderCanceled = isOrderCanceledSelector(getState());
-    const offer = offerSelector(getState());
+    const orderInfo = orderInfoSelector(getState());
+    const tripPickUpRouteFirstWaypoint = tripPickUpRouteFirstWaypointSelector(getState());
+    const tripDropOffRouteLastWaypoint = tripDropOffRouteLastWaypointSelector(getState());
     const selectedOrderId = selectedOrderIdSelector(store.getState());
     const data: SSEDriverCanceledEventData = JSON.parse(event.data);
 
-    //TODO: Rewrite this logic (navigate user to AddressSelect, without creating offer)
-
     //Because it can be changed in notifications or initial setup
     if (data.orderId === selectedOrderId && !isOrderCanceled) {
+      if (orderInfo && tripPickUpRouteFirstWaypoint && tripDropOffRouteLastWaypoint) {
+        dispatch(
+          updateOfferPoint({
+            id: 0,
+            address: orderInfo.pickUpPlace,
+            fullAddress: orderInfo.pickUpFullAddress,
+            latitude: tripPickUpRouteFirstWaypoint.geo.latitude,
+            longitude: tripPickUpRouteFirstWaypoint.geo.longitude,
+          }),
+        );
+        dispatch(
+          updateOfferPoint({
+            id: 1,
+            address: orderInfo.dropOffPlace,
+            fullAddress: orderInfo.dropOffFullAddress,
+            latitude: tripDropOffRouteLastWaypoint.geo.latitude,
+            longitude: tripDropOffRouteLastWaypoint.geo.longitude,
+          }),
+        );
+      }
+
+      dispatch(setIsAddressSelectVisible(true));
       dispatch(endTrip());
       dispatch(setIsOrderCanceled(true));
       dispatch(setSelectedOrderId(null));
-
-      //TODO: Rewrite with saving points on the device
-      if (isCoordinatesEqualZero(offer.points[0]) || isCoordinatesEqualZero(offer.points[1])) {
-        dispatch(setIsOrderCanceledAlertVisible(true));
-        return;
-      }
-
-      dispatch(createInitialOffer());
-      dispatch(setOrderStatus(OrderStatus.Confirming));
+      dispatch(setIsOrderCanceledAlertVisible(true));
+      dispatch(setOrderStatus(OrderStatus.StartRide));
     }
   }
 };
