@@ -106,9 +106,9 @@ PODS:
     - hermes-engine/Pre-built (= 0.73.11)
   - hermes-engine/Pre-built (0.73.11)
   - libevent (2.1.12)
-  - MMKV (2.0.2):
-    - MMKVCore (~> 2.0.2)
-  - MMKVCore (2.0.2)
+  - MMKV (2.1.0):
+    - MMKVCore (~> 2.1.0)
+  - MMKVCore (2.1.1)
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
     - nanopb/encode (= 2.30910.0)
@@ -1614,8 +1614,8 @@ SPEC CHECKSUMS:
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   hermes-engine: d992945b77c506e5164e6a9a77510c9d57472c59
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  MMKV: 3eacda84cd1c4fc95cf848d3ecb69d85ed56006c
-  MMKVCore: 508b4d3a8ce031f1b5c8bd235f0517fb3f4c73a9
+  MMKV: ce484c1ac40bf76d5f09a0195d2ec5b3d3840d55
+  MMKVCore: 1eb661c6c498ab88e3df9ce5d8ff94d05fcc0567
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
@@ -1687,7 +1687,7 @@ SPEC CHECKSUMS:
   RNKeychain: bfe3d12bf4620fe488771c414530bf16e88f3678
   RNLocalize: 06991b9c31e7a898a9fa6ddb204ce0f53a967248
   RNNotifee: 935f3ea8c134c88cbf8b13ea0c97c72c09ad2116
-  RNPermissions: aefe587db26e06d12e1c260ed52273973562e426
+  RNPermissions: 616fb56c31043e6785a4a4017920be1eb1580ea8
   RNReanimated: 2cd668031a098e40a3090d4bfb7b0edfe1f580d0
   RNScreens: e5093efe5103f3fd5f4479a0f0281ee5e6d81e11
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
@@ -1699,6 +1699,6 @@ SPEC CHECKSUMS:
   TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   Yoga: d8b0f242670c8d28249d3aab276ca1a3b8db34f5
 
-PODFILE CHECKSUM: c6b2c576837b0fd3a719f28890469949df19fde1
+PODFILE CHECKSUM: 34f0d4e5bf5c6996bebdfec944b2910c3708add3
 
 COCOAPODS: 1.15.2

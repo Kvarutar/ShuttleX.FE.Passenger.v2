@@ -7,7 +7,11 @@ import { useSelector } from 'react-redux';
 import { Button, HeaderWithTwoTitles, ScrollViewWithCustomScroll, Text, useTheme } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../../../../core/redux/hooks';
-import { chatIdSelector, messagesAmountSelector } from '../../../../../core/ride/redux/chat/selectors';
+import {
+  chatIdSelector,
+  isLastChatLoadingSelector,
+  messagesAmountSelector,
+} from '../../../../../core/ride/redux/chat/selectors';
 import { createChat, getAllMessagesByChatId, getLastChat } from '../../../../../core/ride/redux/chat/thunks';
 import { RootStackParamList } from '../../../../../Navigate/props';
 import FirstCard from './FirstCard';
@@ -24,6 +28,7 @@ const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
 
   const messagesAmount = useSelector(messagesAmountSelector);
   const chatId = useSelector(chatIdSelector);
+  const isLastChatLoading = useSelector(isLastChatLoadingSelector);
 
   useFocusEffect(
     useCallback(() => {
@@ -38,7 +43,7 @@ const AIPopup = ({ prefferedName }: { prefferedName?: string }) => {
   }, [dispatch]);
 
   const onChatPress = async () => {
-    if (!chatId) {
+    if (!chatId && !isLastChatLoading) {
       dispatch(createChat());
     }
     navigation.navigate('AiChatScreen');
@@ -169,6 +174,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontFamily: 'Inter Bold',
     lineHeight: 42,
+    textAlign: 'center',
   },
   descript: {
     fontSize: 22,

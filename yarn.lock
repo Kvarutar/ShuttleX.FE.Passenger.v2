@@ -11109,15 +11109,15 @@ __metadata:
   linkType: hard
 
 "react-native-keyboard-controller@npm:^1.16.6":
-  version: 1.16.6
-  resolution: "react-native-keyboard-controller@npm:1.16.6"
+  version: 1.16.7
+  resolution: "react-native-keyboard-controller@npm:1.16.7"
   dependencies:
     react-native-is-edge-to-edge: ^1.1.6
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-reanimated: ">=3.0.0"
-  checksum: 3f2990061a8004da38b7b343b9809233e03b3964614a8e3865ea08c332fd7f8776c4d441ce500047e4a969b0a078de27d572ef8620a31755ed1dc956cce668b4
+  checksum: a0c051d90dec2c70e67209e9bccb9f021190659192dd51228e3a29441262717605e406dfe44bc9f60234b57ba5567c5bcbd48ae16c0860af59cf51b1b5e7a088
   languageName: node
   linkType: hard
 
@@ -12239,7 +12239,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
 
 "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev":
   version: 1.0.0
-  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=68c4352a36688acf7b25afd8ca740e69d94d5cf0"
+  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=b57b6a763c1cc64d3c3b06e65108f3f4b9943c12"
   dependencies:
     "@googlemaps/polyline-codec": ^1.0.28
     "@react-native-voice/voice": ^3.2.4
@@ -12295,7 +12295,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react-native-svg-transformer: "*"
     react-redux: "*"
     uuid: "*"
-  checksum: 37c14aa0013fe89325c2cb5f11b7c36330a86d532f345fac4a17b6ab9ff93f588571812c86454436fd167065ecb5059195261fe7da27b43d03e2f55abca1c237
+  checksum: 19c06779c37220440038040748341774fb4371d8d8c2b98be47faaf1991d851d972ed39405cbc90721ee812d62a7661f9c7ff7c0ca1cbaa90f51c8bd85a64692
   languageName: node
   linkType: hard
 

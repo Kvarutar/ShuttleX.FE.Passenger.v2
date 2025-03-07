@@ -58,7 +58,11 @@ const AiChatScreen = () => {
       ).unwrap();
 
       if (olderMessages && olderMessages.length > 0) {
-        setMessages(prevMessages => [...prevMessages, ...olderMessages]);
+        setMessages(prevMessages => {
+          const newMessages = olderMessages.filter(msg => !prevMessages.some(prevMsg => prevMsg._id === msg._id));
+          return [...prevMessages, ...newMessages];
+        });
+
         setCurrentPage(prevPage => prevPage + 1);
       }
     } catch (error) {
