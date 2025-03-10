@@ -87,7 +87,13 @@ const AiChatScreen = () => {
 
         const formattedMessage = convertMessageToChatFormat(newMessage, currentUserId);
 
-        setMessages(prevMessages => [formattedMessage, ...(prevMessages ?? [])]);
+        setMessages(prevMessages => {
+          // check if message already exists
+          if (!prevMessages.some(msg => msg._id === formattedMessage._id)) {
+            return [formattedMessage, ...prevMessages];
+          }
+          return prevMessages;
+        });
         dispatch(clearNewMessageFromBack());
       } catch (error) {
         console.error('Error fetching new message:', error);
