@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
-  ButtonV1,
-  ButtonV1Shapes,
+  Button,
+  ButtonShapes,
   NotificationsScreen as NotificationsScreenIntegration,
   SafeAreaView,
   ShortArrowIcon,
@@ -20,9 +20,9 @@ const NotificationsScreen = ({ navigation }: NotificationsScreenProps): JSX.Elem
   return (
     <SafeAreaView>
       <View style={styles.header}>
-        <ButtonV1 shape={ButtonV1Shapes.Circle} onPress={navigation.goBack}>
+        <Button shape={ButtonShapes.Circle} onPress={navigation.goBack}>
           <ShortArrowIcon />
-        </ButtonV1>
+        </Button>
         <Text style={styles.headerTitle}>{t('menu_Notifications_headerTitle')}</Text>
         <View style={styles.headerDummy} />
       </View>

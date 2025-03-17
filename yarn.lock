@@ -66,8 +66,8 @@ __metadata:
   linkType: hard
 
 "@babel/eslint-parser@npm:^7.20.0":
-  version: 7.26.8
-  resolution: "@babel/eslint-parser@npm:7.26.8"
+  version: 7.26.10
+  resolution: "@babel/eslint-parser@npm:7.26.10"
   dependencies:
     "@nicolo-ribaudo/eslint-scope-5-internals": 5.1.1-v1
     eslint-visitor-keys: ^2.1.0
@@ -75,7 +75,7 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.11.0
     eslint: ^7.5.0 || ^8.0.0 || ^9.0.0
-  checksum: a434da9e3099e5f77911baa4eaa21f2ec64768703be1fde2858e8ffdb8be6cb78ff67c611c8c17fe1ece54d925b65487a7455cca93103b017443a51b76320751
+  checksum: 979f0e86d3bcb596f0ffd159265a32adfb09a7b6765cd66588130fd8db58ebdcbfb2ecf3456bfc081ace4500d36f16a8b497aaaf4830bc3c10b99856c7ea3ce5
   languageName: node
   linkType: hard
 
@@ -2931,6 +2931,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jsamr/counter-style@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@jsamr/counter-style@npm:2.0.2"
+  checksum: 9434d6e52dcbf6a3422137e3397d801aa3b4f3fd780fc5a12c47db171502f281eaa8ae69b953a1d1bdaf4effeac7c674e7dbdd8341157a6f21a087ccb7af5bfe
+  languageName: node
+  linkType: hard
+
+"@jsamr/react-native-li@npm:2.3.1":
+  version: 2.3.1
+  resolution: "@jsamr/react-native-li@npm:2.3.1"
+  peerDependencies:
+    "@jsamr/counter-style": ^1.0.0 || ^2.0.0
+    react: "*"
+    react-native: "*"
+  checksum: 3465ac894d125261660cc5d779c226560578927354c8c661be9bcdc46438121cd5561079dd76ad82bb9970c0adf753e62726d6d8849b1b66484aa8090701916b
+  languageName: node
+  linkType: hard
+
 "@mapbox/geo-viewport@npm:^0.4.1":
   version: 0.4.1
   resolution: "@mapbox/geo-viewport@npm:0.4.1"
@@ -3361,6 +3379,16 @@ __metadata:
     expo:
       optional: true
   checksum: 67235c7c5aaaac4986687760003829d74a88001fb9f1ff35f15e31b3933c8a1f6bc442e388a7f4f95ee5a8855cb1f1fc08946b3983eab77a04b7678f360f853e
+  languageName: node
+  linkType: hard
+
+"@react-native-masked-view/masked-view@npm:^0.3.2":
+  version: 0.3.2
+  resolution: "@react-native-masked-view/masked-view@npm:0.3.2"
+  peerDependencies:
+    react: ">=16"
+    react-native: ">=0.57"
+  checksum: e35ab882148df3f9b71f04355d2fb1b24d6f2aaf29043f80758f398bdf905eed67734b36b072fa8b934923ff4e3d80ccb5e37d8376cb1825272078b96a21dadc
   languageName: node
   linkType: hard
 
@@ -3908,20 +3936,6 @@ __metadata:
   dependencies:
     "@sentry/core": 8.47.0
   checksum: 2fd68154a4ab27ee331bcf53402c38f242c183d88b8d3268b22781551db56b2c83fd516ae8e78218e4878982217ceb3dd1a606e62b5298ed989e01fb5c3da79e
-  languageName: node
-  linkType: hard
-
-"@shopify/flash-list@npm:^1.7.3":
-  version: 1.7.3
-  resolution: "@shopify/flash-list@npm:1.7.3"
-  dependencies:
-    recyclerlistview: 4.2.1
-    tslib: 2.8.1
-  peerDependencies:
-    "@babel/runtime": "*"
-    react: "*"
-    react-native: "*"
-  checksum: cbf3289779141777eab4ec6f1a59b90c6f2f91fb4a880dad09ace5e37559a1448ddbf7a282c8787bb7b4f1b45d3f612f8a940760accfd88313494d47a1d63cce
   languageName: node
   linkType: hard
 
@@ -5361,7 +5375,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"call-bound@npm:^1.0.2, call-bound@npm:^1.0.3":
+"call-bound@npm:^1.0.2, call-bound@npm:^1.0.3, call-bound@npm:^1.0.4":
   version: 1.0.4
   resolution: "call-bound@npm:1.0.4"
   dependencies:
@@ -7331,7 +7345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"for-each@npm:^0.3.3":
+"for-each@npm:^0.3.3, for-each@npm:^0.3.5":
   version: 0.3.5
   resolution: "for-each@npm:0.3.5"
   dependencies:
@@ -7835,6 +7849,13 @@ __metadata:
   version: 0.0.3
   resolution: "hsluv@npm:0.0.3"
   checksum: 2cd6dbe3423de7b8dade6429530388c4473dd3f7ded52d2c395dc99b4a0712c2ab215c8186a38a3617e51f344f555a562ac785db433e7364d75011657d1f17da
+  languageName: node
+  linkType: hard
+
+"html-entities@npm:2.5.2":
+  version: 2.5.2
+  resolution: "html-entities@npm:2.5.2"
+  checksum: b23f4a07d33d49ade1994069af4e13d31650e3fb62621e92ae10ecdf01d1a98065c78fd20fdc92b4c7881612210b37c275f2c9fba9777650ab0d6f2ceb3b99b6
   languageName: node
   linkType: hard
 
@@ -9295,7 +9316,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.debounce@npm:4.0.8, lodash.debounce@npm:^4.0.8":
+"lodash.debounce@npm:^4.0.8":
   version: 4.0.8
   resolution: "lodash.debounce@npm:4.0.8"
   checksum: a3f527d22c548f43ae31c861ada88b2637eb48ac6aa3eb56e82d44917971b8aa96fbb37aa60efea674dc4ee8c42074f90f7b1f772e9db375435f6c83a19b3bc6
@@ -9447,6 +9468,15 @@ __metadata:
   dependencies:
     tmpl: 1.0.5
   checksum: b38a025a12c8146d6eeea5a7f2bf27d51d8ad6064da8ca9405fcf7bf9b54acd43e3b30ddd7abb9b1bfa4ddb266019133313482570ddb207de568f71ecfcf6060
+  languageName: node
+  linkType: hard
+
+"marked@npm:5.0.5":
+  version: 5.0.5
+  resolution: "marked@npm:5.0.5"
+  bin:
+    marked: bin/marked.js
+  checksum: 0148b62895e93dff7f209469ec1d0d5cbb52e4d974c6ed02d35f9feaf75580c2daf16610486b0c36780c75d893b14103e74c8737f9921e54b3bd2b4d1dc51039
   languageName: node
   linkType: hard
 
@@ -10739,7 +10769,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15.8.1, prop-types@npm:^15.7.2, prop-types@npm:^15.7.x, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.7.2, prop-types@npm:^15.7.x, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -11039,24 +11069,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gifted-chat@npm:^2.6.5":
-  version: 2.8.0
-  resolution: "react-native-gifted-chat@npm:2.8.0"
+"react-native-gifted-chat@npm:2.6.5":
+  version: 2.6.5
+  resolution: "react-native-gifted-chat@npm:2.6.5"
   dependencies:
     "@expo/react-native-action-sheet": ^4.1.0
     "@types/lodash.isequal": ^4.5.8
     dayjs: ^1.11.13
     lodash.isequal: ^4.5.0
+    prop-types: ^15.8.1
     react-native-communications: ^2.2.1
     react-native-iphone-x-helper: ^1.3.1
     react-native-lightbox-v2: ^0.9.2
     react-native-parsed-text: ^0.0.22
+    uuid: ^11.0.4
   peerDependencies:
     react: "*"
     react-native: "*"
-    react-native-keyboard-controller: ">=1.0.0"
-    react-native-reanimated: ">=2.0.0"
-  checksum: 9fda7a7ad6b43a346565c187b75a7c41a0c929204e1e7943d4f33cee4184929e9d994a087454faf3d8c2c877d362db1872d84cf9e5d710f9c481af5561ec82ae
+    react-native-get-random-values: "*"
+    react-native-reanimated: "*"
+    react-native-safe-area-context: "*"
+  checksum: 74c0023e4e381ab99f88081588d5f983fad6ef9388a8533f894faae6af45ae6eea573a0cac85eb305aebd4cfa5d9c3972dbf79e6a83ef8e702345b65efddb5b0
   languageName: node
   linkType: hard
 
@@ -11095,29 +11128,6 @@ __metadata:
   peerDependencies:
     react-native: ">=0.42.0"
   checksum: 024376646009a966e33e12fc2358751830818b0fb73b1c601a64eb5e490d2dc43eec23668991b985a8c412a84d087f20eb45bb9b593567c08b66e741b7bddda5
-  languageName: node
-  linkType: hard
-
-"react-native-is-edge-to-edge@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "react-native-is-edge-to-edge@npm:1.1.6"
-  peerDependencies:
-    react: ">=18.2.0"
-    react-native: ">=0.73.0"
-  checksum: 4e07c1e34c01c8d50fd7c1d0460db06f6f0515197405230386a8ffb950cb724b10743af032310d1384df0a90059bfb8992ba2d93344ce86315315f0493feccc2
-  languageName: node
-  linkType: hard
-
-"react-native-keyboard-controller@npm:^1.16.6":
-  version: 1.16.7
-  resolution: "react-native-keyboard-controller@npm:1.16.7"
-  dependencies:
-    react-native-is-edge-to-edge: ^1.1.6
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    react-native-reanimated: ">=3.0.0"
-  checksum: a0c051d90dec2c70e67209e9bccb9f021190659192dd51228e3a29441262717605e406dfe44bc9f60234b57ba5567c5bcbd48ae16c0860af59cf51b1b5e7a088
   languageName: node
   linkType: hard
 
@@ -11188,6 +11198,24 @@ __metadata:
     react-native-web:
       optional: true
   checksum: 2fcbd3c191e0cd6146b1d4df20344475ff42a69c75f471045416e3e9beb081dacbfe70d9a266cc3f9293d30319ef59469acad67f5145cb8134ebf8f464fd0fc4
+  languageName: node
+  linkType: hard
+
+"react-native-marked@npm:^6.0.7":
+  version: 6.0.7
+  resolution: "react-native-marked@npm:6.0.7"
+  dependencies:
+    "@jsamr/counter-style": 2.0.2
+    "@jsamr/react-native-li": 2.3.1
+    html-entities: 2.5.2
+    marked: 5.0.5
+    react-native-table-component: 1.2.2
+    svg-parser: 2.0.4
+  peerDependencies:
+    react: ^16.8.6 || ^17.0.0 || ^18.0.0
+    react-native: ">=0.60.0"
+    react-native-svg: ">=12.3.0"
+  checksum: 8eb478028271b322e6fd9ec3ae683225b09597e28ce49cd8ea031f98b21517974f0087026f8347ba42b95e0e94084f4b2e709e1e4bab46b334003d2755a52c6b
   languageName: node
   linkType: hard
 
@@ -11379,6 +11407,13 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react: "*"
     react-native: "*"
   checksum: 273f05f2cceabf09f3909f57108d10f56aeb38981146e5f7b72cdb8595fbfb524af891845d4240a629c2f91ed120ae603d9efd579f7fb88521769aec71811136
+  languageName: node
+  linkType: hard
+
+"react-native-table-component@npm:1.2.2":
+  version: 1.2.2
+  resolution: "react-native-table-component@npm:1.2.2"
+  checksum: 906a0ae3b23bcf4a98237d07853bb416feb3d512a4f28e758470a3c45154f15e92445d57ef272e3c3c24c7355ec6ccbf6b53e7ce917ed1964b9f973084d88c46
   languageName: node
   linkType: hard
 
@@ -11619,20 +11654,6 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     source-map: ~0.6.1
     tslib: ^2.0.1
   checksum: 03cc7f57562238ba258d468be67bf7446ce7a707bc87a087891dad15afead46c36e9aaeedf2130e2ab5a465244a9c62bfd4127849761cf8f4085abe2f3e5f485
-  languageName: node
-  linkType: hard
-
-"recyclerlistview@npm:4.2.1":
-  version: 4.2.1
-  resolution: "recyclerlistview@npm:4.2.1"
-  dependencies:
-    lodash.debounce: 4.0.8
-    prop-types: 15.8.1
-    ts-object-utils: 0.0.5
-  peerDependencies:
-    react: ">= 15.2.1"
-    react-native: ">= 0.30.0"
-  checksum: 48e84937f803ac2acb510b2bc36b3ef1ea9c5383540a832f80c87d7e7f933b26c59e4ffc2d7de529be55e14a8d551c4f6660a450ad220142f351e6bf6e630450
   languageName: node
   linkType: hard
 
@@ -12239,12 +12260,12 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
 
 "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev":
   version: 1.0.0
-  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=bf803cccf478359c13732c75bccdd3617725ecba"
+  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=6cb3d9c9f185faa411b13b82a2fb38fb60dc0e8a"
   dependencies:
     "@googlemaps/polyline-codec": ^1.0.28
+    "@react-native-masked-view/masked-view": ^0.3.2
     "@react-native-voice/voice": ^3.2.4
     "@react-native/eslint-config": 0.73.2
-    "@shopify/flash-list": ^1.7.3
     "@types/supercluster": ^7.1.3
     axios: ^1.7.2
     axios-retry: ^4.4.2
@@ -12256,12 +12277,13 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react-native-background-actions: 4.0.1
     react-native-confetti-cannon: ^1.5.2
     react-native-document-picker: 9.1.1
-    react-native-gifted-chat: ^2.6.5
+    react-native-get-random-values: ^1.11.0
+    react-native-gifted-chat: 2.6.5
     react-native-image-crop-picker: ^0.41.4
     react-native-image-picker: 7.1.0
     react-native-image-viewing: ^0.2.2
-    react-native-keyboard-controller: ^1.16.6
     react-native-map-clustering: ^3.4.2
+    react-native-marked: ^6.0.7
     react-native-otp-entry: ^1.8.2
     react-native-reanimated-skeleton: ^1.5.1
     react-native-slide-to-unlock: DevShuttleXInc/react-native-slide-to-unlock
@@ -12295,7 +12317,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
     react-native-svg-transformer: "*"
     react-redux: "*"
     uuid: "*"
-  checksum: c469eb7175fdee34e8b2d61147de5e528c4386c469a46ebd7987a18de178ee019ba9d83f68f321310da3bc18e46fa43f1da1a4191ba1da2a689e83218b81572d
+  checksum: 95d1b1d198eba7eee5b9c2b61638898d93a6da5c2dc73e768bd1ecbb86f4d395f092a35c70bd8bf6b20ac60d267aa921797a644ce8be7dc55b5a29777bffdf3c
   languageName: node
   linkType: hard
 
@@ -12870,7 +12892,7 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
   languageName: node
   linkType: hard
 
-"svg-parser@npm:^2.0.4":
+"svg-parser@npm:2.0.4, svg-parser@npm:^2.0.4":
   version: 2.0.4
   resolution: "svg-parser@npm:2.0.4"
   checksum: b3de6653048212f2ae7afe4a423e04a76ec6d2d06e1bf7eacc618a7c5f7df7faa5105561c57b94579ec831fbbdbf5f190ba56a9205ff39ed13eabdf8ab086ddf
@@ -13094,13 +13116,6 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
   languageName: node
   linkType: hard
 
-"ts-object-utils@npm:0.0.5":
-  version: 0.0.5
-  resolution: "ts-object-utils@npm:0.0.5"
-  checksum: 83c48fbdaba392fb2c01cea53b267ed5538d2bb44fc6c3eecc10bcfabc1780bfa6ec8569b52bbf0140d9b521d9049d5f15884e12286918244d463d854dbc73cb
-  languageName: node
-  linkType: hard
-
 "tsconfig-paths@npm:^3.15.0":
   version: 3.15.0
   resolution: "tsconfig-paths@npm:3.15.0"
@@ -13113,17 +13128,17 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.8.1, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.6.2":
-  version: 2.8.1
-  resolution: "tslib@npm:2.8.1"
-  checksum: e4aba30e632b8c8902b47587fd13345e2827fa639e7c3121074d5ee0880723282411a8838f830b55100cbe4517672f84a2472667d355b81e8af165a55dc6203a
-  languageName: node
-  linkType: hard
-
 "tslib@npm:^1.8.1":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.6.2":
+  version: 2.8.1
+  resolution: "tslib@npm:2.8.1"
+  checksum: e4aba30e632b8c8902b47587fd13345e2827fa639e7c3121074d5ee0880723282411a8838f830b55100cbe4517672f84a2472667d355b81e8af165a55dc6203a
   languageName: node
   linkType: hard
 
@@ -13450,6 +13465,15 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
   languageName: node
   linkType: hard
 
+"uuid@npm:^11.0.4":
+  version: 11.1.0
+  resolution: "uuid@npm:11.1.0"
+  bin:
+    uuid: dist/esm/bin/uuid
+  checksum: 840f19758543c4631e58a29439e51b5b669d5f34b4dd2700b6a1d15c5708c7a6e0c3e2c8c4a2eae761a3a7caa7e9884d00c86c02622ba91137bd3deade6b4b4a
+  languageName: node
+  linkType: hard
+
 "uuid@npm:^7.0.3":
   version: 7.0.3
   resolution: "uuid@npm:7.0.3"
@@ -13639,16 +13663,17 @@ react-native-slide-to-unlock@DevShuttleXInc/react-native-slide-to-unlock:
   linkType: hard
 
 "which-typed-array@npm:^1.1.16, which-typed-array@npm:^1.1.18":
-  version: 1.1.18
-  resolution: "which-typed-array@npm:1.1.18"
+  version: 1.1.19
+  resolution: "which-typed-array@npm:1.1.19"
   dependencies:
     available-typed-arrays: ^1.0.7
     call-bind: ^1.0.8
-    call-bound: ^1.0.3
-    for-each: ^0.3.3
+    call-bound: ^1.0.4
+    for-each: ^0.3.5
+    get-proto: ^1.0.1
     gopd: ^1.2.0
     has-tostringtag: ^1.0.2
-  checksum: d2feea7f51af66b3a240397aa41c796585033e1069f18e5b6d4cd3878538a1e7780596fd3ea9bf347c43d9e98e13be09b37d9ea3887cef29b11bc291fd47bb52
+  checksum: 162d2a07f68ea323f88ed9419861487ce5d02cb876f2cf9dd1e428d04a63133f93a54f89308f337b27cabd312ee3d027cae4a79002b2f0a85b79b9ef4c190670
   languageName: node
   linkType: hard
 

@@ -9,7 +9,6 @@ import {
   getDefaultDevSentryConfig,
   getDefaultProdSentryConfig,
   ThemeProvider,
-  ThemeProviderV1,
 } from 'shuttlex-integration';
 
 import { MapProvider } from './core/map/mapContext';
@@ -33,17 +32,15 @@ const App = (): JSX.Element => (
   <Sentry.ErrorBoundary>
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <ThemeProviderV1>
-          <ThemeProvider>
-            <MapProvider>
-              <GestureHandlerRootView style={styles.gestureHandlerRootView}>
-                <InitialSetup>
-                  <Navigate />
-                </InitialSetup>
-              </GestureHandlerRootView>
-            </MapProvider>
-          </ThemeProvider>
-        </ThemeProviderV1>
+        <ThemeProvider>
+          <MapProvider>
+            <GestureHandlerRootView style={styles.gestureHandlerRootView}>
+              <InitialSetup>
+                <Navigate />
+              </InitialSetup>
+            </GestureHandlerRootView>
+          </MapProvider>
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   </Sentry.ErrorBoundary>
