@@ -17,7 +17,6 @@ import {
   Text,
   useTheme,
 } from 'shuttlex-integration';
-import { FeedbackRating } from 'shuttlex-integration/src/shared/screens/FeedbackScreen/props';
 
 import imageBadAtmosphere from '../../../../assets/images/dislikeFeedback/imageBadAtmosphere';
 import imageBadDriving from '../../../../assets/images/dislikeFeedback/imageBadDriving';
@@ -31,7 +30,7 @@ import { useAppDispatch } from '../../../core/redux/hooks';
 import { orderIdSelector, orderSelector } from '../../../core/ride/redux/trip/selectors';
 import { getOrderInfo, sendFeedback } from '../../../core/ride/redux/trip/thunks';
 import { FeedbackRatingReasonsToAPI } from '../../../core/ride/redux/trip/types';
-import { RatingScreenProps } from './types';
+import { FeedbackRating, RatingScreenProps } from './types';
 
 const RatingScreen = ({ navigation }: RatingScreenProps): JSX.Element => {
   const { t } = useTranslation();
