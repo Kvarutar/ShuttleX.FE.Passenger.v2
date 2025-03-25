@@ -1,33 +1,27 @@
 //TODO uncoment code when we'll need other payment methods and wallet
 //TODO: fix casting with "as"
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { getLocales } from 'react-native-localize';
 import Animated, { Easing, FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import {
   ArrowIcon,
   Bar,
   BottomWindow,
-  BottomWindowWithGesture,
-  BottomWindowWithGestureRef,
   Button,
-  ButtonShadows,
   ButtonShapes,
   ButtonSizes,
   ClockIcon2,
-  CloseIcon,
-  DatePicker,
-  DatePickerV1,
+  DatePickerPopup,
+  formatDate,
+  formatTime,
   getCurrencySign,
   PaymentBar,
   // PaymentMethod,
   sizes,
   Text,
-  TimePicker,
-  TimePickerV1,
   useTariffsIcons,
   useTheme,
 } from 'shuttlex-integration';
@@ -112,22 +106,6 @@ const testPaymentMethods: { method: DefaultPaymentMethodsType; details: string; 
 //   },
 // ];
 
-const formatDate = (date: Date): string =>
-  date
-    .toLocaleDateString(getLocales()[0].languageTag, {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
-    })
-    .replace(/(\w+), (\w+) (\d+)/, '$1 $3 $2');
-
-const formatTime = (time: Date): string =>
-  time.toLocaleTimeString(getLocales()[0].languageTag, {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-
 // const defaultPaymentMethods = ['cash', 'applepay', 'paypal', 'crypto'];
 const defaultPaymentMethods = ['cash', 'card', 'crypto'];
 
@@ -140,7 +118,6 @@ const PaymentPopup = () => {
   const { t } = useTranslation();
   const { fitToPolyline } = useMap();
 
-  const datePickerRef = useRef<BottomWindowWithGestureRef>(null);
   const bottomWindowRef = useRef<BottomWindowRef>(null);
 
   const { points, selectedTariff, estimatedPrice } = useSelector(offerSelector);
@@ -155,14 +132,11 @@ const PaymentPopup = () => {
   // Changed in Task-385
   const [windowIsOpened] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [selectedTimeStep, setSelectedTimeStep] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(availableTestPlans && availableTestPlans.length > 1 ? 1 : 0);
-  const [selectedTime, setSelectedTime] = useState<Date>(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState({ date: new Date(), time: new Date() });
   const [selectedPayment, setSelectedPayment] = useState<DefaultPaymentMethodsType>('cash');
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('pending');
   const [dateTimeTitle, setDateTimeTitle] = useState(t('ride_Ride_PaymentPopup_defaultTime'));
-  const [confirmDateChecker, setConfirmDateChecker] = useState(false);
   //const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
   const computedStyles = StyleSheet.create({
@@ -229,61 +203,19 @@ const PaymentPopup = () => {
     }, 0);
   }, [dispatch]);
 
-  useEffect(() => {
-    if (isDatePickerVisible) {
-      datePickerRef.current?.openWindow();
-      setSelectedTime(new Date());
-      setSelectedDate(new Date());
-      setConfirmDateChecker(false);
-    } else {
-      datePickerRef.current?.closeWindow();
-      setSelectedTimeStep(false);
-    }
-  }, [isDatePickerVisible]);
+  useMemo(() => {
+    const now = new Date();
+    const isToday = selectedDate.date.toDateString() === now.toDateString();
+    const diffMinutes = (selectedDate.time.getTime() - now.getTime()) / 60000;
 
-  useEffect(() => {
-    if (confirmDateChecker) {
-      if (formatTime(selectedTime) !== formatTime(new Date()) || formatDate(selectedDate) !== formatDate(new Date())) {
-        setDateTimeTitle(`${formatDate(selectedDate)} ${formatTime(selectedTime)}`);
-      }
-    } else {
+    if (isToday && diffMinutes < 3) {
       setDateTimeTitle(t('ride_Ride_PaymentPopup_defaultTime'));
+    } else {
+      setDateTimeTitle(`${formatTime(selectedDate.time)} ${formatDate(selectedDate.date, 'weekday')}`);
     }
-  }, [confirmDateChecker, selectedDate, selectedTime, t]);
-
-  useEffect(() => {
-    if (formatDate(new Date()) === formatDate(selectedDate)) {
-      setSelectedTime(new Date());
-    }
-  }, [selectedDate]);
+  }, [selectedDate.date, selectedDate.time, t]);
 
   if (TariffIcon && availableTestPlans) {
-    const dateTimeOnConfirm = () => {
-      if (Platform.OS === 'android') {
-        setConfirmDateChecker(true);
-        setIsDatePickerVisible(false);
-      } else {
-        if (selectedTimeStep) {
-          setConfirmDateChecker(true);
-          setIsDatePickerVisible(false);
-        } else {
-          setSelectedTimeStep(true);
-        }
-      }
-    };
-
-    const dateTimeOnClose = () => {
-      if (Platform.OS === 'android') {
-        setIsDatePickerVisible(false);
-      } else {
-        if (selectedTimeStep) {
-          setSelectedTimeStep(false);
-        } else {
-          setIsDatePickerVisible(false);
-        }
-      }
-    };
-
     //TODO: rewrite this logic after we connect payment
     const onConfirmPress = async () => {
       const paymentId = '3456677'; //TODO: get to know from where I can get it?
@@ -352,81 +284,6 @@ const PaymentPopup = () => {
         value: dateTimeTitle,
       },
     ];
-
-    const iosDateTimeBlock = (
-      <View style={styles.dateTimeContainer}>
-        <Text style={[styles.dateTimeTopText, computedStyles.dateTimeTopText]}>
-          {t('ride_Ride_PaymentPopup_advanceBooking')}
-        </Text>
-        <Text style={styles.dateTimeBottomText}>
-          {selectedTimeStep ? t('ride_Ride_PaymentPopup_pickTimeTitle') : t('ride_Ride_PaymentPopup_pickDateTitle')}
-        </Text>
-        {selectedTimeStep ? (
-          <TimePicker
-            minimumTime={formatDate(new Date()) === formatDate(selectedDate) ? new Date() : undefined}
-            onTimeSelect={setSelectedTime}
-          />
-        ) : (
-          <DatePicker minimumDate={new Date()} onDateSelect={setSelectedDate} />
-        )}
-        <View style={styles.dateTimeButtonContainer}>
-          <Pressable onPress={dateTimeOnClose} style={[styles.dateTimeCloseButton, computedStyles.dateTimeCloseButton]}>
-            <CloseIcon style={styles.dateTimeCloseIcon} color={colors.errorColor} />
-          </Pressable>
-          <Button
-            withCircleModeBorder
-            shadow={ButtonShadows.Strong}
-            onPress={dateTimeOnConfirm}
-            shape={ButtonShapes.Circle}
-            size={ButtonSizes.L}
-            innerSpacing={8}
-            text={t('ride_Ride_PaymentPopup_pickDateTimeConfirm')}
-          />
-        </View>
-      </View>
-    );
-
-    const androidDateTimeBlock = (
-      <View style={styles.dateTimeContainer}>
-        <Text style={[styles.dateTimeTopText, computedStyles.dateTimeTopText]}>
-          {t('ride_Ride_PaymentPopup_advanceBooking')}
-        </Text>
-        <View style={styles.androidDateTimePickerWrapper}>
-          <View style={styles.androidDateTimePickerContainer}>
-            <Text style={styles.dateTimeBottomText}>{t('ride_Ride_PaymentPopup_pickDateTitle')}</Text>
-            <DatePickerV1
-              minimumDate={new Date()}
-              onDateSelect={setSelectedDate}
-              placeholder={formatDate(new Date())}
-              formatDate={formatDate}
-            />
-          </View>
-          <View style={styles.androidDateTimePickerContainer}>
-            <Text style={styles.dateTimeBottomText}>{t('ride_Ride_PaymentPopup_pickTimeTitle')}</Text>
-            <TimePickerV1
-              minimumTime={formatDate(new Date()) === formatDate(selectedDate) ? new Date() : undefined}
-              placeholder={formatTime(new Date())}
-              onTimeSelect={setSelectedTime}
-              formatTime={formatTime}
-            />
-          </View>
-        </View>
-        <View style={styles.dateTimeButtonContainer}>
-          <Pressable onPress={dateTimeOnClose} style={[styles.dateTimeCloseButton, computedStyles.dateTimeCloseButton]}>
-            <CloseIcon style={styles.dateTimeCloseIcon} color={colors.errorColor} />
-          </Pressable>
-          <Button
-            withCircleModeBorder
-            shadow={ButtonShadows.Strong}
-            onPress={dateTimeOnConfirm}
-            shape={ButtonShapes.Circle}
-            size={ButtonSizes.L}
-            innerSpacing={8}
-            text={t('ride_Ride_PaymentPopup_pickDateTimeConfirm')}
-          />
-        </View>
-      </View>
-    );
 
     const infoTextBlock = ({ topText, bottomText }: { topText: string; bottomText: string }) => (
       <View key={`info_text_${topText}`} style={styles.infoTextContainer}>
@@ -596,29 +453,13 @@ const PaymentPopup = () => {
           <TariffIcon style={styles.image} />
           {content}
         </BottomWindow>
-        {Platform.OS === 'ios' && isDatePickerVisible ? (
-          <BottomWindowWithGesture
-            withDraggable={false}
-            withShade
-            setIsOpened={setIsDatePickerVisible}
-            ref={datePickerRef}
-            withHiddenPartScroll={false}
-            hiddenPart={iosDateTimeBlock}
-            headerWrapperStyle={styles.headerWrapperStyle}
-            headerElement={<TariffIcon style={styles.image} />}
+
+        {isDatePickerVisible && (
+          <DatePickerPopup
+            isVisible={isDatePickerVisible}
+            onVisibilityChange={setIsDatePickerVisible}
+            onDateSelected={setSelectedDate}
           />
-        ) : (
-          isDatePickerVisible && (
-            <BottomWindowWithGesture
-              withShade
-              setIsOpened={setIsDatePickerVisible}
-              ref={datePickerRef}
-              withHiddenPartScroll={false}
-              hiddenPart={androidDateTimeBlock}
-              headerWrapperStyle={styles.headerWrapperStyle}
-              headerElement={<TariffIcon style={styles.image} />}
-            />
-          )
         )}
       </>
     );
@@ -701,38 +542,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 18,
   },
-  dateTimeContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 12,
-  },
-  dateTimeTopText: {
-    fontFamily: 'Inter Medium',
-  },
-  dateTimeBottomText: {
-    fontFamily: 'Inter Medium',
-    fontSize: 21,
-    lineHeight: 32,
-  },
-  dateTimeButtonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  dateTimeCloseButton: {
-    width: 60,
-    height: 60,
-    transform: [{ translateY: 30 }],
-    borderRadius: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: '50%',
-    right: 126,
-  },
-  dateTimeCloseIcon: {
-    width: 17,
-    height: 17,
-  },
   scrollViewWrapper: {
     flexShrink: 1,
   },
@@ -758,17 +567,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 6,
     marginBottom: 8,
-  },
-  androidDateTimePickerWrapper: {
-    flexDirection: 'row',
-    alignSelf: 'stretch',
-    marginVertical: 20,
-    gap: 20,
-  },
-  androidDateTimePickerContainer: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 10,
   },
 });
 

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { ViewStyle } from 'react-native';
-import { CircleButtonModes } from 'shuttlex-integration/src/shared/atoms/Button/v2/props';
+import { CircleButtonModes } from 'shuttlex-integration';
 
 export type SmallButtonProps = {
   icon: ReactNode;
