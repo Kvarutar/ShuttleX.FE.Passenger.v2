@@ -12253,7 +12253,7 @@ __metadata:
 
 "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#dev":
   version: 1.0.0
-  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=60c1866e8df2ee870089d777860a4993cc7589e8"
+  resolution: "shuttlex-integration@ssh://git@github.com/DevShuttleXInc/ShuttleX.FE.Integration.v1#commit=aaa02989d6954be15923dcfe473595e9721ec084"
   dependencies:
     "@googlemaps/polyline-codec": ^1.0.28
     "@react-native-masked-view/masked-view": ^0.3.2
@@ -12309,7 +12309,7 @@ __metadata:
     react-native-svg-transformer: "*"
     react-redux: "*"
     uuid: "*"
-  checksum: fda78d2cceacc13af9e2734c488af7266b9b7b349fbaf19f00f05763b1c9ed3ae435210b9eed47a735518521e5cb8e79f65919c354555b859e434edd12167eae
+  checksum: e3d04325a374d8ec84b5d2d212b448cf5760f09cfd36f4d7fa95b56199ea2102467efba0b5f8ea47ac666092c5fc78a261ea9e12bbc233e3fd179bb5ed271e45
   languageName: node
   linkType: hard
 
