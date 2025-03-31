@@ -7,7 +7,6 @@ import authReducer from '../auth/redux';
 import { MMKVStorage } from '../localStorage';
 import lotteryReducer from '../lottery/redux';
 import accountSettingsReducer from '../menu/redux/accountSettings';
-import notificationsReducer from '../menu/redux/notifications';
 import walletRedicer from '../menu/redux/wallet';
 import passengerReducer from '../passenger/redux';
 import alertsReducer from '../ride/redux/alerts';
@@ -30,7 +29,6 @@ const offerPersistConfig = {
 //Change some reducers like 'offer' when work with data persisting
 const rootReducer = combineReducers({
   auth: authReducer,
-  notifications: notificationsReducer,
   wallet: walletRedicer,
   alerts: alertsReducer,
   geolocation: geolocationReducer,

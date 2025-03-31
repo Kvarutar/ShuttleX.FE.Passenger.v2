@@ -9,7 +9,6 @@ export type RootStackParamList = {
   AddressSelection: { orderPointId: number };
   MapAddressSelection: { orderPointId: number; pointCoordinates?: LatLng };
   Rating: undefined;
-  Notifications: undefined;
   Wallet: undefined;
   AddPayment: undefined;
   Receipt: undefined;

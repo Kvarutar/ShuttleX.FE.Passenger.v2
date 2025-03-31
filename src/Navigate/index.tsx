@@ -17,7 +17,6 @@ import AccountSettings from '../screens/menu/AccountSettings';
 import AccountVerificateCodeScreen from '../screens/menu/AccountVerificateCodeScreen';
 import ActivityReceiptScreen from '../screens/menu/ActivityReceiptScreen';
 import ActivityScreen from '../screens/menu/ActivityScreen';
-import NotificationsScreen from '../screens/menu/NotificationsScreen';
 import ProfilePhotoScreen from '../screens/menu/ProfilePhotoScreen';
 import PromocodesScreen from '../screens/menu/PromocodesScreen';
 import TicketWalletScreen from '../screens/menu/TicketWalletScreen';
@@ -76,7 +75,6 @@ const Navigate = (): JSX.Element => {
                 }}
               />
               <Stack.Screen name="Rating" component={RatingScreen} />
-              <Stack.Screen name="Notifications" component={NotificationsScreen} />
               <Stack.Screen name="Wallet" component={WalletScreen} />
               <Stack.Screen name="AddPayment" component={AddPaymentScreen} />
               <Stack.Screen name="Receipt" component={ReceiptScreen} />
