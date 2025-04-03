@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LayoutChangeEvent, Linking, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { LayoutChangeEvent, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useDerivedValue, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import {
   BottomWindowWithGesture,
   GroupedButtons,
+  IS_IOS,
   LoadingSpinner,
   LoadingSpinnerIconModes,
   minToMilSec,
@@ -75,8 +76,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
   const contentAnimatedHeight = useSharedValue(0);
   const podiumAnimatedHeight = useSharedValue(0);
   const bottomWindowMinHeight = useSharedValue(0);
-  const safeAreaViewPaddingVertical =
-    insets.bottom && Platform.OS === 'ios' ? sizes.paddingVertical : sizes.paddingVertical / 2;
+  const safeAreaViewPaddingVertical = insets.bottom && IS_IOS ? sizes.paddingVertical : sizes.paddingVertical / 2;
 
   const isWinnersExist = allWinners.some(prize => prize.winnerId !== null);
 

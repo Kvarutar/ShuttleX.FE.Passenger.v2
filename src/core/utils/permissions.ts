@@ -1,5 +1,5 @@
 import notifee, { AuthorizationStatus } from '@notifee/react-native';
-import { Alert, Linking, Platform } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import {
   check,
   checkLocationAccuracy,
@@ -8,9 +8,10 @@ import {
   request,
   RESULTS,
 } from 'react-native-permissions';
+import { IS_IOS } from 'shuttlex-integration';
 
 export const requestGeolocationPermission = async (): Promise<void> => {
-  if (Platform.OS === 'ios') {
+  if (IS_IOS) {
     await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
   } else {
     await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
@@ -21,7 +22,7 @@ export const checkGeolocationPermissionAndAccuracy = async (): Promise<{
   isGranted: boolean;
   accuracy: LocationAccuracy;
 }> => {
-  if (Platform.OS === 'ios') {
+  if (IS_IOS) {
     const result = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
     const accuracy: LocationAccuracy = result === RESULTS.GRANTED ? await checkLocationAccuracy() : 'reduced';
     return { isGranted: result === RESULTS.GRANTED, accuracy };

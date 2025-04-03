@@ -2,9 +2,9 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { Alert, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { MenuHeader, sizes, useTheme } from 'shuttlex-integration';
+import { IS_ANDROID, MenuHeader, sizes, useTheme } from 'shuttlex-integration';
 
 import { lotteryWinnerSelector } from '../../../core/lottery/redux/selectors';
 import {
@@ -128,7 +128,7 @@ const RideScreen = ({ route }: RideScreenProps): JSX.Element => {
 
   const computedStyles = StyleSheet.create({
     menuStyle: {
-      paddingTop: Platform.OS === 'android' ? androidPaddingTop : 8,
+      paddingTop: IS_ANDROID ? androidPaddingTop : 8,
       zIndex: orderStatus === OrderStatus.Confirming ? 1 : 0,
     },
     unreadNotificationsMarker: {

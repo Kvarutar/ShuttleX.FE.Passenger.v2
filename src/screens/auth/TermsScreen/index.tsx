@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 import {
   Button,
   ButtonShapes,
+  IS_ANDROID,
   ScrollViewWithCustomScroll,
   ShortArrowIcon,
   sizes,
@@ -21,7 +22,7 @@ const TermsScreen = ({ navigation }: TermsScreenProps): JSX.Element => {
       backgroundColor: colors.backgroundPrimaryColor,
     },
     container: {
-      paddingVertical: Platform.OS === 'android' ? sizes.paddingVertical : 0,
+      paddingVertical: IS_ANDROID ? sizes.paddingVertical : 0,
     },
     termsText: {
       color: colors.textSecondaryColor,

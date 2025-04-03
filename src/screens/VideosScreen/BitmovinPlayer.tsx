@@ -1,7 +1,7 @@
 import { PlayerView, ScalingMode, SourceType, usePlayer } from 'bitmovin-player-react-native';
 import { useCallback, useEffect, useState } from 'react';
-import { Platform, StyleSheet } from 'react-native';
-import { LoadingSpinner, useTheme } from 'shuttlex-integration';
+import { StyleSheet } from 'react-native';
+import { IS_IOS, LoadingSpinner, useTheme } from 'shuttlex-integration';
 
 import passengerColors from '../../shared/colors/colors.ts';
 import { BitmovinPlayerProps } from './types.tsx';
@@ -33,7 +33,7 @@ const BitmovinPlayer = ({ videoUrl, pause, isActive }: BitmovinPlayerProps) => {
   useEffect(() => {
     player.load({
       url: videoUrl,
-      type: Platform.OS === 'ios' ? SourceType.HLS : SourceType.DASH,
+      type: IS_IOS ? SourceType.HLS : SourceType.DASH,
     });
 
     (async () => {
