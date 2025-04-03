@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   BigHeader,
@@ -9,13 +9,12 @@ import {
   Button,
   Confetti,
   SquareButtonModes,
+  WINDOW_HEIGHT,
 } from 'shuttlex-integration';
 
 import { lotteryPrizesSelector, lotteryWinnerSelector } from '../../../../../core/lottery/redux/selectors';
 import { prizesData } from '../../../../raffle/Lottery/prizesData';
 import { WinningPopupProps } from './types';
-
-const windowHeight = Dimensions.get('window').height;
 
 const WinningPopup = ({ setIsWinningPopupVisible }: WinningPopupProps) => {
   const { t } = useTranslation();
@@ -39,6 +38,13 @@ const WinningPopup = ({ setIsWinningPopupVisible }: WinningPopupProps) => {
     closeWindow?.();
     setIsWinningPopupVisible(false);
   };
+
+  const computedStyles = StyleSheet.create({
+    imageContainer: {
+      maxHeight: WINDOW_HEIGHT * 0.3,
+    },
+  });
+
   if (winner) {
     const hiddenPartContent = (
       <View>
@@ -48,7 +54,7 @@ const WinningPopup = ({ setIsWinningPopupVisible }: WinningPopupProps) => {
           secondHeaderTitle={t('ride_Ride_WinningPopup_secondTitle', { ticketNumber: lotteryWinner?.ticket })}
           description={t('ride_Ride_WinningPopup_description', { place: winner.index + 1 })}
         />
-        <View style={styles.imageContainer}>
+        <View style={[styles.imageContainer, computedStyles.imageContainer]}>
           <Image source={prizesData[winner.prizes[0].feKey].image} style={styles.image} resizeMode="contain" />
         </View>
         <View style={styles.buttonsContainer}>
@@ -100,7 +106,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   imageContainer: {
-    maxHeight: windowHeight * 0.3,
     marginVertical: 48,
   },
   image: {

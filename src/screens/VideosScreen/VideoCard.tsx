@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { memo, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, ImageBackground, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Animated, { FadeIn, FadeOut, runOnJS, useAnimatedStyle, withTiming } from 'react-native-reanimated';
@@ -22,6 +22,7 @@ import {
   Text,
   TriangleIcon,
   useTheme,
+  WINDOW_HEIGHT,
 } from 'shuttlex-integration';
 
 import { mapMarkerImage } from '../../../assets/images/videosScreen';
@@ -36,8 +37,6 @@ import { RootStackParamList } from '../../Navigate/props.ts';
 import passengerColors from '../../shared/colors/colors.ts';
 import BitmovinPlayer from './BitmovinPlayer.tsx';
 import { VideoCardProps } from './types';
-
-const windowHeight = Dimensions.get('window').height;
 
 //TODO: change mockData
 const coordinates = {
@@ -62,6 +61,7 @@ const VideoCard = memo(({ videoData, isActive }: VideoCardProps) => {
   const computedStyles = StyleSheet.create({
     overlay: {
       backgroundColor: passengerColors.videosColors.overlay,
+      height: WINDOW_HEIGHT,
     },
     triangleIcon: {
       color: colors.iconTertiaryColor,
@@ -307,7 +307,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: sizes.paddingHorizontal,
   },
   overlay: {
-    height: windowHeight,
     alignItems: 'center',
     justifyContent: 'center',
   },

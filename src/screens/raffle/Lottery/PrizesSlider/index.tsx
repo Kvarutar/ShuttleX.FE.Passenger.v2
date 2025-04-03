@@ -1,9 +1,9 @@
 import { memo, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, Modal, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Image, Modal, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
-import { InputXIcon, SafeAreaView, Text, useTheme } from 'shuttlex-integration';
+import { InputXIcon, SafeAreaView, Text, useTheme, WINDOW_WIDTH } from 'shuttlex-integration';
 
 import { Prize } from '../../../../core/lottery/redux/types';
 import passengerColors from '../../../../shared/colors/colors.ts';
@@ -11,7 +11,6 @@ import SmallButton from '../../SmallButton';
 import { prizesData } from '../prizesData';
 import { PrizesSliderProps } from './types';
 
-const windowWidth = Dimensions.get('window').width;
 const carouselAutoPlayInterval = 2000;
 
 const PrizesSlider = memo(({ visible, onClose, selectedItemIndex, listItem }: PrizesSliderProps): JSX.Element => {
@@ -70,7 +69,7 @@ const PrizesSlider = memo(({ visible, onClose, selectedItemIndex, listItem }: Pr
       </TouchableWithoutFeedback>
       <View style={[styles.wrapper, computedStyles.wrapper]}>
         <Carousel
-          width={windowWidth}
+          width={WINDOW_WIDTH}
           height={itemHeight}
           vertical={false}
           loop={false}

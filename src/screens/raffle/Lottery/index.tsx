@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, LayoutChangeEvent, Linking, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { LayoutChangeEvent, Linking, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useDerivedValue, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
@@ -16,6 +16,7 @@ import {
   sizes,
   Text,
   useTheme,
+  WINDOW_HEIGHT,
 } from 'shuttlex-integration';
 
 import { logger } from '../../../App.tsx';
@@ -46,8 +47,6 @@ import { prizesData } from './prizesData';
 import PrizesSlider from './PrizesSlider';
 import PrizeWithWinnerBar from './PrizeWithWinnerBar';
 import { LotteryProps } from './types';
-
-const windowHeight = Dimensions.get('window').height;
 
 const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
   const { colors } = useTheme();
@@ -261,7 +260,7 @@ const Lottery = ({ triggerConfetti }: LotteryProps): JSX.Element => {
 
   useDerivedValue(() => {
     bottomWindowMinHeight.value =
-      (contentAnimatedHeight.value - podiumAnimatedHeight.value + safeAreaViewPaddingVertical) / windowHeight;
+      (contentAnimatedHeight.value - podiumAnimatedHeight.value + safeAreaViewPaddingVertical) / WINDOW_HEIGHT;
   });
 
   if ((isPrizesLoading && lotteryState === 'CurrentUpcoming') || isPreviousPrizesLoading) {

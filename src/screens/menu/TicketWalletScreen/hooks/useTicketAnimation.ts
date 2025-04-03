@@ -1,9 +1,7 @@
-import { Dimensions } from 'react-native';
 import { clamp, Easing, SharedValue, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
+import { WINDOW_HEIGHT } from 'shuttlex-integration';
 
 import { cardHeight, cardOverlap } from '../consts';
-
-const windowHeight = Dimensions.get('window').height;
 
 export const useTicketAnimation = (
   index: number,
@@ -43,7 +41,7 @@ export const useTicketAnimation = (
       }
 
       if (activeCardIndex.value !== index) {
-        translateY.value = withTiming(-index * (cardHeight + cardOverlap) * 0.7 + windowHeight * 0.4, {
+        translateY.value = withTiming(-index * (cardHeight + cardOverlap) * 0.7 + WINDOW_HEIGHT * 0.4, {
           easing: Easing.out(Easing.quad),
         });
         return;

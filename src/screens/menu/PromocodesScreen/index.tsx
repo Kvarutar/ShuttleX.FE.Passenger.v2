@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, SafeAreaView, StyleSheet, View } from 'react-native';
-import { MenuHeader, sizes, Text, TextInput, TextInputInputMode, useTheme } from 'shuttlex-integration';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { MenuHeader, sizes, Text, TextInput, TextInputInputMode, useTheme, WINDOW_HEIGHT } from 'shuttlex-integration';
 
 import Menu from '../../ride/Menu';
 
-const windowSizes = Dimensions.get('window');
-const isPhoneSmall = windowSizes.height < 700;
+const isPhoneSmall = WINDOW_HEIGHT < 700;
 
 const PromocodesScreen = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -16,7 +15,7 @@ const PromocodesScreen = () => {
   const computedStyles = StyleSheet.create({
     primaryGreenBackground: {
       backgroundColor: colors.primaryColor,
-      height: windowSizes.height * 0.42,
+      height: WINDOW_HEIGHT * 0.42,
     },
     youTurnText: {
       color: colors.textSecondaryColor,
@@ -25,13 +24,13 @@ const PromocodesScreen = () => {
       color: colors.textPrimaryColor,
     },
     contentContainer: {
-      top: windowSizes.height * (isPhoneSmall ? 0.12 : 0.18),
+      top: WINDOW_HEIGHT * (isPhoneSmall ? 0.12 : 0.18),
     },
     enterCodeBlock: {
       backgroundColor: colors.outlineColor,
     },
     safeArea: {
-      height: windowSizes.height,
+      height: WINDOW_HEIGHT,
     },
   });
   return (

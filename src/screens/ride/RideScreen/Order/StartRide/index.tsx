@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { forwardRef, ReactNode, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, Keyboard, Linking, ScrollView, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Image, Keyboard, Linking, ScrollView, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
@@ -19,6 +19,7 @@ import {
   Text,
   UnsupportedCityPopup,
   useTheme,
+  WINDOW_HEIGHT,
 } from 'shuttlex-integration';
 
 import {
@@ -63,8 +64,6 @@ import StartRideHidden from './StartRideHidden';
 import StartRideVisible from './StartRideVisible';
 import { StartRideRef } from './types';
 
-const windowHeight = Dimensions.get('window').height;
-
 const animationDuration = 300;
 
 const StartRide = forwardRef<StartRideRef>((_, ref) => {
@@ -99,7 +98,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
 
   const computedStyles = StyleSheet.create({
     navButtonsContainer: {
-      bottom: insets.bottom === 0 ? (isRecentDropoffsExist ? windowHeight * 0.03 : 0) : insets.bottom,
+      bottom: insets.bottom === 0 ? (isRecentDropoffsExist ? WINDOW_HEIGHT * 0.03 : 0) : insets.bottom,
     },
     navButtonContainerStyle: {
       backgroundColor: passengerColors.adsBackgroundColor.navButton,
@@ -109,6 +108,9 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
     },
     firstVisiblePartWrapper: {
       height: isBottomWindowOpen ? '100%' : 'auto', //TODO: think of clever way(problem is: i can't calculate visible part height in opened state before it's opened. This problem occure because of we don't use hidden part in this component and in opened state height of visible part lesser then 93% of widow height)
+    },
+    hiddenPartChange: {
+      height: WINDOW_HEIGHT * 0.85,
     },
   });
 
@@ -171,7 +173,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
               </ScrollView>
             </View>
           ),
-          minHeight: isRecentDropoffsExist ? 0.3 : 0.23 + insets.bottom / windowHeight,
+          minHeight: isRecentDropoffsExist ? 0.3 : 0.23 + insets.bottom / WINDOW_HEIGHT,
         };
       case 1:
         return {
@@ -332,7 +334,7 @@ const StartRide = forwardRef<StartRideRef>((_, ref) => {
           setIsOpened={setIsAiPopupVisible}
           opened
           hiddenPart={<AIPopup prefferedName={profile?.names[0].value} />}
-          hiddenPartStyle={styles.hiddenPartChange}
+          hiddenPartStyle={computedStyles.hiddenPartChange}
           bottomWindowStyle={styles.bottomWindowBackground}
           hiddenPartContainerStyle={styles.hiddenPartContainerStyle}
           headerWrapperStyle={styles.bottomWindowBackground}
@@ -349,9 +351,6 @@ const styles = StyleSheet.create({
   },
   hiddenPartWrapper: {
     paddingBottom: 0,
-  },
-  hiddenPartChange: {
-    height: windowHeight * 0.85,
   },
   hiddenPartContainerStyle: {
     flex: 1,

@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { ICarouselInstance } from 'react-native-reanimated-carousel/lib/typescript/types';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ import {
   Text,
   TriangleIcon,
   useTheme,
+  WINDOW_HEIGHT,
 } from 'shuttlex-integration';
 
 import { useAppDispatch } from '../../core/redux/hooks.ts';
@@ -25,8 +26,6 @@ import { getVideos } from '../../core/ride/redux/streaming/thunks.ts';
 import { RootStackParamList } from '../../Navigate/props';
 import passengerColors from '../../shared/colors/colors.ts';
 import VideoCard from './VideoCard.tsx';
-
-const windowHeight = Dimensions.get('window').height;
 
 const VideosScreen = () => {
   const carouselRef = useRef<ICarouselInstance | null>(null);
@@ -91,7 +90,7 @@ const VideosScreen = () => {
         ref={carouselRef}
         loop={false}
         vertical
-        height={windowHeight}
+        height={WINDOW_HEIGHT}
         containerStyle={computedStyles.bottomContentBgColor}
         data={streamingVideos}
         onProgressChange={onProgressChangeCarouselHandler}

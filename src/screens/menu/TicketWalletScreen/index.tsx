@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { cancelAnimation, clamp, useSharedValue, withDecay, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,6 +17,7 @@ import {
   sizes,
   Text,
   useTheme,
+  WINDOW_HEIGHT,
 } from 'shuttlex-integration';
 
 import capyTicketWallet from '../../../../assets/images/capyTicketWallet';
@@ -29,8 +30,6 @@ import { cardColors } from './cardColors';
 import { cardHeight } from './consts';
 import TicketCard from './TicketCard';
 import { TicketProps } from './types';
-
-const windowHeight = Dimensions.get('window').height;
 
 const TicketWalletScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -79,9 +78,9 @@ const TicketWalletScreen = () => {
   const scrollY = useSharedValue(0);
   const activeCardIndex = useSharedValue<number | null>(null);
   const [listHeight, setListHeight] = useState(0);
-  const isScrollWorks = listHeight + cardHeight > windowHeight;
+  const isScrollWorks = listHeight + cardHeight > WINDOW_HEIGHT;
 
-  const maxScrollY = isScrollWorks ? listHeight - windowHeight + cardHeight * 0.9 : 0;
+  const maxScrollY = isScrollWorks ? listHeight - WINDOW_HEIGHT + cardHeight * 0.9 : 0;
 
   const pan = Gesture.Pan()
     .onBegin(() => {

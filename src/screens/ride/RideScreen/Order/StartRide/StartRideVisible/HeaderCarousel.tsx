@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSelector } from 'react-redux';
-import { AnimatedCarImage, sizes, Skeleton, Text, useTheme } from 'shuttlex-integration';
+import { AnimatedCarImage, sizes, Skeleton, Text, useTheme, WINDOW_WIDTH } from 'shuttlex-integration';
 
 import imageStartRideCarouselBinance from '../../../../../../../assets/images/startRide/imageStartRideCarouselBinance';
 import imageStartRideCarouselPrize from '../../../../../../../assets/images/startRide/imageStartRideCarouselPrize';
@@ -12,7 +12,6 @@ import { isLoadingStubVisibleSelector } from '../../../../../../core/passenger/r
 import usePrizeTimer from '../utils/usePrizeTimer';
 import { SliderItemProps } from './types';
 
-const windowWidth = Dimensions.get('window').width;
 const carouselAnimationDurations = 300;
 
 const SliderItem = ({ topText, bottomText, image, isTextLoading }: SliderItemProps) => {
@@ -58,7 +57,7 @@ const HeaderCarousel = () => {
 
   const computedStyles = StyleSheet.create({
     carousel: {
-      width: windowWidth,
+      width: WINDOW_WIDTH,
       marginLeft: -sizes.paddingHorizontal,
     },
   });
@@ -112,7 +111,7 @@ const HeaderCarousel = () => {
       <Carousel
         loop
         ref={carouselRef}
-        width={windowWidth}
+        width={WINDOW_WIDTH}
         height={82} // height of SliderItemContainer
         style={computedStyles.carousel}
         data={carouselData}
